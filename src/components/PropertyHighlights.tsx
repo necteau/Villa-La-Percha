@@ -4,22 +4,22 @@ const highlights = [
   {
     title: "Chalk Sound",
     description: "World-famous crystal-clear waters steps from your door. Kayak among 50+ islands and cays.",
-    image: "/images/exterior-sunset-golden-hour.jpg",
+    image: "/images/kitchen.jpg",
   },
   {
     title: "Private Pool",
     description: "65ft meandering infinity pool with tropical landscaping, ambient lighting, and sunset views.",
-    image: "/images/pool-aerial-overview.jpg",
+    image: "/images/aerial-ocean-dock-stairs-pool-house.jpg",
   },
   {
     title: "Direct Ocean Access",
     description: "Your own sandy shoreline with crystal waters — no crowds, no boats, just your private beach.",
-    image: "/images/ocean-sunset-distant-view.jpg",
+    image: "/images/hot-tub-pool-ocean-sapodilla-bay.jpg",
   },
   {
     title: "Full Villa Ownership",
     description: "5 bedrooms, 5 bathrooms, open-plan living, chef's kitchen, and 6 weeks of personal time each year.",
-    image: "/images/interior-open-plan-living.jpg",
+    image: "/images/pool-lounge-ocean.jpg",
   },
 ];
 

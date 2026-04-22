@@ -5,7 +5,7 @@ export default function Hero() {
     <section className="relative w-full overflow-hidden bg-[#1a1a1a]">
       <div className="relative w-full" style={{ height: "50vh" }}>
         <Image
-          src="/images/exterior-sunset-golden-hour.jpg"
+          src="/images/kitchen.jpg"
           alt="Villa La Percha"
           fill
           className="object-cover"

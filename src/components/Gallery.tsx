@@ -1,11 +1,11 @@
 import Image from "next/image";
 
 const photos = [
-  { src: "/images/pool-winding-pool-aerial.jpg", span: "md:col-span-2 md:row-span-2", alt: "Villa La Percha aerial pool view" },
-  { src: "/images/exterior-sunset-golden-hour.jpg", span: "", alt: "Villa exterior sunset" },
-  { src: "/images/ocean-sunset-distant-view.jpg", span: "", alt: "Ocean sunset view" },
-  { src: "/images/interior-open-plan-living.jpg", span: "", alt: "Living area" },
-  { src: "/images/pool-hammock-lounge.jpg", span: "md:col-span-2", alt: "Pool hammock lounge" },
+  { src: "/images/aerial-pool-house-chalk-sound.jpg", span: "md:col-span-2 md:row-span-2", alt: "Direct aerial of pool house and Chalk Sound" },
+  { src: "/images/kitchen.jpg", span: "", alt: "Kitchen" },
+  { src: "/images/hot-tub-pool-ocean-sapodilla-bay.jpg", span: "", alt: "Angled view of hot tub, pool, lounge chairs, ocean, and Sapodillo Bay" },
+  { src: "/images/pool-lounge-ocean.jpg", span: "", alt: "View of pool, lounge chairs, and ocean" },
+  { src: "/images/downstairs-suite-hammock.jpg", span: "md:col-span-2", alt: "Downstairs suite opening to hammock area" },
 ];
 
 export default function Gallery() {
