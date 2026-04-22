@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import availabilityData from "@/data/availability.json";
 
 interface DayInfo {
@@ -16,8 +17,8 @@ const dayLabels = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
 
 export default function AvailabilityCalendar() {
   const today = new Date();
-  const currentYear = today.getFullYear();
-  const currentMonth = today.getMonth();
+  const [viewYear, setViewYear] = useState(today.getFullYear());
+  const [viewMonth, setViewMonth] = useState(today.getMonth());
 
   const generateCalendarDays = (year: number, month: number): DayInfo[] => {
     const days: DayInfo[] = [];
@@ -43,10 +44,30 @@ export default function AvailabilityCalendar() {
     return days;
   };
 
-  const days = generateCalendarDays(currentYear, currentMonth);
+  const days = generateCalendarDays(viewYear, viewMonth);
+
+  const prevMonth = () => {
+    setViewMonth((m) => {
+      if (m === 0) {
+        setViewYear((y) => y - 1);
+        return 11;
+      }
+      return m - 1;
+    });
+  };
+
+  const nextMonth = () => {
+    setViewMonth((m) => {
+      if (m === 11) {
+        setViewYear((y) => y + 1);
+        return 0;
+      }
+      return m + 1;
+    });
+  };
 
   const isToday = (date: number) => {
-    return date === today.getDate() && currentMonth === today.getMonth() && currentYear === today.getFullYear();
+    return date === today.getDate() && viewMonth === today.getMonth() && viewYear === today.getFullYear();
   };
 
   return (
@@ -75,6 +96,7 @@ export default function AvailabilityCalendar() {
             style={{ borderBottom: "1px solid #E8E4DF" }}
           >
             <button
+              onClick={prevMonth}
               className="w-9 h-9 flex items-center justify-center rounded-full transition-colors hover:bg-[#F5F0E8]"
               style={{ border: "none", cursor: "pointer", color: "#6B6B6B" }}
             >
@@ -92,9 +114,10 @@ export default function AvailabilityCalendar() {
               className="font-display text-lg font-light"
               style={{ color: "#2C2C2C" }}
             >
-              {monthNames[currentMonth]} {currentYear}
+              {monthNames[viewMonth]} {viewYear}
             </h3>
             <button
+              onClick={nextMonth}
               className="w-9 h-9 flex items-center justify-center rounded-full transition-colors hover:bg-[#F5F0E8]"
               style={{ border: "none", cursor: "pointer", color: "#6B6B6B" }}
             >
