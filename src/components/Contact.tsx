@@ -17,14 +17,14 @@ export default function Contact() {
           Send an inquiry and the owner will respond within 24 hours.
         </p>
         <a
-          href="mailto:reservations.villalapercha@gmail.com?subject=Villa%20La%20Percha%20Inquiry"
+          href="mailto:VillaLaPercha@gmail.com?subject=Villa%20La%20Percha%20Inquiry"
           className="inline-block px-8 md:px-10 py-3.5 md:py-4 border border-white/30 text-white text-xs md:text-sm tracking-[0.2em] uppercase hover:bg-white hover:text-[#2C2C2C] transition-all duration-500"
         >
           Inquire Now
         </a>
         <p className="font-body text-white/40 text-xs md:text-sm mt-8">
-          <a href="mailto:reservations.villalapercha@gmail.com" className="underline underline-offset-4 hover:text-white/60 transition-colors">
-            reservations.villalapercha@gmail.com
+          <a href="mailto:VillaLaPercha@gmail.com" className="underline underline-offset-4 hover:text-white/60 transition-colors">
+            VillaLaPercha@gmail.com
           </a>
         </p>
       </div>

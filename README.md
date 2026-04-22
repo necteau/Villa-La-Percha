@@ -30,4 +30,4 @@ Direct-to-owner luxury rental platform for Villa La Percha in Chalk Sound, Provi
 3. **Chalk Sound Location:** Safest, most beautiful waters in Provo
 
 ## Contact
-reservations.villalapercha@gmail.com
+VillaLaPercha@gmail.com
