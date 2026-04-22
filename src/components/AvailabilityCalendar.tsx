@@ -1,3 +1,6 @@
+'use client';
+
+import { useState } from 'react';
 import availabilityData from "@/data/availability.json";
 
 interface DayInfo {
@@ -30,15 +33,37 @@ const generateCalendarDays = (year: number, month: number): DayInfo[] => {
 };
 
 const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-const dayLabels = ['Su','Mo','Tu','We','Th','Fr','Sa'];
+const dayLabels = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 
 export default function AvailabilityCalendar() {
   const today = new Date();
-  const todayYear = today.getFullYear();
-  const todayMonth = today.getMonth();
+  const [currentYear, setCurrentYear] = useState(today.getFullYear());
+  const [currentMonth, setCurrentMonth] = useState(today.getMonth());
+
+  const prevMonth = () => {
+    if (currentMonth === 0) {
+      setCurrentMonth(11);
+      setCurrentYear(y => y - 1);
+    } else {
+      setCurrentMonth(m => m - 1);
+    }
+  };
+
+  const nextMonth = () => {
+    if (currentMonth === 11) {
+      setCurrentMonth(0);
+      setCurrentYear(y => y + 1);
+    } else {
+      setCurrentMonth(m => m + 1);
+    }
+  };
+
+  const isToday = (date: number) => {
+    return date === today.getDate() && currentMonth === today.getMonth() && currentYear === today.getFullYear();
+  };
 
   return (
-    <section id="availability" className="py-20 md:py-32" style={{ backgroundColor: '#FAFAF8' }}>
+    <section id="availability" className="py-20 md:py-32">
       <div className="max-w-5xl mx-auto px-6 md:px-8">
         <div className="text-center mb-14">
           <p className="text-xs tracking-[0.3em] uppercase mb-4" style={{ color: '#8B7355' }}>Availability</p>
@@ -52,24 +77,24 @@ export default function AvailabilityCalendar() {
         </div>
 
         <div className="bg-white rounded-lg shadow-sm border border-[#E8E4DF] overflow-hidden max-w-md mx-auto">
-          {/* Month nav bar */}
-          <div className="flex items-center justify-between px-5 py-4" style={{ borderBottom: '1px solid #E8E4DF' }}>
+          {/* Month nav */}
+          <div className="flex items-center justify-between px-6 py-5" style={{ borderBottom: '1px solid #E8E4DF' }}>
             <button
-              className="p-1 text-[#6B6B6B]/40 hover:text-[#2C2C2C] transition-colors"
-              style={{ border: 'none', background: 'none', cursor: 'pointer' }}
-              onClick={() => alert('← not yet connected to calendar backend')}
+              onClick={prevMonth}
+              className="w-9 h-9 flex items-center justify-center rounded-full transition-colors hover:bg-[#F5F0E8]"
+              style={{ border: 'none', cursor: 'pointer', color: '#6B6B6B' }}
             >
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                 <path d="M10 3L5 8L10 13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </button>
             <h3 className="font-display text-lg font-light" style={{ color: '#2C2C2C' }}>
-              {monthNames[todayMonth]} {todayYear}
+              {monthNames[currentMonth]} {currentYear}
             </h3>
             <button
-              className="p-1 text-[#6B6B6B]/40 hover:text-[#2C2C2C] transition-colors"
-              style={{ border: 'none', background: 'none', cursor: 'pointer' }}
-              onClick={() => alert('→ not yet connected to calendar backend')}
+              onClick={nextMonth}
+              className="w-9 h-9 flex items-center justify-center rounded-full transition-colors hover:bg-[#F5F0E8]"
+              style={{ border: 'none', cursor: 'pointer', color: '#6B6B6B' }}
             >
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                 <path d="M6 3L11 8L6 13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -77,48 +102,64 @@ export default function AvailabilityCalendar() {
             </button>
           </div>
 
-          {/* Days */}
-          <div className="p-5">
-            <div className="grid grid-cols-7 gap-1 mb-2">
+          {/* Days header */}
+          <div className="px-5 pt-4 pb-1">
+            <div className="grid grid-cols-7 gap-1">
               {dayLabels.map(d => (
                 <div key={d} className="text-center text-xs font-medium py-2" style={{ color: '#6B6B6B', opacity: 0.5 }}>
                   {d}
                 </div>
               ))}
             </div>
+          </div>
 
+          {/* Date cells */}
+          <div className="px-5 pb-5">
             <div className="grid grid-cols-7 gap-1">
-              {generateCalendarDays(todayYear, todayMonth).map((day, idx) => {
-                const isToday = day.isCurrentMonth &&
-                  day.date === today.getDate() &&
-                  day.month === todayMonth &&
-                  day.year === todayYear;
+              {generateCalendarDays(currentYear, currentMonth).map((day, idx) => {
+                const todayHighlight = isToday(day.date);
 
                 if (!day.isCurrentMonth) {
                   return (
                     <div
                       key={idx}
-                      className="flex items-center justify-center text-xs py-3"
-                      style={{ color: '#6B6B6B', opacity: 0.2 }}
+                      className="flex items-center justify-center text-xs py-3 rounded-md"
+                      style={{ color: '#6B6B6B', opacity: 0.25 }}
                     >
                       {day.date}
                     </div>
                   );
                 }
 
-                const bgColor = day.isBooked ? '#2C2C2C' : '#F5F0E8';
-                const textColor = day.isBooked ? '#FFFFFF' : '#2C2C2C';
-                const ringClass = isToday && !day.isBooked ? { border: '1px solid #8B7355' } : {};
+                if (day.isBooked) {
+                  return (
+                    <div
+                      key={idx}
+                      className="flex items-center justify-center text-sm py-3 rounded-md font-medium"
+                      style={{ backgroundColor: '#2C2C2C', color: '#FFFFFF' }}
+                    >
+                      {day.date}
+                    </div>
+                  );
+                }
+
+                if (todayHighlight) {
+                  return (
+                    <div
+                      key={idx}
+                      className="flex items-center justify-center text-sm py-3 rounded-full font-medium"
+                      style={{ backgroundColor: '#8B7355', color: '#FFFFFF' }}
+                    >
+                      {day.date}
+                    </div>
+                  );
+                }
 
                 return (
                   <div
                     key={idx}
-                    className="flex items-center justify-center text-sm py-3"
-                    style={{
-                      backgroundColor: bgColor,
-                      color: textColor,
-                      ...ringClass
-                    }}
+                    className="flex items-center justify-center text-sm py-3 rounded-md font-medium"
+                    style={{ color: '#2C2C2C' }}
                   >
                     {day.date}
                   </div>
@@ -131,12 +172,16 @@ export default function AvailabilityCalendar() {
         {/* Legend */}
         <div className="mt-6 pt-4 border-t flex flex-wrap gap-8 text-sm justify-center" style={{ borderColor: '#E8E4DF' }}>
           <div className="flex items-center gap-2.5">
-            <div className="w-3.5 h-3.5 rounded" style={{ backgroundColor: '#F5F0E8', border: '1px solid #E8E4DF' }} />
-            <span style={{ color: '#6B6B6B' }}>Available</span>
+            <div className="w-3.5 h-3.5 rounded" style={{ backgroundColor: '#8B7355' }} />
+            <span style={{ color: '#6B6B6B' }}>Today</span>
           </div>
           <div className="flex items-center gap-2.5">
             <div className="w-3.5 h-3.5 rounded" style={{ backgroundColor: '#2C2C2C' }} />
             <span style={{ color: '#6B6B6B' }}>Booked</span>
+          </div>
+          <div className="flex items-center gap-2.5">
+            <div className="w-3.5 h-3.5 rounded border border-[#E8E4DF]" style={{ backgroundColor: '#FFFFFF' }} />
+            <span style={{ color: '#6B6B6B' }}>Available</span>
           </div>
         </div>
 
