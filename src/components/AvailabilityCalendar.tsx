@@ -36,7 +36,7 @@ export default function AvailabilityCalendar() {
     const startDay = new Date(year, month, 1).getDay();
 
     for (let i = startDay - 1; i >= 0; i--) {
-      days.push({ date: prevMonthDays - i, isCurrentMonth: false, isBooked: false, isPast: true, isCheckInDate: false, isCheckOutDate: false });
+      days.push({ date: prevMonthDays - i, isCurrentMonth: false, isBooked: false, isPast: true, isCheckInDate: false, isCheckOutDate: false, isMinStayInvalid: false });
     }
 
     const currentMonthDays = new Date(year, month + 1, 0).getDate();
@@ -63,7 +63,7 @@ export default function AvailabilityCalendar() {
       
       // Check if this date can start a valid 5-night stay
       let isMinStayInvalid = false;
-      if (!day.isPast) {
+      if (!isPast) {
         for (let n = 1; n <= 4; n++) {
           const futureDate = new Date(year, month, d + n);
           const futureStr = `${futureDate.getFullYear()}-${String(futureDate.getMonth() + 1).padStart(2, '0')}-${String(futureDate.getDate()).padStart(2, '0')}`;
