@@ -1,0 +1,7 @@
+[
+  { "checkIn": "2026-04-20", "checkOut": "2026-04-28", "bookedBy": "Smith" },
+  { "checkIn": "2026-05-10", "checkOut": "2026-05-20", "bookedBy": "Johnson" },
+  { "checkIn": "2026-07-01", "checkOut": "2026-07-14", "bookedBy": "Williams" },
+  { "checkIn": "2026-08-15", "checkOut": "2026-08-28", "bookedBy": "Brown" },
+  { "checkIn": "2026-12-20", "checkOut": "2027-01-03", "bookedBy": "Davis" }
+]

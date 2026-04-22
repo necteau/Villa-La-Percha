@@ -2,26 +2,37 @@ import Image from "next/image";
 
 export default function Hero() {
   return (
-    <section className="relative w-full overflow-hidden">
-      <div className="relative h-[50vh] md:h-screen">
+    <section className="relative w-full overflow-hidden bg-[#1a1a1a]">
+      <div className="relative w-full" style={{ height: "50vh" }}>
         <Image
           src="/images/exterior-sunset-golden-hour.jpg"
           alt="Villa La Percha"
           fill
           className="object-cover"
           priority
-          sizes="(max-width: 768px) 100vw, 100vw"
+          sizes="100vw"
+          quality={85}
         />
-        <div className="absolute inset-0 bg-black/40" />
+        <div className="absolute inset-0 bg-black/35" />
       </div>
 
-      <nav className="absolute top-0 left-0 right-0 z-20 flex items-center justify-between px-6 md:px-16 py-5 md:py-6">
-        <span className="text-white font-display text-base md:text-lg tracking-[0.15em] uppercase">Villa La Percha</span>
+      <nav className="absolute top-0 left-0 right-0 z-20 flex items-center justify-between px-6 md:px-16 py-4 md:py-6">
+        <span className="text-white font-display text-base md:text-lg tracking-[0.15em] uppercase">
+          Villa La Percha
+        </span>
         <div className="hidden md:flex items-center gap-8">
-          <a href="#about" className="text-white/80 text-sm tracking-wider uppercase hover:text-white transition-colors">About</a>
-          <a href="#amenities" className="text-white/80 text-sm tracking-wider uppercase hover:text-white transition-colors">Amenities</a>
-          <a href="#gallery" className="text-white/80 text-sm tracking-wider uppercase hover:text-white transition-colors">Gallery</a>
-          <a href="#availability" className="text-white/80 text-sm tracking-wider uppercase hover:text-white transition-colors">Availability</a>
+          <a href="#about" className="text-white/80 text-sm tracking-wider uppercase hover:text-white transition-colors">
+            About
+          </a>
+          <a href="#amenities" className="text-white/80 text-sm tracking-wider uppercase hover:text-white transition-colors">
+            Amenities
+          </a>
+          <a href="#gallery" className="text-white/80 text-sm tracking-wider uppercase hover:text-white transition-colors">
+            Gallery
+          </a>
+          <a href="#availability" className="text-white/80 text-sm tracking-wider uppercase hover:text-white transition-colors">
+            Availability
+          </a>
         </div>
       </nav>
 
@@ -29,7 +40,10 @@ export default function Hero() {
         <p className="text-xs md:text-sm tracking-[0.35em] uppercase mb-4 md:mb-6 text-white/80">
           Chalk Sound · Providenciales
         </p>
-        <h1 className="font-display text-4xl md:text-6xl lg:text-7xl font-light tracking-wide mb-6 md:mb-8 leading-tight">
+        <h1
+          className="font-display text-3xl md:text-6xl lg:text-7xl font-light tracking-wide mb-6 md:mb-8 leading-tight"
+          style={{ maxWidth: "90vw", whiteSpace: "nowrap" }}
+        >
           Villa La Percha
         </h1>
         <a
@@ -40,11 +54,11 @@ export default function Hero() {
         </a>
       </div>
 
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10">
+      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10">
         <a href="#about" className="block text-white/60 hover:text-white transition-colors">
           <svg width="18" height="28" viewBox="0 0 18 28" fill="none">
-            <rect x="1" y="1" width="16" height="26" rx="8" stroke="currentColor" strokeWidth="1.2"/>
-            <circle cx="9" cy="9" r="2" fill="currentColor" className="animate-pulse"/>
+            <rect x="1" y="1" width="16" height="26" rx="8" stroke="currentColor" strokeWidth="1.2" />
+            <circle cx="9" cy="9" r="2" fill="currentColor" className="animate-pulse" />
           </svg>
         </a>
       </div>
