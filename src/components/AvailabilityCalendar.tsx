@@ -188,7 +188,7 @@ export default function AvailabilityCalendar() {
                     <div
                       key={idx}
                       className="flex items-center justify-center text-[13px] py-[10px] rounded-md font-medium"
-                      style={{ backgroundColor: "#2C2C2C", color: "#FFFFFF" }}
+                      style={{ backgroundColor: "#E0DCD7", color: "#2C2C2C" }}
                     >
                       {day.date}
                     </div>
@@ -231,7 +231,7 @@ export default function AvailabilityCalendar() {
             <span>Today</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded" style={{ backgroundColor: "#2C2C2C" }} />
+            <div className="w-3 h-3 rounded" style={{ backgroundColor: "#E0DCD7" }} />
             <span>Booked</span>
           </div>
           <div className="flex items-center gap-2">
