@@ -3,10 +3,14 @@
 import { useState } from "react";
 import availabilityData from "@/data/availability.json";
 
+const today = new Date();
+const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+
 interface DayInfo {
   date: number;
   isCurrentMonth: boolean;
   isBooked: boolean;
+  isPast: boolean;
 }
 
 const monthNames = [
@@ -29,7 +33,7 @@ export default function AvailabilityCalendar() {
     const startDay = new Date(year, month, 1).getDay();
 
     for (let i = startDay - 1; i >= 0; i--) {
-      days.push({ date: prevMonthDays - i, isCurrentMonth: false, isBooked: false });
+      days.push({ date: prevMonthDays - i, isCurrentMonth: false, isBooked: false, isPast: true });
     }
 
     const currentMonthDays = new Date(year, month + 1, 0).getDate();
@@ -38,7 +42,8 @@ export default function AvailabilityCalendar() {
       const reservations = (availabilityData as any[]).filter(
         (res) => dateStr >= res.checkIn && dateStr < res.checkOut
       );
-      days.push({ date: d, isCurrentMonth: true, isBooked: reservations.length > 0 });
+      const isPast = dateStr < todayStr;
+      days.push({ date: d, isCurrentMonth: true, isBooked: reservations.length > 0, isPast });
     }
 
     return days;
@@ -160,6 +165,18 @@ export default function AvailabilityCalendar() {
                       key={idx}
                       className="flex items-center justify-center text-xs py-[10px] rounded-md"
                       style={{ color: "#6B6B6B", opacity: 0.25 }}
+                    >
+                      {day.date}
+                    </div>
+                  );
+                }
+
+                if (day.isPast) {
+                  return (
+                    <div
+                      key={idx}
+                      className="flex items-center justify-center text-[13px] py-[10px] rounded-md font-medium"
+                      style={{ color: "#6B6B6B", opacity: 0.3, cursor: "default" }}
                     >
                       {day.date}
                     </div>
