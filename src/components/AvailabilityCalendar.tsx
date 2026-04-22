@@ -1,7 +1,13 @@
 import availabilityData from "@/data/availability.json";
 
-const generateCalendarDays = (year: number, month: number) => {
-  const days: { date: number; month: number; year: number; isCurrentMonth: boolean; isBooked: boolean }[] = [];
+interface DayInfo {
+  date: number;
+  isCurrentMonth: boolean;
+  isBooked: boolean;
+}
+
+const generateCalendarDays = (year: number, month: number): DayInfo[] => {
+  const days: DayInfo[] = [];
 
   const prevMonth = month === 0 ? 11 : month - 1;
   const prevYear = month === 0 ? year - 1 : year;
@@ -9,7 +15,7 @@ const generateCalendarDays = (year: number, month: number) => {
   const startDay = new Date(year, month, 1).getDay();
 
   for (let i = startDay - 1; i >= 0; i--) {
-    days.push({ date: prevMonthDays - i, month: prevMonth, year: prevYear, isCurrentMonth: false, isBooked: false });
+    days.push({ date: prevMonthDays - i, isCurrentMonth: false, isBooked: false });
   }
 
   const currentMonthDays = new Date(year, month + 1, 0).getDate();
@@ -17,29 +23,19 @@ const generateCalendarDays = (year: number, month: number) => {
   for (let d = 1; d <= currentMonthDays; d++) {
     const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
     const reservations = availabilityData.filter(res => dateStr >= res.checkIn && dateStr < res.checkOut);
-    const isBooked = reservations.length > 0;
-    days.push({ date: d, month: month, year: year, isCurrentMonth: true, isBooked });
+    days.push({ date: d, isCurrentMonth: true, isBooked: reservations.length > 0 });
   }
 
   return days;
 };
 
+const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const dayLabels = ['Su','Mo','Tu','We','Th','Fr','Sa'];
+
 export default function AvailabilityCalendar() {
   const today = new Date();
-  const currentYear = today.getFullYear();
-  const currentMonth = today.getMonth();
-
-  const monthsToGenerate: { year: number; month: number; days: { date: number; month: number; year: number; isCurrentMonth: boolean; isBooked: boolean }[] }[] = [];
-  for (let y = currentYear; y <= currentYear + 1; y++) {
-    const start = y === currentYear ? currentMonth : 0;
-    const end = y === currentYear + 1 ? 11 : 11;
-    for (let m = start; m <= end; m++) {
-      monthsToGenerate.push({ year: y, month: m, days: generateCalendarDays(y, m) });
-    }
-  }
-
-  const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-  const dayLabels = ['Su','Mo','Tu','We','Th','Fr','Sa'];
+  const todayYear = today.getFullYear();
+  const todayMonth = today.getMonth();
 
   return (
     <section id="availability" className="py-20 md:py-32" style={{ backgroundColor: '#FAFAF8' }}>
@@ -55,64 +51,85 @@ export default function AvailabilityCalendar() {
           </p>
         </div>
 
-        <div className="space-y-10">
-          {monthsToGenerate.map(({ year, month, days }) => (
-            <div key={`${year}-${month}`}>
-              <h3 className="font-display text-xl md:text-2xl font-light mb-4" style={{ color: '#2C2C2C' }}>
-                {monthNames[month]} {year}
-              </h3>
+        <div className="bg-white rounded-lg shadow-sm border border-[#E8E4DF] overflow-hidden max-w-md mx-auto">
+          {/* Month nav bar */}
+          <div className="flex items-center justify-between px-5 py-4" style={{ borderBottom: '1px solid #E8E4DF' }}>
+            <button
+              className="p-1 text-[#6B6B6B]/40 hover:text-[#2C2C2C] transition-colors"
+              style={{ border: 'none', background: 'none', cursor: 'pointer' }}
+              onClick={() => alert('← not yet connected to calendar backend')}
+            >
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M10 3L5 8L10 13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </button>
+            <h3 className="font-display text-lg font-light" style={{ color: '#2C2C2C' }}>
+              {monthNames[todayMonth]} {todayYear}
+            </h3>
+            <button
+              className="p-1 text-[#6B6B6B]/40 hover:text-[#2C2C2C] transition-colors"
+              style={{ border: 'none', background: 'none', cursor: 'pointer' }}
+              onClick={() => alert('→ not yet connected to calendar backend')}
+            >
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M6 3L11 8L6 13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </button>
+          </div>
 
-              <div className="grid grid-cols-7 gap-1 mb-2">
-                {dayLabels.map(d => (
-                  <div key={d} className="text-center text-xs font-medium py-2" style={{ color: '#6B6B6B', opacity: 0.5 }}>
-                    {d}
-                  </div>
-                ))}
-              </div>
+          {/* Days */}
+          <div className="p-5">
+            <div className="grid grid-cols-7 gap-1 mb-2">
+              {dayLabels.map(d => (
+                <div key={d} className="text-center text-xs font-medium py-2" style={{ color: '#6B6B6B', opacity: 0.5 }}>
+                  {d}
+                </div>
+              ))}
+            </div>
 
-              <div className="grid grid-cols-7 gap-1">
-                {days.map((day, idx) => {
-                  const isToday = day.isCurrentMonth &&
-                    day.date === today.getDate() &&
-                    day.month === today.getMonth() &&
-                    day.year === today.getFullYear();
+            <div className="grid grid-cols-7 gap-1">
+              {generateCalendarDays(todayYear, todayMonth).map((day, idx) => {
+                const isToday = day.isCurrentMonth &&
+                  day.date === today.getDate() &&
+                  day.month === todayMonth &&
+                  day.year === todayYear;
 
-                  if (!day.isCurrentMonth) {
-                    return (
-                      <div
-                        key={idx}
-                        className="flex items-center justify-center text-xs py-3"
-                        style={{ color: '#6B6B6B', opacity: 0.2 }}
-                      >
-                        {day.date}
-                      </div>
-                    );
-                  }
-
-                  const bgColor = day.isBooked ? '#2C2C2C' : '#F5F0E8';
-                  const textColor = day.isBooked ? '#FFFFFF' : '#2C2C2C';
-                  const ringClass = isToday && !day.isBooked ? { border: '1px solid #8B7355' } : {};
-
+                if (!day.isCurrentMonth) {
                   return (
                     <div
                       key={idx}
-                      className="flex items-center justify-center text-sm py-3"
-                      style={{
-                        backgroundColor: bgColor,
-                        color: textColor,
-                        ...ringClass
-                      }}
+                      className="flex items-center justify-center text-xs py-3"
+                      style={{ color: '#6B6B6B', opacity: 0.2 }}
                     >
                       {day.date}
                     </div>
                   );
-                })}
-              </div>
+                }
+
+                const bgColor = day.isBooked ? '#2C2C2C' : '#F5F0E8';
+                const textColor = day.isBooked ? '#FFFFFF' : '#2C2C2C';
+                const ringClass = isToday && !day.isBooked ? { border: '1px solid #8B7355' } : {};
+
+                return (
+                  <div
+                    key={idx}
+                    className="flex items-center justify-center text-sm py-3"
+                    style={{
+                      backgroundColor: bgColor,
+                      color: textColor,
+                      ...ringClass
+                    }}
+                  >
+                    {day.date}
+                  </div>
+                );
+              })}
             </div>
-          ))}
+          </div>
         </div>
 
-        <div className="mt-10 pt-6 border-t flex flex-wrap gap-8 text-sm" style={{ borderColor: '#E8E4DF' }}>
+        {/* Legend */}
+        <div className="mt-6 pt-4 border-t flex flex-wrap gap-8 text-sm justify-center" style={{ borderColor: '#E8E4DF' }}>
           <div className="flex items-center gap-2.5">
             <div className="w-3.5 h-3.5 rounded" style={{ backgroundColor: '#F5F0E8', border: '1px solid #E8E4DF' }} />
             <span style={{ color: '#6B6B6B' }}>Available</span>
@@ -123,6 +140,7 @@ export default function AvailabilityCalendar() {
           </div>
         </div>
 
+        {/* CTA */}
         <div className="text-center mt-12">
           <a
             href="#contact"
