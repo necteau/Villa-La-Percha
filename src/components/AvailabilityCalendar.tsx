@@ -218,12 +218,12 @@ export default function AvailabilityCalendar() {
                 }
 
                 if (day.isMinStayInvalid) {
-                  // Can't start a 5-night stay here — grey out, not selectable
+                  // Can't start a 5-night stay here — still visible, just not selectable
                   return (
                     <div
                       key={idx}
-                      className="flex items-center justify-center text-[13px] py-[10px] rounded-md font-medium"
-                      style={{ backgroundColor: "#E0DCD7", color: "#2C2C2C", opacity: 0.5, cursor: "default" }}
+                      className="flex items-center justify-center text-[13px] py-[10px] rounded-md font-medium cursor-default"
+                      style={{ color: "#2C2C2C" }}
                     >
                       {day.date}
                     </div>
