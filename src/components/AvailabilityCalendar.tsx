@@ -13,6 +13,7 @@ interface DayInfo {
   isPast: boolean;
   isCheckInDate: boolean;   // someone else's check-in (available)
   isCheckOutDate: boolean;  // someone else's check-out (available, transition)
+  isMinStayInvalid: boolean; // can't start a 5+ night stay from this date
 }
 
 const monthNames = [
@@ -59,7 +60,24 @@ export default function AvailabilityCalendar() {
       );
 
       const isPast = dateStr < todayStr;
-      days.push({ date: d, isCurrentMonth: true, isBooked, isPast, isCheckInDate: isCheckIn, isCheckOutDate: isCheckOut });
+      
+      // Check if this date can start a valid 5-night stay
+      let isMinStayInvalid = false;
+      if (!day.isPast) {
+        for (let n = 1; n <= 4; n++) {
+          const futureDate = new Date(year, month, d + n);
+          const futureStr = `${futureDate.getFullYear()}-${String(futureDate.getMonth() + 1).padStart(2, '0')}-${String(futureDate.getDate()).padStart(2, '0')}`;
+          const isNightBooked = (availabilityData as any[]).some(
+            (res) => futureStr >= res.checkIn && futureStr < res.checkOut
+          );
+          if (isNightBooked) {
+            isMinStayInvalid = true;
+            break;
+          }
+        }
+      }
+      
+      days.push({ date: d, isCurrentMonth: true, isBooked, isPast, isCheckInDate: isCheckIn, isCheckOutDate: isCheckOut, isMinStayInvalid });
     }
 
     return days;
@@ -193,6 +211,19 @@ export default function AvailabilityCalendar() {
                       key={idx}
                       className="flex items-center justify-center text-[13px] py-[10px] rounded-md font-medium"
                       style={{ color: "#6B6B6B", opacity: 0.3, cursor: "default" }}
+                    >
+                      {day.date}
+                    </div>
+                  );
+                }
+
+                if (day.isMinStayInvalid) {
+                  // Can't start a 5-night stay here — grey out, not selectable
+                  return (
+                    <div
+                      key={idx}
+                      className="flex items-center justify-center text-[13px] py-[10px] rounded-md font-medium"
+                      style={{ backgroundColor: "#E0DCD7", color: "#2C2C2C", opacity: 0.5, cursor: "default" }}
                     >
                       {day.date}
                     </div>
