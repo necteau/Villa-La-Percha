@@ -1,9 +1,7 @@
-import type { Config } from "tailwindcss";
-
-const config: Config = {
+/** @type {import('tailwindcss').Config} */
+export default {
   content: [
-    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
     extend: {
@@ -35,11 +33,9 @@ const config: Config = {
       },
       fontFamily: {
         display: ["Georgia", "serif"],
-        body: ["system-ui", "sans-serif"],
+        body: ["Inter", "system-ui", "sans-serif"],
       },
     },
   },
   plugins: [require("@tailwindcss/forms")],
 };
-
-export default config;
