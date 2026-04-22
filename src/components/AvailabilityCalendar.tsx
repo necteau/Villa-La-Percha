@@ -243,8 +243,8 @@ export default function AvailabilityCalendar() {
                   );
                 }
 
-                // Check-out transition day — top-left shaded
-                if (day.isCheckOutDate && !day.isBooked) {
+                // Check-out transition day — top-left shaded (regardless of booked status)
+                if (day.isCheckOutDate) {
                   return (
                     <div
                       key={idx}
@@ -262,8 +262,8 @@ export default function AvailabilityCalendar() {
                   );
                 }
 
-                // Check-in transition day — bottom-right shaded
-                if (day.isCheckInDate && !day.isBooked) {
+                // Check-in transition day — bottom-right shaded (regardless of booked status)
+                if (day.isCheckInDate) {
                   return (
                     <div
                       key={idx}
