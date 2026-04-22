@@ -1,6 +1,3 @@
-'use client';
-
-import { useState } from 'react';
 import availabilityData from "@/data/availability.json";
 
 interface DayInfo {
@@ -37,26 +34,9 @@ const dayLabels = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 
 export default function AvailabilityCalendar() {
   const today = new Date();
-  const [currentYear, setCurrentYear] = useState(today.getFullYear());
-  const [currentMonth, setCurrentMonth] = useState(today.getMonth());
-
-  const prevMonth = () => {
-    if (currentMonth === 0) {
-      setCurrentMonth(11);
-      setCurrentYear(y => y - 1);
-    } else {
-      setCurrentMonth(m => m - 1);
-    }
-  };
-
-  const nextMonth = () => {
-    if (currentMonth === 11) {
-      setCurrentMonth(0);
-      setCurrentYear(y => y + 1);
-    } else {
-      setCurrentMonth(m => m + 1);
-    }
-  };
+  const currentYear = today.getFullYear();
+  const currentMonth = today.getMonth();
+  const days = generateCalendarDays(currentYear, currentMonth);
 
   const isToday = (date: number) => {
     return date === today.getDate() && currentMonth === today.getMonth() && currentYear === today.getFullYear();
@@ -80,7 +60,6 @@ export default function AvailabilityCalendar() {
           {/* Month nav */}
           <div className="flex items-center justify-between px-6 py-5" style={{ borderBottom: '1px solid #E8E4DF' }}>
             <button
-              onClick={prevMonth}
               className="w-9 h-9 flex items-center justify-center rounded-full transition-colors hover:bg-[#F5F0E8]"
               style={{ border: 'none', cursor: 'pointer', color: '#6B6B6B' }}
             >
@@ -92,7 +71,6 @@ export default function AvailabilityCalendar() {
               {monthNames[currentMonth]} {currentYear}
             </h3>
             <button
-              onClick={nextMonth}
               className="w-9 h-9 flex items-center justify-center rounded-full transition-colors hover:bg-[#F5F0E8]"
               style={{ border: 'none', cursor: 'pointer', color: '#6B6B6B' }}
             >
@@ -116,7 +94,7 @@ export default function AvailabilityCalendar() {
           {/* Date cells */}
           <div className="px-5 pb-5">
             <div className="grid grid-cols-7 gap-1">
-              {generateCalendarDays(currentYear, currentMonth).map((day, idx) => {
+              {days.map((day, idx) => {
                 const todayHighlight = isToday(day.date);
 
                 if (!day.isCurrentMonth) {

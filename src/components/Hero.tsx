@@ -5,7 +5,7 @@ export default function Hero() {
     <section className="relative w-full overflow-hidden">
       <div className="relative h-[50vh] md:h-screen">
         <Image
-          src="/images/cover-page-hero.jpg"
+          src="/images/exterior-sunset-golden-hour.jpg"
           alt="Villa La Percha"
           fill
           className="object-cover"
