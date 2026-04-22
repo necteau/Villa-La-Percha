@@ -243,7 +243,45 @@ export default function AvailabilityCalendar() {
                   );
                 }
 
-                // Check-out transition day — top-left shaded (regardless of booked status)
+                // Transition days that are also booked — show shade but not selectable
+                if (day.isBooked && (day.isCheckInDate || day.isCheckOutDate)) {
+                  if (day.isCheckOutDate) {
+                    return (
+                      <div
+                        key={idx}
+                        className="relative flex items-center justify-center text-[13px] py-[10px] rounded-md font-medium cursor-default"
+                        style={{ color: "#2C2C2C" }}
+                      >
+                        <div
+                          className="absolute inset-0 rounded-md"
+                          style={{
+                            background: `linear-gradient(to top left, transparent 45%, #E0DCD7 45%)`,
+                          }}
+                        />
+                        <span className="relative z-10">{day.date}</span>
+                      </div>
+                    );
+                  }
+                  if (day.isCheckInDate) {
+                    return (
+                      <div
+                        key={idx}
+                        className="relative flex items-center justify-center text-[13px] py-[10px] rounded-md font-medium cursor-default"
+                        style={{ color: "#2C2C2C" }}
+                      >
+                        <div
+                          className="absolute inset-0 rounded-md"
+                          style={{
+                            background: `linear-gradient(to bottom right, transparent 45%, #E0DCD7 45%)`,
+                          }}
+                        />
+                        <span className="relative z-10">{day.date}</span>
+                      </div>
+                    );
+                  }
+                }
+
+                // Available check-out transition — top-left shaded
                 if (day.isCheckOutDate) {
                   return (
                     <div
@@ -262,7 +300,7 @@ export default function AvailabilityCalendar() {
                   );
                 }
 
-                // Check-in transition day — bottom-right shaded (regardless of booked status)
+                // Available check-in transition — bottom-right shaded
                 if (day.isCheckInDate) {
                   return (
                     <div
