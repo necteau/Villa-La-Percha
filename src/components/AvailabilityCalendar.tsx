@@ -306,18 +306,6 @@ export default function AvailabilityCalendar() {
                   );
                 }
 
-                if (todayHighlight) {
-                  return (
-                    <div
-                      key={idx}
-                      className="flex items-center justify-center text-[13px] py-[10px] rounded-full font-medium"
-                      style={{ backgroundColor: "#8B7355", color: "#FFFFFF" }}
-                    >
-                      {day.date}
-                    </div>
-                  );
-                }
-
                 if (day.isMinStayInvalid) {
                   // Can't start a 5-night stay here — still visible, just not selectable
                   return (
@@ -325,6 +313,18 @@ export default function AvailabilityCalendar() {
                       key={idx}
                       className="flex items-center justify-center text-[13px] py-[10px] rounded-md font-medium cursor-default"
                       style={{ color: "#2C2C2C" }}
+                    >
+                      {day.date}
+                    </div>
+                  );
+                }
+
+                if (todayHighlight) {
+                  return (
+                    <div
+                      key={idx}
+                      className="flex items-center justify-center text-[13px] py-[10px] rounded-full font-medium"
+                      style={{ backgroundColor: "#8B7355", color: "#FFFFFF" }}
                     >
                       {day.date}
                     </div>
