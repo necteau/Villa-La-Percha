@@ -212,7 +212,7 @@ export default function AvailabilityCalendar() {
                   );
                 }
 
-                // Check-out transition day (VRBO-style half-shaded)
+                // Check-out transition day — top-left shaded
                 if (day.isCheckOutDate && !day.isBooked) {
                   return (
                     <div
@@ -223,7 +223,7 @@ export default function AvailabilityCalendar() {
                       <div
                         className="absolute inset-0 rounded-md"
                         style={{
-                          background: `linear-gradient(to bottom right, transparent 45%, #E0DCD7 45%)`,
+                          background: `linear-gradient(to top left, transparent 45%, #E0DCD7 45%)`,
                         }}
                       />
                       <span className="relative z-10">{day.date}</span>
@@ -231,7 +231,7 @@ export default function AvailabilityCalendar() {
                   );
                 }
 
-                // Check-in transition day (VRBO-style half-shaded)
+                // Check-in transition day — bottom-right shaded
                 if (day.isCheckInDate && !day.isBooked) {
                   return (
                     <div
@@ -242,7 +242,7 @@ export default function AvailabilityCalendar() {
                       <div
                         className="absolute inset-0 rounded-md"
                         style={{
-                          background: `linear-gradient(to bottom left, transparent 45%, #E0DCD7 45%)`,
+                          background: `linear-gradient(to bottom right, transparent 45%, #E0DCD7 45%)`,
                         }}
                       />
                       <span className="relative z-10">{day.date}</span>
@@ -290,7 +290,7 @@ export default function AvailabilityCalendar() {
             <span>Booked</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded" style={{ background: `linear-gradient(to bottom right, transparent 45%, #E0DCD7 45%)` }} />
+            <div className="w-3 h-3 rounded" style={{ background: `linear-gradient(to top left, transparent 45%, #E0DCD7 45%)` }} />
             <span>Transition</span>
           </div>
           <div className="flex items-center gap-2">
