@@ -11,6 +11,8 @@ interface DayInfo {
   isCurrentMonth: boolean;
   isBooked: boolean;
   isPast: boolean;
+  isCheckInDate: boolean;   // someone else's check-in (available)
+  isCheckOutDate: boolean;  // someone else's check-out (available, transition)
 }
 
 const monthNames = [
@@ -33,17 +35,31 @@ export default function AvailabilityCalendar() {
     const startDay = new Date(year, month, 1).getDay();
 
     for (let i = startDay - 1; i >= 0; i--) {
-      days.push({ date: prevMonthDays - i, isCurrentMonth: false, isBooked: false, isPast: true });
+      days.push({ date: prevMonthDays - i, isCurrentMonth: false, isBooked: false, isPast: true, isCheckInDate: false, isCheckOutDate: false });
     }
 
     const currentMonthDays = new Date(year, month + 1, 0).getDate();
     for (let d = 1; d <= currentMonthDays; d++) {
       const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+      
+      // Is this date part of a booking (fully inside)?
       const reservations = (availabilityData as any[]).filter(
         (res) => dateStr >= res.checkIn && dateStr < res.checkOut
       );
+      const isBooked = reservations.length > 0;
+
+      // Is this the check-in date of any reservation?
+      const isCheckIn = (availabilityData as any[]).some(
+        (res) => res.checkIn === dateStr
+      );
+
+      // Is this the day before check-out (transition/checkout day)?
+      const isCheckOut = (availabilityData as any[]).some(
+        (res) => res.checkOut === dateStr
+      );
+
       const isPast = dateStr < todayStr;
-      days.push({ date: d, isCurrentMonth: true, isBooked: reservations.length > 0, isPast });
+      days.push({ date: d, isCurrentMonth: true, isBooked, isPast, isCheckInDate: isCheckIn, isCheckOutDate: isCheckOut });
     }
 
     return days;
@@ -154,7 +170,7 @@ export default function AvailabilityCalendar() {
           </div>
 
           {/* Date cells */}
-          <div className="px-5 pb-5 pt-1">
+          <div className="px-5 pb-5 pt-1 relative">
             <div className="grid grid-cols-7 gap-0">
               {days.map((day, idx) => {
                 const todayHighlight = isToday(day.date);
@@ -183,7 +199,8 @@ export default function AvailabilityCalendar() {
                   );
                 }
 
-                if (day.isBooked) {
+                if (day.isBooked && !day.isCheckOutDate && !day.isCheckInDate) {
+                  // Fully booked — light grey
                   return (
                     <div
                       key={idx}
@@ -191,6 +208,44 @@ export default function AvailabilityCalendar() {
                       style={{ backgroundColor: "#E0DCD7", color: "#2C2C2C" }}
                     >
                       {day.date}
+                    </div>
+                  );
+                }
+
+                // Check-out transition day (VRBO-style half-shaded)
+                if (day.isCheckOutDate && !day.isBooked) {
+                  return (
+                    <div
+                      key={idx}
+                      className="relative flex items-center justify-center text-[13px] py-[10px] rounded-md font-medium cursor-pointer hover:opacity-80 transition-opacity"
+                      style={{ color: "#2C2C2C" }}
+                    >
+                      <div
+                        className="absolute inset-0 rounded-md"
+                        style={{
+                          background: `linear-gradient(to bottom right, transparent 45%, #E0DCD7 45%)`,
+                        }}
+                      />
+                      <span className="relative z-10">{day.date}</span>
+                    </div>
+                  );
+                }
+
+                // Check-in transition day (VRBO-style half-shaded)
+                if (day.isCheckInDate && !day.isBooked) {
+                  return (
+                    <div
+                      key={idx}
+                      className="relative flex items-center justify-center text-[13px] py-[10px] rounded-md font-medium cursor-pointer hover:opacity-80 transition-opacity"
+                      style={{ color: "#2C2C2C" }}
+                    >
+                      <div
+                        className="absolute inset-0 rounded-md"
+                        style={{
+                          background: `linear-gradient(to bottom left, transparent 45%, #E0DCD7 45%)`,
+                        }}
+                      />
+                      <span className="relative z-10">{day.date}</span>
                     </div>
                   );
                 }
@@ -233,6 +288,10 @@ export default function AvailabilityCalendar() {
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded" style={{ backgroundColor: "#E0DCD7" }} />
             <span>Booked</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded" style={{ background: `linear-gradient(to bottom right, transparent 45%, #E0DCD7 45%)` }} />
+            <span>Transition</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded border border-[#E8E4DF] bg-white" />
