@@ -2,7 +2,7 @@ import availabilityData from "@/data/availability.json";
 
 // Generate calendar for a specific month
 const generateCalendarDays = (year: number, month: number) => {
-  const days: { date: number; isCurrentMonth: boolean; status: 'available' | 'booked' }[] = [];
+  const days: { date: number; month: number; year: number; isCurrentMonth: boolean; status: 'available' | 'booked' }[] = [];
 
   // Previous month overflow
   const prevMonth = month === 0 ? 11 : month - 1;
@@ -11,7 +11,7 @@ const generateCalendarDays = (year: number, month: number) => {
   const startDay = new Date(year, month, 1).getDay();
 
   for (let i = startDay - 1; i >= 0; i--) {
-    days.push({ date: prevMonthDays - i, isCurrentMonth: false, status: 'available' });
+    days.push({ date: prevMonthDays - i, month: prevMonth, year: prevYear, isCurrentMonth: false, status: 'available' });
   }
 
   // Current month
@@ -21,7 +21,7 @@ const generateCalendarDays = (year: number, month: number) => {
     const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
     const reservations = availabilityData.filter(res => dateStr >= res.checkIn && dateStr < res.checkOut);
     const status = reservations.length > 0 ? 'booked' as const : 'available' as const;
-    days.push({ date: d, isCurrentMonth: true, status });
+    days.push({ date: d, month: month, year: year, isCurrentMonth: true, status });
   }
 
   return days;
