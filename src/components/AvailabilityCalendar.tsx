@@ -312,7 +312,7 @@ export default function AvailabilityCalendar() {
                     <div
                       key={idx}
                       className="flex items-center justify-center text-[13px] py-[10px] rounded-md font-medium cursor-default"
-                      style={{ color: "#2C2C2C" }}
+                      style={{ color: "#2C2C2C", opacity: 0.3 }}
                     >
                       {day.date}
                     </div>
