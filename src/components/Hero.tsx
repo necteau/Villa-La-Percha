@@ -2,18 +2,18 @@ import Image from "next/image";
 
 export default function Hero() {
   return (
-    <section className="relative h-[75vh] md:h-screen w-full overflow-hidden">
-      <div className="absolute inset-0">
+    <section className="relative w-full overflow-hidden">
+      <div className="relative h-[50vh] md:h-screen">
         <Image
           src="/images/cover-page-hero.jpg"
           alt="Villa La Percha"
           fill
           className="object-cover"
           priority
-          sizes="100vw"
+          sizes="(max-width: 768px) 100vw, 100vw"
         />
+        <div className="absolute inset-0 bg-black/40" />
       </div>
-      <div className="absolute inset-0 bg-black/30" />
 
       <nav className="absolute top-0 left-0 right-0 z-20 flex items-center justify-between px-6 md:px-16 py-5 md:py-6">
         <span className="text-white font-display text-base md:text-lg tracking-[0.15em] uppercase">Villa La Percha</span>
