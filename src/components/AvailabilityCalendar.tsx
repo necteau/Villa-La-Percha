@@ -112,38 +112,33 @@ export default function AvailabilityCalendar() {
     Math.round((new Date(b).getTime() - new Date(a).getTime()) / (1000 * 60 * 60 * 24));
 
   const handleDateClick = (dateStr: string) => {
-    // Find the day info for min-stay check
-    const dayInfo = days.find(d => d.dateStr === dateStr);
-    if (!dayInfo || dayInfo.isPast) return;
-    if (dayInfo.isBooked) {
-      setShowHint(true);
-      setTimeout(() => setShowHint(false), 2500);
-      return;
-    }
-    if (dayInfo.isMinStayInvalid) {
-      setShowHint(true);
-      setTimeout(() => setShowHint(false), 2500);
-      return;
-    }
-
     if (phase === "none" || phase === "done") {
+      // Picking a new check-in
+      const dayInfo = days.find(d => d.dateStr === dateStr);
+      if (!dayInfo || dayInfo.isPast) return;
+      if (!canBeCheckIn(dayInfo)) return;
       setCheckIn(dateStr);
       setCheckOut(null);
       setPhase("selectingCheckOut");
       setHoveredDate(null);
     } else if (phase === "selectingCheckOut") {
+      // Picking a check-out
       if (!checkIn) {
         setCheckIn(dateStr);
       } else if (dateStr < checkIn) {
         // Allow re-picking check-in to an earlier date
-        setCheckIn(dateStr);
+        if (dateStr > todayStr) {
+          const dayInfo = days.find(d => d.dateStr === dateStr);
+          if (dayInfo && canBeCheckIn(dayInfo)) {
+            setCheckIn(dateStr);
+          }
+        }
       } else {
         const nights = getNights(checkIn, dateStr);
         if (nights >= MIN_STAY) {
           setCheckOut(dateStr);
           setPhase("done");
         } else {
-          // User-friendly feedback
           setShowHint(true);
           setTimeout(() => setShowHint(false), 3000);
         }
@@ -163,11 +158,11 @@ export default function AvailabilityCalendar() {
   };
 
   const isInRange = (day: DayInfo): boolean => {
-    if (phase !== "selectingCheckOut" || !checkIn) return false;
-    if (day.isPast || day.isBooked || day.isMinStayInvalid) return false;
-    const preview = hoveredDate || checkOut;
-    if (!preview) return false;
-    const sorted = [checkIn, preview].sort();
+    if (!checkIn) return false;
+    let end = checkOut || hoveredDate;
+    if (!end) return false;
+    if (day.isPast) return false;
+    const sorted = [checkIn, end].sort();
     return day.dateStr >= sorted[0] && day.dateStr <= sorted[1];
   };
 
@@ -175,6 +170,8 @@ export default function AvailabilityCalendar() {
 
   const isSelectedCheckOut = (day: DayInfo): boolean => {
     if (phase === "done" && checkOut !== null) return day.dateStr === checkOut;
+    // During hovering, also show the hovered date as check-out
+    if (phase === "selectingCheckOut" && hoveredDate !== null) return day.dateStr === hoveredDate;
     return false;
   };
 
