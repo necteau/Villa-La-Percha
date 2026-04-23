@@ -161,8 +161,8 @@ export default function ContactForm({ checkIn, checkOut }: Props) {
             </button>
 
             <p className="font-body text-white/40 text-xs md:text-sm mt-8">
-              <a href="mailto:villa-la-percha@gmail.com" className="underline underline-offset-4 hover:text-white/60 transition-colors">
-                villa-la-percha@gmail.com
+              <a href="mailto:VillaLaPercha@gmail.com" className="underline underline-offset-4 hover:text-white/60 transition-colors">
+                VillaLaPercha@gmail.com
               </a>
             </p>
           </form>
