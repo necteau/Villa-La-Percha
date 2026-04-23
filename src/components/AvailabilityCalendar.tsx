@@ -96,9 +96,15 @@ export default function AvailabilityCalendar() {
     return isSelectable(day) && !day.isCheckInDate;
   };
 
-  // A date can be clicked as a check-out if it's selectable AND it's NOT an existing reservation's check-out date
+  // A date can be clicked as a check-out if it's selectable AND it's NOT an existing reservation's check-out date AND it meets the min-stay requirement
   const canBeCheckOut = (day: DayInfo): boolean => {
-    return isSelectable(day) && !day.isCheckOutDate;
+    if (!isSelectable(day)) return false;
+    if (day.isCheckOutDate) return false;
+    if (phase === "selectingCheckOut" && checkIn) {
+      const nights = getNights(checkIn, day.dateStr);
+      if (nights < MIN_STAY) return false;
+    }
+    return true;
   };
 
   const getNights = (a: string, b: string): number =>
