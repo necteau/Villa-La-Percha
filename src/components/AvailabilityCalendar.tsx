@@ -81,10 +81,12 @@ export default function AvailabilityCalendar() {
 
   const isSelectable = (day: DayInfo): boolean => {
     if (day.isPast) return false;
-    if (day.isBooked) return false;
-    if (day.isMinStayInvalid) return false;
-    // Allow transition dates for back-to-back bookings
+    // Booked dates are not selectable UNLESS they're transition dates (check-in/check-out of another stay)
+    if (day.isBooked && !day.isCheckInDate && !day.isCheckOutDate) return false;
+    // If it's a transition date, it's always selectable
     if (day.isCheckInDate || day.isCheckOutDate) return true;
+    // Otherwise check the min-stay constraint
+    if (day.isMinStayInvalid) return false;
     return true;
   };
 
@@ -187,14 +189,15 @@ export default function AvailabilityCalendar() {
   const isToday = (date: number) => date === today.getDate() && viewMonth === today.getMonth() && viewYear === today.getFullYear();
 
   const bgColor = (day: DayInfo): string => {
-    if (isSelectedCheckIn(day) || isSelectedCheckOut(day)) return "#8B7355";
-    if (isInRange(day)) return "rgba(139, 115, 85, 0.15)";
+    if (isSelectedCheckIn(day) || isSelectedCheckOut(day)) return "#1E3A5F";
+    if (isInRange(day)) return "rgba(30, 58, 95, 0.15)";
     if (day.isBooked) return "#E0DCD7";
     return "transparent";
   };
 
-  const textColor = (day: DayInfo): string => {
-    if (isSelectedCheckIn(day) || isSelectedCheckOut(day) || todayIs(day.date)) return "#FFFFFF";
+  const nightColor = (day: DayInfo): string => {
+    if (isSelectedCheckIn(day) || isSelectedCheckOut(day)) return "#FFFFFF";
+    if (isInRange(day)) return "#1E3A5F";
     if (!day.isCurrentMonth || day.isPast) return "#6B6B6B";
     return "#2C2C2C";
   };
@@ -208,10 +211,11 @@ export default function AvailabilityCalendar() {
 
                 const gradientStyle = (day: DayInfo): string | undefined => {
     if (isSelectedCheckIn(day) || isSelectedCheckOut(day) || isInRange(day)) return undefined;
-    if (!day.isBooked) {
-      if (day.isCheckInDate) return "linear-gradient(to bottom right, transparent 45%, #E0DCD7 45%)";
-      if (day.isCheckOutDate) return "linear-gradient(to top left, transparent 45%, #E0DCD7 45%)";
-    }
+    // Transition dates: show partial shading (triangle), not full gray
+    if (day.isBooked && day.isCheckInDate) return "linear-gradient(to bottom right, transparent 45%, #E0DCD7 45%)";
+    if (day.isBooked && day.isCheckOutDate) return "linear-gradient(to top left, transparent 45%, #E0DCD7 45%)";
+    if (day.isCheckInDate) return "linear-gradient(to bottom right, transparent 45%, #E0DCD7 45%)";
+    if (day.isCheckOutDate) return "linear-gradient(to top left, transparent 45%, #E0DCD7 45%)";
     return undefined;
   };
 
@@ -253,7 +257,7 @@ export default function AvailabilityCalendar() {
             <div className="grid grid-cols-7 gap-0">
               {days.map((day, idx) => {
                 const bg = bgColor(day);
-                const tc = textColor(day);
+                const tc = nightColor(day);
                 const grad = gradientStyle(day);
                 const highlighted = isToday(day.date);
                 const clickable = day.isCurrentMonth && !day.isPast && (isSelectable(day) || day.isCheckInDate || day.isCheckOutDate);
@@ -268,12 +272,10 @@ export default function AvailabilityCalendar() {
                     style={{
                       backgroundColor: bg !== "transparent" ? bg : undefined,
                       backgroundImage: grad ? grad as string : undefined,
-                      color: tc,
+                      color: nightColor(day),
                       cursor: clickable ? "pointer" : "default",
                       opacity: (!day.isCurrentMonth || day.isPast) ? 0.3 : 1,
                       border: todayIs(day.date) && bg === "transparent" ? "1px solid #8B7355" : "none",
-                      width: 40,
-                      height: 40,
                     }}
                   >
                     {day.date}
