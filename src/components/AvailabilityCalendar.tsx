@@ -111,7 +111,7 @@ export default function AvailabilityCalendar() {
           .filter((res: any) => res.checkIn >= todayStr && res.checkIn >= checkIn)
           .map((res: any) => res.checkIn)
           .sort()[0];
-        if (nextBooked && day.dateStr >= nextBooked) return false;
+        if (nextBooked && day.dateStr > nextBooked) return false;
       }
     }
     return true;
