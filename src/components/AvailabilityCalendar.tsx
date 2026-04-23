@@ -26,11 +26,16 @@ const dayLabels = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
 
 type SelectionPhase = "none" | "selectingCheckOut" | "done";
 
-export default function AvailabilityCalendar() {
+interface Props {
+  checkIn: string | null;
+  setCheckIn: (v: string | null) => void;
+  checkOut: string | null;
+  setCheckOut: (v: string | null) => void;
+}
+
+export default function AvailabilityCalendar({ checkIn, setCheckIn, checkOut, setCheckOut }: Props) {
   const [viewYear, setViewYear] = useState(today.getFullYear());
   const [viewMonth, setViewMonth] = useState(today.getMonth());
-  const [checkIn, setCheckIn] = useState<string | null>(null);
-  const [checkOut, setCheckOut] = useState<string | null>(null);
   const [phase, setPhase] = useState<SelectionPhase>("none");
   const [hoveredDate, setHoveredDate] = useState<string | null>(null);
   const [showHint, setShowHint] = useState(false);
