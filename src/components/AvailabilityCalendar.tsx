@@ -240,19 +240,19 @@ export default function AvailabilityCalendar() {
     return isToday(day.date);
   };
 
-                const gradientStyle = (day: DayInfo): string | undefined => {
-    if (isSelectedCheckIn(day) || isSelectedCheckOut(day) || isInRange(day)) return undefined;
+                const gradientStyle = (day: DayInfo): { gradient?: string; solidBg?: string } => {
+    if (isSelectedCheckIn(day) || isSelectedCheckOut(day) || isInRange(day)) return {};
     // Both check-in and check-out on the same day = fully shaded square
-    if (day.isCheckInDate && day.isCheckOutDate) return "#E0DCD7";
+    if (day.isCheckInDate && day.isCheckOutDate) return { solidBg: "#E0DCD7" };
     // Booked transition dates: check-out date gets top-left triangle
-    if (day.isBooked && day.isCheckOutDate) return "linear-gradient(to top left, transparent 45%, #E0DCD7 45%)";
+    if (day.isBooked && day.isCheckOutDate) return { gradient: "linear-gradient(to top left, transparent 45%, #E0DCD7 45%)" };
     // Booked transition dates: check-in date gets bottom-right triangle
-    if (day.isBooked && day.isCheckInDate) return "linear-gradient(to bottom right, transparent 45%, #E0DCD7 45%)";
+    if (day.isBooked && day.isCheckInDate) return { gradient: "linear-gradient(to bottom right, transparent 45%, #E0DCD7 45%)" };
     // Free transition dates: check-out date gets top-left triangle
-    if (day.isCheckOutDate && !day.isCheckInDate) return "linear-gradient(to top left, transparent 45%, #E0DCD7 45%)";
+    if (day.isCheckOutDate && !day.isCheckInDate) return { gradient: "linear-gradient(to top left, transparent 45%, #E0DCD7 45%)" };
     // Free transition dates: check-in date gets bottom-right triangle
-    if (day.isCheckInDate && !day.isCheckOutDate) return "linear-gradient(to bottom right, transparent 45%, #E0DCD7 45%)";
-    return undefined;
+    if (day.isCheckInDate && !day.isCheckOutDate) return { gradient: "linear-gradient(to bottom right, transparent 45%, #E0DCD7 45%)" };
+    return {};
   };
 
   return (
@@ -308,12 +308,12 @@ export default function AvailabilityCalendar() {
                     onClick={clickable ? () => handleDateClick(day.dateStr) : undefined}
                     className="flex items-center justify-center text-[13px] py-[10px] rounded-md font-medium relative"
                     style={{
-                      backgroundColor: bg !== "transparent" ? bg : undefined,
-                      backgroundImage: grad ? grad as string : undefined,
+                      backgroundColor: grad?.solidBg || (bg !== "transparent" ? bg : undefined),
+                      backgroundImage: grad?.gradient,
                       color: nightColor(day),
                       cursor: clickable ? "pointer" : "default",
                       opacity: (!day.isCurrentMonth || day.isPast) ? 0.3 : 1,
-                      border: todayIs(day.date) && bg === "transparent" ? "1px solid #8B7355" : "none",
+                      border: todayIs(day.date) && !grad?.solidBg && bg === "transparent" ? "1px solid #8B7355" : "none",
                     }}
                   >
                     {day.date}
