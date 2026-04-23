@@ -287,7 +287,9 @@ export default function AvailabilityCalendar() {
                 const tc = nightColor(day);
                 const grad = gradientStyle(day);
                 const highlighted = isToday(day.date);
-                const clickable = canBeCheckIn(day) || (phase === "selectingCheckOut" && canBeCheckOut(day));
+                const clickable = phase === "selectingCheckOut"
+                  ? canBeCheckOut(day)
+                  : canBeCheckIn(day);
 
                 return (
                   <div
