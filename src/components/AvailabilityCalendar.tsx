@@ -84,11 +84,21 @@ export default function AvailabilityCalendar() {
     if (day.isPast) return false;
     // Booked dates are not selectable UNLESS they're transition dates (check-in/check-out of another stay)
     if (day.isBooked && !day.isCheckInDate && !day.isCheckOutDate) return false;
-    // Transition dates are always selectable
+    // Transition dates are always selectable (for their complementary role)
     if (day.isCheckInDate || day.isCheckOutDate) return true;
     // Non-transition dates: check min-stay constraint
     if (day.isMinStayInvalid) return false;
     return true;
+  };
+
+  // A date can be clicked as a check-in if it's selectable AND it's NOT an existing reservation's check-in date
+  const canBeCheckIn = (day: DayInfo): boolean => {
+    return isSelectable(day) && !day.isCheckInDate;
+  };
+
+  // A date can be clicked as a check-out if it's selectable AND it's NOT an existing reservation's check-out date
+  const canBeCheckOut = (day: DayInfo): boolean => {
+    return isSelectable(day) && !day.isCheckOutDate;
   };
 
   const getNights = (a: string, b: string): number =>
@@ -271,7 +281,7 @@ export default function AvailabilityCalendar() {
                 const tc = nightColor(day);
                 const grad = gradientStyle(day);
                 const highlighted = isToday(day.date);
-                const clickable = day.isCurrentMonth && !day.isPast && (isSelectable(day) || day.isCheckInDate || day.isCheckOutDate);
+                const clickable = canBeCheckIn(day) || (phase === "selectingCheckOut" && canBeCheckOut(day));
 
                 return (
                   <div
