@@ -64,7 +64,8 @@ export default function AvailabilityCalendar() {
 
       let isMinStayInvalid = false;
       if (!isPast) {
-        for (let n = 1; n <= 4; n++) {
+        // Check if any of nights d+1 through d+5 land on a booked date
+        for (let n = 1; n <= 5; n++) {
           const futureDate = new Date(viewYear, viewMonth, d + n);
           const futureStr = `${futureDate.getFullYear()}-${String(futureDate.getMonth() + 1).padStart(2, '0')}-${String(futureDate.getDate()).padStart(2, '0')}`;
           if ((availabilityData as any[]).some((res: any) => futureStr >= res.checkIn && futureStr < res.checkOut)) {
@@ -83,9 +84,9 @@ export default function AvailabilityCalendar() {
     if (day.isPast) return false;
     // Booked dates are not selectable UNLESS they're transition dates (check-in/check-out of another stay)
     if (day.isBooked && !day.isCheckInDate && !day.isCheckOutDate) return false;
-    // If it's a transition date, it's always selectable
+    // Transition dates are always selectable
     if (day.isCheckInDate || day.isCheckOutDate) return true;
-    // Otherwise check the min-stay constraint
+    // Non-transition dates: check min-stay constraint
     if (day.isMinStayInvalid) return false;
     return true;
   };
@@ -183,14 +184,24 @@ export default function AvailabilityCalendar() {
     return "Select check-in date";
   })();
 
-  const prevMonth = () => setViewMonth((m) => { if (m === 0) { setViewYear((y) => y - 1); return 11; } return m - 1; });
-  const nextMonth = () => setViewMonth((m) => { if (m === 11) { setViewYear((y) => y + 1); return 0; } return m + 1; });
+  const prevMonth = () => {
+    clearSelection();
+    setViewMonth((m) => { if (m === 0) { setViewYear((y) => y - 1); return 11; } return m - 1; });
+  };
+  const nextMonth = () => {
+    clearSelection();
+    setViewMonth((m) => { if (m === 11) { setViewYear((y) => y + 1); return 0; } return m + 1; });
+  };
 
   const isToday = (date: number) => date === today.getDate() && viewMonth === today.getMonth() && viewYear === today.getFullYear();
 
   const bgColor = (day: DayInfo): string => {
     if (isSelectedCheckIn(day) || isSelectedCheckOut(day)) return "#1E3A5F";
     if (isInRange(day)) return "rgba(30, 58, 95, 0.15)";
+    // Transition check-in dates use white bg so the gradient creates the triangle effect
+    if (day.isBooked && day.isCheckInDate) return "#FFFFFF";
+    // Transition check-out dates use white bg so the gradient creates the triangle effect
+    if (day.isBooked && day.isCheckOutDate) return "#FFFFFF";
     if (day.isBooked) return "#E0DCD7";
     return "transparent";
   };
