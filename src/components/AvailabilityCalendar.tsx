@@ -143,8 +143,9 @@ export default function AvailabilityCalendar() {
           }
         }
       } else {
-        const nights = getNights(checkIn, dateStr);
-        if (nights >= MIN_STAY) {
+        const dayInfo = days.find(d => d.dateStr === dateStr);
+        if (dayInfo && canBeCheckOut(dayInfo)) {
+          const nights = getNights(checkIn, dateStr);
           setCheckOut(dateStr);
           setPhase("done");
         } else {
