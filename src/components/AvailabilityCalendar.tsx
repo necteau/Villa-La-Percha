@@ -332,28 +332,27 @@ export default function AvailabilityCalendar() {
           )}
         </div>
 
+        {/* Clear button */}
+        <div className="text-center mt-6">
+          {phase !== "none" && (
+            <button onClick={clearSelection} className="text-sm underline font-medium" style={{ color: "#8B7355" }}>Clear Dates</button>
+          )}
+        </div>
+
         {/* Legend */}
         <div className="mt-6 flex flex-wrap gap-6 text-xs justify-center" style={{ color: "#6B6B6B" }}>
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full" style={{ backgroundColor: "#8B7355" }} /><span>Selected</span>
+            <div className="w-3 h-3 rounded-full" style={{ backgroundColor: "#1E3A5F" }} /><span>Selected</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded" style={{ backgroundColor: "#E0DCD7" }} /><span>Booked</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded" style={{ background: `linear-gradient(to top left, transparent 45%, #E0DCD7 45%)` }} /><span>Transition</span>
+            <div className="w-3 h-3 rounded" style={{ background: `linear-gradient(to top left, transparent 45%, #E0DCD7 45%), linear-gradient(to bottom right, transparent 45%, #E0DCD7 45%)` }} /><span>Check-in/Checkout</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded border border-[#E8E4DF] bg-white" /><span>Available</span>
           </div>
-        </div>
-
-        {/* CTA */}
-        <div className="text-center mt-10">
-          <a href="#contact" className="inline-block px-8 md:px-10 py-3.5 text-xs md:text-sm tracking-[0.2em] uppercase text-white font-medium" style={{ backgroundColor: "#8B7355" }}>Inquire Now</a>
-          {phase !== "none" && (
-            <button onClick={clearSelection} className="ml-6 text-xs underline" style={{ color: "#8B7355" }}>Clear</button>
-          )}
         </div>
       </div>
     </section>
