@@ -97,13 +97,22 @@ export default function AvailabilityCalendar() {
   };
 
   // A date can be clicked as a check-out if it's NOT past, NOT an existing reservation's check-out date,
-  // and meets the min-stay requirement from the selected check-in
+  // meets the min-stay requirement from the selected check-in,
+  // and is before the next booked date
   const canBeCheckOut = (day: DayInfo): boolean => {
     if (day.isPast) return false;
     if (day.isCheckOutDate) return false;
     if (phase === "selectingCheckOut" && checkIn) {
       const nights = getNights(checkIn, day.dateStr);
       if (nights < MIN_STAY) return false;
+      // Must be before the next booked date
+      if (day.dateStr >= todayStr) {
+        const nextBooked = (availabilityData as any[])
+          .filter((res: any) => res.checkIn >= todayStr && res.checkIn >= checkIn)
+          .map((res: any) => res.checkIn)
+          .sort()[0];
+        if (nextBooked && day.dateStr >= nextBooked) return false;
+      }
     }
     return true;
   };
