@@ -217,9 +217,11 @@ export default function AvailabilityCalendar() {
     if (isSelectedCheckIn(day) || isSelectedCheckOut(day)) return "#1E3A5F";
     if (isInRange(day)) return "rgba(30, 58, 95, 0.15)";
     // Transition check-in dates use white bg so the gradient creates the triangle effect
-    if (day.isBooked && day.isCheckInDate) return "#FFFFFF";
+    if (day.isBooked && day.isCheckInDate && !day.isCheckOutDate) return "#FFFFFF";
     // Transition check-out dates use white bg so the gradient creates the triangle effect
-    if (day.isBooked && day.isCheckOutDate) return "#FFFFFF";
+    if (day.isBooked && day.isCheckOutDate && !day.isCheckInDate) return "#FFFFFF";
+    // Both check-in and check-out: no bg color — gradientStyle handles it
+    if (day.isBooked && day.isCheckInDate && day.isCheckOutDate) return "transparent";
     if (day.isBooked) return "#E0DCD7";
     return "transparent";
   };
@@ -340,7 +342,7 @@ export default function AvailabilityCalendar() {
         {/* Clear button */}
         <div className="text-center mt-6">
           {phase !== "none" && (
-            <button onClick={clearSelection} className="text-sm underline font-medium" style={{ color: "#8B7355" }}>Clear Dates</button>
+            <button onClick={clearSelection} className="inline-block px-6 py-2 text-xs tracking-[0.2em] uppercase text-white font-medium" style={{ backgroundColor: "#8B7355" }}>Clear Dates</button>
           )}
         </div>
 
@@ -361,6 +363,11 @@ export default function AvailabilityCalendar() {
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded border border-[#E8E4DF] bg-white" /><span>Available</span>
           </div>
+        </div>
+
+        {/* CTA */}
+        <div className="text-center mt-10">
+          <a href="#contact" className="inline-block px-8 md:px-10 py-3.5 text-xs md:text-sm tracking-[0.2em] uppercase text-white font-medium" style={{ backgroundColor: "#8B7355" }}>Inquire Now</a>
         </div>
       </div>
     </section>
