@@ -96,9 +96,10 @@ export default function AvailabilityCalendar() {
     return isSelectable(day) && !day.isCheckInDate;
   };
 
-  // A date can be clicked as a check-out if it's selectable AND it's NOT an existing reservation's check-out date AND it meets the min-stay requirement
+  // A date can be clicked as a check-out if it's NOT past, NOT an existing reservation's check-out date,
+  // and meets the min-stay requirement from the selected check-in
   const canBeCheckOut = (day: DayInfo): boolean => {
-    if (!isSelectable(day)) return false;
+    if (day.isPast) return false;
     if (day.isCheckOutDate) return false;
     if (phase === "selectingCheckOut" && checkIn) {
       const nights = getNights(checkIn, day.dateStr);
@@ -200,14 +201,8 @@ export default function AvailabilityCalendar() {
     return "Select check-in date";
   })();
 
-  const prevMonth = () => {
-    clearSelection();
-    setViewMonth((m) => { if (m === 0) { setViewYear((y) => y - 1); return 11; } return m - 1; });
-  };
-  const nextMonth = () => {
-    clearSelection();
-    setViewMonth((m) => { if (m === 11) { setViewYear((y) => y + 1); return 0; } return m + 1; });
-  };
+  const prevMonth = () => setViewMonth((m) => { if (m === 0) { setViewYear((y) => y - 1); return 11; } return m - 1; });
+  const nextMonth = () => setViewMonth((m) => { if (m === 11) { setViewYear((y) => y + 1); return 0; } return m + 1; });
 
   const isToday = (date: number) => date === today.getDate() && viewMonth === today.getMonth() && viewYear === today.getFullYear();
 
@@ -349,7 +344,7 @@ export default function AvailabilityCalendar() {
         {/* CTA */}
         <div className="text-center mt-10">
           <a href="#contact" className="inline-block px-8 md:px-10 py-3.5 text-xs md:text-sm tracking-[0.2em] uppercase text-white font-medium" style={{ backgroundColor: "#8B7355" }}>Inquire Now</a>
-          {phase === "done" && checkIn && checkOut && (
+          {phase !== "none" && (
             <button onClick={clearSelection} className="ml-6 text-xs underline" style={{ color: "#8B7355" }}>Clear</button>
           )}
         </div>
