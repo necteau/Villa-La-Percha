@@ -4,7 +4,7 @@ const highlights = [
   {
     title: "Chalk Sound",
     description: "World-famous crystal-clear waters steps from your door. Kayak among 50+ islands and cays.",
-    image: "/images/kitchen.jpg",
+    image: "/images/aerial-house-ocean-neighbors.jpg",
   },
   {
     title: "Private Pool",
