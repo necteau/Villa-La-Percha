@@ -240,11 +240,16 @@ export default function AvailabilityCalendar() {
 
                 const gradientStyle = (day: DayInfo): string | undefined => {
     if (isSelectedCheckIn(day) || isSelectedCheckOut(day) || isInRange(day)) return undefined;
-    // Transition dates: show partial shading (triangle), not full gray
-    if (day.isBooked && day.isCheckInDate) return "linear-gradient(to bottom right, transparent 45%, #E0DCD7 45%)";
+    // Booked transition dates: check-out date gets top-left triangle
     if (day.isBooked && day.isCheckOutDate) return "linear-gradient(to top left, transparent 45%, #E0DCD7 45%)";
-    if (day.isCheckInDate) return "linear-gradient(to bottom right, transparent 45%, #E0DCD7 45%)";
-    if (day.isCheckOutDate) return "linear-gradient(to top left, transparent 45%, #E0DCD7 45%)";
+    // Booked transition dates: check-in date gets bottom-right triangle
+    if (day.isBooked && day.isCheckInDate) return "linear-gradient(to bottom right, transparent 45%, #E0DCD7 45%)";
+    // Free transition dates: check-out date gets top-left triangle
+    if (day.isCheckOutDate && !day.isCheckInDate) return "linear-gradient(to top left, transparent 45%, #E0DCD7 45%)";
+    // Free transition dates: check-in date gets bottom-right triangle
+    if (day.isCheckInDate && !day.isCheckOutDate) return "linear-gradient(to bottom right, transparent 45%, #E0DCD7 45%)";
+    // Both check-in and check-out on the same day (both triangles)
+    if (day.isCheckInDate && day.isCheckOutDate) return "linear-gradient(to top left, transparent 45%, #E0DCD7 45%), linear-gradient(to bottom right, transparent 45%, #E0DCD7 45%)";
     return undefined;
   };
 
@@ -348,7 +353,10 @@ export default function AvailabilityCalendar() {
             <div className="w-3 h-3 rounded" style={{ backgroundColor: "#E0DCD7" }} /><span>Booked</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded" style={{ background: `linear-gradient(to top left, transparent 45%, #E0DCD7 45%), linear-gradient(to bottom right, transparent 45%, #E0DCD7 45%)` }} /><span>Check-in/Checkout</span>
+            <div className="w-3 h-3 rounded" style={{ background: `linear-gradient(to top left, transparent 45%, #E0DCD7 45%)` }} /><span>Check-out</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded" style={{ background: `linear-gradient(to bottom right, transparent 45%, #E0DCD7 45%)` }} /><span>Check-in</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded border border-[#E8E4DF] bg-white" /><span>Available</span>
