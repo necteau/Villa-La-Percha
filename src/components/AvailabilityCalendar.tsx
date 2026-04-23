@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import availabilityData from "@/data/availability.json";
 
 const today = new Date();
@@ -11,164 +11,231 @@ interface DayInfo {
   isCurrentMonth: boolean;
   isBooked: boolean;
   isPast: boolean;
-  isCheckInDate: boolean;   // someone else's check-in (available)
-  isCheckOutDate: boolean;  // someone else's check-out (available, transition)
+  isCheckInDate: boolean;   // someone else's check-in (available for back-to-back)
+  isCheckOutDate: boolean;  // someone else's check-out (available for back-to-back)
   isMinStayInvalid: boolean; // can't start a 5+ night stay from this date
+  dateStr: string;
 }
 
+const MIN_STAY = 5;
 const monthNames = [
   "January","February","March","April","May","June",
   "July","August","September","October","November","December",
 ];
 const dayLabels = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
 
+type SelectionPhase = "none" | "selectingCheckOut" | "done";
+
 export default function AvailabilityCalendar() {
-  const today = new Date();
   const [viewYear, setViewYear] = useState(today.getFullYear());
   const [viewMonth, setViewMonth] = useState(today.getMonth());
+  const [checkIn, setCheckIn] = useState<string | null>(null);
+  const [checkOut, setCheckOut] = useState<string | null>(null);
+  const [phase, setPhase] = useState<SelectionPhase>("none");
+  const [hoveredDate, setHoveredDate] = useState<string | null>(null);
+  const [showHint, setShowHint] = useState(false);
 
-  const generateCalendarDays = (year: number, month: number): DayInfo[] => {
+  const days = useMemo(() => {
     const days: DayInfo[] = [];
-
-    const prevMonth = month === 0 ? 11 : month - 1;
-    const prevYear = month === 0 ? year - 1 : year;
+    const prevMonth = viewMonth === 0 ? 11 : viewMonth - 1;
+    const prevYear = viewMonth === 0 ? viewYear - 1 : viewYear;
     const prevMonthDays = new Date(prevYear, prevMonth + 1, 0).getDate();
-    const startDay = new Date(year, month, 1).getDay();
+    const startDay = new Date(viewYear, viewMonth, 1).getDay();
 
     for (let i = startDay - 1; i >= 0; i--) {
-      days.push({ date: prevMonthDays - i, isCurrentMonth: false, isBooked: false, isPast: true, isCheckInDate: false, isCheckOutDate: false, isMinStayInvalid: false });
+      days.push({ date: prevMonthDays - i, isCurrentMonth: false, isBooked: false, isPast: true, isCheckInDate: false, isCheckOutDate: false, isMinStayInvalid: false, dateStr: "" });
     }
 
-    const currentMonthDays = new Date(year, month + 1, 0).getDate();
+    const currentMonthDays = new Date(viewYear, viewMonth + 1, 0).getDate();
     for (let d = 1; d <= currentMonthDays; d++) {
-      const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
-      
-      // Is this date part of a booking (fully inside)?
+      const dateStr = `${viewYear}-${String(viewMonth + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+      const isPast = dateStr < todayStr;
+
       const reservations = (availabilityData as any[]).filter(
-        (res) => dateStr >= res.checkIn && dateStr < res.checkOut
+        (res: any) => dateStr >= res.checkIn && dateStr < res.checkOut
       );
       const isBooked = reservations.length > 0;
-
-      // Is this the check-in date of any reservation?
-      const isCheckIn = (availabilityData as any[]).some(
-        (res) => res.checkIn === dateStr
+      const isCheckInDate = (availabilityData as any[]).some(
+        (res: any) => res.checkIn === dateStr
+      );
+      const isCheckOutDate = (availabilityData as any[]).some(
+        (res: any) => res.checkOut === dateStr
       );
 
-      // Is this the day before check-out (transition/checkout day)?
-      const isCheckOut = (availabilityData as any[]).some(
-        (res) => res.checkOut === dateStr
-      );
-
-      const isPast = dateStr < todayStr;
-      
-      // Check if this date can start a valid 5-night stay
       let isMinStayInvalid = false;
       if (!isPast) {
         for (let n = 1; n <= 4; n++) {
-          const futureDate = new Date(year, month, d + n);
+          const futureDate = new Date(viewYear, viewMonth, d + n);
           const futureStr = `${futureDate.getFullYear()}-${String(futureDate.getMonth() + 1).padStart(2, '0')}-${String(futureDate.getDate()).padStart(2, '0')}`;
-          const isNightBooked = (availabilityData as any[]).some(
-            (res) => futureStr >= res.checkIn && futureStr < res.checkOut
-          );
-          if (isNightBooked) {
+          if ((availabilityData as any[]).some((res: any) => futureStr >= res.checkIn && futureStr < res.checkOut)) {
             isMinStayInvalid = true;
             break;
           }
         }
       }
-      
-      days.push({ date: d, isCurrentMonth: true, isBooked, isPast, isCheckInDate: isCheckIn, isCheckOutDate: isCheckOut, isMinStayInvalid });
+
+      days.push({ date: d, isCurrentMonth: true, isBooked, isPast, isCheckInDate, isCheckOutDate, isMinStayInvalid, dateStr });
+    }
+    return days;
+  }, [viewYear, viewMonth]);
+
+  const isSelectable = (day: DayInfo): boolean => {
+    if (day.isPast) return false;
+    if (day.isBooked) return false;
+    if (day.isMinStayInvalid) return false;
+    // Allow transition dates for back-to-back bookings
+    if (day.isCheckInDate || day.isCheckOutDate) return true;
+    return true;
+  };
+
+  const getNights = (a: string, b: string): number =>
+    Math.round((new Date(b).getTime() - new Date(a).getTime()) / (1000 * 60 * 60 * 24));
+
+  const handleDateClick = (dateStr: string) => {
+    // Find the day info for min-stay check
+    const dayInfo = days.find(d => d.dateStr === dateStr);
+    if (!dayInfo || dayInfo.isPast) return;
+    if (dayInfo.isBooked) {
+      setShowHint(true);
+      setTimeout(() => setShowHint(false), 2500);
+      return;
+    }
+    if (dayInfo.isMinStayInvalid) {
+      setShowHint(true);
+      setTimeout(() => setShowHint(false), 2500);
+      return;
     }
 
-    return days;
-  };
-
-  const days = generateCalendarDays(viewYear, viewMonth);
-
-  const prevMonth = () => {
-    setViewMonth((m) => {
-      if (m === 0) {
-        setViewYear((y) => y - 1);
-        return 11;
+    if (phase === "none" || phase === "done") {
+      setCheckIn(dateStr);
+      setCheckOut(null);
+      setPhase("selectingCheckOut");
+      setHoveredDate(null);
+    } else if (phase === "selectingCheckOut") {
+      if (!checkIn) {
+        setCheckIn(dateStr);
+      } else if (dateStr < checkIn) {
+        // Allow re-picking check-in to an earlier date
+        setCheckIn(dateStr);
+      } else {
+        const nights = getNights(checkIn, dateStr);
+        if (nights >= MIN_STAY) {
+          setCheckOut(dateStr);
+          setPhase("done");
+        } else {
+          // User-friendly feedback
+          setShowHint(true);
+          setTimeout(() => setShowHint(false), 3000);
+        }
       }
-      return m - 1;
-    });
+    }
   };
 
-  const nextMonth = () => {
-    setViewMonth((m) => {
-      if (m === 11) {
-        setViewYear((y) => y + 1);
-        return 0;
+  const handleDayMouseEnter = (day: DayInfo) => {
+    if (phase === "selectingCheckOut" && checkIn) {
+      if (day.isPast) return;
+      setHoveredDate(day.dateStr);
+    }
+  };
+
+  const handleDayMouseLeave = () => {
+    if (phase === "selectingCheckOut") setHoveredDate(null);
+  };
+
+  const isInRange = (day: DayInfo): boolean => {
+    if (phase !== "selectingCheckOut" || !checkIn) return false;
+    if (day.isPast || day.isBooked || day.isMinStayInvalid) return false;
+    const preview = hoveredDate || checkOut;
+    if (!preview) return false;
+    const sorted = [checkIn, preview].sort();
+    return day.dateStr >= sorted[0] && day.dateStr <= sorted[1];
+  };
+
+  const isSelectedCheckIn = (day: DayInfo): boolean => checkIn !== null && day.dateStr === checkIn;
+
+  const isSelectedCheckOut = (day: DayInfo): boolean => {
+    if (phase === "done" && checkOut !== null) return day.dateStr === checkOut;
+    return false;
+  };
+
+  const clearSelection = () => {
+    setCheckIn(null);
+    setCheckOut(null);
+    setPhase("none");
+    setHoveredDate(null);
+  };
+
+  const statusText = (() => {
+    if (phase === "done" && checkIn && checkOut) {
+      const n = getNights(checkIn, checkOut);
+      return `${n} night${n > 1 ? "s" : ""} · ${checkIn} → ${checkOut}`;
+    }
+    if (phase === "selectingCheckOut" && checkIn) {
+      const preview = hoveredDate || checkOut;
+      if (preview) {
+        const n = getNights(checkIn, preview);
+        return `${n} night${n > 1 ? "s" : ""} · Select confirm or pick other dates`;
       }
-      return m + 1;
-    });
+      return `Check-in ${checkIn} · Pick check-out`;
+    }
+    return "Select check-in date";
+  })();
+
+  const prevMonth = () => setViewMonth((m) => { if (m === 0) { setViewYear((y) => y - 1); return 11; } return m - 1; });
+  const nextMonth = () => setViewMonth((m) => { if (m === 11) { setViewYear((y) => y + 1); return 0; } return m + 1; });
+
+  const isToday = (date: number) => date === today.getDate() && viewMonth === today.getMonth() && viewYear === today.getFullYear();
+
+  const bgColor = (day: DayInfo): string => {
+    if (isSelectedCheckIn(day) || isSelectedCheckOut(day)) return "#8B7355";
+    if (isInRange(day)) return "rgba(139, 115, 85, 0.15)";
+    if (day.isBooked) return "#E0DCD7";
+    return "transparent";
   };
 
-  const isToday = (date: number) => {
-    return date === today.getDate() && viewMonth === today.getMonth() && viewYear === today.getFullYear();
+  const textColor = (day: DayInfo): string => {
+    if (isSelectedCheckIn(day) || isSelectedCheckOut(day) || todayIs(day.date)) return "#FFFFFF";
+    if (!day.isCurrentMonth || day.isPast) return "#6B6B6B";
+    return "#2C2C2C";
+  };
+
+  const todayIs = (date: number): boolean => date === today.getDate() && viewMonth === today.getMonth() && viewYear === today.getFullYear();
+
+  const todayCheck = (day: DayInfo): boolean => {
+    if (!todayIs(day.date)) return false;
+    return isToday(day.date);
+  };
+
+                const gradientStyle = (day: DayInfo): string | undefined => {
+    if (isSelectedCheckIn(day) || isSelectedCheckOut(day) || isInRange(day)) return undefined;
+    if (!day.isBooked) {
+      if (day.isCheckInDate) return "linear-gradient(to bottom right, transparent 45%, #E0DCD7 45%)";
+      if (day.isCheckOutDate) return "linear-gradient(to top left, transparent 45%, #E0DCD7 45%)";
+    }
+    return undefined;
   };
 
   return (
     <section id="availability" className="py-20 md:py-32 bg-[#FAFAF8]">
       <div className="max-w-xl mx-auto px-6 md:px-8">
         <div className="text-center mb-14">
-          <p className="text-xs tracking-[0.3em] uppercase mb-4" style={{ color: "#8B7355" }}>
-            Availability
-          </p>
-          <h2
-            className="font-display text-3xl md:text-5xl font-light mb-4"
-            style={{ color: "#2C2C2C" }}
-          >
-            Check Availability
-          </h2>
+          <p className="text-xs tracking-[0.3em] uppercase mb-4" style={{ color: "#8B7355" }}>Availability</p>
+          <h2 className="font-display text-3xl md:text-5xl font-light mb-4" style={{ color: "#2C2C2C" }}>Check Availability</h2>
           <p className="text-sm md:text-base max-w-lg mx-auto leading-relaxed" style={{ color: "#6B6B6B" }}>
-            Select your preferred dates and the owner will respond within 24 hours.
+            Select your preferred dates and the owner will respond within 24 hours.<br />
             Direct bookings save 15–20% over OTA pricing.
           </p>
         </div>
 
         <div className="bg-white rounded-2xl shadow-sm border border-[#E8E4DF] overflow-hidden max-w-md mx-auto">
           {/* Month nav */}
-          <div
-            className="flex items-center justify-between px-6 py-5"
-            style={{ borderBottom: "1px solid #E8E4DF" }}
-          >
-            <button
-              onClick={prevMonth}
-              className="w-9 h-9 flex items-center justify-center rounded-full transition-colors hover:bg-[#F5F0E8]"
-              style={{ border: "none", cursor: "pointer", color: "#6B6B6B" }}
-            >
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <path
-                  d="M10 3L5 8L10 13"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
+          <div className="flex items-center justify-between px-6 py-5" style={{ borderBottom: "1px solid #E8E4DF" }}>
+            <button onClick={prevMonth} className="w-9 h-9 flex items-center justify-center rounded-full transition-colors hover:bg-[#F5F0E8]" style={{ border: "none", cursor: "pointer", color: "#6B6B6B" }}>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8L10 13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
             </button>
-            <h3
-              className="font-display text-lg font-light"
-              style={{ color: "#2C2C2C" }}
-            >
-              {monthNames[viewMonth]} {viewYear}
-            </h3>
-            <button
-              onClick={nextMonth}
-              className="w-9 h-9 flex items-center justify-center rounded-full transition-colors hover:bg-[#F5F0E8]"
-              style={{ border: "none", cursor: "pointer", color: "#6B6B6B" }}
-            >
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <path
-                  d="M6 3L11 8L6 13"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
+            <h3 className="font-display text-lg font-light" style={{ color: "#2C2C2C" }}>{monthNames[viewMonth]} {viewYear}</h3>
+            <button onClick={nextMonth} className="w-9 h-9 flex items-center justify-center rounded-full transition-colors hover:bg-[#F5F0E8]" style={{ border: "none", cursor: "pointer", color: "#6B6B6B" }}>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 3L11 8L6 13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
             </button>
           </div>
 
@@ -176,13 +243,7 @@ export default function AvailabilityCalendar() {
           <div className="px-5 pt-4 pb-1">
             <div className="grid grid-cols-7 gap-0">
               {dayLabels.map((d) => (
-                <div
-                  key={d}
-                  className="text-center text-[10px] font-medium py-2 uppercase"
-                  style={{ color: "#6B6B6B", opacity: 0.5 }}
-                >
-                  {d}
-                </div>
+                <div key={d} className="text-center text-[10px] font-medium py-2 uppercase" style={{ color: "#6B6B6B", opacity: 0.5 }}>{d}</div>
               ))}
             </div>
           </div>
@@ -191,151 +252,29 @@ export default function AvailabilityCalendar() {
           <div className="px-5 pb-5 pt-1 relative">
             <div className="grid grid-cols-7 gap-0">
               {days.map((day, idx) => {
-                const todayHighlight = isToday(day.date);
-
-                if (!day.isCurrentMonth) {
-                  return (
-                    <div
-                      key={idx}
-                      className="flex items-center justify-center text-xs py-[10px] rounded-md"
-                      style={{ color: "#6B6B6B", opacity: 0.25 }}
-                    >
-                      {day.date}
-                    </div>
-                  );
-                }
-
-                if (day.isPast) {
-                  return (
-                    <div
-                      key={idx}
-                      className="flex items-center justify-center text-[13px] py-[10px] rounded-md font-medium"
-                      style={{ color: "#6B6B6B", opacity: 0.3, cursor: "default" }}
-                    >
-                      {day.date}
-                    </div>
-                  );
-                }
-
-                if (day.isBooked && !day.isCheckOutDate && !day.isCheckInDate) {
-                  // Fully booked — light grey
-                  return (
-                    <div
-                      key={idx}
-                      className="flex items-center justify-center text-[13px] py-[10px] rounded-md font-medium"
-                      style={{ backgroundColor: "#E0DCD7", color: "#2C2C2C" }}
-                    >
-                      {day.date}
-                    </div>
-                  );
-                }
-
-                // Transition days that are also booked — show shade but not selectable
-                if (day.isBooked && (day.isCheckInDate || day.isCheckOutDate)) {
-                  if (day.isCheckOutDate) {
-                    return (
-                      <div
-                        key={idx}
-                        className="relative flex items-center justify-center text-[13px] py-[10px] rounded-md font-medium cursor-default"
-                        style={{ color: "#2C2C2C" }}
-                      >
-                        <div
-                          className="absolute inset-0 rounded-md"
-                          style={{
-                            background: `linear-gradient(to top left, transparent 45%, #E0DCD7 45%)`,
-                          }}
-                        />
-                        <span className="relative z-10">{day.date}</span>
-                      </div>
-                    );
-                  }
-                  if (day.isCheckInDate) {
-                    return (
-                      <div
-                        key={idx}
-                        className="relative flex items-center justify-center text-[13px] py-[10px] rounded-md font-medium cursor-default"
-                        style={{ color: "#2C2C2C" }}
-                      >
-                        <div
-                          className="absolute inset-0 rounded-md"
-                          style={{
-                            background: `linear-gradient(to bottom right, transparent 45%, #E0DCD7 45%)`,
-                          }}
-                        />
-                        <span className="relative z-10">{day.date}</span>
-                      </div>
-                    );
-                  }
-                }
-
-                // Available check-out transition — top-left shaded
-                if (day.isCheckOutDate) {
-                  return (
-                    <div
-                      key={idx}
-                      className="relative flex items-center justify-center text-[13px] py-[10px] rounded-md font-medium cursor-pointer hover:opacity-80 transition-opacity"
-                      style={{ color: "#2C2C2C" }}
-                    >
-                      <div
-                        className="absolute inset-0 rounded-md"
-                        style={{
-                          background: `linear-gradient(to top left, transparent 45%, #E0DCD7 45%)`,
-                        }}
-                      />
-                      <span className="relative z-10">{day.date}</span>
-                    </div>
-                  );
-                }
-
-                // Available check-in transition — bottom-right shaded
-                if (day.isCheckInDate) {
-                  return (
-                    <div
-                      key={idx}
-                      className="relative flex items-center justify-center text-[13px] py-[10px] rounded-md font-medium cursor-pointer hover:opacity-80 transition-opacity"
-                      style={{ color: "#2C2C2C" }}
-                    >
-                      <div
-                        className="absolute inset-0 rounded-md"
-                        style={{
-                          background: `linear-gradient(to bottom right, transparent 45%, #E0DCD7 45%)`,
-                        }}
-                      />
-                      <span className="relative z-10">{day.date}</span>
-                    </div>
-                  );
-                }
-
-                if (day.isMinStayInvalid) {
-                  // Can't start a 5-night stay here — still visible, just not selectable
-                  return (
-                    <div
-                      key={idx}
-                      className="flex items-center justify-center text-[13px] py-[10px] rounded-md font-medium cursor-default"
-                      style={{ color: "#2C2C2C", opacity: 0.3 }}
-                    >
-                      {day.date}
-                    </div>
-                  );
-                }
-
-                if (todayHighlight) {
-                  return (
-                    <div
-                      key={idx}
-                      className="flex items-center justify-center text-[13px] py-[10px] rounded-full font-medium"
-                      style={{ backgroundColor: "#8B7355", color: "#FFFFFF" }}
-                    >
-                      {day.date}
-                    </div>
-                  );
-                }
+                const bg = bgColor(day);
+                const tc = textColor(day);
+                const grad = gradientStyle(day);
+                const highlighted = isToday(day.date);
+                const clickable = day.isCurrentMonth && !day.isPast && (isSelectable(day) || day.isCheckInDate || day.isCheckOutDate);
 
                 return (
                   <div
                     key={idx}
-                    className="flex items-center justify-center text-[13px] py-[10px] rounded-md font-medium hover:bg-[#F5F0E8] transition-colors cursor-pointer"
-                    style={{ color: "#2C2C2C" }}
+                    onMouseEnter={() => { if (clickable) handleDayMouseEnter(day); }}
+                    onMouseLeave={handleDayMouseLeave}
+                    onClick={clickable ? () => handleDateClick(day.dateStr) : undefined}
+                    className="flex items-center justify-center text-[13px] py-[10px] rounded-md font-medium relative"
+                    style={{
+                      backgroundColor: bg !== "transparent" ? bg : undefined,
+                      backgroundImage: grad ? grad as string : undefined,
+                      color: tc,
+                      cursor: clickable ? "pointer" : "default",
+                      opacity: (!day.isCurrentMonth || day.isPast) ? 0.3 : 1,
+                      border: todayIs(day.date) && bg === "transparent" ? "1px solid #8B7355" : "none",
+                      width: 40,
+                      height: 40,
+                    }}
                   >
                     {day.date}
                   </div>
@@ -345,38 +284,43 @@ export default function AvailabilityCalendar() {
           </div>
         </div>
 
+        {/* Status / hint */}
+        <div className="mt-4 text-center">
+          {phase !== "done" && phase !== "none" && checkIn && (
+            <p className="text-sm" style={{ color: "#8B7355" }}>{statusText}</p>
+          )}
+          {showHint && (
+            <p className="text-sm" style={{ color: "#C0392B" }}>
+              {phase === "selectingCheckOut" ? `Need at least ${MIN_STAY} nights` : "That date is not available"}
+            </p>
+          )}
+          {phase === "done" && checkIn && checkOut && (
+            <p className="text-sm" style={{ color: "#8B7355" }}>{statusText}</p>
+          )}
+        </div>
+
         {/* Legend */}
-        <div
-          className="mt-6 flex flex-wrap gap-6 text-xs justify-center"
-          style={{ color: "#6B6B6B" }}
-        >
+        <div className="mt-6 flex flex-wrap gap-6 text-xs justify-center" style={{ color: "#6B6B6B" }}>
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full" style={{ backgroundColor: "#8B7355" }} />
-            <span>Today</span>
+            <div className="w-3 h-3 rounded-full" style={{ backgroundColor: "#8B7355" }} /><span>Selected</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded" style={{ backgroundColor: "#E0DCD7" }} />
-            <span>Booked</span>
+            <div className="w-3 h-3 rounded" style={{ backgroundColor: "#E0DCD7" }} /><span>Booked</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded" style={{ background: `linear-gradient(to top left, transparent 45%, #E0DCD7 45%)` }} />
-            <span>Transition</span>
+            <div className="w-3 h-3 rounded" style={{ background: `linear-gradient(to top left, transparent 45%, #E0DCD7 45%)` }} /><span>Transition</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded border border-[#E8E4DF] bg-white" />
-            <span>Available</span>
+            <div className="w-3 h-3 rounded border border-[#E8E4DF] bg-white" /><span>Available</span>
           </div>
         </div>
 
         {/* CTA */}
         <div className="text-center mt-10">
-          <a
-            href="#contact"
-            className="inline-block px-8 md:px-10 py-3.5 text-xs md:text-sm tracking-[0.2em] uppercase text-white font-medium"
-            style={{ backgroundColor: "#8B7355" }}
-          >
-            Inquire Now
-          </a>
+          <a href="#contact" className="inline-block px-8 md:px-10 py-3.5 text-xs md:text-sm tracking-[0.2em] uppercase text-white font-medium" style={{ backgroundColor: "#8B7355" }}>Inquire Now</a>
+          {phase === "done" && checkIn && checkOut && (
+            <button onClick={clearSelection} className="ml-6 text-xs underline" style={{ color: "#8B7355" }}>Clear</button>
+          )}
         </div>
       </div>
     </section>
