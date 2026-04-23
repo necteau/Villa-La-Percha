@@ -240,6 +240,8 @@ export default function AvailabilityCalendar() {
 
                 const gradientStyle = (day: DayInfo): string | undefined => {
     if (isSelectedCheckIn(day) || isSelectedCheckOut(day) || isInRange(day)) return undefined;
+    // Both check-in and check-out on the same day = fully shaded square
+    if (day.isCheckInDate && day.isCheckOutDate) return "#E0DCD7";
     // Booked transition dates: check-out date gets top-left triangle
     if (day.isBooked && day.isCheckOutDate) return "linear-gradient(to top left, transparent 45%, #E0DCD7 45%)";
     // Booked transition dates: check-in date gets bottom-right triangle
@@ -248,8 +250,6 @@ export default function AvailabilityCalendar() {
     if (day.isCheckOutDate && !day.isCheckInDate) return "linear-gradient(to top left, transparent 45%, #E0DCD7 45%)";
     // Free transition dates: check-in date gets bottom-right triangle
     if (day.isCheckInDate && !day.isCheckOutDate) return "linear-gradient(to bottom right, transparent 45%, #E0DCD7 45%)";
-    // Both check-in and check-out on the same day (both triangles)
-    if (day.isCheckInDate && day.isCheckOutDate) return "linear-gradient(to top left, transparent 45%, #E0DCD7 45%), linear-gradient(to bottom right, transparent 45%, #E0DCD7 45%)";
     return undefined;
   };
 
