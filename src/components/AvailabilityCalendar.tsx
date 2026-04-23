@@ -64,8 +64,9 @@ export default function AvailabilityCalendar() {
 
       let isMinStayInvalid = false;
       if (!isPast) {
-        // Check if any of nights d+1 through d+5 land on a booked date
-        for (let n = 1; n <= 5; n++) {
+        // Check if nights d+1 through d+4 (the first 4 nights of the stay) are all free
+        // Night d+5 is the checkout day — a reservation starting then doesn't block this stay
+        for (let n = 1; n <= 4; n++) {
           const futureDate = new Date(viewYear, viewMonth, d + n);
           const futureStr = `${futureDate.getFullYear()}-${String(futureDate.getMonth() + 1).padStart(2, '0')}-${String(futureDate.getDate()).padStart(2, '0')}`;
           if ((availabilityData as any[]).some((res: any) => futureStr >= res.checkIn && futureStr < res.checkOut)) {
