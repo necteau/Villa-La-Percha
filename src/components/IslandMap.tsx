@@ -351,14 +351,14 @@ export default function IslandMap() {
               </defs>
 
               <path
-                d="M52 275C82 218 140 177 217 160C303 141 384 141 490 119C602 95 734 111 816 160C887 202 928 249 949 307C970 365 945 413 884 447C822 481 733 486 640 487C545 488 470 502 382 529C296 555 202 562 130 533C72 509 43 465 37 416C30 365 25 328 52 275Z"
+                d="M122 72C112 88 108 110 110 135C111 165 104 188 95 208C84 232 84 257 84 292C84 334 78 377 84 411C91 449 87 485 94 508C102 532 118 545 143 546C175 546 210 539 243 537C274 535 301 532 327 520C351 509 372 493 392 470C406 453 425 431 443 430C477 428 500 456 508 489C516 521 530 544 556 549C583 554 602 535 611 503C621 471 631 440 653 424C681 404 722 403 762 381C805 356 842 321 870 274C892 236 921 208 945 196C968 184 983 171 986 149C989 125 978 110 957 104C931 96 913 77 900 60C888 45 872 34 848 34C822 34 801 50 783 73C766 96 748 116 729 129C707 144 678 151 652 160C622 170 603 186 588 204C574 222 558 237 532 238C506 238 480 228 451 225C418 221 394 228 372 243C351 258 333 277 319 300C304 324 286 342 262 351C234 362 200 362 167 374C139 384 118 401 104 425C90 448 83 470 82 492"
                 fill="url(#islandGradient)"
                 stroke="#CFBEAB"
                 strokeWidth="3"
               />
 
               <path
-                d="M74 275C110 223 170 193 240 182C342 166 421 160 507 142C618 119 739 129 815 171C877 205 911 247 927 300"
+                d="M143 98C157 84 184 73 212 71C248 69 283 79 307 95C331 111 352 126 385 128C419 129 466 122 522 114C589 104 648 108 704 126C755 142 798 143 833 123C861 108 882 83 896 63"
                 fill="none"
                 stroke="#E8DED1"
                 strokeWidth="7"
@@ -366,29 +366,29 @@ export default function IslandMap() {
               />
 
               <path
-                d="M120 500C215 525 318 527 404 500C491 474 562 466 658 464C731 462 802 457 863 431"
+                d="M146 533C196 526 242 524 287 513C335 501 374 469 403 433C426 405 449 394 479 407C507 419 522 449 531 487C538 516 546 529 560 531C575 533 586 517 591 487C599 446 613 411 642 392C675 371 720 365 764 347C810 329 849 300 875 262"
                 fill="none"
                 stroke="#D9CDBF"
                 strokeDasharray="6 9"
                 strokeWidth="2"
               />
 
-              <ellipse cx="390" cy="462" rx="112" ry="56" fill="#93CDD6" opacity="0.52" />
-              <ellipse cx="332" cy="450" rx="55" ry="28" fill="#93CDD6" opacity="0.38" />
-              <ellipse cx="428" cy="487" rx="42" ry="18" fill="#93CDD6" opacity="0.34" />
-              <ellipse cx="684" cy="230" rx="76" ry="20" fill="#A8DBE1" opacity="0.22" />
-              <ellipse cx="518" cy="286" rx="42" ry="14" fill="#A8DBE1" opacity="0.18" />
+              <path d="M95 392C103 373 112 362 124 356C136 349 145 336 147 321C150 301 142 280 146 260C149 241 162 229 171 211C178 197 179 180 174 164C170 149 171 137 179 128C184 122 189 117 194 109C180 113 168 121 160 130C148 143 144 160 143 182C142 202 136 219 124 236C110 257 104 277 104 305C104 339 98 366 95 392Z" fill="#93CDD6" opacity="0.62" />
+              <path d="M223 402C247 385 274 382 304 389C334 397 352 414 368 434C348 444 327 457 303 469C282 479 256 489 226 495C221 474 219 453 217 434C215 421 216 411 223 402Z" fill="#93CDD6" opacity="0.58" />
+              <path d="M171 497C196 493 223 488 248 482C239 501 226 514 207 523C191 530 172 533 152 533C150 520 156 505 171 497Z" fill="#93CDD6" opacity="0.44" />
+              <path d="M610 226C629 215 651 211 674 213C703 215 728 225 749 241C723 246 697 252 669 254C647 256 627 252 610 226Z" fill="#A8DBE1" opacity="0.22" />
+              <path d="M451 281C463 270 478 266 494 268C510 270 523 277 534 288C518 291 503 295 488 296C472 297 460 294 451 281Z" fill="#A8DBE1" opacity="0.18" />
 
               <text x="175" y="118" fill="#7A6A57" fontSize="18" letterSpacing="4" className="uppercase">
                 Providenciales
               </text>
-              <text x="301" y="432" fill="#6C93A1" fontSize="14" letterSpacing="2">Chalk Sound</text>
-              <text x="583" y="246" fill="#6C93A1" fontSize="14" letterSpacing="2">Grace Bay</text>
-              <text x="448" y="262" fill="#6C93A1" fontSize="13" letterSpacing="2">Turtle Cove</text>
-              <text x="295" y="546" fill="#6C93A1" fontSize="13" letterSpacing="2">Taylor / Sapodilla</text>
-              <text x="355" y="575" fill="#6C93A1" fontSize="13" letterSpacing="2">Five Cays</text>
-              <text x="52" y="40" fill="#6C93A1" fontSize="12" letterSpacing="2">Northwest Point</text>
-              <text x="860" y="145" fill="#6C93A1" fontSize="12" letterSpacing="2">Leeward</text>
+              <text x="235" y="420" fill="#6C93A1" fontSize="14" letterSpacing="2">Chalk Sound</text>
+              <text x="603" y="235" fill="#6C93A1" fontSize="14" letterSpacing="2">Grace Bay</text>
+              <text x="452" y="262" fill="#6C93A1" fontSize="13" letterSpacing="2">Turtle Cove</text>
+              <text x="210" y="552" fill="#6C93A1" fontSize="13" letterSpacing="2">Taylor / Sapodilla</text>
+              <text x="360" y="575" fill="#6C93A1" fontSize="13" letterSpacing="2">Five Cays</text>
+              <text x="112" y="42" fill="#6C93A1" fontSize="12" letterSpacing="2">Northwest Point</text>
+              <text x="854" y="120" fill="#6C93A1" fontSize="12" letterSpacing="2">Leeward</text>
 
               <g filter="url(#softShadow)">
                 <g
