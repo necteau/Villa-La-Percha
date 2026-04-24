@@ -9,8 +9,9 @@ export default function About() {
         <div className="section-divider mb-10" />
         <p className="font-body text-[#6B6B6B] text-lg leading-relaxed text-balance max-w-3xl mx-auto">
           Villa La Percha is a rare opportunity to own a piece of paradise in one of the Caribbean&apos;s most extraordinary settings. 
-          Nestled on the shores of Chalk Sound National Park in Providenciales, Turks &amp; Caicos, this five-bedroom estate offers 
-          direct ocean access, a 65-foot meandering pool, and six weeks of personal time each year.
+          Nestled on the shores of Chalk Sound National Park in Providenciales, Turks &amp; Caicos, this four-bedroom estate offers
+          four en-suite bedrooms, a fifth half bath off the downstairs living area, direct ocean access,
+          a 65-foot meandering pool, and six weeks of personal time each year.
         </p>
       </div>
     </section>

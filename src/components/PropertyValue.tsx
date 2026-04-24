@@ -5,7 +5,7 @@ const inclusions = [
   { icon: "🌊", label: "Ocean Views" },
   { icon: "🍹", label: "Outdoor Bar & Grill" },
   { icon: "🛶", label: "Kayaks Included" },
-  { icon: "🛏️", label: "4 Bedrooms, 2 Bathrooms" },
+  { icon: "🛏️", label: "4 En-Suite Bedrooms + 1 Half Bath" },
   { icon: "📺", label: "Fast Wi-Fi" },
   { icon: "🅿️", label: "Free Parking" },
   { icon: "🌅", label: "Sunset Deck" },

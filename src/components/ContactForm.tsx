@@ -11,6 +11,7 @@ export default function ContactForm({ checkIn, checkOut }: Props) {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [comments, setComments] = useState("");
+  const [website, setWebsite] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -38,6 +39,7 @@ export default function ContactForm({ checkIn, checkOut }: Props) {
           checkIn,
           checkOut,
           comments: comments.trim(),
+          website,
         }),
       });
       if (!res.ok) throw new Error("Submission failed");
@@ -70,6 +72,18 @@ export default function ContactForm({ checkIn, checkOut }: Props) {
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="max-w-lg mx-auto text-left" noValidate>
+            <div className="hidden" aria-hidden="true">
+              <label htmlFor="contact-website">Website</label>
+              <input
+                id="contact-website"
+                type="text"
+                tabIndex={-1}
+                autoComplete="off"
+                value={website}
+                onChange={(e) => setWebsite(e.target.value)}
+              />
+            </div>
+
             {/* Dates (read-only, auto-filled from calendar) */}
             <div className="grid grid-cols-2 gap-4 mb-5">
               <div>

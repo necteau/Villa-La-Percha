@@ -18,7 +18,7 @@ const highlights = [
   },
   {
     title: "Full Villa Ownership",
-    description: "5 bedrooms, 5 bathrooms, open-plan living, chef's kitchen, and 6 weeks of personal time each year.",
+    description: "4 en-suite bedrooms, a downstairs half bath, open-plan living, chef's kitchen, and 6 weeks of personal time each year.",
     image: "/images/pool-lounge-ocean.jpg",
   },
 ];
