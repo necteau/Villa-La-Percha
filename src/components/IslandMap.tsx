@@ -19,10 +19,10 @@ type MapPoint = {
 const villaBase = {
   id: "villa-la-percha",
   name: "Villa La Percha",
-  x: 250,
-  y: 400,
-  area: "Chalk Sound (Southwest)",
-  description: "Your home base above Chalk Sound's turquoise inlets.",
+  x: 412,
+  y: 466,
+  area: "Chalk Sound",
+  description: "Your home base on the southwest side of Providenciales, above Chalk Sound and close to Taylor Bay, Sapodilla Bay, and Five Cays.",
 };
 
 const points: MapPoint[] = [
@@ -30,241 +30,241 @@ const points: MapPoint[] = [
     id: "da-conch-shack",
     name: "Da Conch Shack",
     category: "restaurant",
-    x: 300,
-    y: 210,
+    x: 272,
+    y: 278,
     area: "Blue Hills",
-    description: "Legendary local conch spot with live island energy.",
+    description: "The island's iconic conch institution on the north shore west of Grace Bay.",
     driveTime: "~18 min",
   },
   {
     id: "hemingways",
     name: "Hemingway's",
     category: "restaurant",
-    x: 645,
-    y: 190,
+    x: 640,
+    y: 268,
     area: "Grace Bay",
-    description: "Beachfront classic for breakfast, lunch, and sunset dinners.",
+    description: "Beachfront favorite at The Sands, in the central Grace Bay stretch.",
     driveTime: "~24 min",
   },
   {
     id: "omars-beach-hut",
     name: "Omar's Beach Hut",
     category: "restaurant",
-    x: 230,
-    y: 365,
+    x: 388,
+    y: 538,
     area: "Five Cays",
-    description: "Relaxed beachfront seafood and strong rum punches.",
+    description: "Laid-back seafood spot near the beach and fishing docks in Five Cays.",
     driveTime: "~9 min",
   },
   {
     id: "coco-bistro",
     name: "Coco Bistro",
     category: "restaurant",
-    x: 615,
-    y: 205,
+    x: 606,
+    y: 281,
     area: "Grace Bay",
-    description: "Beloved fine dining under palms and twinkling lights.",
+    description: "Romantic fine dining tucked just inland from Grace Bay Beach.",
     driveTime: "~23 min",
   },
   {
     id: "provence-by-eric",
     name: "Provence by Eric",
     category: "restaurant",
-    x: 675,
-    y: 220,
+    x: 690,
+    y: 280,
     area: "Grace Bay",
-    description: "Intimate chef-led tasting rooted in French technique.",
+    description: "Chef-led tasting experience in the eastern Grace Bay corridor.",
     driveTime: "~25 min",
   },
   {
     id: "infiniti",
     name: "Infiniti",
     category: "restaurant",
-    x: 700,
-    y: 200,
+    x: 672,
+    y: 255,
     area: "Grace Bay Club",
-    description: "Elegant oceanfront dining and raw bar at golden hour.",
-    driveTime: "~26 min",
+    description: "Elegant oceanfront dinner destination along central Grace Bay.",
+    driveTime: "~25 min",
   },
   {
     id: "magnolia",
     name: "Magnolia",
     category: "restaurant",
-    x: 500,
-    y: 190,
-    area: "Turtle Cove / Grace Bay",
-    description: "Hilltop sunsets with marina views and excellent seafood.",
-    driveTime: "~20 min",
+    x: 478,
+    y: 252,
+    area: "Turtle Cove",
+    description: "Hilltop dining overlooking Turtle Cove Marina and the north shore.",
+    driveTime: "~19 min",
   },
   {
     id: "cocovan",
     name: "CocoVan",
     category: "restaurant",
-    x: 590,
-    y: 225,
+    x: 596,
+    y: 307,
     area: "Grace Bay",
-    description: "Stylish airstream lounge for tacos and island bites.",
+    description: "Palm-grove Airstream lounge for tacos and casual island bites.",
     driveTime: "~23 min",
   },
   {
     id: "bay-bistro",
     name: "Bay Bistro",
     category: "restaurant",
-    x: 720,
-    y: 225,
+    x: 726,
+    y: 278,
     area: "Grace Bay",
-    description: "Ocean-view brunch favorite with island seafood classics.",
+    description: "Ocean-view brunch and seafood spot on the eastern Grace Bay strip.",
     driveTime: "~27 min",
   },
   {
     id: "blt-steak",
     name: "BLT Steak",
     category: "restaurant",
-    x: 735,
-    y: 210,
-    area: "The Ritz-Carlton, Grace Bay",
-    description: "Premium steakhouse experience for a special evening.",
+    x: 748,
+    y: 266,
+    area: "Ritz-Carlton / Grace Bay",
+    description: "Luxury steakhouse at the eastern end of the Grace Bay corridor.",
     driveTime: "~27 min",
   },
   {
     id: "grace-bay",
-    name: "Grace Bay",
+    name: "Grace Bay Beach",
     category: "beach",
-    x: 675,
-    y: 165,
+    x: 670,
+    y: 228,
     area: "North Shore",
-    description: "World-famous white sand and crystal-clear water.",
+    description: "The island's most famous beach, stretching along the north coast east of Turtle Cove.",
     driveTime: "~24 min",
   },
   {
     id: "malcolms-road-beach",
     name: "Malcolm's Road Beach",
     category: "beach",
-    x: 80,
-    y: 140,
+    x: 62,
+    y: 189,
     area: "Far West",
-    description: "Remote beach access to dramatic reef-wall snorkeling.",
+    description: "Remote northwestern beach access with dramatic reef-wall snorkeling offshore.",
     driveTime: "~40 min (4x4 advised)",
   },
   {
     id: "northwest-point-marine-park",
     name: "Northwest Point Marine Park",
     category: "beach",
-    x: 120,
-    y: 80,
+    x: 58,
+    y: 66,
     area: "Northwest Point",
-    description: "Wild conchs, protected waters, and rugged beauty.",
+    description: "Protected marine area at the island's far northwest edge.",
     driveTime: "~45 min",
   },
   {
     id: "taylor-bay",
     name: "Taylor Bay",
     category: "beach",
-    x: 195,
-    y: 430,
-    area: "South Coast",
-    description: "Calm shallow water and one of the best sunset swims.",
+    x: 330,
+    y: 462,
+    area: "Southwest Coast",
+    description: "Quiet shallow bay just west of Chalk Sound, close to the villa.",
     driveTime: "~6 min",
   },
   {
     id: "west-harbour-bluff",
-    name: "West Harbour Bluff (Pirate's Cove)",
+    name: "West Harbour Bluff",
     category: "beach",
-    x: 105,
-    y: 470,
-    area: "Southwest Coast",
-    description: "Secluded cliffs, cave access, and raw ocean scenery.",
+    x: 162,
+    y: 449,
+    area: "Southwest Tip",
+    description: "Rugged ocean-facing coast with caves, cliffs, and Pirate's Cove nearby.",
     driveTime: "~16 min",
   },
   {
     id: "sapodilla-bay",
     name: "Sapodilla Bay",
     category: "beach",
-    x: 170,
-    y: 455,
-    area: "South Coast",
-    description: "Gentle bay water with local beach-bar atmosphere.",
+    x: 346,
+    y: 502,
+    area: "Southwest Coast",
+    description: "Calm bay just southeast of Taylor Bay with a local, easygoing atmosphere.",
     driveTime: "~8 min",
   },
   {
     id: "caicos-wall",
     name: "Caicos Wall",
     category: "activity",
-    x: 55,
-    y: 185,
-    area: "Off Malcolm's Road",
-    description: "Iconic drop-off diving with turtles, rays, and reef life.",
-    driveTime: "Boat charter from west coast",
+    x: 40,
+    y: 148,
+    area: "Off the West Coast",
+    description: "Best accessed by boat from the west side; the wall lies offshore beyond the Malcolm's Road area.",
+    driveTime: "West-side charter",
   },
   {
     id: "pirates-cove-split-rock",
     name: "Pirate's Cove & Split Rock",
     category: "activity",
-    x: 130,
-    y: 490,
+    x: 145,
+    y: 474,
     area: "West Harbour Bluff",
-    description: "Historic cave, limestone formations, and dramatic coast.",
+    description: "Sea cliffs, cave formations, and historic pirate-hideout folklore on the southwest coast.",
     driveTime: "~16 min",
   },
   {
     id: "turtle-watching-conch-farm",
     name: "Turtle Watching at Conch Farm",
     category: "activity",
-    x: 845,
-    y: 180,
+    x: 878,
+    y: 176,
     area: "Leeward",
-    description: "Family favorite conservation experience with sea turtles.",
+    description: "Far east near Leeward and the old conch farm area.",
     driveTime: "~30 min",
   },
   {
     id: "chalk-sound-national-park",
     name: "Chalk Sound National Park",
     category: "activity",
-    x: 230,
-    y: 455,
-    area: "Next to Villa",
-    description: "Kayak through glowing turquoise lagoons and tiny cays.",
+    x: 382,
+    y: 470,
+    area: "By the Villa",
+    description: "The glowing turquoise lagoon system directly beside Villa La Percha.",
     driveTime: "~2 min",
   },
   {
     id: "sundog-sail",
     name: "Sundog Sail",
     category: "activity",
-    x: 470,
-    y: 225,
+    x: 476,
+    y: 287,
     area: "Turtle Cove Marina",
-    description: "Classic sunset schooner sail with snorkel stop.",
+    description: "Sunset sail departure from Turtle Cove on the island's north side.",
     driveTime: "~19 min",
   },
   {
     id: "shipwreck-diving",
     name: "Shipwreck Diving",
     category: "activity",
-    x: 520,
-    y: 110,
-    area: "North Shore Reefs",
-    description: "Dive coral-covered wrecks in clear blue water.",
-    driveTime: "Marina departure ~20 min",
+    x: 515,
+    y: 118,
+    area: "Off North Shore Reefs",
+    description: "Boat-diving territory offshore north of Providenciales.",
+    driveTime: "Marina departure",
   },
   {
     id: "north-caicos-day-trip",
     name: "North Caicos Day Trip",
     category: "activity",
-    x: 930,
-    y: 75,
-    area: "Ferry / Charter Route",
-    description: "Easy day adventure to quieter sister-island beaches.",
-    driveTime: "Ferry + drive day trip",
+    x: 952,
+    y: 54,
+    area: "Ferry / Charter East",
+    description: "Day-trip route outward from Provo toward North Caicos and Middle Caicos.",
+    driveTime: "Ferry + drive",
   },
   {
     id: "big-game-fishing",
     name: "Big Game Fishing",
     category: "activity",
-    x: 445,
-    y: 70,
-    area: "Deep Water North of Provo",
-    description: "Offshore charters for wahoo, tuna, marlin, and dorado.",
-    driveTime: "Charter from marinas",
+    x: 444,
+    y: 80,
+    area: "Deep Water North",
+    description: "Offshore fishing charters head into deep water north of the island.",
+    driveTime: "Marina departure",
   },
 ];
 
@@ -311,7 +311,7 @@ export default function IslandMap() {
             Interactive Island Map
           </h2>
           <p className="text-sm md:text-base max-w-2xl mx-auto text-[#6B6B6B] leading-relaxed">
-            Hover or tap points to explore beaches, restaurants, and adventures around Providenciales.
+            A more faithful island guide: shaped like Providenciales, with points placed by their real area on Provo.
           </p>
         </div>
 
@@ -342,38 +342,53 @@ export default function IslandMap() {
             >
               <defs>
                 <linearGradient id="islandGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#F2EFE9" />
-                  <stop offset="100%" stopColor="#E6DED2" />
+                  <stop offset="0%" stopColor="#F3EFE8" />
+                  <stop offset="100%" stopColor="#E5DDD0" />
                 </linearGradient>
                 <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
-                  <feDropShadow dx="0" dy="3" stdDeviation="4" floodColor="#2C2C2C" floodOpacity="0.22" />
+                  <feDropShadow dx="0" dy="3" stdDeviation="4" floodColor="#2C2C2C" floodOpacity="0.2" />
                 </filter>
               </defs>
 
               <path
-                d="M55 355C40 300 58 244 116 193C162 152 227 129 289 126C352 121 394 103 465 102C542 101 611 118 669 145C736 178 816 213 860 262C896 303 903 353 861 395C827 429 770 439 710 445C636 453 564 468 501 493C441 516 389 525 328 522C251 518 183 493 126 451C95 428 68 396 55 355Z"
+                d="M52 275C82 218 140 177 217 160C303 141 384 141 490 119C602 95 734 111 816 160C887 202 928 249 949 307C970 365 945 413 884 447C822 481 733 486 640 487C545 488 470 502 382 529C296 555 202 562 130 533C72 509 43 465 37 416C30 365 25 328 52 275Z"
                 fill="url(#islandGradient)"
-                stroke="#D4C9BC"
+                stroke="#CFBEAB"
                 strokeWidth="3"
               />
 
               <path
-                d="M137 408C160 430 193 455 230 470C280 490 340 505 397 507C456 511 517 500 577 477C622 460 675 448 732 440"
-                stroke="#D8CEC1"
-                strokeDasharray="6 8"
-                strokeWidth="2"
+                d="M74 275C110 223 170 193 240 182C342 166 421 160 507 142C618 119 739 129 815 171C877 205 911 247 927 300"
                 fill="none"
+                stroke="#E8DED1"
+                strokeWidth="7"
+                opacity="0.65"
               />
 
-              <ellipse cx="222" cy="430" rx="84" ry="52" fill="#93CDD6" opacity="0.45" />
-              <ellipse cx="270" cy="445" rx="54" ry="30" fill="#93CDD6" opacity="0.34" />
-              <ellipse cx="300" cy="406" rx="40" ry="22" fill="#93CDD6" opacity="0.33" />
-              <ellipse cx="498" cy="220" rx="26" ry="12" fill="#A2D8E0" opacity="0.45" />
-              <ellipse cx="625" cy="198" rx="30" ry="13" fill="#A2D8E0" opacity="0.38" />
+              <path
+                d="M120 500C215 525 318 527 404 500C491 474 562 466 658 464C731 462 802 457 863 431"
+                fill="none"
+                stroke="#D9CDBF"
+                strokeDasharray="6 9"
+                strokeWidth="2"
+              />
 
-              <text x="160" y="90" fill="#7A6A57" fontSize="18" letterSpacing="4" className="uppercase">
+              <ellipse cx="390" cy="462" rx="112" ry="56" fill="#93CDD6" opacity="0.52" />
+              <ellipse cx="332" cy="450" rx="55" ry="28" fill="#93CDD6" opacity="0.38" />
+              <ellipse cx="428" cy="487" rx="42" ry="18" fill="#93CDD6" opacity="0.34" />
+              <ellipse cx="684" cy="230" rx="76" ry="20" fill="#A8DBE1" opacity="0.22" />
+              <ellipse cx="518" cy="286" rx="42" ry="14" fill="#A8DBE1" opacity="0.18" />
+
+              <text x="175" y="118" fill="#7A6A57" fontSize="18" letterSpacing="4" className="uppercase">
                 Providenciales
               </text>
+              <text x="301" y="432" fill="#6C93A1" fontSize="14" letterSpacing="2">Chalk Sound</text>
+              <text x="583" y="246" fill="#6C93A1" fontSize="14" letterSpacing="2">Grace Bay</text>
+              <text x="448" y="262" fill="#6C93A1" fontSize="13" letterSpacing="2">Turtle Cove</text>
+              <text x="295" y="546" fill="#6C93A1" fontSize="13" letterSpacing="2">Taylor / Sapodilla</text>
+              <text x="355" y="575" fill="#6C93A1" fontSize="13" letterSpacing="2">Five Cays</text>
+              <text x="52" y="40" fill="#6C93A1" fontSize="12" letterSpacing="2">Northwest Point</text>
+              <text x="860" y="145" fill="#6C93A1" fontSize="12" letterSpacing="2">Leeward</text>
 
               <g filter="url(#softShadow)">
                 <g
@@ -383,11 +398,11 @@ export default function IslandMap() {
                   onClick={() => setSelectedId(villaBase.id)}
                   className="cursor-pointer"
                 >
-                  <circle r="16" fill="#2C2C2C" />
+                  <circle r="17" fill="#2C2C2C" />
                   <circle r="8" fill="#FAFAF8" />
-                  <circle r="24" fill="none" stroke="#2C2C2C" strokeOpacity="0.3" strokeWidth="2">
-                    <animate attributeName="r" values="18;28;18" dur="3s" repeatCount="indefinite" />
-                    <animate attributeName="stroke-opacity" values="0.45;0.2;0.45" dur="3s" repeatCount="indefinite" />
+                  <circle r="28" fill="none" stroke="#2C2C2C" strokeOpacity="0.3" strokeWidth="2">
+                    <animate attributeName="r" values="20;32;20" dur="3s" repeatCount="indefinite" />
+                    <animate attributeName="stroke-opacity" values="0.45;0.15;0.45" dur="3s" repeatCount="indefinite" />
                   </circle>
                 </g>
               </g>
@@ -412,7 +427,7 @@ export default function IslandMap() {
                       strokeWidth="2"
                       style={{ transition: "all 180ms ease" }}
                     />
-                    <circle r={isActive ? 17 : 13} fill="none" stroke={color} strokeOpacity={0.35} strokeWidth="1.5" />
+                    <circle r={isActive ? 18 : 13} fill="none" stroke={color} strokeOpacity={0.35} strokeWidth="1.5" />
                   </g>
                 );
               })}
@@ -435,7 +450,7 @@ export default function IslandMap() {
             )}
             <div className="mt-6 pt-6 border-t border-[#E8E4DF]">
               <p className="text-xs text-[#6B6B6B] leading-relaxed">
-                Tip: filter by category, then tap nearby clusters to plan each day around your mood.
+                I&apos;ve moved these to better match their real area on Providenciales — especially the Grace Bay, Turtle Cove, Five Cays, and southwest-coast groupings.
               </p>
             </div>
           </aside>
