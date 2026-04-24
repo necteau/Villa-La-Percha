@@ -2,6 +2,7 @@ import Link from "next/link";
 import Restaurants from "@/components/ExperienceRestaurants";
 import Beaches from "@/components/ExperienceBeaches";
 import Activities from "@/components/ExperienceActivities";
+import IslandMap from "@/components/IslandMap";
 
 export default function ExperiencePage() {
   return (
@@ -46,27 +47,10 @@ export default function ExperiencePage() {
             straight off the grill are all part of the everyday experience here. Below, we've
             curated our favorites so you don't have to waste time researching.
           </p>
-
-          <div className="mt-10 rounded-2xl border border-[#E8E4DF] bg-white p-7 md:p-8 shadow-[0_12px_35px_rgba(44,44,44,0.06)]">
-            <p className="text-[10px] tracking-[0.24em] uppercase mb-3" style={{ color: "#8B7355" }}>
-              New Planning Tool
-            </p>
-            <h2 className="font-display text-3xl md:text-4xl font-light mb-3" style={{ color: "#2C2C2C" }}>
-              Explore the Interactive Island Map
-            </h2>
-            <p className="text-sm md:text-base text-[#6B6B6B] leading-relaxed mb-6">
-              See where every restaurant, beach, and activity sits relative to Villa La Percha.
-            </p>
-            <Link
-              href="/experience-the-island/interactive-map"
-              className="inline-block px-7 md:px-9 py-3 text-xs md:text-sm tracking-[0.2em] uppercase text-white font-medium"
-              style={{ backgroundColor: "#8B7355" }}
-            >
-              Open Interactive Map
-            </Link>
-          </div>
         </div>
       </section>
+
+      <IslandMap />
 
       {/* Restaurants */}
       <Restaurants />
