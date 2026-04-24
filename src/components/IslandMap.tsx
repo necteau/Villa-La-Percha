@@ -8,6 +8,7 @@ import {
   islandMapLocations as points,
   type IslandMapCategory as Category,
 } from "@/data/islandMapData";
+import { gpsToSvg, provMapAnchors } from "@/data/mapCalibration";
 
 type Filter = "all" | Category;
 
@@ -24,24 +25,50 @@ const filters: { key: Filter; label: string }[] = [
   { key: "activity", label: "Activities" },
 ];
 
+type PositionedPoint = (typeof points)[number] & { renderX: number; renderY: number };
+type PositionedBase = typeof villaBase & { renderX: number; renderY: number };
+
+function getRenderedPosition(item: { x: number; y: number; lat?: number; lon?: number }) {
+  if (typeof item.lat === "number" && typeof item.lon === "number") {
+    const calibrated = gpsToSvg(item.lat, item.lon, provMapAnchors);
+    if (calibrated) return calibrated;
+  }
+
+  return { x: item.x, y: item.y };
+}
+
 export default function IslandMap() {
   const [filter, setFilter] = useState<Filter>("all");
   const [selectedId, setSelectedId] = useState<string>(villaBase.id);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
 
+  const positionedVillaBase = useMemo<PositionedBase>(() => {
+    const { x, y } = getRenderedPosition(villaBase);
+    return { ...villaBase, renderX: x, renderY: y };
+  }, []);
+
+  const positionedPoints = useMemo<PositionedPoint[]>(
+    () =>
+      points.map((point) => {
+        const { x, y } = getRenderedPosition(point);
+        return { ...point, renderX: x, renderY: y };
+      }),
+    [],
+  );
+
   const filteredPoints = useMemo(
-    () => points.filter((point) => filter === "all" || point.category === filter),
-    [filter],
+    () => positionedPoints.filter((point) => filter === "all" || point.category === filter),
+    [filter, positionedPoints],
   );
 
   const detail = useMemo(() => {
-    if (hoveredId === villaBase.id || selectedId === villaBase.id) {
-      return { ...villaBase, category: "Home Base" };
+    if (hoveredId === positionedVillaBase.id || selectedId === positionedVillaBase.id) {
+      return { ...positionedVillaBase, category: "Home Base" };
     }
 
     const id = hoveredId ?? selectedId;
-    return points.find((point) => point.id === id) ?? { ...villaBase, category: "Home Base" };
-  }, [hoveredId, selectedId]);
+    return positionedPoints.find((point) => point.id === id) ?? { ...positionedVillaBase, category: "Home Base" };
+  }, [hoveredId, selectedId, positionedPoints, positionedVillaBase]);
 
   return (
     <section className="py-16 md:py-24 bg-[#FAFAF8]">
@@ -77,7 +104,7 @@ export default function IslandMap() {
 
         <div className="grid grid-cols-1 lg:grid-cols-[1.55fr_1fr] gap-8 items-start">
           <div className="relative rounded-2xl border border-[#E8E4DF] bg-white p-3 md:p-4 shadow-[0_15px_50px_rgba(44,44,44,0.08)]">
-            <div className="relative aspect-[1200/716] overflow-hidden rounded-xl bg-[#EEF1F3]">
+            <div className="relative aspect-[1280/764] overflow-hidden rounded-xl bg-[#EEF1F3]">
               <Image
                 src={islandMapImage}
                 alt="Providenciales island map"
@@ -90,11 +117,11 @@ export default function IslandMap() {
               <div className="absolute inset-0">
                 <button
                   type="button"
-                  onMouseEnter={() => setHoveredId(villaBase.id)}
+                  onMouseEnter={() => setHoveredId(positionedVillaBase.id)}
                   onMouseLeave={() => setHoveredId(null)}
-                  onClick={() => setSelectedId(villaBase.id)}
+                  onClick={() => setSelectedId(positionedVillaBase.id)}
                   className="absolute -translate-x-1/2 -translate-y-1/2 cursor-pointer"
-                  style={{ left: `${villaBase.x}%`, top: `${villaBase.y}%` }}
+                  style={{ left: `${positionedVillaBase.renderX}%`, top: `${positionedVillaBase.renderY}%` }}
                   aria-label="Villa La Percha"
                 >
                   <span className="relative flex h-8 w-8 items-center justify-center rounded-full bg-[#2C2C2C] shadow-lg">
@@ -115,7 +142,7 @@ export default function IslandMap() {
                       onMouseLeave={() => setHoveredId(null)}
                       onClick={() => setSelectedId(point.id)}
                       className="absolute -translate-x-1/2 -translate-y-1/2 cursor-pointer"
-                      style={{ left: `${point.x}%`, top: `${point.y}%` }}
+                      style={{ left: `${point.renderX}%`, top: `${point.renderY}%` }}
                       aria-label={point.name}
                     >
                       <span
