@@ -30,6 +30,9 @@ export default function Hero() {
           <a href="#gallery" className="text-white/80 text-sm tracking-wider uppercase hover:text-white transition-colors">
             Gallery
           </a>
+          <a href="https://villa-la-percha.vercel.app/experience-the-island" className="text-white/80 text-sm tracking-wider uppercase hover:text-white transition-colors">
+            Experience
+          </a>
           <a href="#availability" className="text-white/80 text-sm tracking-wider uppercase hover:text-white transition-colors">
             Availability
           </a>

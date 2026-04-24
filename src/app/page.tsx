@@ -3,9 +3,14 @@
 import { useState } from "react";
 import Hero from "@/components/Hero";
 import About from "@/components/About";
-import Gallery from "@/components/Gallery";
+import PropertyHighlights from "@/components/PropertyHighlights";
 import Amenities from "@/components/Amenities";
+import Gallery from "@/components/Gallery";
 import AvailabilityCalendar from "@/components/AvailabilityCalendar";
+import DayAtTheVilla from "@/components/DayAtTheVilla";
+import PropertyValue from "@/components/PropertyValue";
+import PriceComparison from "@/components/PriceComparison";
+import OwnersNote from "@/components/OwnersNote";
 import Location from "@/components/Location";
 import ContactForm from "@/components/ContactForm";
 import Footer from "@/components/Footer";
@@ -19,9 +24,14 @@ export default function Home() {
     <main className="min-h-screen">
       <Hero />
       <About />
+      <PropertyHighlights />
       <Amenities />
       <Gallery />
       <AvailabilityCalendar checkIn={checkIn} setCheckIn={setCheckIn} checkOut={checkOut} setCheckOut={setCheckOut} />
+      <DayAtTheVilla />
+      <PropertyValue />
+      <PriceComparison />
+      <OwnersNote />
       <Location />
       <ContactForm checkIn={checkIn} checkOut={checkOut} />
       <Footer />
