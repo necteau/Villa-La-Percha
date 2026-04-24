@@ -66,7 +66,7 @@ export default function Activities() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {activities.map((a, i) => (
+          {activities.map((a) => (
             <div
               key={a.title}
               className="group bg-[#FAFAF8] rounded-xl border border-[#E8E4DF] p-7 hover:shadow-lg hover:border-[#8B7355]/30 transition-all duration-300"

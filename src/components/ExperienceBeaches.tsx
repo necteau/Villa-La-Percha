@@ -54,7 +54,7 @@ export default function Beaches() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {beaches.map((b, i) => (
+          {beaches.map((b) => (
             <div
               key={b.name}
               className="bg-white rounded-xl border border-[#E8E4DF] overflow-hidden hover:shadow-lg transition-shadow duration-300"

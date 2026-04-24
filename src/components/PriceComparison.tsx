@@ -1,7 +1,7 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useCallback } from "react";
 
 export default function DirectBookingCalculator() {
-  const [price, setPrice] = useState(4200);
+  const price = 4200;
   const [nights, setNights] = useState(7);
   const [visible, setVisible] = useState(false);
   const ref = useCallback((el: HTMLDivElement | null) => {

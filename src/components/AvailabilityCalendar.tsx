@@ -17,6 +17,13 @@ interface DayInfo {
   dateStr: string;
 }
 
+type Reservation = {
+  checkIn: string;
+  checkOut: string;
+};
+
+const reservationsData = availabilityData as Reservation[];
+
 const MIN_STAY = 5;
 const monthNames = [
   "January","February","March","April","May","June",
@@ -56,15 +63,15 @@ export default function AvailabilityCalendar({ checkIn, setCheckIn, checkOut, se
       const dateStr = `${viewYear}-${String(viewMonth + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
       const isPast = dateStr < todayStr;
 
-      const reservations = (availabilityData as any[]).filter(
-        (res: any) => dateStr >= res.checkIn && dateStr < res.checkOut
+      const reservations = reservationsData.filter(
+        (res) => dateStr >= res.checkIn && dateStr < res.checkOut
       );
       const isBooked = reservations.length > 0;
-      const isCheckInDate = (availabilityData as any[]).some(
-        (res: any) => res.checkIn === dateStr
+      const isCheckInDate = reservationsData.some(
+        (res) => res.checkIn === dateStr
       );
-      const isCheckOutDate = (availabilityData as any[]).some(
-        (res: any) => res.checkOut === dateStr
+      const isCheckOutDate = reservationsData.some(
+        (res) => res.checkOut === dateStr
       );
 
       let isMinStayInvalid = false;
@@ -74,7 +81,7 @@ export default function AvailabilityCalendar({ checkIn, setCheckIn, checkOut, se
         for (let n = 1; n <= 4; n++) {
           const futureDate = new Date(viewYear, viewMonth, d + n);
           const futureStr = `${futureDate.getFullYear()}-${String(futureDate.getMonth() + 1).padStart(2, '0')}-${String(futureDate.getDate()).padStart(2, '0')}`;
-          if ((availabilityData as any[]).some((res: any) => futureStr >= res.checkIn && futureStr < res.checkOut)) {
+          if (reservationsData.some((res) => futureStr >= res.checkIn && futureStr < res.checkOut)) {
             isMinStayInvalid = true;
             break;
           }
@@ -113,9 +120,9 @@ export default function AvailabilityCalendar({ checkIn, setCheckIn, checkOut, se
       if (nights < MIN_STAY) return false;
       // Must be before the next booked date
       if (day.dateStr >= todayStr) {
-        const nextBooked = (availabilityData as any[])
-          .filter((res: any) => res.checkIn >= todayStr && res.checkIn >= checkIn)
-          .map((res: any) => res.checkIn)
+        const nextBooked = reservationsData
+          .filter((res) => res.checkIn >= todayStr && res.checkIn >= checkIn)
+          .map((res) => res.checkIn)
           .sort()[0];
         if (nextBooked && day.dateStr > nextBooked) return false;
       }
@@ -151,7 +158,6 @@ export default function AvailabilityCalendar({ checkIn, setCheckIn, checkOut, se
       } else {
         const dayInfo = days.find(d => d.dateStr === dateStr);
         if (dayInfo && canBeCheckOut(dayInfo)) {
-          const nights = getNights(checkIn, dateStr);
           setCheckOut(dateStr);
           setPhase("done");
         } else {
@@ -175,7 +181,7 @@ export default function AvailabilityCalendar({ checkIn, setCheckIn, checkOut, se
 
   const isInRange = (day: DayInfo): boolean => {
     if (!checkIn) return false;
-    let end = checkOut || hoveredDate;
+    const end = checkOut || hoveredDate;
     if (!end) return false;
     if (day.isPast) return false;
     const sorted = [checkIn, end].sort();
@@ -217,8 +223,6 @@ export default function AvailabilityCalendar({ checkIn, setCheckIn, checkOut, se
   const prevMonth = () => setViewMonth((m) => { if (m === 0) { setViewYear((y) => y - 1); return 11; } return m - 1; });
   const nextMonth = () => setViewMonth((m) => { if (m === 11) { setViewYear((y) => y + 1); return 0; } return m + 1; });
 
-  const isToday = (date: number) => date === today.getDate() && viewMonth === today.getMonth() && viewYear === today.getFullYear();
-
   const bgColor = (day: DayInfo): string => {
     if (isSelectedCheckIn(day) || isSelectedCheckOut(day)) return "#1E3A5F";
     if (isInRange(day)) return "rgba(30, 58, 95, 0.15)";
@@ -240,11 +244,6 @@ export default function AvailabilityCalendar({ checkIn, setCheckIn, checkOut, se
   };
 
   const todayIs = (date: number): boolean => date === today.getDate() && viewMonth === today.getMonth() && viewYear === today.getFullYear();
-
-  const todayCheck = (day: DayInfo): boolean => {
-    if (!todayIs(day.date)) return false;
-    return isToday(day.date);
-  };
 
                 const gradientStyle = (day: DayInfo): { gradient?: string; solidBg?: string } => {
     if (isSelectedCheckIn(day) || isSelectedCheckOut(day) || isInRange(day)) return {};
@@ -299,9 +298,7 @@ export default function AvailabilityCalendar({ checkIn, setCheckIn, checkOut, se
             <div className="grid grid-cols-7 gap-0">
               {days.map((day, idx) => {
                 const bg = bgColor(day);
-                const tc = nightColor(day);
                 const grad = gradientStyle(day);
-                const highlighted = isToday(day.date);
                 const clickable = phase === "selectingCheckOut"
                   ? canBeCheckOut(day)
                   : canBeCheckIn(day);

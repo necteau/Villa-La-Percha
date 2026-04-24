@@ -1,3 +1,4 @@
+import Link from "next/link";
 import Image from "next/image";
 
 export default function Hero() {
@@ -30,14 +31,24 @@ export default function Hero() {
           <a href="#gallery" className="text-white/80 text-sm tracking-wider uppercase hover:text-white transition-colors">
             Gallery
           </a>
-          <a href="https://villa-la-percha.vercel.app/experience-the-island" className="text-white/80 text-sm tracking-wider uppercase hover:text-white transition-colors">
+          <Link href="/experience-the-island" className="text-white/80 text-sm tracking-wider uppercase hover:text-white transition-colors">
             Experience
-          </a>
+          </Link>
           <a href="#availability" className="text-white/80 text-sm tracking-wider uppercase hover:text-white transition-colors">
             Availability
           </a>
         </div>
       </nav>
+
+      <div className="absolute top-16 left-0 right-0 z-20 px-4 md:hidden">
+        <div className="mx-auto flex max-w-[420px] flex-wrap items-center justify-center gap-x-4 gap-y-2 rounded-full bg-black/25 px-4 py-2 backdrop-blur-sm">
+          <a href="#about" className="text-[10px] tracking-[0.15em] uppercase text-white/85">About</a>
+          <a href="#amenities" className="text-[10px] tracking-[0.15em] uppercase text-white/85">Amenities</a>
+          <a href="#gallery" className="text-[10px] tracking-[0.15em] uppercase text-white/85">Gallery</a>
+          <Link href="/experience-the-island" className="text-[10px] tracking-[0.15em] uppercase text-white/85">Experience</Link>
+          <a href="#availability" className="text-[10px] tracking-[0.15em] uppercase text-white/85">Availability</a>
+        </div>
+      </div>
 
       <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-white z-10 px-6">
         <p className="text-xs md:text-sm tracking-[0.35em] uppercase mb-4 md:mb-6 text-white/80">
