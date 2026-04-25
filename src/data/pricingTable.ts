@@ -28,101 +28,70 @@ export interface PricingTable {
   entries: PricingEntry[];
 }
 
-// Populate this table over time with exact date-range pricing captured from
-// direct booking, Airbnb, and VRBO. The calculation layer will use the most
-// specific entry whose range fully contains the guest's requested stay.
+// Pricing table for Villa La Percha.
+// Each entry covers a platform (direct, airbnb, vrbo) across a date range.
+// The calculation layer selects the widest matching entry for a given stay.
 //
-// Example entry shape:
-// {
-//   id: "direct-2026-may-16",
-//   platform: "direct",
-//   startDate: "2026-05-16",
-//   endDate: "2026-05-23",
-//   nightlyRate: 4200,
-//   charges: [],
-// }
+// Update strategy: add more specific date-range entries as exact quotes arrive.
+// For now, the baseline covers all dates from today through 1 Jan 2028.
 //
-// Example Airbnb/VRBO charge rules:
-// charges: [
-//   { label: "Cleaning fee", category: "fee", type: "fixed", value: 650 },
-//   { label: "Service fee", category: "fee", type: "percent", value: 0.14, basis: "base" },
-//   { label: "Occupancy tax", category: "tax", type: "percent", value: 0.12, basis: "base_plus_fees" },
-// ]
+// Owner instruction (2026-04-25): roll VRBO fees into the nightly rate (like Airbnb
+// does) so columns compare apples-to-apples. Show tax separately. Use VRBO
+// $1,792.10/night and Airbnb $1,844/night for all dates.
+
 export const pricingTable: PricingTable = {
   entries: [
     {
-      id: "direct-baseline-2026-2027",
+      id: "direct-baseline-2026-2028",
       platform: "direct",
-      startDate: "2026-04-24",
+      startDate: "2026-04-25",
       endDate: "2028-01-01",
       nightlyRate: 1500,
       currency: "USD",
       charges: [],
-      notes: "Baseline seeded direct-pricing row requested by owner on 2026-04-24. No fees or taxes.",
+      notes: "Direct pricing. No fees, no platform markup, no surprise taxes.",
     },
     {
-      id: "vrbo-baseline-2026-2027",
+      id: "vrbo-baseline-2026-2028",
       platform: "vrbo",
-      startDate: "2026-04-24",
+      startDate: "2026-04-25",
       endDate: "2028-01-01",
-      nightlyRate: 1800,
+      nightlyRate: 1792.10,
       currency: "USD",
       charges: [
-        {
-          label: "Cleaning fee",
-          category: "fee",
-          type: "fixed",
-          value: 650,
-        },
-        {
-          label: "Traveler service fee",
-          category: "fee",
-          type: "percent",
-          value: 0.08,
-          basis: "base_plus_fees",
-        },
         {
           label: "Occupancy taxes",
           category: "tax",
           type: "percent",
-          value: 0.12,
-          basis: "base_plus_fees",
+          value: 0.1038,
+          basis: "base",
         },
       ],
       notes:
-        "Baseline seeded row. VRBO help/search materials indicate traveler service fee is a percentage of reservation subtotal before taxes; 8% used here as a defensible midpoint assumption plus 12% occupancy tax and $650 cleaning fee until exact checkout quotes are captured.",
+        "VRBO fees rolled into nightly rate per owner direction on 2026-04-25. " +
+        "Exact checkout screenshot: $1,792.10/night all-in, tax 10.38% on base. " +
+        "Total for May 16-23 (7 nights): $13,847 (vs direct $10,500 — saving $3,347).",
     },
     {
-      id: "airbnb-baseline-2026-2027",
+      id: "airbnb-baseline-2026-2028",
       platform: "airbnb",
-      startDate: "2026-04-24",
+      startDate: "2026-04-25",
       endDate: "2028-01-01",
-      nightlyRate: 1850,
+      nightlyRate: 1844,
       currency: "USD",
       charges: [
-        {
-          label: "Cleaning fee",
-          category: "fee",
-          type: "fixed",
-          value: 650,
-        },
-        {
-          label: "Guest service fee",
-          category: "fee",
-          type: "percent",
-          value: 0.15,
-          basis: "base_plus_fees",
-        },
         {
           label: "Occupancy taxes",
           category: "tax",
           type: "percent",
-          value: 0.12,
-          basis: "base_plus_fees",
+          value: 0.1177,
+          basis: "base",
         },
       ],
       notes:
-        "Baseline seeded row. Airbnb Help Center says guest service fees typically range from 14.1% to 16.5% of booking subtotal; 15% used here with $650 cleaning fee and 12% occupancy tax until exact checkout quotes are captured.",
+        "Airbnb nightly rate per owner-provided checkout screenshot 2026-04-25. " +
+        "$1,844/night all-in, tax 11.77% on base. " +
+        "Total for May 16-23 (7 nights): $14,427 (vs direct $10,500 — saving $3,927).",
     },
   ],
 };
