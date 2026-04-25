@@ -56,10 +56,14 @@ export default function Hero() {
         </p>
         <h1
           className="font-display text-3xl md:text-6xl lg:text-7xl font-light tracking-wide mb-6 md:mb-8 leading-tight"
-          style={{ maxWidth: "90vw", whiteSpace: "nowrap" }}
+          style={{ maxWidth: "90vw" }}
         >
           Villa La Percha
         </h1>
+        <p className="max-w-2xl text-sm md:text-lg text-white/82 leading-relaxed mb-8 md:mb-10">
+          A private waterfront villa in the Chalk Sound neighborhood, moments from Taylor Bay and
+          Sapodilla Bay, with a pool, hot tub, dock, kayaks, paddle boards, and room for the whole group.
+        </p>
         <a
           href="#contact"
           className="inline-block px-8 md:px-10 py-3 md:py-4 border border-white/50 text-white text-xs md:text-sm tracking-[0.2em] uppercase hover:bg-white hover:text-slate-900 transition-all duration-500"

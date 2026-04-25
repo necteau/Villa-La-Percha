@@ -15,8 +15,6 @@ const inclusions = [
 ];
 
 export default function PropertyValue() {
-  const valuePer = 17500; // estimated total property value
-
   return (
     <section className="py-20 md:py-32 bg-[#FAFAF8]">
       <div className="max-w-5xl mx-auto px-6 md:px-8">
@@ -28,8 +26,9 @@ export default function PropertyValue() {
             What You&apos;re Really Getting
           </h2>
           <p className="text-sm md:text-base text-[#6B6B6B] leading-relaxed max-w-xl mx-auto">
-            Villa La Percha isn&apos;t just a place to sleep. It&apos;s a fully equipped private
-            resort — and you&apos;re getting all of it, every night.
+            This isn&apos;t just another place to sleep near the beach. It&apos;s a full private villa
+            experience with indoor-outdoor living, water access, generous gathering space, and the kind
+            of amenities that make groups want to stay put.
           </p>
         </div>
 
@@ -55,7 +54,7 @@ export default function PropertyValue() {
               The Comparison
             </h3>
             <p className="text-xs text-[#6B6B6B] mt-1">
-              What you&apos;d get at a comparable resort vs. your private villa
+              What a typical resort stay feels like versus having the whole villa to yourselves
             </p>
           </div>
 
@@ -68,10 +67,10 @@ export default function PropertyValue() {
               <div className="space-y-3">
                 {[
                   "Shared pool",
-                  "No water access",
-                  "Small room",
-                  "Kitchen fee",
-                  "Resort parking ($50/night)",
+                  "No private dock or easy water access",
+                  "Separate rooms instead of one shared home base",
+                  "No full kitchen for the group",
+                  "Extra resort and parking charges",
                   "No outdoor dining",
                   "Crowded grounds",
                   "No sunset views",
@@ -82,12 +81,9 @@ export default function PropertyValue() {
                   </div>
                 ))}
               </div>
-              <div className="mt-6 pt-4 border-t border-[#E8E4DF]">
-                <p className="text-xs text-[#6B6B6B]">From</p>
-                <p className="text-3xl font-light" style={{ color: "#2C2C2C" }}>
-                  ${valuePer.toLocaleString()}<span className="text-sm text-[#6B6B6B]">/week</span>
-                </p>
-              </div>
+              <p className="mt-6 pt-4 border-t border-[#E8E4DF] text-sm text-[#6B6B6B] leading-relaxed">
+                Fine for a standard trip. Less ideal if you want privacy, room to spread out, and a place that feels like your own.
+              </p>
             </div>
 
             {/* Villa */}
@@ -99,7 +95,7 @@ export default function PropertyValue() {
                 {[
                   "Private heated pool",
                   "Private dock access",
-                  "Full 4-bed house",
+                  "Full 4-suite villa",
                   "Fully equipped kitchen",
                   "Free parking",
                   "Outdoor bar & grill",
@@ -112,12 +108,9 @@ export default function PropertyValue() {
                   </div>
                 ))}
               </div>
-              <div className="mt-6 pt-4 border-t border-white/20">
-                <p className="text-xs text-white/60">From</p>
-                <p className="text-3xl font-light text-white">
-                  $4,200<span className="text-sm text-white/50">/night</span>
-                </p>
-              </div>
+              <p className="mt-6 pt-4 border-t border-white/20 text-sm text-white/80 leading-relaxed">
+                Better for families, couples traveling together, and anyone who wants the stay itself to be part of the vacation.
+              </p>
             </div>
           </div>
         </div>

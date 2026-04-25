@@ -1,16 +1,16 @@
 const amenities = [
   { label: "65ft Infinity Pool" },
-  { label: "5 Bedrooms · 5 Bathrooms" },
-  { label: "Direct Ocean Access" },
-  { label: "Chalk Sound National Park" },
-  { label: "Private Pool &amp; Garden" },
-  { label: "Kayaks &amp; Beach Equipment" },
+  { label: "4 En-Suite Suites + 1 Half Bath" },
+  { label: "Dock Swimming & Water Access" },
+  { label: "Chalk Sound Neighborhood" },
+  { label: "Pool, Hot Tub & Pergolas" },
+  { label: "2 Kayaks + 2 Paddle Boards" },
   { label: "Chef&apos;s Kitchen" },
-  { label: "Open-Plan Living" },
+  { label: "Screened Indoor-Outdoor Living" },
   { label: "Sunset Views" },
-  { label: "6 Weeks Personal Time" },
+  { label: "Outdoor Kitchen with Pro Grill" },
   { label: "Tropical Landscaping" },
-  { label: "Private Beach Shoreline" },
+  { label: "Dock Fishing for Bonefish, Snapper & Jacks" },
 ];
 
 export default function Amenities() {

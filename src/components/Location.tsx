@@ -9,12 +9,13 @@ export default function Location() {
           </h2>
           <div className="section-divider mb-8" />
           <p className="font-body text-[#6B6B6B] leading-relaxed mb-8">
-            Nestled on the shores of Chalk Sound National Park — one of the Caribbean&apos;s most breathtaking natural wonders. 
-            The sound&apos;s turquoise waters are shallow, calm, and so clear you can see the coral gardens below.
+            Villa La Percha is set in the Chalk Sound neighborhood between Taylor Bay and Sapodilla Bay,
+            giving you easy access to some of the calmest, prettiest water on Providenciales without being
+            stuck in the busier hotel zones.
           </p>
           <p className="font-body text-[#6B6B6B] leading-relaxed">
-            Grace Bay, the world's most famous beach, is just 20 minutes away. 
-            Providenciales shopping and dining — 5 minutes.
+            Taylor Bay is just a one- to two-minute walk from the driveway, Sapodilla Bay is right nearby,
+            and restaurants, groceries, and the rest of the island are all easy to reach by car.
           </p>
         </div>
 
@@ -27,7 +28,7 @@ export default function Location() {
                 <circle cx="24" cy="20" r="8" stroke="currentColor" strokeWidth="1.5" fill="none"/>
               </svg>
               <p className="font-body text-[#6B6B6B]/50 text-sm">
-                Chalk Sound<br />National Park
+                Chalk Sound<br />Neighborhood
               </p>
             </div>
           </div>
