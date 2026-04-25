@@ -27,8 +27,8 @@ const pillars = [
 
 const roadmap = [
   "Property websites and direct inquiry funnels",
-  "Owner dashboards and response workflows",
-  "Calendar, pricing, and booking operations",
+  "Owner dashboards, configuration, and response workflows",
+  "Calendar, pricing, payment, and booking operations",
   "A real alternative to marketplace-first vacation rental selling",
 ];
 
@@ -51,7 +51,7 @@ export default function HomePage() {
             DirectStay helps owners reduce dependence on Airbnb and VRBO with polished guest-facing booking
             sites, stronger direct conversion, and AI-powered systems behind the scenes.
           </p>
-          <div className="mt-10 flex flex-col gap-4 sm:flex-row">
+          <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:flex-wrap">
             <a
               href="mailto:hello@directstay.app?subject=DirectStay%20owner%20inquiry"
               className="inline-flex items-center justify-center rounded-full bg-[#1e4536] px-7 py-3 text-sm font-semibold text-white transition hover:bg-[#18372b]"
@@ -63,6 +63,12 @@ export default function HomePage() {
               className="inline-flex items-center justify-center rounded-full border border-[#1f1f1b]/15 px-7 py-3 text-sm font-semibold text-[#1f1f1b] transition hover:bg-[#f2efe8]"
             >
               View live property example
+            </Link>
+            <Link
+              href="/owner-portal"
+              className="inline-flex items-center justify-center rounded-full border border-[#1f1f1b]/15 px-7 py-3 text-sm font-semibold text-[#1f1f1b] transition hover:bg-[#f2efe8]"
+            >
+              Preview owner portal
             </Link>
           </div>
           <p className="mt-6 max-w-2xl text-sm leading-6 text-[#7b7468]">
@@ -117,26 +123,50 @@ export default function HomePage() {
       </section>
 
       <section className="mx-auto max-w-6xl px-6 py-20 md:px-10">
-        <div className="rounded-[36px] bg-[#1a1916] px-8 py-12 text-white md:px-12 md:py-16">
-          <p className="text-sm font-medium uppercase tracking-[0.24em] text-white/60">Live example</p>
-          <h2 className="mt-4 font-display text-4xl leading-tight md:text-5xl">Villa La Percha</h2>
-          <p className="mt-5 max-w-3xl text-lg leading-8 text-white/78">
-            A direct-booking villa site designed to show what happens when a property is positioned like a
-            real hospitality brand instead of just another listing on someone else&apos;s platform.
-          </p>
-          <div className="mt-8 flex flex-col gap-4 sm:flex-row">
-            <Link
-              href="/villa-la-percha"
-              className="inline-flex items-center justify-center rounded-full bg-white px-7 py-3 text-sm font-semibold text-[#1a1916] transition hover:bg-[#f2efe8]"
-            >
-              Open the Villa La Percha site
-            </Link>
-            <a
-              href="mailto:hello@directstay.app?subject=DirectStay%20demo%20request"
-              className="inline-flex items-center justify-center rounded-full border border-white/20 px-7 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
-            >
-              Request a site like this
-            </a>
+        <div className="grid gap-6 lg:grid-cols-2">
+          <div className="rounded-[36px] bg-[#1a1916] px-8 py-12 text-white md:px-12 md:py-16">
+            <p className="text-sm font-medium uppercase tracking-[0.24em] text-white/60">Live example</p>
+            <h2 className="mt-4 font-display text-4xl leading-tight md:text-5xl">Villa La Percha</h2>
+            <p className="mt-5 max-w-3xl text-lg leading-8 text-white/78">
+              A direct-booking villa site designed to show what happens when a property is positioned like a
+              real hospitality brand instead of just another listing on someone else&apos;s platform.
+            </p>
+            <div className="mt-8 flex flex-col gap-4 sm:flex-row">
+              <Link
+                href="/villa-la-percha"
+                className="inline-flex items-center justify-center rounded-full bg-white px-7 py-3 text-sm font-semibold text-[#1a1916] transition hover:bg-[#f2efe8]"
+              >
+                Open the Villa La Percha site
+              </Link>
+              <a
+                href="mailto:hello@directstay.app?subject=DirectStay%20demo%20request"
+                className="inline-flex items-center justify-center rounded-full border border-white/20 px-7 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
+              >
+                Request a site like this
+              </a>
+            </div>
+          </div>
+
+          <div className="rounded-[36px] bg-white px-8 py-12 text-[#1a1916] shadow-[0_12px_40px_rgba(0,0,0,0.05)] md:px-12 md:py-16">
+            <p className="text-sm font-medium uppercase tracking-[0.24em] text-[#7b7468]">Owner portal</p>
+            <h2 className="mt-4 font-display text-4xl leading-tight md:text-5xl">Per-site controls for payments, booking flow, and operations.</h2>
+            <p className="mt-5 max-w-3xl text-lg leading-8 text-[#5b554b]">
+              DirectStay should eventually let each owner decide whether their site supports Stripe, Zelle, Venmo, Cash App, or a hybrid setup — along with booking rules, notifications, and operational preferences.
+            </p>
+            <div className="mt-8 flex flex-col gap-4 sm:flex-row">
+              <Link
+                href="/owner-portal"
+                className="inline-flex items-center justify-center rounded-full bg-[#1e4536] px-7 py-3 text-sm font-semibold text-white transition hover:bg-[#18372b]"
+              >
+                Explore owner portal preview
+              </Link>
+              <a
+                href="mailto:hello@directstay.app?subject=DirectStay%20owner%20portal"
+                className="inline-flex items-center justify-center rounded-full border border-[#1f1f1b]/15 px-7 py-3 text-sm font-semibold text-[#1f1f1b] transition hover:bg-[#f2efe8]"
+              >
+                Talk through owner needs
+              </a>
+            </div>
           </div>
         </div>
       </section>
