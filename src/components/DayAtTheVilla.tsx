@@ -110,6 +110,16 @@ export default function DayAtTheVilla() {
             ))}
           </div>
         </div>
+
+        <div className="text-center mt-14">
+          <a
+            href="#availability"
+            className="inline-block px-8 md:px-10 py-3.5 text-xs md:text-sm tracking-[0.2em] uppercase text-white font-medium"
+            style={{ backgroundColor: "#8B7355" }}
+          >
+            Check Availability
+          </a>
+        </div>
       </div>
     </section>
   );
