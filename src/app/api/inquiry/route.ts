@@ -112,7 +112,7 @@ export async function POST(req: Request) {
 
     const result = await resend.emails.send({
       from: "Villa La Percha <onboarding@resend.dev>",
-      to: ["VillaLaPercha@gmail.com"],
+      to: ["necteau@gmail.com"],
       subject,
       html,
       text,
