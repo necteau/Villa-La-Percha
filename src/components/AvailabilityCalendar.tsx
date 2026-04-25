@@ -263,12 +263,9 @@ export default function AvailabilityCalendar({ checkIn, setCheckIn, checkOut, se
   return (
     <section id="availability" className="py-20 md:py-32 bg-[#FAFAF8]">
       <div className="max-w-xl mx-auto px-6 md:px-8">
-        <div className="text-center mb-14">
-          <p className="text-xs tracking-[0.3em] uppercase mb-4" style={{ color: "#8B7355" }}>Availability</p>
-          <h2 className="font-display text-3xl md:text-5xl font-light mb-4" style={{ color: "#2C2C2C" }}>Check Availability</h2>
-          <p className="text-sm md:text-base max-w-lg mx-auto leading-relaxed" style={{ color: "#6B6B6B" }}>
-            Select your preferred dates to start an inquiry and we&apos;ll respond within 24 hours.<br />
-            Direct bookings here are typically 15–30% lower than the total price guests often see on Airbnb or VRBO.
+        <div className="text-center mb-10 md:mb-12">
+          <p className="text-sm md:text-base max-w-xl mx-auto leading-relaxed" style={{ color: "#6B6B6B" }}>
+            Select your preferred dates to compare pricing and start an inquiry. We&apos;ll respond within 24 hours.
           </p>
         </div>
 
