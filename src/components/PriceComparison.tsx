@@ -35,6 +35,13 @@ export default function DirectBookingCalculator({ checkIn = null, checkOut = nul
     selectedRangeComparison?.direct && (selectedRangeComparison.airbnb || selectedRangeComparison.vrbo)
   );
 
+  const selectedComparisonNotes = hasExactComparison && selectedRangeComparison
+    ? [selectedRangeComparison.direct, selectedRangeComparison.airbnb, selectedRangeComparison.vrbo]
+        .filter(Boolean)
+        .map((pricing) => pricing?.entry.notes)
+        .filter((note, index, arr): note is string => Boolean(note) && arr.indexOf(note) === index)
+    : [];
+
   const nightlyRate = 4200;
   const directTotal = nightlyRate * nights;
   const otaLow = Math.round(directTotal * 1.15);
@@ -60,7 +67,7 @@ export default function DirectBookingCalculator({ checkIn = null, checkOut = nul
           </h2>
           <p className="text-sm md:text-base text-[#6B6B6B] leading-relaxed max-w-2xl mx-auto">
             {hasExactComparison
-              ? "Once we have direct, Airbnb, and VRBO pricing loaded for a selected date range, this section can show the real nightly rates, fees, taxes, and savings side by side."
+              ? "For your selected stay, this section compares direct pricing against seeded Airbnb and VRBO totals, including nightly rates, fees, taxes, and savings."
               : "Our pricing is typically about 15–30% lower than the total guests often see on Airbnb or VRBO once platform fees, markups, and other extras are layered in."}
           </p>
         </div>
@@ -134,9 +141,17 @@ export default function DirectBookingCalculator({ checkIn = null, checkOut = nul
 
             <div className="mt-8 rounded-2xl border border-[#E8E4DF] bg-[#FAFAF8] p-6 text-center shadow-sm">
               <p className="text-sm text-[#6B6B6B] leading-relaxed max-w-3xl mx-auto">
-                This comparison will become fully live as we populate the pricing table with exact direct, Airbnb,
-                and VRBO date-range entries — including platform fees and taxes for each stay window.
+                These totals are powered by the pricing table and will get more precise as we replace seeded baseline rows with exact date-range quotes captured from direct, Airbnb, and VRBO checkout screens.
               </p>
+              {selectedComparisonNotes.length > 0 && (
+                <div className="mt-4 space-y-2 text-left max-w-3xl mx-auto">
+                  {selectedComparisonNotes.map((note) => (
+                    <p key={note} className="text-xs text-[#6B6B6B] leading-relaxed">
+                      • {note}
+                    </p>
+                  ))}
+                </div>
+              )}
             </div>
           </>
         ) : (
