@@ -1,7 +1,20 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
+const navItems = [
+  { label: "About", href: "#about" },
+  { label: "Amenities", href: "#amenities" },
+  { label: "Gallery", href: "#gallery" },
+  { label: "Experience", href: "/experience-the-island", isRoute: true },
+  { label: "Availability", href: "#availability" },
+];
+
 export default function Hero() {
+  const [menuOpen, setMenuOpen] = useState(false);
+
   return (
     <section className="relative w-full overflow-hidden bg-[#1a1a1a]">
       <div className="relative w-full" style={{ height: "50vh" }}>
@@ -17,36 +30,67 @@ export default function Hero() {
         <div className="absolute inset-0 bg-black/35" />
       </div>
 
-      <nav className="absolute top-0 left-0 right-0 z-20 flex items-center justify-between px-6 md:px-16 py-4 md:py-6">
+      <nav className="absolute top-0 left-0 right-0 z-20 flex items-center justify-between px-6 py-4 md:px-10 md:py-6 lg:px-16">
         <span className="text-white font-display text-base md:text-lg tracking-[0.15em] uppercase">
           Villa La Percha
         </span>
-        <div className="hidden md:flex items-center gap-8">
-          <a href="#about" className="text-white/80 text-sm tracking-wider uppercase hover:text-white transition-colors">
-            About
-          </a>
-          <a href="#amenities" className="text-white/80 text-sm tracking-wider uppercase hover:text-white transition-colors">
-            Amenities
-          </a>
-          <a href="#gallery" className="text-white/80 text-sm tracking-wider uppercase hover:text-white transition-colors">
-            Gallery
-          </a>
-          <Link href="/experience-the-island" className="text-white/80 text-sm tracking-wider uppercase hover:text-white transition-colors">
-            Experience
-          </Link>
-          <a href="#availability" className="text-white/80 text-sm tracking-wider uppercase hover:text-white transition-colors">
-            Availability
-          </a>
+
+        <div className="hidden lg:flex items-center gap-8">
+          {navItems.map((item) =>
+            item.isRoute ? (
+              <Link key={item.label} href={item.href} className="text-white/80 text-sm tracking-wider uppercase hover:text-white transition-colors">
+                {item.label}
+              </Link>
+            ) : (
+              <a key={item.label} href={item.href} className="text-white/80 text-sm tracking-wider uppercase hover:text-white transition-colors">
+                {item.label}
+              </a>
+            )
+          )}
         </div>
+
+        <button
+          type="button"
+          aria-label={menuOpen ? "Close navigation menu" : "Open navigation menu"}
+          aria-expanded={menuOpen}
+          onClick={() => setMenuOpen((open) => !open)}
+          className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-black/20 text-white backdrop-blur-sm transition hover:bg-black/30 lg:hidden"
+        >
+          <span className="relative block h-4 w-5">
+            <span className={`absolute left-0 top-0 h-[1.5px] w-5 bg-white transition ${menuOpen ? "translate-y-[7px] rotate-45" : ""}`} />
+            <span className={`absolute left-0 top-[7px] h-[1.5px] w-5 bg-white transition ${menuOpen ? "opacity-0" : ""}`} />
+            <span className={`absolute left-0 top-[14px] h-[1.5px] w-5 bg-white transition ${menuOpen ? "-translate-y-[7px] -rotate-45" : ""}`} />
+          </span>
+        </button>
       </nav>
 
-      <div className="absolute top-16 left-0 right-0 z-20 px-4 md:hidden">
-        <div className="mx-auto flex max-w-[320px] items-center justify-center gap-5 rounded-full bg-black/25 px-4 py-2 backdrop-blur-sm">
-          <a href="#about" className="text-[10px] tracking-[0.15em] uppercase text-white/85">About</a>
-          <a href="#gallery" className="text-[10px] tracking-[0.15em] uppercase text-white/85">Gallery</a>
-          <a href="#availability" className="text-[10px] tracking-[0.15em] uppercase text-white/85">Availability</a>
+      {menuOpen ? (
+        <div className="absolute top-[72px] right-4 z-30 w-[min(280px,calc(100%-2rem))] rounded-3xl border border-white/15 bg-black/55 p-4 text-white shadow-2xl backdrop-blur-md lg:hidden">
+          <div className="flex flex-col gap-1">
+            {navItems.map((item) =>
+              item.isRoute ? (
+                <Link
+                  key={item.label}
+                  href={item.href}
+                  onClick={() => setMenuOpen(false)}
+                  className="rounded-2xl px-4 py-3 text-sm uppercase tracking-[0.18em] text-white/90 transition hover:bg-white/10"
+                >
+                  {item.label}
+                </Link>
+              ) : (
+                <a
+                  key={item.label}
+                  href={item.href}
+                  onClick={() => setMenuOpen(false)}
+                  className="rounded-2xl px-4 py-3 text-sm uppercase tracking-[0.18em] text-white/90 transition hover:bg-white/10"
+                >
+                  {item.label}
+                </a>
+              )
+            )}
+          </div>
         </div>
-      </div>
+      ) : null}
 
       <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-white z-10 px-6 pt-14 md:pt-0">
         <p className="text-xs md:text-sm tracking-[0.35em] uppercase mb-4 md:mb-6 text-white/80">
