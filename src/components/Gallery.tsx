@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const photos = [
   { src: "/images/aerial-house-ocean-neighbors.jpg", alt: "Aerial view of the house, pool and ocean" },
@@ -34,6 +34,7 @@ const photos = [
 
 export default function Gallery() {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const touchStartX = useRef<number | null>(null);
   const touchEndX = useRef<number | null>(null);
 
@@ -41,6 +42,24 @@ export default function Gallery() {
     const total = photos.length;
     setActiveIndex((index + total) % total);
   };
+
+  useEffect(() => {
+    if (!isFullscreen) return;
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setIsFullscreen(false);
+      if (event.key === "ArrowLeft") showPhoto(activeIndex - 1);
+      if (event.key === "ArrowRight") showPhoto(activeIndex + 1);
+    };
+
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", onKeyDown);
+
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [activeIndex, isFullscreen]);
 
   const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
     touchStartX.current = e.changedTouches[0].clientX;
@@ -84,6 +103,7 @@ export default function Gallery() {
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
+            onClick={() => setIsFullscreen(true)}
           >
             <Image
               key={activePhoto.src}
@@ -98,7 +118,10 @@ export default function Gallery() {
 
             <button
               type="button"
-              onClick={() => showPhoto(activeIndex - 1)}
+              onClick={(e) => {
+                e.stopPropagation();
+                showPhoto(activeIndex - 1);
+              }}
               className="absolute left-3 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/55 text-[#2C2C2C] shadow-lg transition hover:bg-white/75 md:left-5 md:h-12 md:w-12"
               aria-label="Previous photo"
             >
@@ -107,7 +130,10 @@ export default function Gallery() {
 
             <button
               type="button"
-              onClick={() => showPhoto(activeIndex + 1)}
+              onClick={(e) => {
+                e.stopPropagation();
+                showPhoto(activeIndex + 1);
+              }}
               className="absolute right-3 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/55 text-[#2C2C2C] shadow-lg transition hover:bg-white/75 md:right-5 md:h-12 md:w-12"
               aria-label="Next photo"
             >
@@ -147,6 +173,58 @@ export default function Gallery() {
           </div>
         </div>
       </div>
+
+      {isFullscreen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/92 p-4 md:p-8"
+          onClick={() => setIsFullscreen(false)}
+        >
+          <div
+            className="relative h-full w-full max-w-7xl"
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <Image
+              src={activePhoto.src}
+              alt={activePhoto.alt}
+              fill
+              className="object-contain"
+              sizes="100vw"
+              quality={95}
+              priority
+            />
+
+            <button
+              type="button"
+              onClick={() => setIsFullscreen(false)}
+              className="absolute right-3 top-3 z-10 flex h-11 w-11 items-center justify-center rounded-full bg-white/55 text-[#2C2C2C] shadow-lg transition hover:bg-white/75 md:right-5 md:top-5 md:h-12 md:w-12"
+              aria-label="Close fullscreen gallery"
+            >
+              <span className="text-xl leading-none">✕</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => showPhoto(activeIndex - 1)}
+              className="absolute left-3 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/55 text-[#2C2C2C] shadow-lg transition hover:bg-white/75 md:left-5 md:h-12 md:w-12"
+              aria-label="Previous photo"
+            >
+              <span className="text-2xl leading-none">‹</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => showPhoto(activeIndex + 1)}
+              className="absolute right-3 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/55 text-[#2C2C2C] shadow-lg transition hover:bg-white/75 md:right-5 md:h-12 md:w-12"
+              aria-label="Next photo"
+            >
+              <span className="text-2xl leading-none">›</span>
+            </button>
+          </div>
+        </div>
+      )}
     </section>
   );
 }
