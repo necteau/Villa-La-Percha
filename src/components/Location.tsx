@@ -2,15 +2,15 @@ import Image from "next/image";
 
 export default function Location() {
   return (
-    <section id="location" className="py-28 md:py-40 bg-white">
-      <div className="max-w-7xl mx-auto px-8 grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+    <section id="location" className="py-16 md:py-20 bg-white">
+      <div className="max-w-7xl mx-auto px-8 grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-12 items-center">
         <div>
           <p className="text-sm tracking-[0.3em] uppercase text-[#8B7355] mb-6">Location</p>
-          <h2 className="font-display text-4xl md:text-5xl font-light text-[#2C2C2C] mb-8">
+          <h2 className="font-display text-4xl md:text-5xl font-light text-[#2C2C2C] mb-6">
             Chalk Sound, Providenciales
           </h2>
-          <div className="section-divider mb-8" />
-          <p className="font-body text-[#6B6B6B] leading-relaxed mb-8">
+          <div className="section-divider mb-6" />
+          <p className="font-body text-[#6B6B6B] leading-relaxed mb-6">
             Villa La Percha is set in the Chalk Sound neighborhood between Taylor Bay and Sapodilla Bay,
             giving you easy access to some of the calmest, prettiest water on Providenciales without being
             stuck in the busier hotel zones.

@@ -51,9 +51,9 @@ export default function DayAtTheVilla() {
   ];
 
   return (
-    <section className="py-20 md:py-32 bg-[#FAFAF8]">
+    <section className="py-16 md:py-20 bg-[#FAFAF8]">
       <div className="max-w-7xl mx-auto px-6 md:px-8">
-        <div className="text-center mb-16">
+        <div className="text-center mb-10 md:mb-12">
           <p className="text-xs tracking-[0.3em] uppercase mb-3" style={{ color: "#8B7355" }}>
             A Perfect Day
           </p>
@@ -111,7 +111,7 @@ export default function DayAtTheVilla() {
           </div>
         </div>
 
-        <div className="text-center mt-14">
+        <div className="text-center mt-10">
           <a
             href="#availability"
             className="inline-block px-8 md:px-10 py-3.5 text-xs md:text-sm tracking-[0.2em] uppercase text-white font-medium"

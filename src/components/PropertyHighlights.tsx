@@ -25,9 +25,9 @@ const highlights = [
 
 export default function PropertyHighlights() {
   return (
-    <section className="py-20 md:py-28 bg-gradient-to-b from-white to-sky-50">
+    <section className="py-16 md:py-20 bg-gradient-to-b from-white to-sky-50">
       <div className="max-w-7xl mx-auto px-6">
-        <div className="text-center mb-16">
+        <div className="text-center mb-10 md:mb-12">
           <p className="text-sm tracking-[0.3em] uppercase text-sky-600 mb-3">The Villa</p>
           <h2 className="text-3xl md:text-5xl font-light text-slate-900 mb-4">
             What Makes Villa La Percha Different

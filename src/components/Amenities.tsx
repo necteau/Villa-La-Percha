@@ -33,9 +33,9 @@ const categories = [
 
 export default function Amenities() {
   return (
-    <section id="amenities" className="py-24 md:py-32 bg-white">
+    <section id="amenities" className="py-16 md:py-20 bg-white">
       <div className="max-w-6xl mx-auto px-6 md:px-8">
-        <div className="text-center mb-16">
+        <div className="text-center mb-10 md:mb-12">
           <p className="text-sm tracking-[0.3em] uppercase text-[#8B7355] mb-6">Everything Included</p>
           <h2 className="font-display text-4xl md:text-5xl font-light text-[#2C2C2C]">
             Everything that makes the stay feel easy
@@ -44,7 +44,7 @@ export default function Amenities() {
             Villa La Percha works because the practical details and the memorable parts of the stay live in the same place:
             water access, gathering space, privacy, and the kind of layout that makes group trips feel effortless.
           </p>
-          <div className="section-divider mt-10" />
+          <div className="section-divider mt-8" />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
@@ -68,7 +68,7 @@ export default function Amenities() {
           ))}
         </div>
 
-        <div className="mt-12 rounded-[32px] border border-[#E8E4DF] bg-[#F5F0E8] p-8 md:p-10 text-center shadow-sm">
+        <div className="mt-10 rounded-[32px] border border-[#E8E4DF] bg-[#F5F0E8] p-8 md:p-10 text-center shadow-sm">
           <p className="text-xs tracking-[0.28em] uppercase text-[#8B7355] mb-4">Why it feels different</p>
           <h3 className="font-display text-2xl md:text-4xl font-light text-[#2C2C2C] mb-4">
             This is not just a place to sleep near the beach.

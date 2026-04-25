@@ -261,9 +261,9 @@ export default function AvailabilityCalendar({ checkIn, setCheckIn, checkOut, se
   };
 
   return (
-    <section id="availability" className="py-20 md:py-32 bg-[#FAFAF8]">
+    <section id="availability" className="py-12 md:py-16 bg-[#FAFAF8]">
       <div className="max-w-xl mx-auto px-6 md:px-8">
-        <p className="mb-5 text-center text-xs md:text-sm" style={{ color: "#6B6B6B" }}>
+        <p className="mb-3 text-center text-xs md:text-sm" style={{ color: "#6B6B6B" }}>
           5-night stay minimum
         </p>
 

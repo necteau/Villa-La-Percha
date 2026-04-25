@@ -86,9 +86,9 @@ export default function Gallery() {
   const activePhoto = photos[activeIndex];
 
   return (
-    <section id="gallery" className="py-20 md:py-32 bg-[#FAFAF8]">
+    <section id="gallery" className="py-16 md:py-20 bg-[#FAFAF8]">
       <div className="max-w-7xl mx-auto px-6 md:px-8">
-        <div className="text-center mb-14">
+        <div className="text-center mb-10 md:mb-12">
           <p className="text-xs tracking-[0.3em] uppercase mb-4" style={{ color: "#8B7355" }}>
             Gallery
           </p>
