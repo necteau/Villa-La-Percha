@@ -111,7 +111,7 @@ export async function POST(req: Request) {
     }
 
     const result = await resend.emails.send({
-      from: "Villa La Percha <hello@resend.villa-la-percha.vercel.app>",
+      from: "Villa La Percha <onboarding@resend.dev>",
       to: ["VillaLaPercha@gmail.com"],
       subject,
       html,
