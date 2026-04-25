@@ -121,14 +121,6 @@ export default function Hero() {
         </div>
       </div>
 
-      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10">
-        <a href="#about" className="block text-white/60 hover:text-white transition-colors">
-          <svg width="18" height="28" viewBox="0 0 18 28" fill="none">
-            <rect x="1" y="1" width="16" height="26" rx="8" stroke="currentColor" strokeWidth="1.2" />
-            <circle cx="9" cy="9" r="2" fill="currentColor" className="animate-pulse" />
-          </svg>
-        </a>
-      </div>
     </section>
   );
 }
