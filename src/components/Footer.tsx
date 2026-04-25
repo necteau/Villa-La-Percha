@@ -7,13 +7,16 @@ export default function Footer() {
         <p className="font-body text-white/30 text-xs tracking-wider text-center md:text-left">
           © {new Date().getFullYear()} Villa La Percha · Providenciales, Turks &amp; Caicos
         </p>
-        <div className="flex gap-6 md:gap-8">
+        <div className="flex flex-wrap justify-center gap-6 md:gap-8">
           <a href="#about" className="text-white/30 text-xs tracking-wider hover:text-white/60 transition-colors uppercase">
             About
           </a>
           <a href="#gallery" className="text-white/30 text-xs tracking-wider hover:text-white/60 transition-colors uppercase">
             Gallery
           </a>
+          <Link href="/experience-the-island" className="text-white/30 text-xs tracking-wider hover:text-white/60 transition-colors uppercase">
+            Experience
+          </Link>
           <Link href="/faq" className="text-white/30 text-xs tracking-wider hover:text-white/60 transition-colors uppercase">
             FAQ
           </Link>

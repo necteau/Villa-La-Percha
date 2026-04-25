@@ -9,8 +9,8 @@ import Gallery from "@/components/Gallery";
 import DayAtTheVilla from "@/components/DayAtTheVilla";
 import DockFishing from "@/components/DockFishing";
 import OwnersNote from "@/components/OwnersNote";
-import FAQ from "@/components/FAQ";
 import Location from "@/components/Location";
+import ExperiencePreview from "@/components/ExperiencePreview";
 import AvailabilityCalendar from "@/components/AvailabilityCalendar";
 import PriceComparison from "@/components/PriceComparison";
 import ContactForm from "@/components/ContactForm";
@@ -30,8 +30,8 @@ export default function PropertySiteHome() {
       <DayAtTheVilla />
       <DockFishing />
       <OwnersNote />
-      <FAQ includeStructuredData />
       <Location />
+      <ExperiencePreview />
 
       <section className="bg-[#FAFAF8] py-12 md:py-20">
         <div className="max-w-6xl mx-auto px-6 md:px-8 text-center mb-1 md:mb-4">

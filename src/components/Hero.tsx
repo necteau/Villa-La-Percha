@@ -9,6 +9,7 @@ const navItems = [
   { label: "Amenities", href: "#amenities" },
   { label: "Gallery", href: "#gallery" },
   { label: "Experience", href: "/experience-the-island", isRoute: true },
+  { label: "FAQ", href: "/faq", isRoute: true },
   { label: "Availability", href: "#availability" },
 ];
 
