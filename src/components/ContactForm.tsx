@@ -52,16 +52,16 @@ export default function ContactForm({ checkIn, checkOut }: Props) {
   };
 
   return (
-    <section id="contact" className="py-16 md:py-20 bg-[#2C2C2C] text-white">
+    <section id="contact" className="py-12 md:py-20 bg-[#2C2C2C] text-white">
       <div className="max-w-2xl mx-auto px-6 md:px-8 text-center">
-        <p className="text-xs tracking-[0.3em] uppercase text-[#A89279] mb-6">
+        <p className="text-xs tracking-[0.3em] uppercase text-[#A89279] mb-4 md:mb-6">
           Contact
         </p>
-        <h2 className="font-display text-3xl md:text-5xl font-light mb-6 leading-tight" style={{ color: "#FFFFFF" }}>
+        <h2 className="font-display text-3xl md:text-5xl font-light mb-4 md:mb-6 leading-tight" style={{ color: "#FFFFFF" }}>
           Ask About Your Dates
         </h2>
-        <div className="section-divider mb-8 mx-auto" />
-        <p className="font-body text-white/60 leading-relaxed mb-8 max-w-lg mx-auto text-sm md:text-base">
+        <div className="section-divider mb-6 md:mb-8 mx-auto" />
+        <p className="font-body text-white/60 leading-relaxed mb-6 md:mb-8 max-w-lg mx-auto text-sm md:text-base">
           Choose your dates above, send your inquiry here, and we&apos;ll get back to you within 24 hours.
           Direct bookings are typically 15–30% lower than the total guests often see on Airbnb and VRBO, with no extra taxes or booking fees added here.
         </p>
@@ -86,7 +86,7 @@ export default function ContactForm({ checkIn, checkOut }: Props) {
             </div>
 
             {/* Dates (read-only, auto-filled from calendar) */}
-            <div className="grid grid-cols-2 gap-4 mb-5">
+            <div className="grid grid-cols-2 gap-3 md:gap-4 mb-4 md:mb-5">
               <div>
                 <label className="block text-xs tracking-wider uppercase text-white/40 mb-1">Check-in</label>
                 <input
@@ -108,7 +108,7 @@ export default function ContactForm({ checkIn, checkOut }: Props) {
               />
             </div>
           </div>
-            <p id="contact-dates-help" className="text-xs text-white/45 mb-5 -mt-1">
+            <p id="contact-dates-help" className="text-xs text-white/45 mb-4 -mt-1">
               Pick your dates in the availability calendar above and they&apos;ll appear here automatically.
             </p>
 
@@ -145,7 +145,7 @@ export default function ContactForm({ checkIn, checkOut }: Props) {
             </div>
 
             {/* Comments */}
-            <div className="mb-6">
+            <div className="mb-5 md:mb-6">
               <label htmlFor="contact-comments" className="block text-xs tracking-wider uppercase text-white/40 mb-1">
                 Comments
               </label>
@@ -180,7 +180,7 @@ export default function ContactForm({ checkIn, checkOut }: Props) {
               {loading ? "Sending..." : "Send Inquiry"}
             </button>
 
-            <p className="font-body text-white/40 text-xs md:text-sm mt-8">
+            <p className="font-body text-white/40 text-xs md:text-sm mt-6 md:mt-8">
               <a href="mailto:VillaLaPercha@gmail.com" className="underline underline-offset-4 hover:text-white/60 transition-colors">
                 VillaLaPercha@gmail.com
               </a>

@@ -261,9 +261,9 @@ export default function AvailabilityCalendar({ checkIn, setCheckIn, checkOut, se
   };
 
   return (
-    <section id="availability" className="py-12 md:py-16 bg-[#FAFAF8]">
+    <section id="availability" className="py-8 md:py-16 bg-[#FAFAF8]">
       <div className="max-w-xl mx-auto px-6 md:px-8">
-        <p className="mb-3 text-center text-xs md:text-sm" style={{ color: "#6B6B6B" }}>
+        <p className="mb-2 md:mb-3 text-center text-xs md:text-sm" style={{ color: "#6B6B6B" }}>
           5-night stay minimum
         </p>
 
@@ -323,7 +323,7 @@ export default function AvailabilityCalendar({ checkIn, setCheckIn, checkOut, se
         </div>
 
         {/* Status / hint */}
-        <div className="mt-4 text-center">
+        <div className="mt-3 md:mt-4 text-center">
           {phase !== "done" && phase !== "none" && checkIn && (
             <p className="text-sm" style={{ color: "#8B7355" }}>{statusText}</p>
           )}
@@ -338,14 +338,14 @@ export default function AvailabilityCalendar({ checkIn, setCheckIn, checkOut, se
         </div>
 
         {/* Clear button */}
-        <div className="text-center mt-6">
+        <div className="text-center mt-4 md:mt-6">
           {phase !== "none" && (
             <button onClick={clearSelection} className="inline-block px-6 py-2 text-xs tracking-[0.2em] uppercase text-white font-medium" style={{ backgroundColor: "#8B7355" }}>Clear Dates</button>
           )}
         </div>
 
         {/* Legend */}
-        <div className="mt-6 flex flex-wrap gap-6 text-xs justify-center" style={{ color: "#6B6B6B" }}>
+        <div className="mt-4 md:mt-6 flex flex-wrap gap-4 md:gap-6 text-xs justify-center" style={{ color: "#6B6B6B" }}>
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-full" style={{ backgroundColor: "#1E3A5F" }} /><span>Selected</span>
           </div>
@@ -364,7 +364,7 @@ export default function AvailabilityCalendar({ checkIn, setCheckIn, checkOut, se
         </div>
 
         {/* CTA */}
-        <div className="text-center mt-10">
+        <div className="text-center mt-6 md:mt-10">
           <a href="#contact" className="inline-block px-8 md:px-10 py-3.5 text-xs md:text-sm tracking-[0.2em] uppercase text-white font-medium" style={{ backgroundColor: "#8B7355" }}>Inquire Now</a>
         </div>
       </div>

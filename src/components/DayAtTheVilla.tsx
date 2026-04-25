@@ -51,13 +51,13 @@ export default function DayAtTheVilla() {
   ];
 
   return (
-    <section className="py-16 md:py-20 bg-[#FAFAF8]">
+    <section className="py-12 md:py-20 bg-[#FAFAF8]">
       <div className="max-w-7xl mx-auto px-6 md:px-8">
-        <div className="text-center mb-10 md:mb-12">
+        <div className="text-center mb-8 md:mb-12">
           <p className="text-xs tracking-[0.3em] uppercase mb-3" style={{ color: "#8B7355" }}>
             A Perfect Day
           </p>
-          <h2 className="font-display text-3xl md:text-5xl font-light mb-4" style={{ color: "#2C2C2C" }}>
+          <h2 className="font-display text-3xl md:text-5xl font-light mb-3 md:mb-4" style={{ color: "#2C2C2C" }}>
             Your Days at Villa La Percha
           </h2>
           <p className="text-sm md:text-base text-[#6B6B6B] leading-relaxed max-w-xl mx-auto">
@@ -71,7 +71,7 @@ export default function DayAtTheVilla() {
           {/* Vertical line */}
           <div className="absolute left-6 md:left-1/2 top-0 bottom-0 w-px bg-[#E8E4DF] md:-translate-x-px" />
 
-          <div className="space-y-12 md:space-y-0">
+          <div className="space-y-8 md:space-y-0">
             {day.map((item, i) => (
               <div
                 key={i}
@@ -79,7 +79,7 @@ export default function DayAtTheVilla() {
                   i % 2 === 0
                     ? "md:flex-row"
                     : "md:flex-row-reverse"
-                } gap-4 md:gap-12`}
+                } gap-3 md:gap-12`}
               >
                 {/* Timeline dot */}
                 <div className="absolute left-6 md:left-1/2 w-4 h-4 rounded-full border-2 border-[#8B7355] bg-white -translate-x-1/2 translate-y-6 md:translate-y-6 z-10" />
@@ -95,7 +95,7 @@ export default function DayAtTheVilla() {
                 {/* Content card */}
                 <div className={`pl-14 md:pl-0 md:w-5/12 ${i % 2 === 0 ? "md:pl-12" : "md:pr-12 md:text-right"}`}>
                   <div
-                    className={`rounded-2xl p-6 bg-gradient-to-br ${item.color} border border-white/50 shadow-sm hover:shadow-md transition-shadow duration-300`}
+                    className={`rounded-2xl p-5 md:p-6 bg-gradient-to-br ${item.color} border border-white/50 shadow-sm hover:shadow-md transition-shadow duration-300`}
                   >
                     <div className="text-3xl mb-3">{item.emoji}</div>
                     <h3 className="font-display text-xl font-light mb-2" style={{ color: "#2C2C2C" }}>
@@ -111,7 +111,7 @@ export default function DayAtTheVilla() {
           </div>
         </div>
 
-        <div className="text-center mt-10">
+        <div className="text-center mt-8 md:mt-10">
           <a
             href="#availability"
             className="inline-block px-8 md:px-10 py-3.5 text-xs md:text-sm tracking-[0.2em] uppercase text-white font-medium"

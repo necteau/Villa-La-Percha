@@ -33,10 +33,10 @@ export default function PropertySiteHome() {
       <FAQ includeStructuredData />
       <Location />
 
-      <section className="bg-[#FAFAF8] py-16 md:py-20">
-        <div className="max-w-6xl mx-auto px-6 md:px-8 text-center mb-2 md:mb-4">
-          <p className="text-xs tracking-[0.3em] uppercase mb-4 text-[#8B7355]">Availability & Pricing</p>
-          <h2 className="font-display text-3xl md:text-5xl font-light text-[#2C2C2C] mb-3">
+      <section className="bg-[#FAFAF8] py-12 md:py-20">
+        <div className="max-w-6xl mx-auto px-6 md:px-8 text-center mb-1 md:mb-4">
+          <p className="text-xs tracking-[0.3em] uppercase mb-3 md:mb-4 text-[#8B7355]">Availability & Pricing</p>
+          <h2 className="font-display text-3xl md:text-5xl font-light text-[#2C2C2C] mb-2 md:mb-3">
             Check dates, compare pricing, and send your inquiry
           </h2>
           <p className="max-w-2xl mx-auto text-sm md:text-base text-[#6B6B6B] leading-relaxed">
