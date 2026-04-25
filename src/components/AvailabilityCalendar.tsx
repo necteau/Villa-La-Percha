@@ -226,6 +226,7 @@ export default function AvailabilityCalendar({ checkIn, setCheckIn, checkOut, se
   const bgColor = (day: DayInfo): string => {
     if (isSelectedCheckIn(day) || isSelectedCheckOut(day)) return "#1E3A5F";
     if (isInRange(day)) return "rgba(30, 58, 95, 0.15)";
+    if (day.isMinStayInvalid && !day.isBooked && !day.isCheckInDate && !day.isCheckOutDate) return "#F5F0E8";
     // Transition check-in dates use white bg so the gradient creates the triangle effect
     if (day.isBooked && day.isCheckInDate && !day.isCheckOutDate) return "#FFFFFF";
     // Transition check-out dates use white bg so the gradient creates the triangle effect
@@ -239,6 +240,7 @@ export default function AvailabilityCalendar({ checkIn, setCheckIn, checkOut, se
   const nightColor = (day: DayInfo): string => {
     if (isSelectedCheckIn(day) || isSelectedCheckOut(day)) return "#FFFFFF";
     if (isInRange(day)) return "#1E3A5F";
+    if (day.isMinStayInvalid && !day.isBooked && !day.isCheckInDate && !day.isCheckOutDate) return "#9A8F84";
     if (!day.isCurrentMonth || day.isPast) return "#6B6B6B";
     return "#2C2C2C";
   };
@@ -315,7 +317,7 @@ export default function AvailabilityCalendar({ checkIn, setCheckIn, checkOut, se
                       backgroundImage: grad?.gradient,
                       color: nightColor(day),
                       cursor: clickable ? "pointer" : "default",
-                      opacity: (!day.isCurrentMonth || day.isPast) ? 0.3 : 1,
+                      opacity: (!day.isCurrentMonth || day.isPast) ? 0.3 : day.isMinStayInvalid && !day.isBooked ? 0.65 : 1,
                       border: todayIs(day.date) && !grad?.solidBg && bg === "transparent" ? "1px solid #8B7355" : "none",
                     }}
                   >
@@ -362,6 +364,9 @@ export default function AvailabilityCalendar({ checkIn, setCheckIn, checkOut, se
           </div>
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded" style={{ background: `linear-gradient(to bottom right, transparent 45%, #E0DCD7 45%)` }} /><span>Check-in</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded" style={{ backgroundColor: "#F5F0E8", opacity: 0.8 }} /><span>Unavailable start</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded border border-[#E8E4DF] bg-white" /><span>Available</span>

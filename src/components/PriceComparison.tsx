@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { getSavingsPercentage, getStayPricingComparison } from "@/lib/pricing";
 
 interface Props {
@@ -12,19 +12,6 @@ function formatMoney(value: number): string {
 
 export default function DirectBookingCalculator({ checkIn = null, checkOut = null }: Props) {
   const [nights, setNights] = useState(7);
-  const [visible, setVisible] = useState(false);
-
-  const ref = useCallback((el: HTMLDivElement | null) => {
-    if (!el) return;
-    const obs = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) setVisible(true);
-      },
-      { threshold: 0.3 }
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, []);
 
   const selectedRangeComparison = useMemo(() => {
     if (!checkIn || !checkOut) return null;
@@ -53,10 +40,8 @@ export default function DirectBookingCalculator({ checkIn = null, checkOut = nul
     ? [selectedRangeComparison?.direct, selectedRangeComparison?.airbnb, selectedRangeComparison?.vrbo].filter(Boolean)
     : [];
 
-  if (!visible) return null;
-
   return (
-    <section className="py-20 md:py-32 bg-white" ref={ref}>
+    <section className="py-20 md:py-24 bg-white" id="pricing-comparison">
       <div className="max-w-5xl mx-auto px-6 md:px-8">
         <div className="text-center mb-16">
           <p className="text-xs tracking-[0.3em] uppercase mb-3" style={{ color: "#8B7355" }}>

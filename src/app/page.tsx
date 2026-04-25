@@ -30,10 +30,10 @@ export default function Home() {
       <Amenities />
       <Gallery />
       <AvailabilityCalendar checkIn={checkIn} setCheckIn={setCheckIn} checkOut={checkOut} setCheckOut={setCheckOut} />
+      <PriceComparison checkIn={checkIn} checkOut={checkOut} />
       <DayAtTheVilla />
       <DockFishing />
       <PropertyValue />
-      <PriceComparison checkIn={checkIn} checkOut={checkOut} />
       <OwnersNote />
       <FAQ includeStructuredData />
       <Location />
