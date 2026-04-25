@@ -1,165 +1,129 @@
 import { useState, useCallback } from "react";
 
 export default function DirectBookingCalculator() {
-  const price = 4200;
+  const nightlyRate = 4200;
   const [nights, setNights] = useState(7);
   const [visible, setVisible] = useState(false);
+
   const ref = useCallback((el: HTMLDivElement | null) => {
     if (!el) return;
     const obs = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) setVisible(true); },
+      ([entry]) => {
+        if (entry.isIntersecting) setVisible(true);
+      },
       { threshold: 0.3 }
     );
     obs.observe(el);
     return () => obs.disconnect();
   }, []);
 
-  const base = price * nights;
-  const direct = base;
-  const OTA = Math.round(base * 1.20);
-  const cleaning = 350;
-  const platformFee = Math.round(base * 0.15);
-  const OTAWithCleaning = OTA + cleaning + platformFee;
-  const savings = OTAWithCleaning - direct;
+  const directTotal = nightlyRate * nights;
+  const otaLow = Math.round(directTotal * 1.15);
+  const otaHigh = Math.round(directTotal * 1.3);
+  const savingsLow = otaLow - directTotal;
+  const savingsHigh = otaHigh - directTotal;
 
   if (!visible) return null;
 
   return (
     <section className="py-20 md:py-32 bg-white" ref={ref}>
-      <div className="max-w-4xl mx-auto px-6 md:px-8">
+      <div className="max-w-5xl mx-auto px-6 md:px-8">
         <div className="text-center mb-16">
           <p className="text-xs tracking-[0.3em] uppercase mb-3" style={{ color: "#8B7355" }}>
-            The Math
+            Book Direct Value
           </p>
           <h2 className="font-display text-3xl md:text-5xl font-light mb-4" style={{ color: "#2C2C2C" }}>
-            What Stays in Your Pocket<br />When You Book Direct
+            Direct Booking Usually Wins by a Wide Margin
           </h2>
-          <p className="text-sm md:text-base text-[#6B6B6B] leading-relaxed max-w-xl mx-auto">
-            Adjust the slider to see how much you save by booking Villa La Percha directly
-            — no OTA fees, no hidden markups, no middleman.
+          <p className="text-sm md:text-base text-[#6B6B6B] leading-relaxed max-w-2xl mx-auto">
+            Our pricing is typically about 15–30% lower than the total guests often see on Airbnb or
+            VRBO once platform fees, markups, and other extras are layered in.
           </p>
         </div>
 
-        {/* Slider */}
-        <div className="mb-16 px-4">
+        <div className="mb-14 px-2 md:px-8">
           <div className="flex justify-between text-xs text-[#6B6B6B] mb-3 uppercase tracking-wider font-medium">
-            <span>1 night</span>
+            <span>3 nights</span>
             <span>14 nights</span>
           </div>
           <input
             type="range"
-            min={1}
+            min={3}
             max={14}
             value={nights}
             onChange={(e) => setNights(Number(e.target.value))}
             className="w-full h-2 rounded-full appearance-none cursor-pointer"
             style={{
-              background: `linear-gradient(to right, #8B7355 ${(nights - 1) / 13 * 100}%, #E8E4DF ${(nights - 1) / 13 * 100}%)`,
+              background: `linear-gradient(to right, #8B7355 ${((nights - 3) / 11) * 100}%, #E8E4DF ${((nights - 3) / 11) * 100}%)`,
             }}
           />
-          <div className="text-center mt-4">
-            <span className="text-lg font-medium" style={{ color: "#2C2C2C" }}>
-              {nights} {nights === 1 ? "night" : "nights"} × ${price.toLocaleString()} / night
-            </span>
+          <div className="text-center mt-4 text-lg font-medium" style={{ color: "#2C2C2C" }}>
+            {nights} {nights === 1 ? "night" : "nights"} × ${nightlyRate.toLocaleString()} / night
           </div>
         </div>
 
-        {/* Comparison */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-0 rounded-2xl overflow-hidden shadow-lg">
-          {/* OTA Side */}
-          <div className="p-8 bg-gradient-to-br from-[#1a1a1a] to-[#2a2a2a] text-white">
-            <div className="flex items-center gap-2 mb-2">
-              <span className="text-sm tracking-wider uppercase font-medium text-red-300">
-                OTA Platform
-              </span>
-              <span className="text-xs px-2 py-0.5 rounded-full bg-red-500/20 text-red-300 font-medium">
-                Typical
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="rounded-3xl border border-[#E8E4DF] bg-[#FAFAF8] p-8 shadow-sm">
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-xs px-3 py-1 rounded-full bg-[#E8E4DF] text-[#6B6B6B] uppercase tracking-wider font-medium">
+                Airbnb / VRBO total
               </span>
             </div>
-            <p className="text-white/40 text-sm mb-8">
-              Booking through Airbnb, VRBO, or similar
+            <p className="text-sm text-[#6B6B6B] mb-8 leading-relaxed">
+              Typical all-in guest total after platform pricing, service fees, and other add-ons.
             </p>
 
-            <div className="space-y-4">
-              <div className="flex justify-between text-sm">
-                <span className="text-white/50">Villa rate ({nights} nights)</span>
-                <span>${OTA.toLocaleString()}</span>
+            <div className="space-y-5">
+              <div>
+                <p className="text-xs uppercase tracking-wider text-[#6B6B6B] mb-1">Likely range</p>
+                <p className="text-3xl md:text-4xl font-light" style={{ color: "#2C2C2C" }}>
+                  ${otaLow.toLocaleString()}–${otaHigh.toLocaleString()}
+                </p>
               </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-white/50">Platform markup (20%)</span>
-                <span>+$280</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-white/50">Platform fee (15%)</span>
-                <span>+${platformFee.toLocaleString()}</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-white/50">Cleaning fee</span>
-                <span>+$350</span>
-              </div>
-              <div className="border-t border-white/10 pt-4 mt-4">
-                <div className="flex justify-between">
-                  <span className="text-white/60 text-sm uppercase tracking-wider">Total</span>
-                  <span className="text-2xl font-light">${OTAWithCleaning.toLocaleString()}</span>
-                </div>
+              <div className="space-y-2 text-sm text-[#6B6B6B]">
+                <p>• Higher total once OTA fees and markups are added</p>
+                <p>• Less direct communication before arrival</p>
+                <p>• More layers between guest and property</p>
               </div>
             </div>
           </div>
 
-          {/* Direct Side */}
-          <div className="p-8 bg-gradient-to-br from-[#8B7355] to-[#A89279] text-white relative">
-            <span className="absolute top-4 right-4 text-xs tracking-wider uppercase font-medium bg-white/20 px-3 py-1 rounded-full">
-              Best Deal
+          <div className="rounded-3xl bg-gradient-to-br from-[#8B7355] to-[#A89279] p-8 text-white shadow-lg relative overflow-hidden">
+            <span className="absolute top-5 right-5 text-xs tracking-wider uppercase font-medium bg-white/20 px-3 py-1 rounded-full">
+              Best value
             </span>
-            <div className="flex items-center gap-2 mb-2">
-              <span className="text-sm tracking-wider uppercase font-medium text-white/80">
-                Direct Booking
-              </span>
-            </div>
-            <p className="text-white/40 text-sm mb-8">
-              Booking directly with Villa La Percha
+            <p className="text-xs uppercase tracking-wider text-white/70 mb-3 font-medium">
+              Book direct
+            </p>
+            <p className="text-sm text-white/75 mb-8 leading-relaxed max-w-md">
+              Straightforward pricing with direct communication and no extra taxes or booking fees added here.
             </p>
 
-            <div className="space-y-4">
-              <div className="flex justify-between text-sm">
-                <span className="text-white/60">Villa rate ({nights} nights)</span>
-                <span>${direct.toLocaleString()}</span>
+            <div className="space-y-5">
+              <div>
+                <p className="text-xs uppercase tracking-wider text-white/70 mb-1">Your total here</p>
+                <p className="text-3xl md:text-4xl font-light text-white">
+                  ${directTotal.toLocaleString()}
+                </p>
               </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-white/60">Platform markup</span>
-                <span className="line-through text-white/30">—</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-white/60">Platform fee</span>
-                <span className="line-through text-white/30">—</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-white/60">Cleaning fee</span>
-                <span className="line-through text-white/30">—</span>
-              </div>
-              <div className="border-t border-white/20 pt-4 mt-4">
-                <div className="flex justify-between">
-                  <span className="text-white/80 text-sm uppercase tracking-wider">Total</span>
-                  <span className="text-2xl font-light">${direct.toLocaleString()}</span>
-                </div>
+              <div className="space-y-2 text-sm text-white/85">
+                <p>• Direct communication throughout the stay</p>
+                <p>• No platform markup layered on top</p>
+                <p>• Cleaner, simpler booking experience</p>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Savings Callout */}
-        <div className="mt-8 text-center">
-          <div className="inline-block bg-[#FAFAF8] border border-[#8B7355]/20 rounded-xl px-8 py-5 shadow-sm">
-            <p className="text-sm text-[#6B6B6B] uppercase tracking-wider mb-1">
-              You Save
-            </p>
-            <p className="text-4xl md:text-5xl font-light" style={{ color: "#8B7355" }}>
-              ${savings.toLocaleString()}
-            </p>
-            <p className="text-xs text-[#6B6B6B] mt-1">
-              That&apos;s {savings >= 500 ? "a" : "a"} {savings >= 1000 ? "free sunset dinner for two" : savings >= 700 ? "day of island adventures" : savings >= 400 ? "beach club afternoon" : "nice bottle of wine"} 🍷
-            </p>
-          </div>
+        <div className="mt-8 rounded-2xl border border-[#E8E4DF] bg-[#FAFAF8] p-6 text-center shadow-sm">
+          <p className="text-xs uppercase tracking-[0.25em] text-[#8B7355] mb-2">Typical savings</p>
+          <p className="text-3xl md:text-4xl font-light" style={{ color: "#2C2C2C" }}>
+            ${savingsLow.toLocaleString()}–${savingsHigh.toLocaleString()}
+          </p>
+          <p className="text-sm text-[#6B6B6B] mt-2 leading-relaxed max-w-2xl mx-auto">
+            Depending on stay length, that difference can easily cover dinners out, a boat day, or a
+            very respectable amount of rum punch. Civilization advances.
+          </p>
         </div>
       </div>
     </section>

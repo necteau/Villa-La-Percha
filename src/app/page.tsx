@@ -8,6 +8,7 @@ import Amenities from "@/components/Amenities";
 import Gallery from "@/components/Gallery";
 import AvailabilityCalendar from "@/components/AvailabilityCalendar";
 import DayAtTheVilla from "@/components/DayAtTheVilla";
+import DockFishing from "@/components/DockFishing";
 import PropertyValue from "@/components/PropertyValue";
 import PriceComparison from "@/components/PriceComparison";
 import OwnersNote from "@/components/OwnersNote";
@@ -29,6 +30,7 @@ export default function Home() {
       <Gallery />
       <AvailabilityCalendar checkIn={checkIn} setCheckIn={setCheckIn} checkOut={checkOut} setCheckOut={setCheckOut} />
       <DayAtTheVilla />
+      <DockFishing />
       <PropertyValue />
       <PriceComparison />
       <OwnersNote />
