@@ -41,28 +41,25 @@ export default function Hero() {
       </nav>
 
       <div className="absolute top-16 left-0 right-0 z-20 px-4 md:hidden">
-        <div className="mx-auto flex max-w-[420px] flex-wrap items-center justify-center gap-x-4 gap-y-2 rounded-full bg-black/25 px-4 py-2 backdrop-blur-sm">
+        <div className="mx-auto flex max-w-[320px] items-center justify-center gap-5 rounded-full bg-black/25 px-4 py-2 backdrop-blur-sm">
           <a href="#about" className="text-[10px] tracking-[0.15em] uppercase text-white/85">About</a>
-          <a href="#amenities" className="text-[10px] tracking-[0.15em] uppercase text-white/85">Amenities</a>
           <a href="#gallery" className="text-[10px] tracking-[0.15em] uppercase text-white/85">Gallery</a>
-          <Link href="/experience-the-island" className="text-[10px] tracking-[0.15em] uppercase text-white/85">Experience</Link>
           <a href="#availability" className="text-[10px] tracking-[0.15em] uppercase text-white/85">Availability</a>
         </div>
       </div>
 
-      <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-white z-10 px-6">
+      <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-white z-10 px-6 pt-14 md:pt-0">
         <p className="text-xs md:text-sm tracking-[0.35em] uppercase mb-4 md:mb-6 text-white/80">
           Chalk Sound · Providenciales
         </p>
         <h1
-          className="font-display text-3xl md:text-6xl lg:text-7xl font-light tracking-wide mb-6 md:mb-8 leading-tight"
+          className="font-display text-3xl md:text-6xl lg:text-7xl font-light tracking-wide mb-5 md:mb-8 leading-tight"
           style={{ maxWidth: "90vw" }}
         >
-          Villa La Percha
+          A Private Villa in Chalk Sound
         </h1>
-        <p className="max-w-2xl text-sm md:text-lg text-white/82 leading-relaxed mb-8 md:mb-10">
-          A private waterfront villa in the Chalk Sound neighborhood, moments from Taylor Bay and
-          Sapodilla Bay, with a pool, hot tub, dock, kayaks, paddle boards, and room for the whole group.
+        <p className="max-w-xl text-sm md:text-lg text-white/82 leading-relaxed mb-8 md:mb-10">
+          Waterfront, private, and made for an easy Turks and Caicos stay.
         </p>
         <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4">
           <a
