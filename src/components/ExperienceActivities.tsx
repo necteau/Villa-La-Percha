@@ -2,50 +2,50 @@ const activities = [
   {
     title: "Snorkel the Caicos Wall",
     category: "Adventure · Diving",
-    description: "The Caicos Wall is a 6,000-foot vertical drop-off starting just offshore at Malcolm's Road. At 50 feet, the seafloor falls into the abyss — and the marine life is extraordinary. Green sea turtles, nurse sharks, eagle rays, and reefs bursting with tropical fish. This is world-class diving and snorkeling at its most dramatic.",
-    highlight: "Drop-off from 50 feet to 6,000 feet of deep ocean",
+    description: "A strong choice for divers or serious snorkelers who want one of the island's more dramatic marine experiences. This is not the lazy-float option; it is the bigger-adventure option.",
+    highlight: "Best for guests who want a true dive or serious snorkel day",
   },
   {
     title: "Pirate's Cove & Split Rock",
     category: "Exploration · History · Photography",
-    description: "Visit the dramatic limestone sea stacks, a natural open-faced cave, and the hidden cove that once sheltered Caribbean pirates. Snorkel the adjacent reef, explore the tidal pools, and walk the secluded beach. It's equal parts history, geology, and adventure.",
-    highlight: "Pirate-era caves and dramatic sea stacks",
+    description: "A fun outing if you like scenic coastal exploring more than sitting still. Go for the rock formations, dramatic shoreline, and a different side of Provo than the resort areas.",
+    highlight: "Best for exploring and photos",
   },
   {
     title: "Turtle Watching at Conch Farm",
     category: "Wildlife · Family",
-    description: "A conservation project where you can swim with hundreds of green sea turtles in shallow, warm lagoons. The turtles are wild and the experience is unforgettable. Kids absolutely love it, and it's educational too — learn about conservation efforts protecting these ancient creatures.",
-    highlight: "Swim alongside wild green sea turtles",
+    description: "A family-friendly wildlife stop that usually goes over very well with kids. Good pick when you want something memorable that is not just another beach afternoon.",
+    highlight: "Best for families and animal lovers",
   },
   {
     title: "Chalk Sound National Park",
     category: "Nature · Kayaking · Right Next Door",
-    description: "Right in your backyard. The pink-sand shores and turquoise waters of Chalk Sound are unlike anywhere on earth. Rent kayaks or a paddleboard and explore the maze of tiny islands, mangrove tunnels, and hidden coves. The water is so calm and clear it feels like floating in a mirror.",
-    highlight: "Pink sand, turquoise water, hidden coves — steps from the villa",
+    description: "One of the advantages of this location is being close to the Chalk Sound area without needing to plan a full excursion. Great for a lower-key day on the water by kayak or paddle board.",
+    highlight: "Best for an easy, scenic on-the-water outing",
   },
   {
     title: "Sundog Sail",
     category: "Romance · Sunset · Private Charter",
-    description: "A traditional wooden-hulled schooner that sails from Turtle Cove Marina at sunset. Complimentary rum punch, tropical fruit, and hors d'oeuvres. The Golden Circle snorkel stop and sunset cruise is the quintessential Providenciales experience.",
-    highlight: "Sunset aboard a wooden schooner with rum punch",
+    description: "A good option if you want one organized sunset excursion during the week. Relaxed, scenic, and easy to enjoy without needing everyone to be intensely adventurous.",
+    highlight: "Best for sunset and a low-stress boat outing",
   },
   {
     title: "Dive the Shipwrecks",
     category: "Diving · Wreck Diving",
-    description: "Providenciales is a wreck diver's paradise. The SS Amalita, a WWII-era cargo ship, lies just offshore with a clear hull you can walk through. The T-28 wreck is another popular site. Dropped into 60-100 feet of crystal water, these wrecks are encrusted with coral and inhabited by barracuda, sharks, and turtles.",
-    highlight: "Walk through the glass hull of a WWII cargo ship",
+    description: "For certified divers or more serious underwater people, this is one of the more memorable off-property experiences on the island. Better as a planned activity than a spontaneous same-day idea.",
+    highlight: "Best for experienced divers",
   },
   {
     title: "North Caicos Day Trip",
     category: "Island Exploration · Pristine",
-    description: "Fly or boat over to North Caicos for some of the most untouched beach on the planet. Rum Rock, Long Bay Beach, and the North Caicos National Park offer beaches that look exactly like paradise should. Almost no development, almost no crowds. A true island adventure.",
-    highlight: "Untouched beaches and zero crowds",
+    description: "A bigger day out for guests who want to see more than Providenciales. Worth it if your group likes exploring, but probably not necessary if the goal is mostly to relax at the villa and nearby beaches.",
+    highlight: "Best for a full-day island adventure",
   },
   {
     title: "Big Game Fishing",
     category: "Fishing · Deep Sea",
-    description: "Providenciales sits on the edge of the Grand Bahama Bank — one of the world's premier big-game fishing grounds. Sailfish, wahoo, dorado, marlin, and tuna are all common catches. Full-day or half-day charters available from Turtle Cove Marina with experienced captains.",
-    highlight: "World-class sport fishing on the edge of the Grand Bahama Bank",
+    description: "If the dock fishing gets someone in the group excited, this is the bigger version: charter a half-day or full-day trip out of Turtle Cove and make fishing the main event.",
+    highlight: "Best for anglers who want the full charter experience",
   },
 ];
 
@@ -61,7 +61,7 @@ export default function Activities() {
             Things to Do
           </h2>
           <p className="text-sm md:text-base max-w-lg mx-auto text-[#6B6B6B] leading-relaxed">
-            Whether you want to dive with turtles, fish for mahi-mahi, or just kayak through the pink sands of Chalk Sound — it's all waiting.
+            These are the outings most worth considering once you have beach time, pool time, and villa time covered.
           </p>
         </div>
 

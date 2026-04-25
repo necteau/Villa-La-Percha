@@ -3,96 +3,106 @@ const restaurants = [
     name: "Da Conch Shack",
     category: "Caribbean · Iconic",
     neighborhood: "Blue Hills",
-    description: "The most legendary local restaurant on the island. Watch chefs crack conch fresh at outdoor tables under canvas umbrellas. The conch salad is unmatched. Come Wednesday nights for live Junkanoo music and a DJ — this is island culture at its finest.",
+    description: "A classic first stop for visitors who want a laid-back waterfront meal and a proper Turks and Caicos conch fix. Come for lunch or sunset, order conch done a few ways, and expect a lively scene rather than a quiet dinner.",
     mustTry: "Conch Salad",
     link: "https://daconchshack.com/",
     icon: "🦞",
+    bestFor: "casual lunch · sunset · first-day island vibes",
   },
   {
     name: "Hemingway's on the Beach",
     category: "Island-Inspired · Beachfront",
     neighborhood: "Grace Bay",
-    description: "A beloved Grace Bay institution at The Sands resort. Beachfront breakfasts, surf-and-turf lunches, and sunset dinners on a sprawling outdoor patio. Casual elegance meets family-friendly vibes. The Sunday brunch is legendary.",
+    description: "Easy, beachfront Grace Bay dining that works well for breakfast, lunch, or a relaxed dinner after beach time. Good choice when you want something scenic and reliable without turning the meal into a production.",
     mustTry: "Eggs on the Beach",
     link: "https://www.hemingwaystci.com/",
     icon: "🍹",
+    bestFor: "breakfast · easy family meal · beachfront table",
   },
   {
     name: "Omar's Beach Hut",
     category: "Caribbean · Beachfront",
     neighborhood: "Five Cays",
-    description: "Steps from turquoise water at Five Cays Beach. Locally caught seafood, jerk chicken, and kicking rum punches served in a relaxed beach hut setting. The fisherman's dock next door means dinner was swimming this morning.",
+    description: "A fun, no-frills local spot near the water with seafood, strong drinks, and a more off-the-tourist-strip feel. Great when you want something casual and distinctly island rather than polished resort dining.",
     mustTry: "Lobster Pasta",
     link: "https://www.omars-beachhut.com/",
     icon: "🍽️",
+    bestFor: "local feel · seafood lunch · casual dinner",
   },
   {
     name: "Coco Bistro",
     category: "Seafood · Fine Dining",
     neighborhood: "Grace Bay",
-    description: "One of Providenciales' most beloved restaurants. Set under a palm grove with twinkling lights, Coco Bistro sources its own herbs from an on-site garden. The fresh seafood is a local staple, beautifully plated in a romantic, waterless setting.",
+    description: "One of the island's best-known dinner reservations, with a polished setting under the palms and a menu that feels special without being stuffy. Good pick for a date night or one of the bigger dinners of the week.",
     mustTry: "Fresh Catch of the Day",
     link: "https://www.cocobistro.tc/",
     icon: "🌴",
     reservations: true,
+    bestFor: "date night · polished dinner · special evening",
   },
   {
     name: "Provence by Eric",
     category: "French/Italian · Chef's Table",
     neighborhood: "Grace Bay",
-    description: "A unique experience where you watch Chef Eric Vernice craft a five-course blind tasting inspired by Provence and his heritage. Fresh local ingredients meet French technique. Intimate, interactive, and unforgettable.",
+    description: "A more intimate, chef-driven dinner for people who enjoy tasting menus and want something memorable beyond the usual island seafood circuit. Best saved for a slower night when dinner is the event.",
     mustTry: "Five-Course Blind Tasting",
     link: "https://www.provencebyeric.com/",
     icon: "🇫🇷",
     reservations: true,
+    bestFor: "foodies · quieter evening · special occasion",
   },
   {
     name: "Infiniti Restaurant & Raw Bar",
     category: "Gourmet · Sunset",
     neighborhood: "Grace Bay Club",
-    description: "Oceanfront dining at its most spectacular. Creative gourmet seafood, premium meats, and an expansive raw bar — all while watching the sun dissolve into the Caribbean. Dress code enforced. Perfect for a milestone evening.",
+    description: "A splurge dinner with a big setting, ocean views, and a more dressed-up feel than most island spots. Ideal when you want one high-end Grace Bay night on the itinerary.",
     mustTry: "Sunset Raw Bar Flight",
     link: "https://gracebayclub.gracebayresorts.com/restaurant/infiniti-restaurant-raw-bar/",
     icon: "🌅",
     reservations: true,
+    bestFor: "sunset dinner · upscale night out · celebrations",
   },
   {
     name: "Magnolia",
     category: "Caribbean · Hilltop Dining",
     neighborhood: "Grace Bay",
-    description: "A hidden gem perched on a hilltop overlooking Turtle Cove Marina and the North Shore. The sunset views are extraordinary. Excellent local seafood, well-prepared dishes, and a great specialty wine list.",
+    description: "Known for its elevated views and a dinner setting that feels a little quieter and more tucked away. A strong option for sunset if you want something less buzzy than the main Grace Bay strip.",
     mustTry: "Sunset Dinner",
     link: "https://www.magnoliaprovo.com/",
     icon: "🍷",
     reservations: true,
+    bestFor: "sunset views · quieter dinner · couples",
   },
   {
     name: "CocoVan Airstream Lounge",
     category: "Casual · Food Truck",
     neighborhood: "Grace Bay",
-    description: "Gourmet tacos, tapas, and sandwiches served from an authentic 1974 Airstream kitchen in a palm-tree oasis. Weekly specials emphasize seafood and island seasonal shellfish. Great for a relaxed, no-fuss lunch with the family.",
+    description: "An easy, casual stop when you want something fun and low-commitment. Good for lunch, an unfussy dinner, or a break from heavier sit-down meals.",
     mustTry: "Truffle Fried Mac and Cheese Balls",
     link: "https://www.cocovan.tc/",
     icon: "🌮",
+    bestFor: "quick bite · families · casual night",
   },
   {
     name: "Bay Bistro",
     category: "Breakfast/Brunch · Ocean View",
     neighborhood: "Grace Bay",
-    description: "The go-to weekend brunch spot on Providenciales. Seafood dishes and American breakfast classics — blueberry pancakes, Eggs Benedict — paired with spicy caesar or bubbly mimosas. The views of Grace Bay make it worth the trip.",
+    description: "A scenic choice for brunch or an easy oceanfront meal in Grace Bay. Worth considering when you want a beach view and a daytime meal that feels a little more vacation-ish.",
     mustTry: "Lobster Eggs Benedict",
     link: "https://turksandcaicoscatering.com/",
     icon: "🥞",
+    bestFor: "brunch · daytime Grace Bay stop · ocean view",
   },
   {
     name: "BLT Steak at The Ritz-Carlton",
     category: "Steakhouse · Ultra-Premium",
     neighborhood: "Grace Bay",
-    description: "For the ultimate splurge. 100% naturally raised Black Angus steaks, prime cuts, and an intimate indoor/outdoor setting at one of the most luxurious hotels on the island. The seafood tower alone justifies the visit.",
+    description: "Your high-end steakhouse option if someone in the group wants a break from seafood or a more traditional luxury dinner. Expensive, polished, and best reserved for a big night out.",
     mustTry: "Dry-Aged Steak",
     link: "https://www.ritzcarlton.com/en/hotels/caribbean/turks-and-caicos/dining",
     icon: "🥩",
     reservations: true,
+    bestFor: "steak dinner · splurge night · celebratory meal",
   },
 ];
 
@@ -108,8 +118,8 @@ export default function Restaurants() {
             Restaurants
           </h2>
           <p className="text-sm md:text-base max-w-lg mx-auto text-[#6B6B6B] leading-relaxed">
-            From legendary conch shacks to Michelin-caliber dining, Providenciales delivers
-            world-class food at every level.
+            Here are the spots most worth building into a villa week — from casual seafood lunches to
+            one or two dinners that feel worth dressing for.
           </p>
         </div>
 
@@ -138,6 +148,9 @@ export default function Restaurants() {
                 <p className="text-sm text-[#6B6B6B] leading-relaxed mb-3">{r.description}</p>
                 <p className="text-sm italic" style={{ color: "#8B7355" }}>
                   Must try: {r.mustTry}
+                </p>
+                <p className="text-[11px] mt-2 uppercase tracking-wider text-[#6B6B6B]">
+                  Best for: {r.bestFor}
                 </p>
                 {r.reservations && (
                   <p className="text-[10px] mt-2 px-2 py-0.5 inline-block rounded bg-[#F5F0E8] font-medium" style={{ color: "#8B7355" }}>

@@ -1,39 +1,39 @@
 const beaches = [
   {
     name: "Grace Bay Beach",
-    category: "The World's Best",
-    description: "Often voted the number one beach in the world. Eight miles of powder-soft white sand and water so clear and turquoise it looks photoshopped. The shallow, protected bay is perfect for swimming, and the beachfront restaurant strip along the Grace Bay corridor means you're never far from a good meal.",
-    highlight: "Eight miles of uninterrupted Caribbean paradise",
+    category: "Classic · Beautiful · Easy Day Trip",
+    description: "The island's famous beach for a reason: long white sand, clear water, and easy access to restaurants and resorts. Best when you want a classic Provo beach day with plenty nearby.",
+    highlight: "Best for a full classic Grace Bay beach day",
   },
   {
     name: "Malcolm's Road Beach",
     category: "Secluded · Snorkeling · 4x4 Required",
-    description: "A remote, rugged stretch of peach-toned sand on the island's far west coast. The reef wall drops off right at the shore, making this one of the Caribbean's top snorkeling spots. The drive out is long and rough — bring water, sun protection, and a 4x4. Watch for Coral Sumac trees and don't leave valuables unattended.",
-    highlight: "Dramatic surf and world-class reef-wall snorkeling",
+    description: "Remote and worth the effort if you want a wilder beach experience. The road is rough, conditions matter, and it is better for adventurous beachgoers than an easy family outing.",
+    highlight: "Best for adventurous snorkeling days, not convenience",
   },
   {
     name: "Northwest Point Marine National Park",
     category: "Nature · Conch Cays · Snorkeling",
-    description: "A protected marine park at the island's northwestern tip. Famous for its population of over 300 wild conchs that roam the tidal flats — a sight unique to Providenciales. The western side has calm, shallow snorkeling; the eastern side offers open-ocean surfing and powerful currents. Bring binoculars.",
-    highlight: "Hundreds of wild conchs roaming the beach",
+    description: "A more natural, less built-up part of the island with protected water, striking scenery, and good exploring if you want to get away from the Grace Bay corridor for a while.",
+    highlight: "Best for nature lovers and a quieter outing",
   },
   {
     name: "Taylor Bay Beach",
     category: "Family · Calm Waters · Hidden Gem",
-    description: "A quiet, crystal-clear bay on the south coast, just minutes from the villa. The water stays knee-to-waist deep for hundreds of yards — perfect for swimming with kids or a peaceful morning paddle. Uncommercialized and uncrowded, this is the kind of secret locals guard closely.",
-    highlight: "Knee-deep turquoise water in total serenity",
+    description: "One of the biggest advantages of staying here. Taylor Bay is a very short walk from the villa and is ideal for calm-water swimming, kids, floating, and sunset without committing to a whole expedition.",
+    highlight: "Best for easy family beach time and sunsets close to home",
   },
   {
     name: "West Harbour Bluff (Pirate's Cove)",
     category: "Secluded · Cave · Beach",
-    description: "A scenic coastline at the southwest point featuring sea cliffs, a small open-faced cave, and nearly a mile of secluded beach. Historically used by pirates as a hideout, the dramatic limestone formations and clear water make it a photographer's dream. Best visited on a calm day.",
-    highlight: "Pirate-era cave and dramatic sea cliffs",
+    description: "A scenic, less polished outing with rocky coastline, dramatic formations, and a more rugged feel than the island's soft-sand crowd-pleasers. Good for exploring and photos on the right day.",
+    highlight: "Best for scenery, exploring, and something different",
   },
   {
     name: "Sapodilla Bay",
-    category: "Beach Bar · Local Vibes · Windsurfing",
-    description: "A long stretch of white sand with a lively beach bar scene. The consistent trade winds make it Providenciales' windsurfing spot. The bar serves cold drinks and local food, and the atmosphere is pure Caribbean island — no resort gates, no cover charges, just sand and sea.",
-    highlight: "Authentic island bar culture on an endless beach",
+    category: "Lively · Family-Friendly · Nearby",
+    description: "Close to the villa and usually livelier than Taylor Bay, with shallow water, more people around, and a fun local beach atmosphere. A good choice when you want beach energy instead of total quiet.",
+    highlight: "Best for a nearby beach with more action",
   },
 ];
 
@@ -49,7 +49,8 @@ export default function Beaches() {
             Beaches
           </h2>
           <p className="text-sm md:text-base max-w-lg mx-auto text-[#6B6B6B] leading-relaxed">
-            Providenciales has over 30 beaches, and nearly every one could be the best beach in the world. Here are ours.
+            These are the beaches most worth knowing from Villa La Percha — including the two that make
+            this location especially good.
           </p>
         </div>
 
