@@ -1,0 +1,4 @@
+check_in,check_out,sales_channel,nightly_rate,currency,minimum_stay_nights,cleaning_fee,service_fee,platform_markup,other_fee,tax_percent,tax_amount,total_quote,quote_captured_at,source_url,source_notes
+2026-05-16,2026-05-23,direct,,,,,,,,,,,,
+2026-05-16,2026-05-23,airbnb,,,,,,,,,,,,
+2026-05-16,2026-05-23,vrbo,,,,,,,,,,,,

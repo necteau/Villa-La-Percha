@@ -35,7 +35,7 @@ export default function Home() {
       <PropertyValue />
       <PriceComparison checkIn={checkIn} checkOut={checkOut} />
       <OwnersNote />
-      <FAQ />
+      <FAQ includeStructuredData />
       <Location />
       <ContactForm checkIn={checkIn} checkOut={checkOut} />
       <Footer />
