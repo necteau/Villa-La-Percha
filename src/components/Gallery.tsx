@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 const photos = [
   { src: "/images/aerial-house-ocean-neighbors.jpg", alt: "Aerial view of the house, pool and ocean" },
@@ -34,10 +34,34 @@ const photos = [
 
 export default function Gallery() {
   const [activeIndex, setActiveIndex] = useState(0);
+  const touchStartX = useRef<number | null>(null);
+  const touchEndX = useRef<number | null>(null);
 
   const showPhoto = (index: number) => {
     const total = photos.length;
     setActiveIndex((index + total) % total);
+  };
+
+  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    touchStartX.current = e.changedTouches[0].clientX;
+    touchEndX.current = null;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+    touchEndX.current = e.changedTouches[0].clientX;
+  };
+
+  const handleTouchEnd = () => {
+    if (touchStartX.current === null || touchEndX.current === null) return;
+
+    const deltaX = touchStartX.current - touchEndX.current;
+    const swipeThreshold = 40;
+
+    if (deltaX > swipeThreshold) showPhoto(activeIndex + 1);
+    if (deltaX < -swipeThreshold) showPhoto(activeIndex - 1);
+
+    touchStartX.current = null;
+    touchEndX.current = null;
   };
 
   const activePhoto = photos[activeIndex];
@@ -55,7 +79,12 @@ export default function Gallery() {
         </div>
 
         <div className="rounded-[28px] border border-[#E8E4DF] bg-white p-3 md:p-5 shadow-[0_18px_60px_rgba(44,44,44,0.08)]">
-          <div className="relative aspect-[16/10] w-full overflow-hidden rounded-2xl bg-[#EEF1F3] md:aspect-[16/9]">
+          <div
+            className="relative aspect-[16/10] w-full overflow-hidden rounded-2xl bg-[#EEF1F3] md:aspect-[16/9]"
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+          >
             <Image
               key={activePhoto.src}
               src={activePhoto.src}
@@ -70,7 +99,7 @@ export default function Gallery() {
             <button
               type="button"
               onClick={() => showPhoto(activeIndex - 1)}
-              className="absolute left-3 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-[#2C2C2C] shadow-lg transition hover:bg-white md:left-5 md:h-12 md:w-12"
+              className="absolute left-3 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/55 text-[#2C2C2C] shadow-lg transition hover:bg-white/75 md:left-5 md:h-12 md:w-12"
               aria-label="Previous photo"
             >
               <span className="text-2xl leading-none">‹</span>
@@ -79,15 +108,11 @@ export default function Gallery() {
             <button
               type="button"
               onClick={() => showPhoto(activeIndex + 1)}
-              className="absolute right-3 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-[#2C2C2C] shadow-lg transition hover:bg-white md:right-5 md:h-12 md:w-12"
+              className="absolute right-3 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/55 text-[#2C2C2C] shadow-lg transition hover:bg-white/75 md:right-5 md:h-12 md:w-12"
               aria-label="Next photo"
             >
               <span className="text-2xl leading-none">›</span>
             </button>
-
-            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/55 to-transparent px-5 pb-5 pt-10 md:px-7 md:pb-7">
-              <p className="text-sm md:text-base text-white/90">{activePhoto.alt}</p>
-            </div>
           </div>
 
           <div className="mt-4 flex gap-3 overflow-x-auto pb-1">
