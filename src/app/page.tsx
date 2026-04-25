@@ -12,6 +12,7 @@ import DockFishing from "@/components/DockFishing";
 import PropertyValue from "@/components/PropertyValue";
 import PriceComparison from "@/components/PriceComparison";
 import OwnersNote from "@/components/OwnersNote";
+import FAQ from "@/components/FAQ";
 import Location from "@/components/Location";
 import ContactForm from "@/components/ContactForm";
 import Footer from "@/components/Footer";
@@ -34,6 +35,7 @@ export default function Home() {
       <PropertyValue />
       <PriceComparison checkIn={checkIn} checkOut={checkOut} />
       <OwnersNote />
+      <FAQ />
       <Location />
       <ContactForm checkIn={checkIn} checkOut={checkOut} />
       <Footer />
