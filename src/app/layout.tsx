@@ -15,39 +15,15 @@ const body = Inter({
   variable: "--font-body",
 });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://villa-la-percha.vercel.app";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://directstay.app";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: "Villa La Percha | Private Villa in Chalk Sound, Providenciales — Book Direct",
-  description:
-    "Book Villa La Percha directly and save 15–30% vs. Airbnb and VRBO. Four en-suite suites, dock swimming and fishing, kayaks, paddle boards, a private pool and hot tub, Sonos throughout. No extra taxes or fees — just straightforward pricing.",
-  alternates: {
-    canonical: "/",
+  title: {
+    default: "DirectStay",
+    template: "%s | DirectStay",
   },
-  openGraph: {
-    title: "Villa La Percha | Private Villa in Chalk Sound, Providenciales",
-    description:
-      "Book Villa La Percha directly and save 15–30% vs. Airbnb and VRBO. Four en-suite suites, dock swimming and fishing, kayaks, paddle boards, a private pool and hot tub, Sonos throughout.",
-    url: "/",
-    siteName: "Villa La Percha",
-    type: "website",
-    images: [
-      {
-        url: "/images/aerial-house-ocean-neighbors.jpg",
-        width: 1200,
-        height: 630,
-        alt: "Villa La Percha aerial view",
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Villa La Percha | Private Villa in Chalk Sound, Providenciales",
-    description:
-      "Book Villa La Percha directly and save 15–30% vs. Airbnb and VRBO. Four en-suite suites, dock swimming, kayaks, paddle boards, pool, hot tub, Sonos throughout.",
-    images: ["/images/aerial-house-ocean-neighbors.jpg"],
-  },
+  description: "DirectStay builds direct-booking websites and AI-powered operating systems for vacation rental owners.",
 };
 
 export default function RootLayout({
