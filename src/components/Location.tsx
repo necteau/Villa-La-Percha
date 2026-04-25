@@ -13,8 +13,8 @@ export default function Location() {
             The sound&apos;s turquoise waters are shallow, calm, and so clear you can see the coral gardens below.
           </p>
           <p className="font-body text-[#6B6B6B] leading-relaxed">
-            Grace Bay, the world&apos;s most famous beach, is just 20 minutes away. 
-            Provincetown shopping and dining — 5 minutes.
+            Grace Bay, the world's most famous beach, is just 20 minutes away. 
+            Providenciales shopping and dining — 5 minutes.
           </p>
         </div>
 

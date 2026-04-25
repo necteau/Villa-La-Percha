@@ -13,8 +13,8 @@ export default function Contact() {
         </h2>
         <div className="section-divider mb-10 mx-auto" />
         <p className="font-body text-white/60 leading-relaxed mb-10 max-w-lg mx-auto text-sm md:text-base">
-          Book directly with the owner to save 15–20% and receive personalized attention. 
-          Send an inquiry and the owner will respond within 24 hours.
+          Book directly for pricing that is typically 15–30% lower than the total cost guests often see on Airbnb and VRBO, with no extra taxes or booking fees added here.
+          Send an inquiry and our team will respond within 24 hours.
         </p>
         <a
           href="mailto:VillaLaPercha@gmail.com?subject=Villa%20La%20Percha%20Inquiry"

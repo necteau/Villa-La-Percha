@@ -19,16 +19,16 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://villa-la-percha.ver
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: "Villa La Percha | Private Luxury Villa in Chalk Sound, Providenciales",
-  description: "Experience the crystal-clear waters of Chalk Sound. Villa La Percha offers direct ocean access, kayaks, and a private pool. Book direct and save 15-20%.",
-  keywords: ["Turks and Caicos villa", "Chalk Sound rental", "private villa Providenciales", "luxury Caribbean rental", "Villa La Percha"],
+  title: "Villa La Percha | Private Villa in Chalk Sound, Providenciales — Book Direct",
+  description:
+    "Book Villa La Percha directly and save 15–30% vs. Airbnb and VRBO. Four en-suite suites, dock swimming and fishing, kayaks, paddle boards, a private pool and hot tub, Sonos throughout. No extra taxes or fees — just straightforward pricing.",
   alternates: {
     canonical: "/",
   },
   openGraph: {
-    title: "Villa La Percha | Private Luxury Villa in Chalk Sound, Providenciales",
+    title: "Villa La Percha | Private Villa in Chalk Sound, Providenciales",
     description:
-      "Experience the crystal-clear waters of Chalk Sound. Villa La Percha offers direct ocean access, kayaks, and a private pool.",
+      "Book Villa La Percha directly and save 15–30% vs. Airbnb and VRBO. Four en-suite suites, dock swimming and fishing, kayaks, paddle boards, a private pool and hot tub, Sonos throughout.",
     url: "/",
     siteName: "Villa La Percha",
     type: "website",
@@ -43,9 +43,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Villa La Percha | Private Luxury Villa in Chalk Sound, Providenciales",
+    title: "Villa La Percha | Private Villa in Chalk Sound, Providenciales",
     description:
-      "Experience the crystal-clear waters of Chalk Sound. Private villa, direct booking, personalized stay.",
+      "Book Villa La Percha directly and save 15–30% vs. Airbnb and VRBO. Four en-suite suites, dock swimming, kayaks, paddle boards, pool, hot tub, Sonos throughout.",
     images: ["/images/aerial-house-ocean-neighbors.jpg"],
   },
 };

@@ -8,7 +8,7 @@ export default function WhyBookDirect() {
             Why Booking Direct Matters
           </h2>
           <p className="text-white/70 max-w-2xl mx-auto leading-relaxed">
-            Skip the middleman. When you book directly with the owner, everyone wins.
+            Our direct-booking pricing is typically 15–30% lower than the total guests would pay through Airbnb or VRBO, with no extra taxes or fees added here.
           </p>
         </div>
 
@@ -17,9 +17,9 @@ export default function WhyBookDirect() {
             <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-white/10 flex items-center justify-center">
               <span className="text-2xl">💰</span>
             </div>
-            <h3 className="text-xl font-medium mb-3">Save 15–20%</h3>
+            <h3 className="text-xl font-medium mb-3">Better Total Price</h3>
             <p className="text-white/60 leading-relaxed">
-              No 15% platform fees, no cleaning markups, no commissions. The savings go straight into your stay — or back into the villa&apos;s care.
+              No 15% platform fees, no cleaning markups, no commissions. Our pricing is typically 15–30% lower than the total guests see on Airbnb or VRBO once all fees are added.
             </p>
           </div>
 
@@ -27,9 +27,9 @@ export default function WhyBookDirect() {
             <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-white/10 flex items-center justify-center">
               <span className="text-2xl">🤝</span>
             </div>
-            <h3 className="text-xl font-medium mb-3">Owner Attention</h3>
+            <h3 className="text-xl font-medium mb-3">Direct Communication</h3>
             <p className="text-white/60 leading-relaxed">
-              Direct communication with the owner means personalized recommendations, flexible check-in, and a stay tailored to you — not a checklist.
+              Ask questions, get honest answers, and plan your stay with a real person. Flexible check-in, personalized recommendations, and support throughout your visit.
             </p>
           </div>
 
@@ -37,9 +37,9 @@ export default function WhyBookDirect() {
             <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-white/10 flex items-center justify-center">
               <span className="text-2xl">🏝️</span>
             </div>
-            <h3 className="text-xl font-medium mb-3">Investment Protection</h3>
+            <h3 className="text-xl font-medium mb-3">Cleaner Booking</h3>
             <p className="text-white/60 leading-relaxed">
-              Direct bookings fund the villa&apos;s maintenance and upgrades. Your stay helps preserve this estate for future guests — and keeps ownership viable.
+              No platform friction, no surprise fee stack, no unnecessary noise. Just a straightforward way to secure a beautiful stay.
             </p>
           </div>
         </div>
@@ -49,7 +49,7 @@ export default function WhyBookDirect() {
             href="#contact"
             className="inline-block px-8 py-4 bg-white text-slate-900 font-medium rounded-full hover:bg-sky-50 transition-colors duration-300"
           >
-            Contact the Owner
+            Contact the Villa Team
           </a>
         </div>
       </div>

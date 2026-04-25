@@ -62,7 +62,7 @@ export default function ContactForm({ checkIn, checkOut }: Props) {
         </h2>
         <div className="section-divider mb-10 mx-auto" />
         <p className="font-body text-white/60 leading-relaxed mb-10 max-w-lg mx-auto text-sm md:text-base">
-          Book directly with the owner to save 15–20% and receive personalized attention.
+          Book directly for pricing that is typically 15–30% lower than the total cost guests often see on Airbnb and VRBO, with no extra taxes or booking fees added here.
         </p>
 
         {submitted ? (

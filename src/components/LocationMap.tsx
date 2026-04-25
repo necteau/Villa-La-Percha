@@ -9,35 +9,35 @@ export default function LocationMap() {
               Chalk Sound, Providenciales
             </h2>
             <p className="text-slate-500 leading-relaxed mb-6">
-              Nestled on the shores of Chalk Sound National Park — one of the Caribbean&apos;s most breathtaking natural wonders. The sound&apos;s turquoise waters are shallow, calm, and so clear you can see the coral gardens below.
+              Villa La Percha sits in the quiet Chalk Sound neighborhood between Taylor Bay and Sapodilla Bay. Chalk Sound is behind the home, while Taylor Bay is just a one- to two-minute walk from the driveway.
             </p>
             <div className="space-y-4">
               <div className="flex items-start gap-3">
                 <span className="text-xl mt-0.5">🏄</span>
                 <div>
-                  <h4 className="font-medium text-slate-900">Water Activities</h4>
-                  <p className="text-sm text-slate-500">Kayaks provided. Snorkel, paddleboard, and sail right from the property.</p>
+                  <h4 className="font-medium text-slate-900">Water Access</h4>
+                  <p className="text-sm text-slate-500">Launch two kayaks and two paddle boards from the dock, swim from the stairs into the water, or fish right from the property.</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
                 <span className="text-xl mt-0.5">🪸</span>
                 <div>
-                  <h4 className="font-medium text-slate-900">Chalk Sound Park</h4>
-                  <p className="text-sm text-slate-500">Boat through 50+ limestone cays and islands in this protected marine area.</p>
+                  <h4 className="font-medium text-slate-900">Taylor Bay</h4>
+                  <p className="text-sm text-slate-500">A calm, shallow beach just around the corner — ideal for kids, wading, and unforgettable sunsets.</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
                 <span className="text-xl mt-0.5">🏖️</span>
                 <div>
-                  <h4 className="font-medium text-slate-900">Grace Bay</h4>
-                  <p className="text-sm text-slate-500">World-renowned beach — just 20 minutes away by car.</p>
+                  <h4 className="font-medium text-slate-900">Sapodilla Bay</h4>
+                  <p className="text-sm text-slate-500">A lively, family-friendly beach nearby, often with food vendors, drinks, music, and shallow water.</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
                 <span className="text-xl mt-0.5">🍽️</span>
                 <div>
                   <h4 className="font-medium text-slate-900">Dining &amp; Shopping</h4>
-                  <p className="text-sm text-slate-500">Provincetown shopping center and restaurants — 5 minutes away.</p>
+                  <p className="text-sm text-slate-500">Dining, groceries, and island essentials are all an easy drive away in Providenciales.</p>
                 </div>
               </div>
             </div>

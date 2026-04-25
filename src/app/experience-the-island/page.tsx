@@ -40,12 +40,11 @@ export default function ExperiencePage() {
         <div className="max-w-3xl mx-auto px-6 md:px-8 text-center">
           <div className="section-divider mb-10 mx-auto" />
           <p className="text-sm md:text-base leading-relaxed text-[#6B6B6B]">
-            Situated on the southwest coast near Chalk Sound, Villa La Percha puts you within a short
-            drive of everything that makes Providenciales legendary. Grace Bay — consistently ranked
-            one of the world's best beaches — is just minutes away. Snorkeling with sea turtles,
-            watching the sunset from a beachside bar, diving the Caicos Wall, and eating conch
-            straight off the grill are all part of the everyday experience here. Below, we've
-            curated our favorites so you don't have to waste time researching.
+            Set in the quiet Chalk Sound neighborhood between Taylor Bay and Sapodilla Bay, Villa La
+            Percha gives you easy access to some of the best water, beaches, dining, and day trips on
+            Providenciales. Taylor Bay is just a short walk away, Sapodilla Bay is close by, and the
+            rest of the island is easy to reach when you want to explore. Below, we&apos;ve curated our
+            favorite beaches, restaurants, and activities so you don&apos;t have to waste time researching.
           </p>
         </div>
       </section>
@@ -68,8 +67,8 @@ export default function ExperiencePage() {
             Your Island Awaits
           </h2>
           <p className="text-white/60 text-sm md:text-base leading-relaxed mb-10 max-w-lg mx-auto">
-            Book a week at Villa La Percha and experience the best of Providenciales — direct from
-            the owner, with no OTA fees.
+            Book Villa La Percha directly and experience the best of Providenciales with simpler
+            pricing and direct communication throughout your stay.
           </p>
           <Link
             href="/#availability"

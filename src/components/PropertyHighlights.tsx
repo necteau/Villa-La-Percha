@@ -2,24 +2,24 @@ import Image from "next/image";
 
 const highlights = [
   {
-    title: "Chalk Sound",
-    description: "World-famous crystal-clear waters steps from your door. Kayak among 50+ islands and cays.",
-    image: "/images/aerial-house-ocean-neighbors.jpg",
+    title: "Indoor-Outdoor Living",
+    description: "The kitchen and living room open fully through massive sliding glass doors to a screened-in space, creating one continuous gathering area for inside and out.",
+    image: "/images/screened-living-room-ocean-pool.jpg",
   },
   {
-    title: "Private Pool",
-    description: "65ft meandering infinity pool with tropical landscaping, ambient lighting, and sunset views.",
+    title: "Pool, Hot Tub & Pergolas",
+    description: "A meandering pool, a connected spillover hot tub beneath its own pergola, a gas fire pit seating area, and a separate hammock pergola create multiple places to relax all day and night.",
+    image: "/images/pool-lounge-ocean.jpg",
+  },
+  {
+    title: "Dock, Swimming & Water Toys",
+    description: "Steps lead from the dock into clear water for swimming. Two kayaks and two stand-up paddle boards are ready to launch right from the house.",
     image: "/images/aerial-ocean-dock-stairs-pool-house.jpg",
   },
   {
-    title: "Direct Ocean Access",
-    description: "Your own sandy shoreline with crystal waters — no crowds, no boats, just your private beach.",
-    image: "/images/hot-tub-pool-ocean-sapodilla-bay.jpg",
-  },
-  {
-    title: "Full Villa Ownership",
-    description: "4 en-suite bedrooms, a downstairs half bath, open-plan living, chef's kitchen, and 6 weeks of personal time each year.",
-    image: "/images/pool-lounge-ocean.jpg",
+    title: "Four En-Suite Suites",
+    description: "Four private suites with their own bathrooms, plus a fifth half bath off the main living area, make the layout ideal for couples, families, or groups traveling together.",
+    image: "/images/master-suite-balcony-taylor-bay.jpg",
   },
 ];
 
@@ -28,13 +28,12 @@ export default function PropertyHighlights() {
     <section className="py-20 md:py-28 bg-gradient-to-b from-white to-sky-50">
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-16">
-          <p className="text-sm tracking-[0.3em] uppercase text-sky-600 mb-3">The Estate</p>
+          <p className="text-sm tracking-[0.3em] uppercase text-sky-600 mb-3">The Villa</p>
           <h2 className="text-3xl md:text-5xl font-light text-slate-900 mb-4">
-            Where Paradise Becomes Yours
+            What Makes Villa La Percha Different
           </h2>
           <p className="text-slate-500 max-w-2xl mx-auto leading-relaxed">
-            Villa La Percha isn&apos;t just a vacation rental — it&apos;s a piece of Providenciales you can own.
-            Here&apos;s what makes it extraordinary.
+            Everything you need for a relaxed, high-end Caribbean stay — without the friction, fees, or impersonal experience of a platform.
           </p>
         </div>
 

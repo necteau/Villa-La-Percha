@@ -5,7 +5,8 @@ const inclusions = [
   { icon: "🌊", label: "Ocean Views" },
   { icon: "🍹", label: "Outdoor Bar & Grill" },
   { icon: "🛶", label: "Kayaks Included" },
-  { icon: "🛏️", label: "4 En-Suite Bedrooms + 1 Half Bath" },
+  { icon: "🛏️", label: "4 En-Suite Suites" },
+  { icon: "🚿", label: "5th Half Bath" },
   { icon: "📺", label: "Fast Wi-Fi" },
   { icon: "🅿️", label: "Free Parking" },
   { icon: "🌅", label: "Sunset Deck" },
@@ -102,7 +103,7 @@ export default function PropertyValue() {
                   "Fully equipped kitchen",
                   "Free parking",
                   "Outdoor bar & grill",
-                  "Your own beach access",
+                  "Dock swimming and fishing access",
                   "Front-row sunset views",
                 ].map((item) => (
                   <div key={item} className="flex items-center gap-2 text-sm text-white/90">

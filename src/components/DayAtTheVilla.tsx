@@ -11,8 +11,8 @@ export default function DayAtTheVilla() {
     {
       time: "10:00 AM",
       label: "Explore",
-      title: "Chalk Sound kayak adventure",
-      description: "Kayaks by the dock. Glide through pink-sand coves and hidden mangrove passages — all of it just steps from your door.",
+      title: "Taylor Bay or a paddle from the dock",
+      description: "Walk over to Taylor Bay in a minute or two for calm, shallow water, or launch one of the kayaks or paddle boards from the dock for a morning on the water.",
       emoji: "🛶",
       color: "from-teal-50 to-cyan-50",
     },
@@ -27,16 +27,16 @@ export default function DayAtTheVilla() {
     {
       time: "2:30 PM",
       label: "Adventure",
-      title: "Grace Bay — eight miles of you",
-      description: "The world's best beach. Powder-white sand. Water so clear it looks like glass. You own the shore.",
+      title: "Taylor Bay or Sapodilla Bay",
+      description: "Choose your mood: Taylor Bay for quiet, shallow water that is perfect for kids and sunsets, or nearby Sapodilla Bay for a livelier beach scene with music, drinks, and vendors.",
       emoji: "🏖️",
       color: "from-sky-50 to-blue-50",
     },
     {
       time: "6:00 PM",
       label: "Dinner",
-      title: "Da Conch Shack at sunset",
-      description: "Beachside conch salad. A cold beer. The sky turns every shade of gold. Live music starts as the sun dips below the reef.",
+      title: "Dock fishing and sunset cocktails",
+      description: "Cast a line from the dock for bonefish, yellowtail snapper, or jacks, then head back up for dinner from the outdoor kitchen as the sunset lights up the water.",
       emoji: "🌴",
       color: "from-amber-50 to-yellow-50",
     },
@@ -61,8 +61,8 @@ export default function DayAtTheVilla() {
             Your Days at Villa La Percha
           </h2>
           <p className="text-sm md:text-base text-[#6B6B6B] leading-relaxed max-w-xl mx-auto">
-            There's no itinerary needed. But if you want one, here's the kind of day that makes
-            guests call this their favorite vacation ever.
+            There&apos;s no itinerary required. But if you want one, here&apos;s the kind of easy,
+            sun-soaked day this part of Providenciales does so well.
           </p>
         </div>
 
