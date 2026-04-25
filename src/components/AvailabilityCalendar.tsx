@@ -267,7 +267,7 @@ export default function AvailabilityCalendar({ checkIn, setCheckIn, checkOut, se
           <p className="text-xs tracking-[0.3em] uppercase mb-4" style={{ color: "#8B7355" }}>Availability</p>
           <h2 className="font-display text-3xl md:text-5xl font-light mb-4" style={{ color: "#2C2C2C" }}>Check Availability</h2>
           <p className="text-sm md:text-base max-w-lg mx-auto leading-relaxed" style={{ color: "#6B6B6B" }}>
-            Select your preferred dates and our team will respond within 24 hours.<br />
+            Select your preferred dates to start an inquiry and we&apos;ll respond within 24 hours.<br />
             Direct bookings here are typically 15–30% lower than the total price guests often see on Airbnb or VRBO.
           </p>
         </div>

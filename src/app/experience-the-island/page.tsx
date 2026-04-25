@@ -23,8 +23,8 @@ export default function ExperiencePage() {
             Experience the<br />Island
           </h1>
           <p className="text-white/70 text-sm md:text-lg max-w-lg leading-relaxed">
-            Your private villa is just the beginning. Providenciales offers world-class beaches,
-            legendary snorkeling, and the kind of island life that makes you never want to leave.
+            Stay near Taylor Bay and Sapodilla Bay, then use this guide to plan the beaches,
+            restaurants, and outings that are actually worth your vacation time.
           </p>
           <Link
             href="/"
@@ -67,15 +67,14 @@ export default function ExperiencePage() {
             Your Island Awaits
           </h2>
           <p className="text-white/60 text-sm md:text-base leading-relaxed mb-10 max-w-lg mx-auto">
-            Book Villa La Percha directly and experience the best of Providenciales with simpler
-            pricing and direct communication throughout your stay.
+            Ready to turn all this into an actual trip? Check your dates and reach out directly.
           </p>
           <Link
             href="/#availability"
             className="inline-block px-8 md:px-10 py-3.5 md:py-4 text-xs md:text-sm tracking-[0.2em] uppercase text-white font-medium"
             style={{ backgroundColor: "#8B7355" }}
           >
-            Check Availability
+            Check Your Dates
           </Link>
         </div>
       </section>

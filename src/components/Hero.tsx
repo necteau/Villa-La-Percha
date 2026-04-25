@@ -64,12 +64,20 @@ export default function Hero() {
           A private waterfront villa in the Chalk Sound neighborhood, moments from Taylor Bay and
           Sapodilla Bay, with a pool, hot tub, dock, kayaks, paddle boards, and room for the whole group.
         </p>
-        <a
-          href="#contact"
-          className="inline-block px-8 md:px-10 py-3 md:py-4 border border-white/50 text-white text-xs md:text-sm tracking-[0.2em] uppercase hover:bg-white hover:text-slate-900 transition-all duration-500"
-        >
-          Inquire
-        </a>
+        <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4">
+          <a
+            href="#availability"
+            className="inline-block px-8 md:px-10 py-3 md:py-4 bg-[#8B7355] border border-[#8B7355] text-white text-xs md:text-sm tracking-[0.2em] uppercase hover:bg-[#9B8262] hover:border-[#9B8262] transition-all duration-500"
+          >
+            Check Availability
+          </a>
+          <a
+            href="#contact"
+            className="inline-block px-8 md:px-10 py-3 md:py-4 border border-white/50 text-white text-xs md:text-sm tracking-[0.2em] uppercase hover:bg-white hover:text-slate-900 transition-all duration-500"
+          >
+            Ask a Question
+          </a>
+        </div>
       </div>
 
       <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10">
