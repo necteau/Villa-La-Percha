@@ -32,7 +32,7 @@ export default function Home() {
       <DayAtTheVilla />
       <DockFishing />
       <PropertyValue />
-      <PriceComparison />
+      <PriceComparison checkIn={checkIn} checkOut={checkOut} />
       <OwnersNote />
       <Location />
       <ContactForm checkIn={checkIn} checkOut={checkOut} />
