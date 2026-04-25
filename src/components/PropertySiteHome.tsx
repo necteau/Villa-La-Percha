@@ -34,7 +34,7 @@ export default function PropertySiteHome() {
       <Location />
 
       <section className="bg-[#FAFAF8] py-20 md:py-28">
-        <div className="max-w-6xl mx-auto px-6 md:px-8 text-center mb-8 md:mb-10">
+        <div className="max-w-6xl mx-auto px-6 md:px-8 text-center mb-4 md:mb-6">
           <p className="text-xs tracking-[0.3em] uppercase mb-4 text-[#8B7355]">Availability & Pricing</p>
           <h2 className="font-display text-3xl md:text-5xl font-light text-[#2C2C2C] mb-4">
             Check dates, compare pricing, and send your inquiry

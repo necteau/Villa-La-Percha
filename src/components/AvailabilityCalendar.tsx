@@ -263,11 +263,9 @@ export default function AvailabilityCalendar({ checkIn, setCheckIn, checkOut, se
   return (
     <section id="availability" className="py-20 md:py-32 bg-[#FAFAF8]">
       <div className="max-w-xl mx-auto px-6 md:px-8">
-        <div className="text-center mb-10 md:mb-12">
-          <p className="text-sm md:text-base max-w-xl mx-auto leading-relaxed" style={{ color: "#6B6B6B" }}>
-            Select your preferred dates to compare pricing and start an inquiry. We&apos;ll respond within 24 hours.
-          </p>
-        </div>
+        <p className="mb-5 text-center text-xs md:text-sm" style={{ color: "#6B6B6B" }}>
+          5-night stay minimum
+        </p>
 
         <div className="bg-white rounded-2xl shadow-sm border border-[#E8E4DF] overflow-hidden max-w-md mx-auto">
           {/* Month nav */}
@@ -364,10 +362,6 @@ export default function AvailabilityCalendar({ checkIn, setCheckIn, checkOut, se
             <div className="w-3 h-3 rounded border border-[#E8E4DF] bg-white" /><span>Available</span>
           </div>
         </div>
-
-        <p className="mt-4 text-center text-xs md:text-sm" style={{ color: "#6B6B6B" }}>
-          5-night stay minimum
-        </p>
 
         {/* CTA */}
         <div className="text-center mt-10">
