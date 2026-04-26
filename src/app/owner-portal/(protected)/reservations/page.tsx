@@ -10,10 +10,6 @@ function ymd(date: Date): string {
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
 }
 
-function getNights(a: string, b: string): number {
-  return Math.max(0, Math.round((new Date(b).getTime() - new Date(a).getTime()) / (1000 * 60 * 60 * 24)));
-}
-
 export default function OwnerReservationsPage() {
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -22,6 +18,7 @@ export default function OwnerReservationsPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   const loadReservations = async () => {
     setLoading(true);
@@ -48,41 +45,34 @@ export default function OwnerReservationsPage() {
     [reservations, selectedId]
   );
 
-  const updateSelected = async (patch: Partial<Reservation>) => {
+  const saveSelected = async (draft: Reservation) => {
     if (!selectedId) return;
 
-    const previous = reservations;
-    const nextReservations = reservations.map((r) => {
-      if (r.id !== selectedId) return r;
-      const nextCheckIn = patch.checkIn ?? r.checkIn;
-      const nextCheckOut = patch.checkOut ?? r.checkOut;
-      const nextIsOwnerWeek = patch.isOwnerWeek ?? r.isOwnerWeek;
-      return {
-        ...r,
-        ...patch,
-        checkIn: nextCheckIn,
-        checkOut: nextCheckOut,
-        isOwnerWeek: nextIsOwnerWeek,
-        income: nextIsOwnerWeek ? 0 : (patch.income ?? r.income),
-        nights: getNights(nextCheckIn, nextCheckOut),
-      };
-    });
-
-    setReservations(nextReservations);
     setSaving(true);
     setError("");
+    setSuccess("");
 
     try {
       const response = await fetch(`/api/owner-portal/reservations/${selectedId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(patch),
+        body: JSON.stringify({
+          status: draft.status,
+          type: draft.type,
+          unit: draft.unit,
+          bookedDate: draft.bookedDate,
+          checkIn: draft.checkIn,
+          checkOut: draft.checkOut,
+          income: draft.income,
+          currency: draft.currency,
+          isOwnerWeek: draft.isOwnerWeek,
+        }),
       });
       const data = await response.json();
       if (!response.ok || !data.ok) throw new Error(data.error || "Failed to save reservation");
       setReservations((current) => current.map((r) => (r.id === selectedId ? data.reservation : r)));
+      setSuccess("Reservation saved.");
     } catch (err) {
-      setReservations(previous);
       setError(err instanceof Error ? err.message : "Failed to save reservation");
     } finally {
       setSaving(false);
@@ -97,11 +87,13 @@ export default function OwnerReservationsPage() {
     setSelectedId(next[0]?.id || null);
     setSaving(true);
     setError("");
+    setSuccess("");
 
     try {
       const response = await fetch(`/api/owner-portal/reservations/${selectedId}`, { method: "DELETE" });
       const data = await response.json();
       if (!response.ok || !data.ok) throw new Error(data.error || "Failed to delete reservation");
+      setSuccess("Reservation deleted.");
     } catch (err) {
       setReservations(previous);
       setSelectedId(selectedId);
@@ -116,6 +108,7 @@ export default function OwnerReservationsPage() {
     const checkOut = ymd(new Date(Date.now() + 1000 * 60 * 60 * 24 * 5));
     setSaving(true);
     setError("");
+    setSuccess("");
 
     try {
       const response = await fetch("/api/owner-portal/reservations", {
@@ -137,6 +130,7 @@ export default function OwnerReservationsPage() {
       if (!response.ok || !data.ok) throw new Error(data.error || "Failed to add reservation");
       setReservations((current) => [data.reservation, ...current]);
       setSelectedId(data.reservation.id);
+      setSuccess("Reservation added.");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to add reservation");
     } finally {
@@ -188,6 +182,7 @@ export default function OwnerReservationsPage() {
         </div>
 
         {error ? <p className="mt-4 text-sm text-[#b42318]">{error}</p> : null}
+        {success ? <p className="mt-4 text-sm text-[#1e4536]">{success}</p> : null}
         {saving ? <p className="mt-4 text-sm text-[#7b7468]">Saving changes…</p> : null}
       </div>
 
@@ -207,7 +202,7 @@ export default function OwnerReservationsPage() {
             onNextMonth={nextMonth}
           />
 
-          <ReservationEditor reservation={selected} onChange={updateSelected} onDelete={deleteSelected} />
+          <ReservationEditor reservation={selected} onSave={saveSelected} onDelete={deleteSelected} saving={saving} />
         </div>
       )}
     </section>

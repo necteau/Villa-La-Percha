@@ -10,9 +10,11 @@ function formatMoney(value: number): string {
 export default function OwnerPricingPage() {
   const [entries, setEntries] = useState<PricingEntry[]>([]);
   const [selectedId, setSelectedId] = useState("");
+  const [draft, setDraft] = useState<PricingEntry | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   useEffect(() => {
     let cancelled = false;
@@ -44,25 +46,39 @@ export default function OwnerPricingPage() {
 
   const selected = useMemo(() => entries.find((e) => e.id === selectedId) || null, [entries, selectedId]);
 
-  const updateSelected = async (patch: Partial<PricingEntry>) => {
-    if (!selectedId) return;
+  useEffect(() => {
+    setDraft(selected ? { ...selected } : null);
+    setSuccess("");
+    setError("");
+  }, [selectedId, selected]);
 
-    const previous = entries;
-    setEntries((current) => current.map((e) => (e.id === selectedId ? { ...e, ...patch } : e)));
+  const hasChanges = !!draft && !!selected && JSON.stringify(draft) !== JSON.stringify(selected);
+
+  const saveDraft = async () => {
+    if (!selectedId || !draft) return;
+
     setSaving(true);
     setError("");
+    setSuccess("");
 
     try {
       const res = await fetch(`/api/owner-portal/pricing/${selectedId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(patch),
+        body: JSON.stringify({
+          startDate: draft.startDate,
+          endDate: draft.endDate,
+          nightlyRate: draft.nightlyRate,
+          minimumStayNights: draft.minimumStayNights,
+          notes: draft.notes,
+        }),
       });
       const data = await res.json();
       if (!res.ok || !data.ok) throw new Error(data.error || "Failed to save pricing");
       setEntries((current) => current.map((e) => (e.id === selectedId ? data.entry : e)));
+      setDraft(data.entry);
+      setSuccess("Pricing saved.");
     } catch (err) {
-      setEntries(previous);
       setError(err instanceof Error ? err.message : "Failed to save pricing");
     } finally {
       setSaving(false);
@@ -78,6 +94,7 @@ export default function OwnerPricingPage() {
           Pricing now runs through the owner portal API/data layer so changes can flow into guest pricing comparison.
         </p>
         {saving ? <p className="mt-3 text-sm text-[#7b7468]">Saving changes…</p> : null}
+        {success ? <p className="mt-3 text-sm text-[#1e4536]">{success}</p> : null}
         {error ? <p className="mt-3 text-sm text-[#b42318]">{error}</p> : null}
       </div>
 
@@ -111,17 +128,17 @@ export default function OwnerPricingPage() {
           </aside>
 
           <div className="rounded-[28px] border border-[#e8e1d6] bg-white p-6 shadow-[0_12px_40px_rgba(0,0,0,0.04)] md:p-8">
-            {!selected ? (
+            {!draft ? (
               <p className="text-sm text-[#5b554b]">Select a pricing entry to edit.</p>
             ) : (
               <div className="space-y-6">
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <div>
                     <p className="text-xs font-medium uppercase tracking-[0.18em] text-[#7b7468]">Selected entry</p>
-                    <h2 className="mt-2 font-display text-4xl text-[#181612]">{selected.platform.toUpperCase()}</h2>
+                    <h2 className="mt-2 font-display text-4xl text-[#181612]">{draft.platform.toUpperCase()}</h2>
                   </div>
                   <span className="rounded-full bg-[#f4efe6] px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#5b554b]">
-                    {selected.startDate} → {selected.endDate}
+                    {draft.startDate} → {draft.endDate}
                   </span>
                 </div>
 
@@ -129,16 +146,16 @@ export default function OwnerPricingPage() {
                   <div>
                     <label className="mb-1 block text-xs uppercase tracking-[0.18em] text-[#7b7468]">Start date (YYYY-MM-DD)</label>
                     <input
-                      value={selected.startDate}
-                      onChange={(e) => updateSelected({ startDate: e.target.value })}
+                      value={draft.startDate}
+                      onChange={(e) => setDraft((current) => (current ? { ...current, startDate: e.target.value } : current))}
                       className="w-full rounded-xl border border-[#ddd4c7] px-4 py-3 text-sm"
                     />
                   </div>
                   <div>
                     <label className="mb-1 block text-xs uppercase tracking-[0.18em] text-[#7b7468]">End date (YYYY-MM-DD)</label>
                     <input
-                      value={selected.endDate}
-                      onChange={(e) => updateSelected({ endDate: e.target.value })}
+                      value={draft.endDate}
+                      onChange={(e) => setDraft((current) => (current ? { ...current, endDate: e.target.value } : current))}
                       className="w-full rounded-xl border border-[#ddd4c7] px-4 py-3 text-sm"
                     />
                   </div>
@@ -146,8 +163,8 @@ export default function OwnerPricingPage() {
                     <label className="mb-1 block text-xs uppercase tracking-[0.18em] text-[#7b7468]">Nightly rate</label>
                     <input
                       type="number"
-                      value={selected.nightlyRate}
-                      onChange={(e) => updateSelected({ nightlyRate: Number(e.target.value || 0) })}
+                      value={draft.nightlyRate}
+                      onChange={(e) => setDraft((current) => (current ? { ...current, nightlyRate: Number(e.target.value || 0) } : current))}
                       className="w-full rounded-xl border border-[#ddd4c7] px-4 py-3 text-sm"
                     />
                   </div>
@@ -155,9 +172,13 @@ export default function OwnerPricingPage() {
                     <label className="mb-1 block text-xs uppercase tracking-[0.18em] text-[#7b7468]">Minimum stay nights (optional)</label>
                     <input
                       type="number"
-                      value={selected.minimumStayNights || ""}
+                      value={draft.minimumStayNights || ""}
                       onChange={(e) =>
-                        updateSelected({ minimumStayNights: e.target.value === "" ? undefined : Number(e.target.value) })
+                        setDraft((current) =>
+                          current
+                            ? { ...current, minimumStayNights: e.target.value === "" ? undefined : Number(e.target.value) }
+                            : current
+                        )
                       }
                       className="w-full rounded-xl border border-[#ddd4c7] px-4 py-3 text-sm"
                     />
@@ -167,11 +188,30 @@ export default function OwnerPricingPage() {
                 <div className="rounded-2xl border border-[#e8e1d6] bg-[#faf8f3] p-5">
                   <p className="text-xs font-medium uppercase tracking-[0.18em] text-[#7b7468]">Notes</p>
                   <textarea
-                    value={selected.notes || ""}
-                    onChange={(e) => updateSelected({ notes: e.target.value })}
+                    value={draft.notes || ""}
+                    onChange={(e) => setDraft((current) => (current ? { ...current, notes: e.target.value } : current))}
                     rows={5}
                     className="mt-3 w-full rounded-xl border border-[#ddd4c7] bg-white px-4 py-3 text-sm leading-6"
                   />
+                </div>
+
+                <div className="flex flex-wrap gap-3">
+                  <button
+                    type="button"
+                    onClick={saveDraft}
+                    disabled={saving || !hasChanges}
+                    className="inline-flex items-center justify-center rounded-full bg-[#1e4536] px-6 py-3 text-xs font-semibold uppercase tracking-[0.18em] text-white transition hover:bg-[#18372b] disabled:opacity-60"
+                  >
+                    {saving ? "Saving..." : "Save pricing"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setDraft(selected ? { ...selected } : null)}
+                    disabled={saving || !hasChanges}
+                    className="inline-flex items-center justify-center rounded-full border border-[#ddd4c7] bg-white px-6 py-3 text-xs font-semibold uppercase tracking-[0.18em] text-[#5b554b] transition hover:bg-[#f7f3eb] disabled:opacity-60"
+                  >
+                    Reset changes
+                  </button>
                 </div>
               </div>
             )}
