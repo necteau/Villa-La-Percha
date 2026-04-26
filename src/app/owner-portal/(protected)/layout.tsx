@@ -1,15 +1,12 @@
 import type { ReactNode } from "react";
-import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import OwnerPortalNav from "@/components/owner-portal/OwnerPortalNav";
-import { OWNER_SESSION_COOKIE, verifyOwnerSessionToken } from "@/lib/ownerAuth";
+import { getOwnerSessionUser } from "@/lib/ownerAuth";
 
 export default async function OwnerPortalProtectedLayout({ children }: { children: ReactNode }) {
-  const cookieStore = await cookies();
-  const token = cookieStore.get(OWNER_SESSION_COOKIE)?.value;
-  const session = verifyOwnerSessionToken(token);
+  const user = await getOwnerSessionUser();
 
-  if (!session) {
+  if (!user) {
     redirect("/owner-portal/login");
   }
 

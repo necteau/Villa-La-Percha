@@ -1,13 +1,8 @@
 import { NextResponse } from "next/server";
-import { OWNER_SESSION_COOKIE } from "@/lib/ownerAuth";
+import { createOwnerServerClient } from "@/lib/ownerAuth";
 
 export async function POST() {
-  const response = NextResponse.json({ ok: true });
-  response.cookies.set({
-    name: OWNER_SESSION_COOKIE,
-    value: "",
-    maxAge: 0,
-    path: "/",
-  });
-  return response;
+  const supabase = await createOwnerServerClient();
+  await supabase.auth.signOut();
+  return NextResponse.json({ ok: true });
 }

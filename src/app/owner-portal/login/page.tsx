@@ -6,7 +6,7 @@ import Link from "next/link";
 
 export default function OwnerPortalLoginPage() {
   const router = useRouter();
-  const [email, setEmail] = useState("owner@directstay.app");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -82,7 +82,7 @@ export default function OwnerPortalLoginPage() {
           </form>
 
           <div className="mt-6 flex items-center justify-between gap-4 text-xs text-[#7b7468]">
-            <span>Set OWNER_PORTAL_EMAIL / OWNER_PORTAL_PASSWORD in env for production.</span>
+            <span>Supabase Auth powers this login. Allow owner emails in env before production.</span>
             <Link href="/" className="underline underline-offset-4">
               Back to DirectStay
             </Link>

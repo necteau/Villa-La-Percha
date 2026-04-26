@@ -1,85 +1,74 @@
-import crypto from "crypto";
+import type { User } from "@supabase/supabase-js";
+import { createBrowserClient, createServerClient } from "@supabase/ssr";
+import { cookies } from "next/headers";
 
-export const OWNER_SESSION_COOKIE = "directstay_owner_session";
-const DEFAULT_OWNER_EMAIL = "owner@directstay.app";
+function getSupabaseConfig() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-interface SessionPayload {
-  email: string;
-  exp: number;
-}
-
-function base64UrlEncode(value: string): string {
-  return Buffer.from(value)
-    .toString("base64")
-    .replace(/\+/g, "-")
-    .replace(/\//g, "_")
-    .replace(/=+$/g, "");
-}
-
-function base64UrlDecode(value: string): string {
-  const padded = value.replace(/-/g, "+").replace(/_/g, "/").padEnd(Math.ceil(value.length / 4) * 4, "=");
-  return Buffer.from(padded, "base64").toString("utf8");
-}
-
-function getSessionSecret(): string {
-  const secret = process.env.OWNER_PORTAL_SESSION_SECRET;
-  if (!secret) {
-    throw new Error("OWNER_PORTAL_SESSION_SECRET is not configured");
-  }
-  return secret;
-}
-
-export function getOwnerCredentials() {
-  const password = process.env.OWNER_PORTAL_PASSWORD;
-  if (!password) {
-    throw new Error("OWNER_PORTAL_PASSWORD is not configured");
+  if (!url || !anonKey) {
+    throw new Error("Supabase Auth is not configured. Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY.");
   }
 
-  return {
-    email: process.env.OWNER_PORTAL_EMAIL || DEFAULT_OWNER_EMAIL,
-    password,
-  };
+  return { url, anonKey };
 }
 
-export function createOwnerSessionToken(email: string, ttlSeconds = 60 * 60 * 24 * 7): string {
-  const payload: SessionPayload = {
-    email,
-    exp: Math.floor(Date.now() / 1000) + ttlSeconds,
-  };
-
-  const encodedPayload = base64UrlEncode(JSON.stringify(payload));
-  const signature = crypto
-    .createHmac("sha256", getSessionSecret())
-    .update(encodedPayload)
-    .digest("base64")
-    .replace(/\+/g, "-")
-    .replace(/\//g, "_")
-    .replace(/=+$/g, "");
-
-  return `${encodedPayload}.${signature}`;
+export function hasSupabaseAuthConfig(): boolean {
+  return Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
 }
 
-export function verifyOwnerSessionToken(token: string | undefined | null): SessionPayload | null {
-  if (!token) return null;
+export function getAllowedOwnerEmails(): string[] {
+  const configured = process.env.OWNER_PORTAL_ALLOWED_EMAILS || process.env.OWNER_PORTAL_EMAIL || "owner@directstay.app";
+  return configured
+    .split(",")
+    .map((value) => value.trim().toLowerCase())
+    .filter(Boolean);
+}
 
-  const [encodedPayload, signature] = token.split(".");
-  if (!encodedPayload || !signature) return null;
+export function isAllowedOwnerEmail(email: string | null | undefined): boolean {
+  if (!email) return false;
+  return getAllowedOwnerEmails().includes(email.trim().toLowerCase());
+}
 
-  const expectedSignature = crypto
-    .createHmac("sha256", getSessionSecret())
-    .update(encodedPayload)
-    .digest("base64")
-    .replace(/\+/g, "-")
-    .replace(/\//g, "_")
-    .replace(/=+$/g, "");
+export async function createOwnerServerClient() {
+  const { url, anonKey } = getSupabaseConfig();
+  const cookieStore = await cookies();
 
-  if (signature !== expectedSignature) return null;
+  return createServerClient(url, anonKey, {
+    cookies: {
+      getAll() {
+        return cookieStore.getAll();
+      },
+      setAll(cookiesToSet) {
+        try {
+          cookiesToSet.forEach(({ name, value, options }) => {
+            cookieStore.set(name, value, options);
+          });
+        } catch {
+          // Server Components can't always write cookies; route handlers can.
+        }
+      },
+    },
+  });
+}
 
-  try {
-    const payload = JSON.parse(base64UrlDecode(encodedPayload)) as SessionPayload;
-    if (!payload.exp || payload.exp < Math.floor(Date.now() / 1000)) return null;
-    return payload;
-  } catch {
+export function createOwnerBrowserClient() {
+  const { url, anonKey } = getSupabaseConfig();
+  return createBrowserClient(url, anonKey);
+}
+
+export async function getOwnerSessionUser(): Promise<User | null> {
+  if (!hasSupabaseAuthConfig()) return null;
+
+  const supabase = await createOwnerServerClient();
+  const {
+    data: { user },
+    error,
+  } = await supabase.auth.getUser();
+
+  if (error || !user || !isAllowedOwnerEmail(user.email)) {
     return null;
   }
+
+  return user;
 }

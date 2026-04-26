@@ -71,11 +71,14 @@ Reason:
 - easier long-term than trying to stretch JSON files into a fake backend
 
 ### Auth
-Prototype now uses simple cookie auth.
-Real next step should be one of:
-- Auth.js
-- Supabase Auth
-- Clerk
+Current direction: **Supabase Auth**.
+
+Current implementation now uses Supabase email/password auth plus an owner-email allowlist for the owner portal.
+
+Near-term follow-up still needed:
+- password reset flow
+- invite/admin user provisioning flow
+- richer role model (`owner`, `manager`, `admin`)
 
 Requirements:
 - email/password login

@@ -1,9 +1,5 @@
 import { NextResponse } from "next/server";
-import {
-  createOwnerSessionToken,
-  getOwnerCredentials,
-  OWNER_SESSION_COOKIE,
-} from "@/lib/ownerAuth";
+import { createOwnerServerClient, isAllowedOwnerEmail } from "@/lib/ownerAuth";
 
 export async function POST(req: Request) {
   try {
@@ -11,27 +7,31 @@ export async function POST(req: Request) {
     const email = String(body?.email || "").trim().toLowerCase();
     const password = String(body?.password || "");
 
-    const credentials = getOwnerCredentials();
-
-    if (email !== credentials.email.toLowerCase() || password !== credentials.password) {
-      return NextResponse.json({ ok: false, error: "Invalid email or password" }, { status: 401 });
+    if (!email || !password) {
+      return NextResponse.json({ ok: false, error: "Email and password are required" }, { status: 400 });
     }
 
-    const token = createOwnerSessionToken(credentials.email);
-    const response = NextResponse.json({ ok: true });
+    if (!isAllowedOwnerEmail(email)) {
+      return NextResponse.json({ ok: false, error: "This account is not authorized for the owner portal" }, { status: 403 });
+    }
 
-    response.cookies.set({
-      name: OWNER_SESSION_COOKIE,
-      value: token,
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      maxAge: 60 * 60 * 24 * 7,
-      path: "/",
-    });
+    const supabase = await createOwnerServerClient();
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
-    return response;
-  } catch {
-    return NextResponse.json({ ok: false, error: "Invalid request" }, { status: 400 });
+    if (error || !data.user) {
+      return NextResponse.json({ ok: false, error: error?.message || "Invalid email or password" }, { status: 401 });
+    }
+
+    if (!isAllowedOwnerEmail(data.user.email)) {
+      await supabase.auth.signOut();
+      return NextResponse.json({ ok: false, error: "This account is not authorized for the owner portal" }, { status: 403 });
+    }
+
+    return NextResponse.json({ ok: true, user: { email: data.user.email } });
+  } catch (error) {
+    return NextResponse.json(
+      { ok: false, error: error instanceof Error ? error.message : "Invalid request" },
+      { status: 400 }
+    );
   }
 }

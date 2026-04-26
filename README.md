@@ -50,7 +50,11 @@ Direct-booking website for Villa La Percha in the Chalk Sound neighborhood of Pr
 - Database client helper: `src/lib/db.ts`
 - Environment template: `.env.example`
 - Runtime should use pooled `DATABASE_URL`; Prisma migrations should use direct `DIRECT_DATABASE_URL`
-- Owner portal requires explicit `OWNER_PORTAL_PASSWORD` and `OWNER_PORTAL_SESSION_SECRET` env vars; no hardcoded password defaults remain in code
+- Owner portal now uses Supabase Auth with an owner email allowlist
+- Required auth envs:
+  - `NEXT_PUBLIC_SUPABASE_URL`
+  - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+  - `OWNER_PORTAL_ALLOWED_EMAILS`
 - Current schema direction supports:
   - users / owners
   - properties
