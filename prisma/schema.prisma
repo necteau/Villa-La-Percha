@@ -1,0 +1,247 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  OWNER
+  MANAGER
+  ADMIN
+}
+
+enum PropertyStatus {
+  DRAFT
+  LIVE
+  ARCHIVED
+}
+
+enum ReservationStatus {
+  TENTATIVE
+  CONFIRMED
+  CHECKED_IN
+  COMPLETED
+  CANCELLED
+  OWNER_HOLD
+}
+
+enum ReservationSource {
+  DIRECT
+  AIRBNB
+  VRBO
+  MANUAL
+  OWNER
+}
+
+enum PricingPlatform {
+  DIRECT
+  AIRBNB
+  VRBO
+}
+
+enum ChargeCategory {
+  FEE
+  TAX
+}
+
+enum ChargeType {
+  FIXED
+  PERCENT
+}
+
+enum ChargeBasis {
+  BASE
+  BASE_PLUS_FEES
+  SUBTOTAL_BEFORE_TAX
+}
+
+enum PaymentMethodType {
+  STRIPE
+  ZELLE
+  VENMO
+  CASH_APP
+}
+
+enum InquiryStatus {
+  NEW
+  REPLIED
+  APPROVED
+  DECLINED
+  CONVERTED
+}
+
+model User {
+  id             String        @id @default(cuid())
+  email          String        @unique
+  passwordHash   String?
+  fullName       String?
+  role           UserRole      @default(OWNER)
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  ownerProfiles  Owner[]       @relation("OwnerPrimaryUser")
+  memberships    OwnerMember[]
+}
+
+model Owner {
+  id             String         @id @default(cuid())
+  displayName    String
+  supportEmail   String?
+  supportPhone   String?
+  primaryUserId  String?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  primaryUser    User?          @relation("OwnerPrimaryUser", fields: [primaryUserId], references: [id])
+  properties     Property[]
+  members        OwnerMember[]
+}
+
+model OwnerMember {
+  id         String    @id @default(cuid())
+  ownerId     String
+  userId      String
+  title       String?
+  createdAt   DateTime  @default(now())
+  owner       Owner     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([ownerId, userId])
+}
+
+model Property {
+  id                        String             @id @default(cuid())
+  ownerId                   String
+  slug                      String             @unique
+  name                      String
+  status                    PropertyStatus     @default(DRAFT)
+  publicDomain              String?
+  inquiryEmail              String?
+  inquiryPhone              String?
+  timezone                  String             @default("America/New_York")
+  currency                  String             @default("USD")
+  minimumStayNights         Int?
+  checkInTime               String?
+  checkOutTime              String?
+  inquiryEnabled            Boolean            @default(true)
+  createdAt                 DateTime           @default(now())
+  updatedAt                 DateTime           @updatedAt
+  owner                     Owner              @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  content                   PropertyContent?
+  reservations              Reservation[]
+  pricingRules              PricingRule[]
+  paymentMethods            PaymentMethod[]
+  paymentSettings           PaymentSetting?
+  inquiries                 Inquiry[]
+}
+
+model PropertyContent {
+  id                    String    @id @default(cuid())
+  propertyId            String    @unique
+  headline              String?
+  subheadline           String?
+  locationSummary       String?
+  aboutCopy             String?
+  fishingCopy           String?
+  locationCopy          String?
+  faqEnabled            Boolean   @default(true)
+  experiencePageEnabled Boolean   @default(true)
+  updatedAt             DateTime  @updatedAt
+  property              Property  @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+}
+
+model Reservation {
+  id                String              @id @default(cuid())
+  propertyId        String
+  externalReference String?
+  status            ReservationStatus   @default(TENTATIVE)
+  source            ReservationSource   @default(MANUAL)
+  guestName         String?
+  guestEmail        String?
+  guestPhone        String?
+  checkIn           DateTime
+  checkOut          DateTime
+  nights            Int
+  totalAmount       Decimal?            @db.Decimal(10, 2)
+  currency          String              @default("USD")
+  isOwnerWeek       Boolean             @default(false)
+  notes             String?
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  property          Property            @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  @@index([propertyId, checkIn, checkOut])
+}
+
+model PricingRule {
+  id                String            @id @default(cuid())
+  propertyId        String
+  platform          PricingPlatform
+  startDate         DateTime
+  endDate           DateTime
+  nightlyRate       Decimal           @db.Decimal(10, 2)
+  minimumStayNights Int?
+  notes             String?
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  property          Property          @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  charges           PricingCharge[]
+
+  @@index([propertyId, platform, startDate, endDate])
+}
+
+model PricingCharge {
+  id            String         @id @default(cuid())
+  pricingRuleId String
+  label         String
+  category      ChargeCategory
+  chargeType    ChargeType
+  value         Decimal        @db.Decimal(10, 4)
+  basis         ChargeBasis    @default(BASE)
+  perNight      Boolean        @default(false)
+  pricingRule   PricingRule    @relation(fields: [pricingRuleId], references: [id], onDelete: Cascade)
+}
+
+model PaymentMethod {
+  id            String             @id @default(cuid())
+  propertyId     String
+  method         PaymentMethodType
+  enabled        Boolean            @default(false)
+  isPrimary      Boolean            @default(false)
+  displayOrder   Int                @default(0)
+  instructions   String?
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+  property       Property           @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  @@unique([propertyId, method])
+}
+
+model PaymentSetting {
+  id                               String    @id @default(cuid())
+  propertyId                        String    @unique
+  depositPercentage                 Int       @default(0)
+  finalPaymentDueDays               Int       @default(30)
+  allowManualFallbacks              Boolean   @default(true)
+  requireOwnerApprovalBeforePayment Boolean   @default(true)
+  createdAt                         DateTime  @default(now())
+  updatedAt                         DateTime  @updatedAt
+  property                          Property  @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+}
+
+model Inquiry {
+  id           String        @id @default(cuid())
+  propertyId   String
+  fullName     String
+  email        String
+  phone        String?
+  checkIn      DateTime?
+  checkOut     DateTime?
+  message      String?
+  status       InquiryStatus @default(NEW)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  property     Property      @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  @@index([propertyId, status, createdAt])
+}

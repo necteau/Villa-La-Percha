@@ -8,6 +8,7 @@ Direct-booking website for Villa La Percha in the Chalk Sound neighborhood of Pr
 - **Styling:** Tailwind CSS
 - **Deployment:** Vercel
 - **Contact Form:** Resend (free tier)
+- **Database foundation:** Prisma + Postgres-ready schema
 
 ## Property DNA
 - **Location:** Chalk Sound neighborhood, Providenciales — between Taylor Bay and Sapodilla Bay
@@ -37,6 +38,19 @@ Direct-booking website for Villa La Percha in the Chalk Sound neighborhood of Pr
 - Delivery is handled through Resend
 - Live email delivery requires `RESEND_API_KEY` to be configured in Vercel
 - Inquiry destination: `VillaLaPercha@gmail.com`
+
+## DirectStay App Foundation
+- Prisma schema now lives at `prisma/schema.prisma`
+- Database client helper: `src/lib/db.ts`
+- Environment template: `.env.example`
+- Current schema direction supports:
+  - users / owners
+  - properties
+  - reservations
+  - pricing rules + charges
+  - payment methods + payment settings
+  - inquiries
+- See `docs/directstay-app-architecture.md` for the broader product/data direction
 
 ## Contact
 VillaLaPercha@gmail.com
