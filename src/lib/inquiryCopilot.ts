@@ -19,6 +19,7 @@ export interface InquiryCopilotInsights {
   scoreReasons: string[];
   missingInfo: string[];
   keyFacts: Array<{ label: string; value: string }>;
+  guestFlowSignals: string[];
   suggestedNextAction: string;
   recommendedStatus: "new" | "replied" | "approved" | "declined" | "converted";
   objectionSignals: string[];
@@ -192,8 +193,12 @@ export async function getInquiryCopilotInsights(inquiry: InquiryThreadRecord): P
       : `Before quoting specifics, the reply should confirm the guest's exact dates.`;
 
   const paymentLine = paymentMethods.length > 0
-    ? `For payment, you can mention ${joinPaymentMethods(paymentMethods)}${paymentSettings.allowFallbacks ? " with manual fallback options if needed" : ""}.`
+    ? `For payment, you can mention ${joinPaymentMethods(paymentMethods)}${paymentSettings.allowFallbacks ? " with manual fallback options available" : " - all payments are processed through this setup"}.`
     : `Payment configuration is still thin, so avoid overpromising payment options.`;
+
+  const depositLine = paymentSettings.depositPercent > 0
+    ? `A ${paymentSettings.depositPercent}% deposit is standard to secure a booking, with the balance due ${paymentSettings.finalDueDays} days before arrival.`
+    : null;
 
   const minimumStayLine = `The property currently runs with a ${siteSettings.minStayNights}-night minimum stay.`;
   const pricingLine = directNightlyRate
@@ -221,13 +226,14 @@ export async function getInquiryCopilotInsights(inquiry: InquiryThreadRecord): P
     availabilityLine,
     minimumStayLine,
     pricingLine,
+    depositLine ? `${depositLine} ` : "",
     paymentLine,
     textLower.includes("airbnb") || textLower.includes("vrbo")
       ? "Booking direct keeps the conversation simple and usually gives guests a cleaner overall price than booking the same stay through Airbnb or VRBO."
       : "If it helps, I can also outline the direct-booking process so everything feels straightforward and secure.",
     "",
     missingInfo.length > 0
-      ? `To get you the most accurate answer, I’d love to confirm: ${missingInfo.join(", ")}.`
+      ? `To get you the most accurate answer, I'd love to confirm: ${missingInfo.join(", ")}.`
       : "If you'd like, I can firm up the exact quote and next booking steps from here.",
     "",
     "Best,",
@@ -235,8 +241,8 @@ export async function getInquiryCopilotInsights(inquiry: InquiryThreadRecord): P
   ].join("\n");
 
   const warmerBody = baseReplyBody
-    .replace("Thanks for reaching out about Villa La Percha.", "Thanks so much for reaching out about Villa La Percha — I’m glad you found us.")
-    .replace("If you'd like, I can firm up the exact quote and next booking steps from here.", "If you’d like, I can help you pin down the exact quote and next steps from here.");
+    .replace("Thanks for reaching out about Villa La Percha.", "Thanks so much for reaching out about Villa La Percha - I'm glad you found us.")
+    .replace("If you'd like, I can firm up the exact quote and next booking steps from here.", "If you'd like, I can help you pin down the exact quote and next steps from here.");
 
   const conciseBody = [
     buildGreeting(inquiry.fullName),
@@ -245,7 +251,7 @@ export async function getInquiryCopilotInsights(inquiry: InquiryThreadRecord): P
       ? `Thanks for your note about ${formatDate(inquiry.checkIn)} to ${formatDate(inquiry.checkOut)}.`
       : "Thanks for your inquiry.",
     conflictingReservations.length > 0
-      ? "Those exact dates may be blocked, but I’m happy to suggest close alternatives."
+      ? "Those exact dates may be blocked, but I'm happy to suggest close alternatives."
       : directNightlyRate
         ? `Direct stays are currently starting around $${directNightlyRate.toLocaleString()}/night, and the villa has a ${siteSettings.minStayNights}-night minimum.`
         : `The villa has a ${siteSettings.minStayNights}-night minimum stay.`,
@@ -258,7 +264,7 @@ export async function getInquiryCopilotInsights(inquiry: InquiryThreadRecord): P
   const pricingObjectionBody = [
     buildGreeting(inquiry.fullName),
     "",
-    "Thanks for the note — totally fair question.",
+    "Thanks for the note - totally fair question.",
     directNightlyRate
       ? `Our direct stays currently start around $${directNightlyRate.toLocaleString()}/night, and booking direct usually avoids the extra guest-facing markup you tend to see on Airbnb or VRBO.`
       : "Booking direct usually gives guests a cleaner overall price than booking the same stay through Airbnb or VRBO.",
@@ -266,7 +272,7 @@ export async function getInquiryCopilotInsights(inquiry: InquiryThreadRecord): P
     "",
     conflictingReservations.length > 0
       ? "If your dates have some flexibility, I can also suggest nearby openings that may work better."
-      : "If the dates still work on your side, I’m happy to map out the next step.",
+      : "If the dates still work on your side, I'm happy to map out the next step.",
     "",
     "Best,",
     "Villa La Percha",
@@ -276,10 +282,10 @@ export async function getInquiryCopilotInsights(inquiry: InquiryThreadRecord): P
     buildGreeting(inquiry.fullName),
     "",
     conflictingReservations.length > 0
-      ? `I’m checking your requested dates (${formatDate(inquiry.checkIn || undefined)} to ${formatDate(inquiry.checkOut || undefined)}) against the calendar now, and they may be tight.`
+      ? `I'm checking your requested dates (${formatDate(inquiry.checkIn || undefined)} to ${formatDate(inquiry.checkOut || undefined)}) against the calendar now, and they may be tight.`
       : inquiry.checkIn && inquiry.checkOut
-        ? `I’ve noted your requested stay from ${formatDate(inquiry.checkIn)} to ${formatDate(inquiry.checkOut)}.`
-        : "I’d be happy to check the calendar for you.",
+        ? `I've noted your requested stay from ${formatDate(inquiry.checkIn)} to ${formatDate(inquiry.checkOut)}.`
+        : "I'd be happy to check the calendar for you.",
     conflictingReservations.length > 0
       ? "If you can shift by a day or two on either side, I can suggest the best alternate windows quickly."
       : `The villa works on a ${siteSettings.minStayNights}-night minimum, so if those dates are confirmed I can help move you to the next step cleanly.`,
@@ -341,12 +347,23 @@ export async function getInquiryCopilotInsights(inquiry: InquiryThreadRecord): P
     inquiry.checkOut ? { label: "Check-out", value: sentenceCase(formatDate(inquiry.checkOut) || inquiry.checkOut) } : null,
     requestedNights ? { label: "Requested stay", value: `${requestedNights} nights` } : null,
     directNightlyRate ? { label: "Direct rate", value: `$${directNightlyRate.toLocaleString()}/night` } : null,
-    { label: "Payment setup", value: paymentMethods.length ? joinPaymentMethods(paymentMethods) : "Needs confirmation" },
+    { label: "Payment options", value: paymentMethods.length > 0 ? joinPaymentMethods(paymentMethods) : "Not configured" },
+    paymentSettings.depositPercent > 0 ? { label: "Deposit", value: `${paymentSettings.depositPercent}%` } : null,
+    { label: "Minimum stay", value: `${siteSettings.minStayNights} nights` },
   ].filter(Boolean) as Array<{ label: string; value: string }>;
 
   const questions = extractQuestions(text);
   if (questions.length > 0) {
     keyFacts.push({ label: "Questions asked", value: `${questions.length} noted` });
+  }
+
+  // Deep guest-flow integration: surface property settings that affect guest-facing behavior
+  const guestFlowSignals: string[] = [];
+  if (!siteSettings.inquiryEnabled) {
+    guestFlowSignals.push("Inquiries are currently disabled in site settings — the guest form should be hidden on the site.");
+  }
+  if (conflictingReservations.length > 0 && siteSettings.inquiryEnabled) {
+    guestFlowSignals.push("The requested dates are blocked — consider offering alternate windows on the availability calendar.");
   }
 
   return {
@@ -357,6 +374,7 @@ export async function getInquiryCopilotInsights(inquiry: InquiryThreadRecord): P
     scoreReasons,
     missingInfo,
     keyFacts,
+    guestFlowSignals,
     suggestedNextAction:
       conflictingReservations.length > 0
         ? "Reply quickly, acknowledge the requested dates, and offer the nearest workable alternatives."

@@ -1,4 +1,3 @@
-import { promises as fs } from "fs";
 import path from "path";
 import {
   InquiryDraftStatus,
@@ -7,6 +6,7 @@ import {
   InquiryStatus,
 } from "@prisma/client";
 import { getPrismaClient } from "@/lib/db";
+import { canUseDatabaseSync, readJsonFallback, writeJsonFallback } from "@/lib/fallbackOrchestrator";
 
 export interface InquiryRecord {
   id: string;
@@ -90,26 +90,26 @@ interface FallbackThreadState {
 }
 
 function canUseDatabase(): boolean {
-  const url = process.env.DATABASE_URL;
-  return !!url && !url.includes("USER:PASSWORD@HOST");
+  return canUseDatabaseSync();
 }
 
+const DEFAULT_INQUIRIES: InquiryRecord[] = [];
+const DEFAULT_THREAD_STATE: FallbackThreadState = { messages: [], drafts: [] };
+
 async function readFallback(): Promise<InquiryRecord[]> {
-  const raw = await fs.readFile(FALLBACK_PATH, "utf8");
-  return JSON.parse(raw) as InquiryRecord[];
+  return readJsonFallback(FALLBACK_PATH, DEFAULT_INQUIRIES);
 }
 
 async function writeFallback(records: InquiryRecord[]) {
-  await fs.writeFile(FALLBACK_PATH, `${JSON.stringify(records, null, 2)}\n`, "utf8");
+  await writeJsonFallback(FALLBACK_PATH, records);
 }
 
 async function readFallbackThreadState(): Promise<FallbackThreadState> {
-  const raw = await fs.readFile(THREAD_STATE_PATH, "utf8");
-  return JSON.parse(raw) as FallbackThreadState;
+  return readJsonFallback(THREAD_STATE_PATH, DEFAULT_THREAD_STATE);
 }
 
 async function writeFallbackThreadState(state: FallbackThreadState) {
-  await fs.writeFile(THREAD_STATE_PATH, `${JSON.stringify(state, null, 2)}\n`, "utf8");
+  await writeJsonFallback(THREAD_STATE_PATH, state);
 }
 
 function fromDbStatus(status: InquiryStatus): InquiryRecord["status"] {

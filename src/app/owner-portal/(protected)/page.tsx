@@ -20,6 +20,11 @@ export default async function OwnerPortalDashboardPage() {
       value: stats.avgFirstResponseHours !== null ? `${stats.avgFirstResponseHours.toFixed(1)}h` : "—",
       note: `${stats.inquiriesSentReplies} conversations have at least one sent reply`,
     },
+    {
+      label: "Inquiry conversion",
+      value: stats.inquiryConversionRate !== null ? `${Math.round(stats.inquiryConversionRate * 100)}%` : "—",
+      note: `${stats.inquiriesConverted} converted inquiry${stats.inquiriesConverted === 1 ? "" : "ies"}`,
+    },
   ];
 
   const cards = [
@@ -67,7 +72,7 @@ export default async function OwnerPortalDashboardPage() {
         </p>
       </div>
 
-      <div className="grid gap-5 md:grid-cols-3">
+      <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
         {summaryCards.map((card) => (
           <article key={card.label} className="rounded-[28px] border border-[#e8e1d6] bg-white p-6 shadow-[0_12px_40px_rgba(0,0,0,0.04)]">
             <p className="text-xs font-medium uppercase tracking-[0.18em] text-[#7b7468]">{card.label}</p>

@@ -30,10 +30,51 @@ Whenever possible, capture basic source/UTM values:
 1. Guest lands on site
 2. Guest checks dates
 3. Guest submits inquiry
-4. Inquiry email arrives at `VillaLaPercha@gmail.com`
-5. Respond within 24 hours
-6. Log inquiry source, requested dates, and outcome
-7. If booked, log booking source and value
+4. Inquiry is stored in the inquiry thread system and surfaced in owner portal
+5. Outbound reply drafts are generated/edited in owner portal and require approval before send
+6. Sent replies are logged back into the inquiry timeline
+7. Guest replies return through `/api/inquiry/reply-webhook` and append to the same thread
+8. Respond within 24 hours
+9. Log inquiry source, requested dates, and outcome
+10. If booked, log booking source and value
+
+## Current Reply / Inbox Architecture
+
+### Outbound
+- Drafts are stored as inquiry reply drafts with status (`draft`, `pending_owner_approval`, `approved`, `sent`)
+- Approved drafts send via Resend
+- Subjects are tagged with `[DirectStay Inquiry <id>]` for reply threading
+- Sent emails are logged as outbound inquiry messages for full conversation history
+
+### Inbound
+- Reply webhook authenticates with `INQUIRY_WEBHOOK_SECRET`
+- Inquiry ID resolution order:
+  1. explicit `inquiryId`
+  2. `X-DirectStay-Inquiry-Id` header
+  3. `[DirectStay Inquiry <id>]` subject token
+- Sender is validated against the original inquiry email when available
+- Duplicate replies are ignored when `messageId` already exists in the thread
+- Webhook failures are logged to fallback storage for inspection
+
+### Fallback / Local Mode
+- If the database is unavailable, inquiry, reservation, pricing, webhook-failure, and analytics data fall back to JSON files under `src/data/`
+- This keeps the portal usable during local development and partial setup without pretending the data layer is production-grade
+
+## Current Analytics Foundation
+
+Tracked event types currently include:
+- `inquiry.submit`
+- `inquiry.responded`
+- `inquiry.converted`
+- `page.view`
+- `pricing.view`
+- `availability.check`
+
+Dashboard metrics currently surface:
+- drafts awaiting approval
+- conversations with replies sent
+- average first-response speed
+- inquiry conversion rate
 
 ## Lead Response Standard
 - **Goal:** same day when practical, within 24 hours max
@@ -58,9 +99,10 @@ Whenever possible, capture basic source/UTM values:
 
 ## Manual Workflow for Now
 Until analytics and CRM are live:
-- Use the inquiry inbox as the trigger
-- Record leads in a simple CSV or sheet
+- Use the inquiry inbox / owner portal as the trigger
+- Record leads in a simple CSV or sheet when needed for marketing review
 - Update status after each reply / booking decision
+- Review fallback analytics/events files if production analytics is not wired yet
 
 ## Pricing Workflow
 For selected date windows, record:
@@ -76,5 +118,6 @@ Then enter these into `src/data/pricingTable.ts` so the website can calculate re
 
 ## Bottlenecks / Dependencies
 - Resend API key must be configured in Vercel
-- Live inquiry submission test still needs to happen
+- Live inquiry submission + reply-webhook test still needs to happen end-to-end
+- Production inbound email routing still needs to be chosen and wired into the webhook
 - Exact OTA pricing requires manual capture when platforms block automation

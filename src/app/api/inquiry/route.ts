@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { createInquiry } from "@/lib/inquiries";
+import { trackInquirySubmit } from "@/lib/analytics";
 
 const apiKey = process.env.RESEND_API_KEY;
 const resend = apiKey ? new Resend(apiKey) : null;
@@ -78,13 +79,21 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Too many inquiries. Please try again shortly." }, { status: 429 });
     }
 
-    await createInquiry({
+    const inquiry = await createInquiry({
       fullName: safeName,
       email: safeEmail,
       checkIn: safeCheckIn,
       checkOut: safeCheckOut,
       message: safeComments || undefined,
     });
+
+    // Track conversion funnel event (fire-and-forget)
+    void trackInquirySubmit(inquiry.id, {
+      fullName: safeName,
+      checkIn: safeCheckIn,
+      checkOut: safeCheckOut,
+      messageLength: safeComments.length,
+    }).catch(() => {});
 
     const subject = `Villa La Percha Inquiry — ${safeName} — ${safeCheckIn} to ${safeCheckOut}`;
 

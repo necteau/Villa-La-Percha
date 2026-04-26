@@ -6,6 +6,7 @@ import {
   saveInquiryDraft,
   updateInquiryStatus,
 } from "@/lib/inquiries";
+import { trackInquiryResponse } from "@/lib/analytics";
 
 function getResendClient() {
   const apiKey = process.env.RESEND_API_KEY;
@@ -73,6 +74,16 @@ export async function sendApprovedInquiryDraft(inquiryId: string, draftId: strin
     createdByType: draft.createdByType,
   });
   await updateInquiryStatus(thread.id, "replied");
+
+  const firstInbound = thread.messages.find((message) => message.direction === "inbound");
+  if (firstInbound) {
+    const inboundAt = new Date(firstInbound.receivedAt || firstInbound.createdAt).getTime();
+    const outboundAt = Date.now();
+    if (Number.isFinite(inboundAt) && outboundAt >= inboundAt) {
+      const responseHours = (outboundAt - inboundAt) / (1000 * 60 * 60);
+      void trackInquiryResponse(thread.id, responseHours, thread.drafts.length + 1).catch(() => {});
+    }
+  }
 
   return { emailId: result.data?.id || null };
 }

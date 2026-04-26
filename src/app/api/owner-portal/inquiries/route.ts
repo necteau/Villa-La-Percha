@@ -3,6 +3,7 @@ import { requireOwnerPortalSession } from "@/lib/ownerPortalApi";
 import { getInquiryThreadById, listInquiryThreads, saveInquiryDraft, updateInquiryStatus } from "@/lib/inquiries";
 import { sendApprovedInquiryDraft } from "@/lib/inquiryEmail";
 import { getInquiryCopilotInsights } from "@/lib/inquiryCopilot";
+import { trackInquiryConverted } from "@/lib/analytics";
 
 export async function GET() {
   const unauthorized = await requireOwnerPortalSession();
@@ -30,6 +31,10 @@ export async function POST(req: Request) {
       const inquiry = await updateInquiryStatus(id, status);
       if (!inquiry) {
         return NextResponse.json({ ok: false, error: "Inquiry not found" }, { status: 404 });
+      }
+
+      if (status === "converted") {
+        void trackInquiryConverted(id).catch(() => {});
       }
 
       return NextResponse.json({ ok: true, inquiry });

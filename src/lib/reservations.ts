@@ -1,7 +1,7 @@
-import { promises as fs } from "fs";
 import path from "path";
 import { ReservationSource, ReservationStatus } from "@prisma/client";
 import { getPrismaClient } from "@/lib/db";
+import { canUseDatabaseSync, readJsonFallback, writeJsonFallback } from "@/lib/fallbackOrchestrator";
 
 export interface ReservationRecord {
   id: string;
@@ -37,8 +37,7 @@ const DEFAULT_PROPERTY = {
 };
 
 function canUseDatabase(): boolean {
-  const url = process.env.DATABASE_URL;
-  return !!url && !url.includes("USER:PASSWORD@HOST");
+  return canUseDatabaseSync();
 }
 
 function nightsBetween(checkIn: string, checkOut: string): number {
@@ -117,14 +116,14 @@ function mapDbReservation(record: {
   };
 }
 
+const DEFAULT_RESERVATIONS: ReservationRecord[] = [];
+
 async function readFallbackReservations(): Promise<ReservationRecord[]> {
-  const raw = await fs.readFile(FALLBACK_PATH, "utf8");
-  const parsed = JSON.parse(raw) as ReservationRecord[];
-  return parsed.map((item) => ({ ...item, status: normalizeStatus(item.status), nights: nightsBetween(item.checkIn, item.checkOut) }));
+  return readJsonFallback(FALLBACK_PATH, DEFAULT_RESERVATIONS);
 }
 
 async function writeFallbackReservations(records: ReservationRecord[]) {
-  await fs.writeFile(FALLBACK_PATH, `${JSON.stringify(records, null, 2)}\n`, "utf8");
+  await writeJsonFallback(FALLBACK_PATH, records);
 }
 
 async function ensureDefaultProperty() {

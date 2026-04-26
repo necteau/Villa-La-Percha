@@ -13,6 +13,8 @@ export interface OwnerPortalStats {
   inquiriesUnreplied: number;
   inquiriesAwaitingApproval: number;
   inquiriesSentReplies: number;
+  inquiriesConverted: number;
+  inquiryConversionRate: number | null;
   avgFirstResponseHours: number | null;
 }
 
@@ -40,6 +42,7 @@ export async function getOwnerPortalStats(): Promise<OwnerPortalStats> {
     inquiry.drafts.some((draft) => draft.status === "pending_owner_approval" || draft.status === "approved")
   ).length;
   const inquiriesSentReplies = inquiries.filter((inquiry) => inquiry.messages.some((message) => message.direction === "outbound")).length;
+  const inquiriesConverted = inquiries.filter((inquiry) => inquiry.status === "converted").length;
 
   const firstResponseHours = inquiries
     .map((inquiry) => {
@@ -64,6 +67,8 @@ export async function getOwnerPortalStats(): Promise<OwnerPortalStats> {
     inquiriesUnreplied,
     inquiriesAwaitingApproval,
     inquiriesSentReplies,
+    inquiriesConverted,
+    inquiryConversionRate: inquiries.length > 0 ? inquiriesConverted / inquiries.length : null,
     avgFirstResponseHours: average(firstResponseHours),
   };
 }

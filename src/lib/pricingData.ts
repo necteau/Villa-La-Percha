@@ -1,23 +1,23 @@
-import { promises as fs } from "fs";
 import path from "path";
 import { getPrismaClient } from "@/lib/db";
+import { canUseDatabaseSync, readJsonFallback, writeJsonFallback } from "@/lib/fallbackOrchestrator";
 import type { PricingChargeBasis, PricingEntry, PricingTable } from "@/data/pricingTable";
 
 const FALLBACK_PATH = path.join(process.cwd(), "src/data/pricing-table.json");
 const PROPERTY_SLUG = "villa-la-percha";
 
 function canUseDatabase(): boolean {
-  const url = process.env.DATABASE_URL;
-  return !!url && !url.includes("USER:PASSWORD@HOST");
+  return canUseDatabaseSync();
 }
 
+const DEFAULT_PRICING_TABLE: PricingTable = { entries: [] };
+
 async function readFallbackPricing(): Promise<PricingTable> {
-  const raw = await fs.readFile(FALLBACK_PATH, "utf8");
-  return JSON.parse(raw) as PricingTable;
+  return readJsonFallback(FALLBACK_PATH, DEFAULT_PRICING_TABLE);
 }
 
 async function writeFallbackPricing(table: PricingTable) {
-  await fs.writeFile(FALLBACK_PATH, `${JSON.stringify(table, null, 2)}\n`, "utf8");
+  await writeJsonFallback(FALLBACK_PATH, table);
 }
 
 function mapCharge(charge: {

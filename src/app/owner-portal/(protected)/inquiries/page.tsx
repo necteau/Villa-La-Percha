@@ -486,6 +486,21 @@ export default function OwnerInquiriesPage() {
                       <p className="mt-3 text-sm leading-6 text-[#5b554b]">Nothing critical missing. This one is ready for a clean, direct reply.</p>
                     )}
                   </div>
+
+                  <div className="rounded-2xl border border-[#e8e1d6] bg-[#faf8f3] p-4 md:col-span-2">
+                    <p className="text-xs uppercase tracking-[0.16em] text-[#7b7468]">Guest-flow signals</p>
+                    {selectedInsights.guestFlowSignals.length > 0 ? (
+                      <ul className="mt-3 space-y-2 text-sm leading-6 text-[#5b554b]">
+                        {selectedInsights.guestFlowSignals.map((item) => (
+                          <li key={item}>• {item}</li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="mt-3 text-sm leading-6 text-[#5b554b]">
+                        No configuration conflicts detected between the guest-facing flow and the current inquiry.
+                      </p>
+                    )}
+                  </div>
                 </div>
               </div>
             ) : null}
