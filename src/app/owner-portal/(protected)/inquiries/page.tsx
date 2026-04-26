@@ -44,6 +44,14 @@ export default function OwnerInquiriesPage() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
+  const reloadInquiries = async () => {
+    const response = await fetch(apiUrl("/api/owner-portal/inquiries"), { cache: "no-store", credentials: "same-origin" });
+    const data = await response.json();
+    if (!response.ok || !data.ok) throw new Error(data.error || "Failed to load inquiries");
+    setInquiries(data.inquiries);
+    setSelectedId((current) => current || data.inquiries[0]?.id || null);
+  };
+
   useEffect(() => {
     let cancelled = false;
 
@@ -140,7 +148,7 @@ export default function OwnerInquiriesPage() {
       setComposer(composeFromDraft(data.draft, selected));
       setSuccess(
         status === "approved"
-          ? "Draft approved. Next step is wiring actual outbound send."
+          ? "Draft approved and ready to send."
           : status === "pending_owner_approval"
             ? "Draft saved and marked ready for owner approval."
             : "Draft saved."
@@ -152,13 +160,38 @@ export default function OwnerInquiriesPage() {
     }
   };
 
+  const sendApprovedDraft = async () => {
+    if (!selected || !composer?.id) return;
+
+    setSavingId(selected.id);
+    setError("");
+    setSuccess("");
+
+    try {
+      const response = await fetch(apiUrl("/api/owner-portal/inquiries"), {
+        method: "POST",
+        credentials: "same-origin",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "send", inquiryId: selected.id, draftId: composer.id }),
+      });
+      const data = await response.json();
+      if (!response.ok || !data.ok) throw new Error(data.error || "Failed to send approved draft");
+      await reloadInquiries();
+      setSuccess("Approved draft sent and logged to the conversation.");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to send approved draft");
+    } finally {
+      setSavingId(null);
+    }
+  };
+
   return (
     <section className="space-y-6">
       <div className="rounded-[32px] border border-[#e8e1d6] bg-white p-8 shadow-[0_12px_40px_rgba(0,0,0,0.04)] md:p-10">
         <p className="text-xs font-medium uppercase tracking-[0.24em] text-[#7b7468]">Inquiries</p>
         <h1 className="mt-3 font-display text-5xl leading-tight text-[#181612]">Review and manage full guest conversations</h1>
         <p className="mt-4 max-w-3xl text-base leading-7 text-[#5b554b]">
-          Each inquiry can become a full thread: inbound guest messages, assistant drafts, owner edits/approval, and later sent replies and guest follow-ups.
+          Each inquiry can become a full thread: inbound guest messages, assistant drafts, owner edits/approval, sent replies, and later guest follow-ups.
         </p>
         {success ? <p className="mt-3 text-sm text-[#1e4536]">{success}</p> : null}
         {error ? <p className="mt-3 text-sm text-[#b42318]">{error}</p> : null}
@@ -255,9 +288,7 @@ export default function OwnerInquiriesPage() {
                     {selected.messages.map((message) => (
                       <div key={message.id} className="rounded-2xl border border-[#e8e1d6] bg-white p-4">
                         <div className="flex flex-wrap items-center justify-between gap-3">
-                          <p className="text-sm font-medium text-[#1b1a17]">
-                            {message.authorType} · {message.direction}
-                          </p>
+                          <p className="text-sm font-medium text-[#1b1a17]">{message.authorType} · {message.direction}</p>
                           <p className="text-xs text-[#7b7468]">{formatDate(message.createdAt)}</p>
                         </div>
                         {message.subject ? <p className="mt-2 text-sm text-[#5b554b]">{message.subject}</p> : null}
@@ -279,7 +310,7 @@ export default function OwnerInquiriesPage() {
                   <p className="text-xs font-medium uppercase tracking-[0.18em] text-[#7b7468]">Reply workspace</p>
                   <h3 className="mt-2 font-display text-3xl text-[#181612]">Draft response</h3>
                   <p className="mt-2 text-sm leading-6 text-[#5b554b]">
-                    This is where assistant-drafted copy and owner-edited approval live. Actual outbound email send is the next integration step.
+                    Assistant drafts can be edited by the owner, marked ready for approval, approved, and then sent as real email replies. Guest responses can come back into this thread via the reply webhook.
                   </p>
                 </div>
 
@@ -350,6 +381,14 @@ export default function OwnerInquiriesPage() {
                     className="inline-flex items-center justify-center rounded-full border border-[#1e4536] bg-[#eef6f1] px-5 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#1e4536] disabled:opacity-60"
                   >
                     Approve draft
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => void sendApprovedDraft()}
+                    disabled={savingId === selected.id || !composer.id || composer.status !== "approved"}
+                    className="inline-flex items-center justify-center rounded-full border border-[#8b7355] bg-[#f6f2ea] px-5 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#8b7355] disabled:opacity-60"
+                  >
+                    Send approved draft
                   </button>
                 </div>
               </div>

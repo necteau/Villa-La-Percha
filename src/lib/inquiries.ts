@@ -69,6 +69,17 @@ export interface InquiryDraftInput {
   createdByType?: InquiryDraftRecord["createdByType"];
 }
 
+export interface InquiryMessageInput {
+  inquiryId: string;
+  direction: InquiryMessageRecord["direction"];
+  authorType: InquiryMessageRecord["authorType"];
+  subject?: string;
+  body: string;
+  emailMessageId?: string;
+  sentAt?: string;
+  receivedAt?: string;
+}
+
 const FALLBACK_PATH = path.join(process.cwd(), "src/data/inquiries.json");
 const THREAD_STATE_PATH = path.join(process.cwd(), "src/data/inquiry-thread-state.json");
 const PROPERTY_SLUG = "villa-la-percha";
@@ -123,6 +134,10 @@ function toDbStatus(status: InquiryRecord["status"]): InquiryStatus {
 
 function fromDbDirection(value: InquiryMessageDirection): InquiryMessageRecord["direction"] {
   return value.toLowerCase() as InquiryMessageRecord["direction"];
+}
+
+function toDbDirection(value: InquiryMessageRecord["direction"]): InquiryMessageDirection {
+  return value === "outbound" ? InquiryMessageDirection.OUTBOUND : InquiryMessageDirection.INBOUND;
 }
 
 function fromDbAuthorType(value: InquiryMessageAuthorType): InquiryMessageRecord["authorType"] {
@@ -239,18 +254,16 @@ function mapDbDraft(record: {
 
 function syntheticInitialMessage(inquiry: InquiryRecord): InquiryMessageRecord[] {
   if (!inquiry.message) return [];
-  return [
-    {
-      id: `initial-${inquiry.id}`,
-      inquiryId: inquiry.id,
-      direction: "inbound",
-      authorType: "guest",
-      subject: `Inquiry from ${inquiry.fullName}`,
-      body: inquiry.message,
-      receivedAt: inquiry.createdAt,
-      createdAt: inquiry.createdAt,
-    },
-  ];
+  return [{
+    id: `initial-${inquiry.id}`,
+    inquiryId: inquiry.id,
+    direction: "inbound",
+    authorType: "guest",
+    subject: `Inquiry from ${inquiry.fullName}`,
+    body: inquiry.message,
+    receivedAt: inquiry.createdAt,
+    createdAt: inquiry.createdAt,
+  }];
 }
 
 async function getPropertyId(): Promise<string | null> {
@@ -259,56 +272,40 @@ async function getPropertyId(): Promise<string | null> {
   return property?.id ?? null;
 }
 
+async function readFallbackThreads(): Promise<InquiryThreadRecord[]> {
+  const [inquiries, threadState] = await Promise.all([readFallback(), readFallbackThreadState()]);
+  return inquiries.map((inquiry) => {
+    const messages = threadState.messages.filter((message) => message.inquiryId === inquiry.id);
+    return {
+      ...inquiry,
+      messages: messages.length ? messages : syntheticInitialMessage(inquiry),
+      drafts: threadState.drafts.filter((draft) => draft.inquiryId === inquiry.id),
+    };
+  });
+}
+
 export async function listInquiries(): Promise<InquiryRecord[]> {
-  if (!canUseDatabase()) {
-    return readFallback();
-  }
+  if (!canUseDatabase()) return readFallback();
 
   try {
     const prisma = await getPrismaClient();
     const propertyId = await getPropertyId();
     if (!propertyId) return readFallback();
 
-    const records = await prisma.inquiry.findMany({
-      where: { propertyId },
-      orderBy: { createdAt: "desc" },
-    });
-
-    if (records.length === 0) {
-      return readFallback();
-    }
-
-    return records.map(mapDbInquiry);
+    const records = await prisma.inquiry.findMany({ where: { propertyId }, orderBy: { createdAt: "desc" } });
+    return records.length === 0 ? readFallback() : records.map(mapDbInquiry);
   } catch {
     return readFallback();
   }
 }
 
 export async function listInquiryThreads(): Promise<InquiryThreadRecord[]> {
-  if (!canUseDatabase()) {
-    const [inquiries, threadState] = await Promise.all([readFallback(), readFallbackThreadState()]);
-    return inquiries.map((inquiry) => {
-      const messages = threadState.messages.filter((message) => message.inquiryId === inquiry.id);
-      const drafts = threadState.drafts.filter((draft) => draft.inquiryId === inquiry.id);
-      return {
-        ...inquiry,
-        messages: messages.length ? messages : syntheticInitialMessage(inquiry),
-        drafts,
-      };
-    });
-  }
+  if (!canUseDatabase()) return readFallbackThreads();
 
   try {
     const prisma = await getPrismaClient();
     const propertyId = await getPropertyId();
-    if (!propertyId) {
-      const [inquiries, threadState] = await Promise.all([readFallback(), readFallbackThreadState()]);
-      return inquiries.map((inquiry) => ({
-        ...inquiry,
-        messages: threadState.messages.filter((message) => message.inquiryId === inquiry.id),
-        drafts: threadState.drafts.filter((draft) => draft.inquiryId === inquiry.id),
-      }));
-    }
+    if (!propertyId) return readFallbackThreads();
 
     const inquiries = await prisma.inquiry.findMany({
       where: { propertyId },
@@ -322,24 +319,20 @@ export async function listInquiryThreads(): Promise<InquiryThreadRecord[]> {
     return inquiries.map((inquiry) => {
       const base = mapDbInquiry(inquiry);
       const messages = inquiry.messages.map(mapDbMessage);
-      const drafts = inquiry.drafts.map(mapDbDraft);
       return {
         ...base,
         messages: messages.length ? messages : syntheticInitialMessage(base),
-        drafts,
+        drafts: inquiry.drafts.map(mapDbDraft),
       };
     });
   } catch {
-    const [inquiries, threadState] = await Promise.all([readFallback(), readFallbackThreadState()]);
-    return inquiries.map((inquiry) => {
-      const messages = threadState.messages.filter((message) => message.inquiryId === inquiry.id);
-      return {
-        ...inquiry,
-        messages: messages.length ? messages : syntheticInitialMessage(inquiry),
-        drafts: threadState.drafts.filter((draft) => draft.inquiryId === inquiry.id),
-      };
-    });
+    return readFallbackThreads();
   }
+}
+
+export async function getInquiryThreadById(id: string): Promise<InquiryThreadRecord | null> {
+  const threads = await listInquiryThreads();
+  return threads.find((thread) => thread.id === id) || null;
 }
 
 export async function updateInquiryStatus(id: string, status: InquiryRecord["status"]): Promise<InquiryRecord | null> {
@@ -366,6 +359,51 @@ export async function updateInquiryStatus(id: string, status: InquiryRecord["sta
   }
 }
 
+export async function appendInquiryMessage(input: InquiryMessageInput): Promise<InquiryMessageRecord> {
+  const base: InquiryMessageRecord = {
+    id: `msg-${Date.now()}`,
+    inquiryId: input.inquiryId,
+    direction: input.direction,
+    authorType: input.authorType,
+    subject: input.subject,
+    body: input.body,
+    emailMessageId: input.emailMessageId,
+    sentAt: input.sentAt,
+    receivedAt: input.receivedAt,
+    createdAt: new Date().toISOString(),
+  };
+
+  if (!canUseDatabase()) {
+    const state = await readFallbackThreadState();
+    const deduped = base.emailMessageId ? state.messages.filter((m) => m.emailMessageId !== base.emailMessageId) : state.messages;
+    await writeFallbackThreadState({ ...state, messages: [...deduped, base] });
+    if (input.direction === "inbound") await updateInquiryStatus(input.inquiryId, "new");
+    if (input.direction === "outbound") await updateInquiryStatus(input.inquiryId, "replied");
+    return base;
+  }
+
+  const prisma = await getPrismaClient();
+  const created = await prisma.inquiryMessage.create({
+    data: {
+      inquiryId: input.inquiryId,
+      direction: toDbDirection(input.direction),
+      authorType: toDbAuthorType(input.authorType),
+      subject: input.subject ?? null,
+      body: input.body,
+      emailMessageId: input.emailMessageId ?? null,
+      sentAt: input.sentAt ? new Date(input.sentAt) : null,
+      receivedAt: input.receivedAt ? new Date(input.receivedAt) : null,
+    },
+  });
+
+  await prisma.inquiry.update({
+    where: { id: input.inquiryId },
+    data: { status: toDbStatus(input.direction === "inbound" ? "new" : "replied") },
+  });
+
+  return mapDbMessage(created);
+}
+
 export async function saveInquiryDraft(input: InquiryDraftInput): Promise<InquiryDraftRecord> {
   const baseDraft: InquiryDraftRecord = {
     id: input.id || `draft-${Date.now()}`,
@@ -383,13 +421,8 @@ export async function saveInquiryDraft(input: InquiryDraftInput): Promise<Inquir
   if (!canUseDatabase()) {
     const state = await readFallbackThreadState();
     const existing = input.id ? state.drafts.find((draft) => draft.id === input.id) : undefined;
-    const nextDraft = {
-      ...(existing || baseDraft),
-      ...baseDraft,
-      createdAt: existing?.createdAt || baseDraft.createdAt,
-    };
-    const remaining = state.drafts.filter((draft) => draft.id !== nextDraft.id);
-    await writeFallbackThreadState({ ...state, drafts: [nextDraft, ...remaining] });
+    const nextDraft = { ...(existing || baseDraft), ...baseDraft, createdAt: existing?.createdAt || baseDraft.createdAt };
+    await writeFallbackThreadState({ ...state, drafts: [nextDraft, ...state.drafts.filter((draft) => draft.id !== nextDraft.id)] });
     return nextDraft;
   }
 
@@ -423,6 +456,24 @@ export async function saveInquiryDraft(input: InquiryDraftInput): Promise<Inquir
   return mapDbDraft(created);
 }
 
+export async function markDraftSent(id: string): Promise<InquiryDraftRecord | null> {
+  if (!canUseDatabase()) {
+    const state = await readFallbackThreadState();
+    const existing = state.drafts.find((draft) => draft.id === id);
+    if (!existing) return null;
+    const updated = { ...existing, status: "sent" as const, sentAt: new Date().toISOString(), updatedAt: new Date().toISOString() };
+    await writeFallbackThreadState({ ...state, drafts: [updated, ...state.drafts.filter((draft) => draft.id !== id)] });
+    return updated;
+  }
+
+  const prisma = await getPrismaClient();
+  const updated = await prisma.inquiryReplyDraft.update({
+    where: { id },
+    data: { status: InquiryDraftStatus.SENT, sentAt: new Date() },
+  });
+  return mapDbDraft(updated);
+}
+
 export async function createInquiry(input: InquiryInput): Promise<InquiryRecord> {
   const base: InquiryRecord = {
     id: String(Date.now()),
@@ -438,24 +489,17 @@ export async function createInquiry(input: InquiryInput): Promise<InquiryRecord>
 
   if (!canUseDatabase()) {
     const current = await readFallback();
-    const threadState = await readFallbackThreadState();
-    const messages = input.message
-      ? [
-          {
-            id: `msg-${base.id}`,
-            inquiryId: base.id,
-            direction: "inbound" as const,
-            authorType: "guest" as const,
-            subject: `Inquiry from ${base.fullName}`,
-            body: input.message,
-            receivedAt: base.createdAt,
-            createdAt: base.createdAt,
-          },
-          ...threadState.messages,
-        ]
-      : threadState.messages;
     await writeFallback([base, ...current]);
-    await writeFallbackThreadState({ ...threadState, messages });
+    if (input.message) {
+      await appendInquiryMessage({
+        inquiryId: base.id,
+        direction: "inbound",
+        authorType: "guest",
+        subject: `Inquiry from ${base.fullName}`,
+        body: input.message,
+        receivedAt: base.createdAt,
+      });
+    }
     return base;
   }
 
@@ -472,19 +516,18 @@ export async function createInquiry(input: InquiryInput): Promise<InquiryRecord>
         checkIn: input.checkIn ? new Date(input.checkIn) : null,
         checkOut: input.checkOut ? new Date(input.checkOut) : null,
         message: input.message,
-        messages: input.message
-          ? {
-              create: {
-                direction: InquiryMessageDirection.INBOUND,
-                authorType: InquiryMessageAuthorType.GUEST,
-                subject: `Inquiry from ${input.fullName}`,
-                body: input.message,
-                receivedAt: new Date(),
-              },
-            }
-          : undefined,
       },
     });
+    if (input.message) {
+      await appendInquiryMessage({
+        inquiryId: created.id,
+        direction: "inbound",
+        authorType: "guest",
+        subject: `Inquiry from ${input.fullName}`,
+        body: input.message,
+        receivedAt: created.createdAt.toISOString(),
+      });
+    }
     return mapDbInquiry(created);
   } catch {
     const current = await readFallback();

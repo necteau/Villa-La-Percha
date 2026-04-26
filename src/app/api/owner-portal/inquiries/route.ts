@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { requireOwnerPortalSession } from "@/lib/ownerPortalApi";
 import { listInquiryThreads, saveInquiryDraft, updateInquiryStatus } from "@/lib/inquiries";
+import { sendApprovedInquiryDraft } from "@/lib/inquiryEmail";
 
 export async function GET() {
   const unauthorized = await requireOwnerPortalSession();
@@ -44,6 +45,16 @@ export async function POST(req: Request) {
         createdByType: body?.createdByType,
       });
       return NextResponse.json({ ok: true, draft });
+    }
+
+    if (action === "send") {
+      const inquiryId = String(body?.inquiryId || "");
+      const draftId = String(body?.draftId || "");
+      if (!inquiryId || !draftId) {
+        return NextResponse.json({ ok: false, error: "Missing inquiry or draft id" }, { status: 400 });
+      }
+      const sent = await sendApprovedInquiryDraft(inquiryId, draftId);
+      return NextResponse.json({ ok: true, sent });
     }
 
     return NextResponse.json({ ok: false, error: "Unsupported inquiry action" }, { status: 400 });
