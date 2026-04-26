@@ -16,7 +16,10 @@ export async function PATCH(req: Request, context: Context) {
     const entry = await updatePricingEntry(id, body);
     if (!entry) return NextResponse.json({ ok: false, error: "Pricing entry not found" }, { status: 404 });
     return NextResponse.json({ ok: true, entry });
-  } catch {
-    return NextResponse.json({ ok: false, error: "Failed to update pricing entry" }, { status: 400 });
+  } catch (error) {
+    return NextResponse.json(
+      { ok: false, error: error instanceof Error ? error.message : "Failed to update pricing entry" },
+      { status: 400 }
+    );
   }
 }

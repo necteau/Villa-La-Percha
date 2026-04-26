@@ -18,8 +18,11 @@ export async function PATCH(req: Request, context: Context) {
       return NextResponse.json({ ok: false, error: "Reservation not found" }, { status: 404 });
     }
     return NextResponse.json({ ok: true, reservation });
-  } catch {
-    return NextResponse.json({ ok: false, error: "Failed to update reservation" }, { status: 400 });
+  } catch (error) {
+    return NextResponse.json(
+      { ok: false, error: error instanceof Error ? error.message : "Failed to update reservation" },
+      { status: 400 }
+    );
   }
 }
 

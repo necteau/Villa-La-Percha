@@ -3,6 +3,11 @@
 import { useEffect, useMemo, useState } from "react";
 import type { PricingEntry } from "@/data/pricingTable";
 
+function apiUrl(path: string): string {
+  if (typeof window === "undefined") return path;
+  return new URL(path, window.location.origin).toString();
+}
+
 function formatMoney(value: number): string {
   return `$${Math.round(value).toLocaleString()}`;
 }
@@ -23,7 +28,7 @@ export default function OwnerPricingPage() {
       setLoading(true);
       setError("");
       try {
-        const res = await fetch("/api/owner-portal/pricing", { cache: "no-store" });
+        const res = await fetch(apiUrl("/api/owner-portal/pricing"), { cache: "no-store", credentials: "same-origin" });
         const data = await res.json();
         if (!res.ok || !data.ok) throw new Error(data.error || "Failed to load pricing");
         if (!cancelled) {
@@ -62,8 +67,9 @@ export default function OwnerPricingPage() {
     setSuccess("");
 
     try {
-      const res = await fetch(`/api/owner-portal/pricing/${selectedId}`, {
+      const res = await fetch(apiUrl(`/api/owner-portal/pricing/${encodeURIComponent(selectedId)}`), {
         method: "PATCH",
+        credentials: "same-origin",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           startDate: draft.startDate,

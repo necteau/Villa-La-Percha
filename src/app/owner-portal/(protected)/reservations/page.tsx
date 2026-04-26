@@ -4,6 +4,11 @@ import { useEffect, useMemo, useState } from "react";
 import ReservationEditor, { type Reservation } from "@/components/owner-portal/ReservationEditor";
 import ReservationsCalendar from "@/components/owner-portal/ReservationsCalendar";
 
+function apiUrl(path: string): string {
+  if (typeof window === "undefined") return path;
+  return new URL(path, window.location.origin).toString();
+}
+
 const today = new Date();
 
 function ymd(date: Date): string {
@@ -24,7 +29,7 @@ export default function OwnerReservationsPage() {
     setLoading(true);
     setError("");
     try {
-      const response = await fetch("/api/owner-portal/reservations", { cache: "no-store" });
+      const response = await fetch(apiUrl("/api/owner-portal/reservations"), { cache: "no-store", credentials: "same-origin" });
       const data = await response.json();
       if (!response.ok || !data.ok) throw new Error(data.error || "Failed to load reservations");
       setReservations(data.reservations);
@@ -53,8 +58,9 @@ export default function OwnerReservationsPage() {
     setSuccess("");
 
     try {
-      const response = await fetch(`/api/owner-portal/reservations/${selectedId}`, {
+      const response = await fetch(apiUrl(`/api/owner-portal/reservations/${encodeURIComponent(selectedId)}`), {
         method: "PATCH",
+        credentials: "same-origin",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           status: draft.status,
@@ -90,7 +96,10 @@ export default function OwnerReservationsPage() {
     setSuccess("");
 
     try {
-      const response = await fetch(`/api/owner-portal/reservations/${selectedId}`, { method: "DELETE" });
+      const response = await fetch(apiUrl(`/api/owner-portal/reservations/${encodeURIComponent(selectedId)}`), {
+        method: "DELETE",
+        credentials: "same-origin",
+      });
       const data = await response.json();
       if (!response.ok || !data.ok) throw new Error(data.error || "Failed to delete reservation");
       setSuccess("Reservation deleted.");
@@ -111,8 +120,9 @@ export default function OwnerReservationsPage() {
     setSuccess("");
 
     try {
-      const response = await fetch("/api/owner-portal/reservations", {
+      const response = await fetch(apiUrl("/api/owner-portal/reservations"), {
         method: "POST",
+        credentials: "same-origin",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           status: "Tentative",
