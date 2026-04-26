@@ -425,14 +425,51 @@ async function backfillCustomerLinks(prisma: Awaited<ReturnType<typeof getPrisma
 }
 
 export async function getCustomerById(id: string): Promise<CustomerRecord | null> {
-  const customers = await listCustomers();
-  return customers.find((customer) => customer.id === id) || null;
+  if (!canUseDatabase()) {
+    const customers = await listCustomers();
+    return customers.find((customer) => customer.id === id) || null;
+  }
+
+  const prisma = await getPrismaClient();
+  const scope = await getOwnerPortalScope();
+  const customer = await prisma.customer.findFirst({
+    where: {
+      id,
+      ...(scope.isAdmin || !scope.ownerIds ? {} : { ownerId: { in: scope.ownerIds } }),
+    },
+    include: {
+      primaryProperty: { select: { id: true, name: true } },
+      inquiries: {
+        include: { property: { select: { name: true } } },
+        orderBy: { createdAt: "desc" },
+      },
+      reservations: {
+        include: { property: { select: { name: true } } },
+        orderBy: { checkIn: "desc" },
+      },
+    },
+  });
+
+  return customer ? mapDbCustomer(customer) : null;
 }
 
 export async function updateCustomer(input: CustomerUpdateInput): Promise<CustomerRecord | null> {
   if (!canUseDatabase()) return null;
 
   const prisma = await getPrismaClient();
+  const scope = await getOwnerPortalScope();
+  const existing = await prisma.customer.findFirst({
+    where: {
+      id: input.id,
+      ...(scope.isAdmin || !scope.ownerIds ? {} : { ownerId: { in: scope.ownerIds } }),
+    },
+    select: { id: true },
+  });
+
+  if (!existing) {
+    return null;
+  }
+
   await prisma.customer.update({
     where: { id: input.id },
     data: {
