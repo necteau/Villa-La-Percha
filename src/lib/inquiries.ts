@@ -5,11 +5,13 @@ import {
   InquiryMessageDirection,
   InquiryStatus,
 } from "@prisma/client";
+import { findOrCreateCustomerLink } from "@/lib/customers";
 import { getPrismaClient } from "@/lib/db";
 import { canUseDatabaseSync, readJsonFallback, writeJsonFallback } from "@/lib/fallbackOrchestrator";
 
 export interface InquiryRecord {
   id: string;
+  customerId?: string;
   fullName: string;
   email: string;
   phone?: string;
@@ -178,6 +180,7 @@ function toDbDraftStatus(value: InquiryDraftRecord["status"]): InquiryDraftStatu
 
 function mapDbInquiry(record: {
   id: string;
+  customerId: string | null;
   fullName: string;
   email: string;
   phone: string | null;
@@ -189,6 +192,7 @@ function mapDbInquiry(record: {
 }): InquiryRecord {
   return {
     id: record.id,
+    customerId: record.customerId ?? undefined,
     fullName: record.fullName,
     email: record.email,
     phone: record.phone ?? undefined,
@@ -477,6 +481,7 @@ export async function markDraftSent(id: string): Promise<InquiryDraftRecord | nu
 export async function createInquiry(input: InquiryInput): Promise<InquiryRecord> {
   const base: InquiryRecord = {
     id: String(Date.now()),
+    customerId: undefined,
     fullName: input.fullName,
     email: input.email,
     phone: input.phone,
@@ -507,9 +512,16 @@ export async function createInquiry(input: InquiryInput): Promise<InquiryRecord>
     const prisma = await getPrismaClient();
     const propertyId = await getPropertyId();
     if (!propertyId) throw new Error("Missing property");
+    const customerLink = await findOrCreateCustomerLink({
+      propertyId,
+      fullName: input.fullName,
+      email: input.email,
+      phone: input.phone,
+    });
     const created = await prisma.inquiry.create({
       data: {
         propertyId,
+        customerId: customerLink.customerId,
         fullName: input.fullName,
         email: input.email,
         phone: input.phone,

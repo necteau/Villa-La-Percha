@@ -8,6 +8,7 @@ const navItems = [
   { label: "Reservations", href: "/owner-portal/reservations" },
   { label: "Pricing", href: "/owner-portal/pricing" },
   { label: "Inquiries", href: "/owner-portal/inquiries" },
+  { label: "Customers", href: "/owner-portal/customers" },
 ];
 
 export default async function OwnerPortalNav() {

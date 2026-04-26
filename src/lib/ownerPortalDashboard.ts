@@ -1,6 +1,7 @@
 import { listReservations } from "@/lib/reservations";
 import { listPricingEntries } from "@/lib/pricingData";
 import { listInquiryThreads } from "@/lib/inquiries";
+import { listCustomers } from "@/lib/customers";
 
 export interface OwnerPortalStats {
   reservationsTotal: number;
@@ -16,6 +17,8 @@ export interface OwnerPortalStats {
   inquiriesConverted: number;
   inquiryConversionRate: number | null;
   avgFirstResponseHours: number | null;
+  customersTotal: number;
+  repeatGuests: number;
 }
 
 function todayYmd(): string {
@@ -28,10 +31,11 @@ function average(values: number[]): number | null {
 }
 
 export async function getOwnerPortalStats(): Promise<OwnerPortalStats> {
-  const [reservations, pricingEntries, inquiries] = await Promise.all([
+  const [reservations, pricingEntries, inquiries, customers] = await Promise.all([
     listReservations(),
     listPricingEntries(),
     listInquiryThreads(),
+    listCustomers(),
   ]);
 
   const today = todayYmd();
@@ -70,5 +74,7 @@ export async function getOwnerPortalStats(): Promise<OwnerPortalStats> {
     inquiriesConverted,
     inquiryConversionRate: inquiries.length > 0 ? inquiriesConverted / inquiries.length : null,
     avgFirstResponseHours: average(firstResponseHours),
+    customersTotal: customers.length,
+    repeatGuests: customers.filter((customer) => customer.status === "repeat_guest" || customer.status === "vip").length,
   };
 }

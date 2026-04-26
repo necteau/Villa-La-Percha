@@ -6,10 +6,14 @@ export type ReservationStatus = "Confirmed" | "Checked In" | "Cancelled" | "Tent
 
 export interface Reservation {
   id: string;
+  customerId?: string;
   status: ReservationStatus;
   type: string;
   unit: string;
   bookedDate?: string;
+  guestName?: string;
+  guestEmail?: string;
+  guestPhone?: string;
   checkIn: string;
   checkOut: string;
   nights: number;
@@ -126,6 +130,31 @@ export default function ReservationEditor({ reservation, onSave, onDelete, savin
           <input
             value={draft.currency}
             onChange={(e) => setDraft((current) => (current ? { ...current, currency: e.target.value } : current))}
+            className="w-full rounded-xl border border-[#ddd4c7] px-4 py-3 text-sm"
+          />
+        </div>
+        <div>
+          <label className="mb-1 block text-xs uppercase tracking-[0.18em] text-[#7b7468]">Guest name</label>
+          <input
+            value={draft.guestName || ""}
+            onChange={(e) => setDraft((current) => (current ? { ...current, guestName: e.target.value || undefined } : current))}
+            className="w-full rounded-xl border border-[#ddd4c7] px-4 py-3 text-sm"
+          />
+        </div>
+        <div>
+          <label className="mb-1 block text-xs uppercase tracking-[0.18em] text-[#7b7468]">Guest email</label>
+          <input
+            type="email"
+            value={draft.guestEmail || ""}
+            onChange={(e) => setDraft((current) => (current ? { ...current, guestEmail: e.target.value || undefined } : current))}
+            className="w-full rounded-xl border border-[#ddd4c7] px-4 py-3 text-sm"
+          />
+        </div>
+        <div>
+          <label className="mb-1 block text-xs uppercase tracking-[0.18em] text-[#7b7468]">Guest phone</label>
+          <input
+            value={draft.guestPhone || ""}
+            onChange={(e) => setDraft((current) => (current ? { ...current, guestPhone: e.target.value || undefined } : current))}
             className="w-full rounded-xl border border-[#ddd4c7] px-4 py-3 text-sm"
           />
         </div>

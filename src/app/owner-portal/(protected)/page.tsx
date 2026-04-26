@@ -25,6 +25,11 @@ export default async function OwnerPortalDashboardPage() {
       value: stats.inquiryConversionRate !== null ? `${Math.round(stats.inquiryConversionRate * 100)}%` : "—",
       note: `${stats.inquiriesConverted} converted inquiry${stats.inquiriesConverted === 1 ? "" : "ies"}`,
     },
+    {
+      label: "Customers",
+      value: String(stats.customersTotal),
+      note: `${stats.repeatGuests} repeat/VIP guest${stats.repeatGuests === 1 ? "" : "s"}`,
+    },
   ];
 
   const cards = [
@@ -59,6 +64,12 @@ export default async function OwnerPortalDashboardPage() {
       stat: `${stats.inquiriesNew} new · ${stats.inquiriesAwaitingApproval} awaiting approval · ${stats.inquiriesSentReplies} with replies sent`,
       badge: stats.inquiriesNew > 0 ? `${stats.inquiriesNew} new` : stats.inquiriesAwaitingApproval > 0 ? `${stats.inquiriesAwaitingApproval} pending` : undefined,
     },
+    {
+      title: "Customers",
+      body: "See repeat guests, linked inquiries, reservation history, and long-lived relationship notes across properties owned by the same account.",
+      href: "/owner-portal/customers",
+      stat: `${stats.customersTotal} customers · ${stats.repeatGuests} repeat/VIP`,
+    },
   ];
 
   return (
@@ -72,7 +83,7 @@ export default async function OwnerPortalDashboardPage() {
         </p>
       </div>
 
-      <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-5">
         {summaryCards.map((card) => (
           <article key={card.label} className="rounded-[28px] border border-[#e8e1d6] bg-white p-6 shadow-[0_12px_40px_rgba(0,0,0,0.04)]">
             <p className="text-xs font-medium uppercase tracking-[0.18em] text-[#7b7468]">{card.label}</p>

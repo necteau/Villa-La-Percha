@@ -1,14 +1,19 @@
 import path from "path";
 import { ReservationSource, ReservationStatus } from "@prisma/client";
+import { findOrCreateCustomerLink } from "@/lib/customers";
 import { getPrismaClient } from "@/lib/db";
 import { canUseDatabaseSync, readJsonFallback, writeJsonFallback } from "@/lib/fallbackOrchestrator";
 
 export interface ReservationRecord {
   id: string;
+  customerId?: string;
   status: "Confirmed" | "Checked In" | "Cancelled" | "Tentative";
   type: string;
   unit: string;
   bookedDate?: string;
+  guestName?: string;
+  guestEmail?: string;
+  guestPhone?: string;
   checkIn: string;
   checkOut: string;
   nights: number;
@@ -22,6 +27,9 @@ export interface ReservationInput {
   type: string;
   unit?: string;
   bookedDate?: string;
+  guestName?: string;
+  guestEmail?: string;
+  guestPhone?: string;
   checkIn: string;
   checkOut: string;
   income: number;
@@ -91,9 +99,13 @@ function toDbSource(type: string, isOwnerWeek: boolean): ReservationSource {
 
 function mapDbReservation(record: {
   id: string;
+  customerId: string | null;
   status: ReservationStatus;
   bookingType: string | null;
   bookedDate: Date | null;
+  guestName: string | null;
+  guestEmail: string | null;
+  guestPhone: string | null;
   checkIn: Date;
   checkOut: Date;
   nights: number;
@@ -103,10 +115,14 @@ function mapDbReservation(record: {
 }, unit = DEFAULT_PROPERTY.name): ReservationRecord {
   return {
     id: record.id,
+    customerId: record.customerId ?? undefined,
     status: fromDbStatus(record.status),
     type: record.bookingType || (record.isOwnerWeek ? "Owner" : "Manual"),
     unit,
     bookedDate: record.bookedDate ? record.bookedDate.toISOString().slice(0, 10) : undefined,
+    guestName: record.guestName ?? undefined,
+    guestEmail: record.guestEmail ?? undefined,
+    guestPhone: record.guestPhone ?? undefined,
     checkIn: record.checkIn.toISOString().slice(0, 10),
     checkOut: record.checkOut.toISOString().slice(0, 10),
     nights: record.nights,
@@ -174,6 +190,9 @@ export async function listReservations(): Promise<ReservationRecord[]> {
           source: toDbSource(item.type, item.isOwnerWeek),
           bookingType: item.type,
           bookedDate: item.bookedDate ? new Date(item.bookedDate) : null,
+          guestName: item.guestName ?? null,
+          guestEmail: item.guestEmail ?? null,
+          guestPhone: item.guestPhone ?? null,
           checkIn: new Date(item.checkIn),
           checkOut: new Date(item.checkOut),
           nights: nightsBetween(item.checkIn, item.checkOut),
@@ -197,10 +216,14 @@ export async function listReservations(): Promise<ReservationRecord[]> {
 export async function createReservation(input: ReservationInput): Promise<ReservationRecord> {
   const record: ReservationRecord = {
     id: String(Date.now()),
+    customerId: undefined,
     status: normalizeStatus(input.status),
     type: input.type,
     unit: input.unit || DEFAULT_PROPERTY.name,
     bookedDate: input.bookedDate,
+    guestName: input.guestName,
+    guestEmail: input.guestEmail,
+    guestPhone: input.guestPhone,
     checkIn: input.checkIn,
     checkOut: input.checkOut,
     nights: nightsBetween(input.checkIn, input.checkOut),
@@ -219,13 +242,24 @@ export async function createReservation(input: ReservationInput): Promise<Reserv
   try {
     const prisma = await getPrismaClient();
     const property = await ensureDefaultProperty();
+    const customerLink = await findOrCreateCustomerLink({
+      propertyId: property.id,
+      fullName: record.guestName,
+      email: record.guestEmail,
+      phone: record.guestPhone,
+    });
+
     const created = await prisma.reservation.create({
       data: {
         propertyId: property.id,
+        customerId: customerLink.customerId,
         status: toDbStatus(record.status),
         source: toDbSource(record.type, record.isOwnerWeek),
         bookingType: record.type,
         bookedDate: record.bookedDate ? new Date(record.bookedDate) : null,
+        guestName: record.guestName ?? null,
+        guestEmail: record.guestEmail ?? null,
+        guestPhone: record.guestPhone ?? null,
         checkIn: new Date(record.checkIn),
         checkOut: new Date(record.checkOut),
         nights: record.nights,
@@ -277,14 +311,24 @@ export async function updateReservation(id: string, input: Partial<ReservationIn
     if (!existing) return null;
 
     const patched = applyPatch(mapDbReservation(existing, property.name));
+    const customerLink = await findOrCreateCustomerLink({
+      propertyId: property.id,
+      fullName: patched.guestName,
+      email: patched.guestEmail,
+      phone: patched.guestPhone,
+    });
 
     const updated = await prisma.reservation.update({
       where: { id },
       data: {
+        customerId: customerLink.customerId,
         status: toDbStatus(patched.status),
         source: toDbSource(patched.type, patched.isOwnerWeek),
         bookingType: patched.type,
         bookedDate: patched.bookedDate ? new Date(patched.bookedDate) : null,
+        guestName: patched.guestName ?? null,
+        guestEmail: patched.guestEmail ?? null,
+        guestPhone: patched.guestPhone ?? null,
         checkIn: new Date(patched.checkIn),
         checkOut: new Date(patched.checkOut),
         nights: patched.nights,
