@@ -72,6 +72,25 @@ enum InquiryStatus {
   CONVERTED
 }
 
+enum InquiryMessageDirection {
+  INBOUND
+  OUTBOUND
+}
+
+enum InquiryMessageAuthorType {
+  GUEST
+  OWNER
+  ASSISTANT
+  SYSTEM
+}
+
+enum InquiryDraftStatus {
+  DRAFT
+  PENDING_OWNER_APPROVAL
+  APPROVED
+  SENT
+}
+
 model User {
   id             String        @id @default(cuid())
   email          String        @unique
@@ -244,6 +263,40 @@ model Inquiry {
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
   property     Property      @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  messages     InquiryMessage[]
+  drafts       InquiryReplyDraft[]
 
   @@index([propertyId, status, createdAt])
+}
+
+model InquiryMessage {
+  id             String                  @id @default(cuid())
+  inquiryId      String
+  direction      InquiryMessageDirection
+  authorType     InquiryMessageAuthorType
+  subject        String?
+  body           String
+  emailMessageId String?
+  sentAt         DateTime?
+  receivedAt     DateTime?
+  createdAt      DateTime                @default(now())
+  inquiry        Inquiry                 @relation(fields: [inquiryId], references: [id], onDelete: Cascade)
+
+  @@index([inquiryId, createdAt])
+}
+
+model InquiryReplyDraft {
+  id             String            @id @default(cuid())
+  inquiryId       String
+  subject         String?
+  body            String
+  status          InquiryDraftStatus @default(DRAFT)
+  createdByType   InquiryMessageAuthorType @default(ASSISTANT)
+  approvedAt      DateTime?
+  sentAt          DateTime?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  inquiry         Inquiry           @relation(fields: [inquiryId], references: [id], onDelete: Cascade)
+
+  @@index([inquiryId, status, updatedAt])
 }

@@ -240,6 +240,36 @@ Fields:
 - created_at
 - updated_at
 
+### inquiry_messages
+Conversation timeline for each inquiry.
+
+Fields:
+- id
+- inquiry_id
+- direction (`inbound`, `outbound`)
+- author_type (`guest`, `owner`, `assistant`, `system`)
+- subject
+- body
+- email_message_id
+- sent_at
+- received_at
+- created_at
+
+### inquiry_reply_drafts
+Draft responses that can be prepared by the assistant, reviewed by the owner, edited, approved, and later sent.
+
+Fields:
+- id
+- inquiry_id
+- subject
+- body
+- status (`draft`, `pending_owner_approval`, `approved`, `sent`)
+- created_by_type (`assistant`, `owner`, `system`)
+- approved_at
+- sent_at
+- created_at
+- updated_at
+
 ---
 
 ## Immediate App Modules (v1)
