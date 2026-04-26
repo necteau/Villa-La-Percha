@@ -1,15 +1,9 @@
-import { PrismaClient } from "@prisma/client";
+let prismaSingleton: unknown;
 
-declare global {
-  var __directstayPrisma: PrismaClient | undefined;
-}
+export async function getPrismaClient() {
+  if (prismaSingleton) return prismaSingleton as import("@prisma/client").PrismaClient;
 
-export const prisma =
-  global.__directstayPrisma ||
-  new PrismaClient({
-    log: process.env.NODE_ENV === "development" ? ["query", "warn", "error"] : ["error"],
-  });
-
-if (process.env.NODE_ENV !== "production") {
-  global.__directstayPrisma = prisma;
+  const { PrismaClient } = await import("@prisma/client");
+  prismaSingleton = new PrismaClient();
+  return prismaSingleton as import("@prisma/client").PrismaClient;
 }

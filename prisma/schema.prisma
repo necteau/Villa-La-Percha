@@ -156,6 +156,8 @@ model Reservation {
   externalReference String?
   status            ReservationStatus   @default(TENTATIVE)
   source            ReservationSource   @default(MANUAL)
+  bookingType       String?
+  bookedDate        DateTime?
   guestName         String?
   guestEmail        String?
   guestPhone        String?

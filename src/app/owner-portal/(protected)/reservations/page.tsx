@@ -1,7 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import initialReservations from "@/data/availability.json";
+import { useEffect, useMemo, useState } from "react";
 import ReservationEditor, { type Reservation } from "@/components/owner-portal/ReservationEditor";
 import ReservationsCalendar from "@/components/owner-portal/ReservationsCalendar";
 
@@ -15,71 +14,134 @@ function getNights(a: string, b: string): number {
   return Math.max(0, Math.round((new Date(b).getTime() - new Date(a).getTime()) / (1000 * 60 * 60 * 24)));
 }
 
-function makeId(): string {
-  return String(Math.floor(Math.random() * 900000 + 100000));
-}
-
-type StoredReservation = (typeof initialReservations)[number];
-
-function normalizeReservation(r: StoredReservation): Reservation {
-  return {
-    id: String(r.id),
-    status: r.status as Reservation["status"],
-    type: r.type,
-    unit: r.unit,
-    bookedDate: r.bookedDate,
-    checkIn: r.checkIn,
-    checkOut: r.checkOut,
-    nights: r.nights,
-    income: r.income,
-    currency: r.currency,
-    isOwnerWeek: r.isOwnerWeek,
-  };
-}
-
 export default function OwnerReservationsPage() {
-  const [reservations, setReservations] = useState<Reservation[]>(() =>
-    (initialReservations as StoredReservation[]).map(normalizeReservation)
-  );
-  const [selectedId, setSelectedId] = useState<string | null>(reservations[0]?.id || null);
+  const [reservations, setReservations] = useState<Reservation[]>([]);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
   const [viewYear, setViewYear] = useState(today.getFullYear());
   const [viewMonth, setViewMonth] = useState(today.getMonth());
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
+
+  const loadReservations = async () => {
+    setLoading(true);
+    setError("");
+    try {
+      const response = await fetch("/api/owner-portal/reservations", { cache: "no-store" });
+      const data = await response.json();
+      if (!response.ok || !data.ok) throw new Error(data.error || "Failed to load reservations");
+      setReservations(data.reservations);
+      setSelectedId((current: string | null) => current || data.reservations[0]?.id || null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to load reservations");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    void loadReservations();
+  }, []);
 
   const selected = useMemo(
     () => (selectedId ? reservations.find((r) => r.id === selectedId) || null : null),
     [reservations, selectedId]
   );
 
-  const updateSelected = (patch: Partial<Reservation>) => {
+  const updateSelected = async (patch: Partial<Reservation>) => {
     if (!selectedId) return;
-    setReservations((current) => current.map((r) => (r.id === selectedId ? { ...r, ...patch } : r)));
+
+    const previous = reservations;
+    const nextReservations = reservations.map((r) => {
+      if (r.id !== selectedId) return r;
+      const nextCheckIn = patch.checkIn ?? r.checkIn;
+      const nextCheckOut = patch.checkOut ?? r.checkOut;
+      const nextIsOwnerWeek = patch.isOwnerWeek ?? r.isOwnerWeek;
+      return {
+        ...r,
+        ...patch,
+        checkIn: nextCheckIn,
+        checkOut: nextCheckOut,
+        isOwnerWeek: nextIsOwnerWeek,
+        income: nextIsOwnerWeek ? 0 : (patch.income ?? r.income),
+        nights: getNights(nextCheckIn, nextCheckOut),
+      };
+    });
+
+    setReservations(nextReservations);
+    setSaving(true);
+    setError("");
+
+    try {
+      const response = await fetch(`/api/owner-portal/reservations/${selectedId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(patch),
+      });
+      const data = await response.json();
+      if (!response.ok || !data.ok) throw new Error(data.error || "Failed to save reservation");
+      setReservations((current) => current.map((r) => (r.id === selectedId ? data.reservation : r)));
+    } catch (err) {
+      setReservations(previous);
+      setError(err instanceof Error ? err.message : "Failed to save reservation");
+    } finally {
+      setSaving(false);
+    }
   };
 
-  const deleteSelected = () => {
+  const deleteSelected = async () => {
     if (!selectedId) return;
-    setReservations((current) => current.filter((r) => r.id !== selectedId));
-    setSelectedId(null);
+    const previous = reservations;
+    const next = reservations.filter((r) => r.id !== selectedId);
+    setReservations(next);
+    setSelectedId(next[0]?.id || null);
+    setSaving(true);
+    setError("");
+
+    try {
+      const response = await fetch(`/api/owner-portal/reservations/${selectedId}`, { method: "DELETE" });
+      const data = await response.json();
+      if (!response.ok || !data.ok) throw new Error(data.error || "Failed to delete reservation");
+    } catch (err) {
+      setReservations(previous);
+      setSelectedId(selectedId);
+      setError(err instanceof Error ? err.message : "Failed to delete reservation");
+    } finally {
+      setSaving(false);
+    }
   };
 
-  const addReservation = () => {
+  const addReservation = async () => {
     const checkIn = ymd(new Date());
     const checkOut = ymd(new Date(Date.now() + 1000 * 60 * 60 * 24 * 5));
-    const newReservation: Reservation = {
-      id: makeId(),
-      status: "Tentative",
-      type: "Manual",
-      unit: "Villa La Percha",
-      bookedDate: ymd(new Date()),
-      checkIn,
-      checkOut,
-      nights: getNights(checkIn, checkOut),
-      income: 0,
-      currency: "USD",
-      isOwnerWeek: false,
-    };
+    setSaving(true);
+    setError("");
 
-    setReservations((current) => [newReservation, ...current]);
-    setSelectedId(newReservation.id);
+    try {
+      const response = await fetch("/api/owner-portal/reservations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          status: "Tentative",
+          type: "Manual",
+          unit: "Villa La Percha",
+          bookedDate: ymd(new Date()),
+          checkIn,
+          checkOut,
+          income: 0,
+          currency: "USD",
+          isOwnerWeek: false,
+        }),
+      });
+      const data = await response.json();
+      if (!response.ok || !data.ok) throw new Error(data.error || "Failed to add reservation");
+      setReservations((current) => [data.reservation, ...current]);
+      setSelectedId(data.reservation.id);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to add reservation");
+    } finally {
+      setSaving(false);
+    }
   };
 
   const prevMonth = () => {
@@ -111,37 +173,43 @@ export default function OwnerReservationsPage() {
             <h1 className="mt-3 font-display text-5xl leading-tight text-[#181612]">Calendar + reservation editor</h1>
             <p className="mt-4 max-w-3xl text-base leading-7 text-[#5b554b]">
               Click a reservation on the calendar to edit details. Add, edit, and delete reservations manually.
-              Next step is persisting changes and syncing to the guest-facing availability calendar.
+              This screen now uses a real API/data layer and is ready to move fully onto Postgres.
             </p>
           </div>
 
           <button
             type="button"
             onClick={addReservation}
-            className="inline-flex items-center justify-center rounded-full bg-[#1e4536] px-6 py-3 text-xs font-semibold uppercase tracking-[0.18em] text-white transition hover:bg-[#18372b]"
+            disabled={saving}
+            className="inline-flex items-center justify-center rounded-full bg-[#1e4536] px-6 py-3 text-xs font-semibold uppercase tracking-[0.18em] text-white transition hover:bg-[#18372b] disabled:opacity-60"
           >
-            Add reservation
+            {saving ? "Working..." : "Add reservation"}
           </button>
         </div>
+
+        {error ? <p className="mt-4 text-sm text-[#b42318]">{error}</p> : null}
+        {saving ? <p className="mt-4 text-sm text-[#7b7468]">Saving changes…</p> : null}
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
-        <ReservationsCalendar
-          reservations={reservations}
-          selectedId={selectedId}
-          onSelect={setSelectedId}
-          viewYear={viewYear}
-          viewMonth={viewMonth}
-          onPrevMonth={prevMonth}
-          onNextMonth={nextMonth}
-        />
+      {loading ? (
+        <div className="rounded-[32px] border border-[#e8e1d6] bg-white p-8 text-sm text-[#5b554b] shadow-[0_12px_40px_rgba(0,0,0,0.04)]">
+          Loading reservations…
+        </div>
+      ) : (
+        <div className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
+          <ReservationsCalendar
+            reservations={reservations}
+            selectedId={selectedId}
+            onSelect={setSelectedId}
+            viewYear={viewYear}
+            viewMonth={viewMonth}
+            onPrevMonth={prevMonth}
+            onNextMonth={nextMonth}
+          />
 
-        <ReservationEditor
-          reservation={selected}
-          onChange={updateSelected}
-          onDelete={deleteSelected}
-        />
-      </div>
+          <ReservationEditor reservation={selected} onChange={updateSelected} onDelete={deleteSelected} />
+        </div>
+      )}
     </section>
   );
 }
