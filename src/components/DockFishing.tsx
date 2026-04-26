@@ -1,9 +1,24 @@
 import Image from "next/image";
 
 const catches = [
-  "Bonefish from the dock",
-  "Yellowtail snapper in the afternoon",
-  "Jacks on a calm evening",
+  {
+    title: "Dock set up and ready",
+    description: "Step out with a rod, set up on the dock, and fish right from the house.",
+    image: "/images/fishing-rods-dock.jpg",
+    alt: "Fishing rods set up on the dock at Villa La Percha",
+  },
+  {
+    title: "Bonefish from the dock",
+    description: "Proof that this is more than a nice view — guests have landed real catches here.",
+    image: "/images/fishing-bonefish-catch.jpg",
+    alt: "Guest holding a bonefish caught from the dock",
+  },
+  {
+    title: "Catch and release moments",
+    description: "The kind of spontaneous vacation memory that sticks with people.",
+    image: "/images/fishing-bonefish-closeup.jpg",
+    alt: "Close-up of a bonefish on the dock",
+  },
 ];
 
 export default function DockFishing() {
@@ -20,7 +35,7 @@ export default function DockFishing() {
           <p className="text-sm md:text-base text-[#6B6B6B] leading-relaxed max-w-3xl mx-auto">
             One of the most underrated parts of Villa La Percha is how good the dock fishing can be.
             Guests have caught bonefish, yellowtail snapper, and jacks right from the property — no
-            charter required, no long boat ride, just a rod, a little patience, and a sunset that
+            charter required, no long boat ride, just a rod, a little patience, and a setting that
             makes the whole thing even better.
           </p>
         </div>
@@ -28,17 +43,17 @@ export default function DockFishing() {
         <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr] gap-8 items-stretch">
           <div className="relative overflow-hidden rounded-3xl border border-[#E8E4DF] bg-[#EEF1F3] min-h-[340px]">
             <Image
-              src="/images/aerial-ocean-dock-stairs-pool-house.jpg"
-              alt="Dock at Villa La Percha"
+              src="/images/fishing-rods-dock.jpg"
+              alt="Fishing rods set up on the dock at Villa La Percha"
               fill
               className="object-cover"
               sizes="(max-width: 1024px) 100vw, 60vw"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent" />
             <div className="absolute left-6 bottom-6 max-w-md text-white">
-              <p className="text-[10px] tracking-[0.24em] uppercase text-white/70 mb-3">Current Photo Placeholder</p>
+              <p className="text-[10px] tracking-[0.24em] uppercase text-white/70 mb-3">Actual Guest Fishing Photos</p>
               <p className="text-sm md:text-base leading-relaxed text-white/85">
-                Replace this with one of your dock fishing photos later and this section will become even stronger.
+                Fish from the dock at your own pace — easy, fun, and far more memorable than another scheduled excursion.
               </p>
             </div>
           </div>
@@ -56,15 +71,22 @@ export default function DockFishing() {
               </ul>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-1 gap-4">
-              {catches.map((item) => (
-                <div
-                  key={item}
-                  className="rounded-2xl border border-dashed border-[#D7CEC3] bg-white p-5 text-center text-sm text-[#6B6B6B]"
-                >
-                  <div className="text-2xl mb-2">🎣</div>
-                  <p className="font-medium text-[#2C2C2C] mb-1">Photo Placeholder</p>
-                  <p>{item}</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4">
+              {catches.slice(1).map((item) => (
+                <div key={item.title} className="rounded-2xl overflow-hidden border border-[#E8E4DF] bg-white shadow-sm">
+                  <div className="relative aspect-[4/3] bg-[#EEF1F3]">
+                    <Image
+                      src={item.image}
+                      alt={item.alt}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 1024px) 50vw, 30vw"
+                    />
+                  </div>
+                  <div className="p-4">
+                    <p className="font-medium text-[#2C2C2C] mb-1">{item.title}</p>
+                    <p className="text-sm text-[#6B6B6B] leading-relaxed">{item.description}</p>
+                  </div>
                 </div>
               ))}
             </div>
