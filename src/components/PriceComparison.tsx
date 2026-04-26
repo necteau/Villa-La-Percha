@@ -1,5 +1,7 @@
-import { useMemo } from "react";
-import { getSavingsPercentage, getStayPricingComparison } from "@/lib/pricing";
+"use client";
+
+import { useEffect, useState } from "react";
+import { getSavingsPercentage } from "@/lib/pricing";
 
 interface Props {
   checkIn?: string | null;
@@ -7,39 +9,91 @@ interface Props {
   embedded?: boolean;
 }
 
+interface Charge {
+  label: string;
+  amount: number;
+}
+
+interface PlatformPricing {
+  platform: "direct" | "airbnb" | "vrbo";
+  nightlyRate: number;
+  baseAmount: number;
+  charges: Charge[];
+  total: number;
+}
+
+interface Comparison {
+  nights: number;
+  direct: PlatformPricing | null;
+  airbnb: PlatformPricing | null;
+  vrbo: PlatformPricing | null;
+}
+
 function formatMoney(value: number): string {
   return `$${Math.round(value).toLocaleString()}`;
 }
 
 export default function DirectBookingCalculator({ checkIn = null, checkOut = null, embedded = false }: Props) {
-  const comparison = useMemo(() => {
-    if (!checkIn || !checkOut) return null;
-    return getStayPricingComparison(checkIn, checkOut);
+  const [comparison, setComparison] = useState<Comparison | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const run = async () => {
+      if (!checkIn || !checkOut) {
+        setComparison(null);
+        return;
+      }
+
+      setLoading(true);
+      try {
+        const res = await fetch(
+          `/api/pricing-comparison?checkIn=${encodeURIComponent(checkIn)}&checkOut=${encodeURIComponent(checkOut)}`,
+          { cache: "no-store" }
+        );
+        const data = await res.json();
+        if (!cancelled && res.ok && data.ok) {
+          setComparison(data.comparison);
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
+
+    void run();
+
+    return () => {
+      cancelled = true;
+    };
   }, [checkIn, checkOut]);
 
-  if (!comparison?.direct) {
+  const direct = comparison?.direct ?? null;
+
+  if (!direct) {
     if (!embedded) return null;
 
     return (
       <div className="rounded-3xl border border-[#E8E4DF] bg-[#FAFAF8] p-6">
         <p className="text-sm text-[#6B6B6B] leading-relaxed">
-          Pick check-in and check-out dates to see exact direct, Airbnb, and VRBO totals.
+          {loading
+            ? "Loading totals…"
+            : "Pick check-in and check-out dates to see exact direct, Airbnb, and VRBO totals."}
         </p>
       </div>
     );
   }
 
-  const direct = comparison.direct;
-  const platforms = [direct, comparison.airbnb, comparison.vrbo].filter(Boolean) as typeof direct[];
+  const platforms = [direct, comparison?.airbnb, comparison?.vrbo].filter(Boolean) as PlatformPricing[];
 
   const content = (
     <>
-      {comparison.nights > 0 && (
+      {(comparison?.nights ?? 0) > 0 && (
         <div className={embedded ? "mb-5 text-left" : "mb-10 text-center"}>
           <p className="text-sm text-[#6B6B6B]">
             <span className="font-medium text-[#2C2C2C]">{checkIn}</span> to <span className="font-medium text-[#2C2C2C]">{checkOut}</span>
             {" · "}
-            <span className="font-medium text-[#2C2C2C]">{comparison.nights} nights</span>
+            <span className="font-medium text-[#2C2C2C]">{comparison?.nights} nights</span>
           </p>
         </div>
       )}
@@ -48,7 +102,7 @@ export default function DirectBookingCalculator({ checkIn = null, checkOut = nul
         {platforms.map((pricing) => {
           const isDirect = pricing.platform === "direct";
           const savings = pricing.total - direct.total;
-          const savingsPct = getSavingsPercentage(direct.total, pricing.total);
+          const savingsPct = getSavingsPercentage(pricing.total, direct.total);
 
           return (
             <div
@@ -123,8 +177,7 @@ export default function DirectBookingCalculator({ checkIn = null, checkOut = nul
 
         <div className="mt-8 rounded-2xl border border-[#E8E4DF] bg-[#FAFAF8] p-6 text-center shadow-sm">
           <p className="text-sm text-[#6B6B6B] leading-relaxed max-w-3xl mx-auto">
-            Totals powered by the pricing table. Replaced seeded estimates with exact checkout screenshots
-            captured from Airbnb and VRBO on 2026-04-25.
+            Totals now come from the shared DirectStay pricing data layer so owner-side pricing updates can feed the guest flow.
           </p>
         </div>
       </div>

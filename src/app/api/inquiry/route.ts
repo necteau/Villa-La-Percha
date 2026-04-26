@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
+import { createInquiry } from "@/lib/inquiries";
 
 const apiKey = process.env.RESEND_API_KEY;
 const resend = apiKey ? new Resend(apiKey) : null;
@@ -76,6 +77,14 @@ export async function POST(req: Request) {
     if (isRateLimited(ip)) {
       return NextResponse.json({ error: "Too many inquiries. Please try again shortly." }, { status: 429 });
     }
+
+    await createInquiry({
+      fullName: safeName,
+      email: safeEmail,
+      checkIn: safeCheckIn,
+      checkOut: safeCheckOut,
+      message: safeComments || undefined,
+    });
 
     const subject = `Villa La Percha Inquiry — ${safeName} — ${safeCheckIn} to ${safeCheckOut}`;
 

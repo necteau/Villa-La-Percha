@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import availabilityData from "@/data/availability.json";
+import { useEffect, useMemo, useState } from "react";
+import availabilityFallback from "@/data/availability.json";
 
 const today = new Date();
 const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
@@ -22,7 +22,6 @@ type Reservation = {
   checkOut: string;
 };
 
-const reservationsData = availabilityData as Reservation[];
 const MIN_STAY = 5;
 const monthNames = [
   "January", "February", "March", "April", "May", "June",
@@ -54,6 +53,30 @@ export default function AvailabilityCalendar({
   const [phase, setPhase] = useState<SelectionPhase>("none");
   const [hoveredDate, setHoveredDate] = useState<string | null>(null);
   const [showHint, setShowHint] = useState(false);
+  const [reservationsData, setReservationsData] = useState<Reservation[]>(availabilityFallback as Reservation[]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const run = async () => {
+      try {
+        const res = await fetch("/api/availability", { cache: "no-store" });
+        const data = await res.json();
+        if (!cancelled && res.ok && data.ok) {
+          const records = (data.reservations || []) as Reservation[];
+          setReservationsData(records);
+        }
+      } catch {
+        // keep fallback data
+      }
+    };
+
+    void run();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const days = useMemo(() => {
     const nextDays: DayInfo[] = [];
@@ -111,7 +134,7 @@ export default function AvailabilityCalendar({
     }
 
     return nextDays;
-  }, [viewYear, viewMonth]);
+  }, [reservationsData, viewMonth, viewYear]);
 
   const getNights = (a: string, b: string): number =>
     Math.round((new Date(b).getTime() - new Date(a).getTime()) / (1000 * 60 * 60 * 24));
