@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { requireOwnerPortalSession } from "@/lib/ownerPortalApi";
-import { listInquiryThreads, saveInquiryDraft, updateInquiryStatus } from "@/lib/inquiries";
+import { getInquiryThreadById, listInquiryThreads, saveInquiryDraft, updateInquiryStatus } from "@/lib/inquiries";
 import { sendApprovedInquiryDraft } from "@/lib/inquiryEmail";
+import { getInquiryCopilotInsights } from "@/lib/inquiryCopilot";
 
 export async function GET() {
   const unauthorized = await requireOwnerPortalSession();
@@ -55,6 +56,19 @@ export async function POST(req: Request) {
       }
       const sent = await sendApprovedInquiryDraft(inquiryId, draftId);
       return NextResponse.json({ ok: true, sent });
+    }
+
+    if (action === "assist") {
+      const inquiryId = String(body?.inquiryId || "");
+      if (!inquiryId) {
+        return NextResponse.json({ ok: false, error: "Missing inquiry id" }, { status: 400 });
+      }
+      const inquiry = await getInquiryThreadById(inquiryId);
+      if (!inquiry) {
+        return NextResponse.json({ ok: false, error: "Inquiry not found" }, { status: 404 });
+      }
+      const insights = await getInquiryCopilotInsights(inquiry);
+      return NextResponse.json({ ok: true, insights });
     }
 
     return NextResponse.json({ ok: false, error: "Unsupported inquiry action" }, { status: 400 });

@@ -11,14 +11,14 @@ export default async function OwnerPortalDashboardPage() {
       note: `${stats.reservationsTotal} total reservations · ${stats.ownerWeeks} owner weeks`,
     },
     {
-      label: "New inquiries",
-      value: String(stats.inquiriesNew),
-      note: `${stats.inquiriesUnreplied} awaiting reply or closure · ${stats.inquiriesTotal} total`,
+      label: "Open inquiry ops",
+      value: String(stats.inquiriesUnreplied),
+      note: `${stats.inquiriesNew} brand-new leads · ${stats.inquiriesAwaitingApproval} draft(s) awaiting approval`,
     },
     {
-      label: "Direct nightly rate",
-      value: stats.directPricingNightly ? `$${Math.round(stats.directPricingNightly).toLocaleString()}` : "—",
-      note: `${stats.pricingWindows} pricing windows currently configured`,
+      label: "First-response speed",
+      value: stats.avgFirstResponseHours !== null ? `${stats.avgFirstResponseHours.toFixed(1)}h` : "—",
+      note: `${stats.inquiriesSentReplies} conversations have at least one sent reply`,
     },
   ];
 
@@ -49,10 +49,10 @@ export default async function OwnerPortalDashboardPage() {
     },
     {
       title: "Inquiries",
-      body: "Review incoming guest inquiries and move them through reply, approval, or conversion.",
+      body: "Review guest conversations with assistant triage, grounded drafts, owner approval, and sent-message tracking.",
       href: "/owner-portal/inquiries",
-      stat: `${stats.inquiriesNew} new · ${stats.inquiriesUnreplied} open conversations`,
-      badge: stats.inquiriesNew > 0 ? `${stats.inquiriesNew} new` : undefined,
+      stat: `${stats.inquiriesNew} new · ${stats.inquiriesAwaitingApproval} awaiting approval · ${stats.inquiriesSentReplies} with replies sent`,
+      badge: stats.inquiriesNew > 0 ? `${stats.inquiriesNew} new` : stats.inquiriesAwaitingApproval > 0 ? `${stats.inquiriesAwaitingApproval} pending` : undefined,
     },
   ];
 
@@ -63,7 +63,7 @@ export default async function OwnerPortalDashboardPage() {
         <h1 className="mt-3 font-display text-5xl leading-tight text-[#181612]">Run each site from one place.</h1>
         <p className="mt-4 max-w-3xl text-base leading-7 text-[#5b554b]">
           This portal now supports property-level controls for payment methods, reservation operations, pricing management,
-          and inquiry triage. The useful bits now surface first instead of hiding behind five clicks like a guilty intern.
+          and inquiry triage. It is starting to behave less like a rental CMS and more like a real operating console for direct bookings.
         </p>
       </div>
 
