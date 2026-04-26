@@ -21,6 +21,11 @@ const cards = [
     body: "Edit direct/Airbnb/VRBO pricing windows, rates, and tax assumptions.",
     href: "/owner-portal/pricing",
   },
+  {
+    title: "Inquiries",
+    body: "Review incoming guest inquiries and move them through reply, approval, or conversion.",
+    href: "/owner-portal/inquiries",
+  },
 ];
 
 export default function OwnerPortalDashboardPage() {

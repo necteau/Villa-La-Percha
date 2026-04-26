@@ -45,10 +45,102 @@ function fromDbStatus(status: InquiryStatus): InquiryRecord["status"] {
   return status.toLowerCase() as InquiryRecord["status"];
 }
 
+function toDbStatus(status: InquiryRecord["status"]): InquiryStatus {
+  switch (status) {
+    case "replied":
+      return InquiryStatus.REPLIED;
+    case "approved":
+      return InquiryStatus.APPROVED;
+    case "declined":
+      return InquiryStatus.DECLINED;
+    case "converted":
+      return InquiryStatus.CONVERTED;
+    case "new":
+    default:
+      return InquiryStatus.NEW;
+  }
+}
+
+function mapDbInquiry(record: {
+  id: string;
+  fullName: string;
+  email: string;
+  phone: string | null;
+  checkIn: Date | null;
+  checkOut: Date | null;
+  message: string | null;
+  status: InquiryStatus;
+  createdAt: Date;
+}): InquiryRecord {
+  return {
+    id: record.id,
+    fullName: record.fullName,
+    email: record.email,
+    phone: record.phone ?? undefined,
+    checkIn: record.checkIn?.toISOString().slice(0, 10),
+    checkOut: record.checkOut?.toISOString().slice(0, 10),
+    message: record.message ?? undefined,
+    status: fromDbStatus(record.status),
+    createdAt: record.createdAt.toISOString(),
+  };
+}
+
 async function getPropertyId(): Promise<string | null> {
   const prisma = await getPrismaClient();
   const property = await prisma.property.findUnique({ where: { slug: PROPERTY_SLUG } });
   return property?.id ?? null;
+}
+
+export async function listInquiries(): Promise<InquiryRecord[]> {
+  if (!canUseDatabase()) {
+    return readFallback();
+  }
+
+  try {
+    const prisma = await getPrismaClient();
+    const propertyId = await getPropertyId();
+    if (!propertyId) return readFallback();
+
+    const records = await prisma.inquiry.findMany({
+      where: { propertyId },
+      orderBy: { createdAt: "desc" },
+    });
+
+    if (records.length === 0) {
+      return readFallback();
+    }
+
+    return records.map(mapDbInquiry);
+  } catch {
+    return readFallback();
+  }
+}
+
+export async function updateInquiryStatus(id: string, status: InquiryRecord["status"]): Promise<InquiryRecord | null> {
+  if (!canUseDatabase()) {
+    const current = await readFallback();
+    const existing = current.find((inquiry) => inquiry.id === id);
+    if (!existing) return null;
+    const updated = { ...existing, status };
+    await writeFallback(current.map((inquiry) => (inquiry.id === id ? updated : inquiry)));
+    return updated;
+  }
+
+  try {
+    const prisma = await getPrismaClient();
+    const updated = await prisma.inquiry.update({
+      where: { id },
+      data: { status: toDbStatus(status) },
+    });
+    return mapDbInquiry(updated);
+  } catch {
+    const current = await readFallback();
+    const existing = current.find((inquiry) => inquiry.id === id);
+    if (!existing) return null;
+    const updated = { ...existing, status };
+    await writeFallback(current.map((inquiry) => (inquiry.id === id ? updated : inquiry)));
+    return updated;
+  }
 }
 
 export async function createInquiry(input: InquiryInput): Promise<InquiryRecord> {
@@ -85,17 +177,7 @@ export async function createInquiry(input: InquiryInput): Promise<InquiryRecord>
         message: input.message,
       },
     });
-    return {
-      id: created.id,
-      fullName: created.fullName,
-      email: created.email,
-      phone: created.phone ?? undefined,
-      checkIn: created.checkIn?.toISOString().slice(0, 10),
-      checkOut: created.checkOut?.toISOString().slice(0, 10),
-      message: created.message ?? undefined,
-      status: fromDbStatus(created.status),
-      createdAt: created.createdAt.toISOString(),
-    };
+    return mapDbInquiry(created);
   } catch {
     const current = await readFallback();
     await writeFallback([base, ...current]);

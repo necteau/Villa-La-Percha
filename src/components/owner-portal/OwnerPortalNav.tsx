@@ -6,6 +6,7 @@ const navItems = [
   { label: "Payments", href: "/owner-portal/payments" },
   { label: "Reservations", href: "/owner-portal/reservations" },
   { label: "Pricing", href: "/owner-portal/pricing" },
+  { label: "Inquiries", href: "/owner-portal/inquiries" },
 ];
 
 export default function OwnerPortalNav() {
