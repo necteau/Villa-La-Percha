@@ -150,7 +150,15 @@ export async function POST(req: Request) {
     });
 
     if (result.error) {
-      return NextResponse.json({ error: result.error.message }, { status: 500 });
+      console.error("Inquiry notification email failed", {
+        inquiryId: inquiry.id,
+        error: result.error.message,
+      });
+
+      return NextResponse.json({
+        ok: true,
+        warning: "Inquiry saved, but notification email could not be delivered.",
+      });
     }
 
     return NextResponse.json({ ok: true });
