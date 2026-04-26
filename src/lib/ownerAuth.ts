@@ -2,7 +2,6 @@ import crypto from "crypto";
 
 export const OWNER_SESSION_COOKIE = "directstay_owner_session";
 const DEFAULT_OWNER_EMAIL = "owner@directstay.app";
-const DEFAULT_OWNER_PASSWORD = "DirectStay2026!";
 
 interface SessionPayload {
   email: string;
@@ -23,13 +22,22 @@ function base64UrlDecode(value: string): string {
 }
 
 function getSessionSecret(): string {
-  return process.env.OWNER_PORTAL_SESSION_SECRET || "change-me-directstay-owner-session-secret";
+  const secret = process.env.OWNER_PORTAL_SESSION_SECRET;
+  if (!secret) {
+    throw new Error("OWNER_PORTAL_SESSION_SECRET is not configured");
+  }
+  return secret;
 }
 
 export function getOwnerCredentials() {
+  const password = process.env.OWNER_PORTAL_PASSWORD;
+  if (!password) {
+    throw new Error("OWNER_PORTAL_PASSWORD is not configured");
+  }
+
   return {
     email: process.env.OWNER_PORTAL_EMAIL || DEFAULT_OWNER_EMAIL,
-    password: process.env.OWNER_PORTAL_PASSWORD || DEFAULT_OWNER_PASSWORD,
+    password,
   };
 }
 

@@ -7,7 +7,7 @@ import Link from "next/link";
 export default function OwnerPortalLoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("owner@directstay.app");
-  const [password, setPassword] = useState("DirectStay2026!");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
