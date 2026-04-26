@@ -8,14 +8,14 @@ const catches = [
     alt: "Fishing rods set up on the dock at Villa La Percha",
   },
   {
-    title: "Bonefish from the dock",
-    description: "Proof that this is more than a nice view — guests have landed real catches here.",
+    title: "Real catches from the dock",
+    description: "A nice extra for guests who enjoy fishing — simple, casual, and right outside.",
     image: "/images/fishing-bonefish-catch.jpg",
     alt: "Guest holding a bonefish caught from the dock",
   },
   {
-    title: "Catch and release moments",
-    description: "The kind of spontaneous vacation memory that sticks with people.",
+    title: "A fun bonus to the stay",
+    description: "Not a trophy-fishing promise — just one more thing people end up enjoying while they are here.",
     image: "/images/fishing-bonefish-closeup.jpg",
     alt: "Close-up of a bonefish on the dock",
   },
@@ -30,13 +30,12 @@ export default function DockFishing() {
             From the Dock
           </p>
           <h2 className="font-display text-3xl md:text-5xl font-light mb-4" style={{ color: "#2C2C2C" }}>
-            Surprisingly Good Fishing, Right at the House
+            Good Dock Fishing, Right at the House
           </h2>
           <p className="text-sm md:text-base text-[#6B6B6B] leading-relaxed max-w-3xl mx-auto">
-            One of the most underrated parts of Villa La Percha is how good the dock fishing can be.
-            Guests have caught bonefish, yellowtail snapper, and jacks right from the property — no
-            charter required, no long boat ride, just a rod, a little patience, and a setting that
-            makes the whole thing even better.
+            Fishing from the dock is a genuinely nice part of staying at Villa La Percha.
+            It is not meant to sound like a major sportfishing experience — just an easy, enjoyable bonus
+            for guests who like casting a line without booking a charter or leaving the house.
           </p>
         </div>
 
@@ -53,7 +52,7 @@ export default function DockFishing() {
             <div className="absolute left-6 bottom-6 max-w-md text-white">
               <p className="text-[10px] tracking-[0.24em] uppercase text-white/70 mb-3">Actual Guest Fishing Photos</p>
               <p className="text-sm md:text-base leading-relaxed text-white/85">
-                Fish from the dock at your own pace — easy, fun, and far more memorable than another scheduled excursion.
+                Bring a rod, fish at your own pace, and enjoy it for what it is: a fun, easy extra right at the property.
               </p>
             </div>
           </div>
@@ -65,9 +64,9 @@ export default function DockFishing() {
               </h3>
               <ul className="space-y-3 text-sm md:text-base text-[#6B6B6B] leading-relaxed">
                 <li>• Easy fishing access without booking a charter</li>
-                <li>• Great activity for early mornings and sunset evenings</li>
-                <li>• Fun for both serious anglers and casual vacation fishing</li>
-                <li>• Pairs perfectly with dock drinks, swimming, and outdoor dinner</li>
+                <li>• A nice option for early mornings and sunset evenings</li>
+                <li>• Best framed as a fun vacation extra, not the main event</li>
+                <li>• Pairs naturally with swimming, dock time, and outdoor dinner</li>
               </ul>
             </div>
 
