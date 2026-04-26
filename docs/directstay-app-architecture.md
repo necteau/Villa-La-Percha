@@ -258,6 +258,45 @@ Fields:
 - received_at
 - created_at
 
+### customers (recommended next core model)
+Canonical relationship record for a lead/guest across inquiries and reservations.
+
+Fields:
+- id
+- owner_id (preferred long-term scope)
+- primary_property_id (nullable)
+- full_name
+- email
+- phone
+- location_label
+- timezone
+- preferred_contact_method
+- status (`lead`, `active`, `booked`, `repeat_guest`, `inactive`, `do_not_contact`, `vip`)
+- source_first_touch
+- source_latest_touch
+- first_inquiry_at
+- last_inquiry_at
+- first_stay_at
+- last_stay_at
+- last_contact_at
+- total_inquiries
+- total_reservations
+- total_completed_stays
+- total_revenue
+- notes
+- preferences_summary
+- household_summary
+- special_occasions
+- concierge_interests
+- created_at
+- updated_at
+
+Recommended links:
+- `inquiries.customer_id`
+- `reservations.customer_id`
+
+See `docs/customer-relationships-crm.md` for the fuller CRM design and implementation recommendation.
+
 ### inquiry_reply_drafts
 Draft responses that can be prepared by the assistant, reviewed by the owner, edited, approved, and later sent.
 
