@@ -7,6 +7,7 @@ import {
   updateInquiryStatus,
 } from "@/lib/inquiries";
 import { trackInquiryResponse } from "@/lib/analytics";
+import { buildInquiryEmailSubject } from "@/lib/inquirySubject";
 
 function getResendClient() {
   const apiKey = process.env.RESEND_API_KEY;
@@ -38,7 +39,7 @@ export async function sendApprovedInquiryDraft(inquiryId: string, draftId: strin
   if (draft.status !== "approved") throw new Error("Draft must be approved before sending");
 
   const resend = getResendClient();
-  const subject = subjectWithToken(draft.subject || `Re: ${thread.fullName}`, thread.id);
+  const subject = subjectWithToken(draft.subject || buildInquiryEmailSubject(thread), thread.id);
   const result = await resend.emails.send({
     from: getFromAddress(),
     to: [thread.email],

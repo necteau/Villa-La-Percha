@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { InquiryCopilotDraftOption, InquiryCopilotInsights } from "@/lib/inquiryCopilot";
 import type { InquiryDraftRecord, InquiryRecord, InquiryThreadRecord } from "@/lib/inquiries";
+import { buildInquiryEmailSubject } from "@/lib/inquirySubject";
 
 function apiUrl(path: string): string {
   if (typeof window === "undefined") return path;
@@ -51,7 +52,7 @@ function isSavedDraft(draft: InquiryDraftRecord | InquiryCopilotDraftOption | nu
 function composeFromDraft(draft?: InquiryDraftRecord | InquiryCopilotDraftOption | null, inquiry?: InquiryThreadRecord | null): DraftComposer {
   return {
     id: isSavedDraft(draft) ? draft.id : undefined,
-    subject: draft?.subject || `Re: ${inquiry?.fullName || "Guest Inquiry"}`,
+    subject: draft?.subject || buildInquiryEmailSubject(inquiry || {}),
     body: draft?.body || "",
     status: isSavedDraft(draft) ? draft.status : "draft",
   };

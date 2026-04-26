@@ -299,42 +299,42 @@ export async function getInquiryCopilotInsights(inquiry: InquiryThreadRecord): P
       key: "base",
       label: "Draft reply",
       description: "Balanced response using current dates, pricing, and booking context.",
-      subject: `Re: ${inquiry.fullName} inquiry`,
+      subject: buildInquiryEmailSubject(inquiry),
       body: baseReplyBody,
     },
     {
       key: "warm",
       label: "Make it warmer",
       description: "Softer, more hospitality-forward tone.",
-      subject: `Re: ${inquiry.fullName} inquiry`,
+      subject: buildInquiryEmailSubject(inquiry),
       body: warmerBody,
     },
     {
       key: "concise",
       label: "Make it shorter",
       description: "Tighter version for quick replies from mobile.",
-      subject: `Re: ${inquiry.fullName} inquiry`,
+      subject: buildInquiryEmailSubject(inquiry),
       body: conciseBody,
     },
     {
       key: "pricing",
       label: "Answer pricing objection",
       description: "Handles rate sensitivity without sounding defensive.",
-      subject: `Re: ${inquiry.fullName} inquiry`,
+      subject: buildInquiryEmailSubject(inquiry),
       body: pricingObjectionBody,
     },
     {
       key: "availability",
       label: "Mention availability naturally",
       description: "Centers the reply around dates and next-step clarity.",
-      subject: `Re: ${inquiry.fullName} inquiry`,
+      subject: buildInquiryEmailSubject(inquiry),
       body: availabilityBody,
     },
     {
       key: "follow_up",
       label: "Generate follow-up",
       description: "Gentle nudge if the guest has gone quiet.",
-      subject: `Following up on your Villa La Percha inquiry`,
+      subject: `Following up: ${buildInquiryEmailSubject(inquiry)}`,
       body: followUpBody,
     },
   ];
@@ -386,3 +386,4 @@ export async function getInquiryCopilotInsights(inquiry: InquiryThreadRecord): P
     draftOptions,
   };
 }
+import { buildInquiryEmailSubject } from "@/lib/inquirySubject";
