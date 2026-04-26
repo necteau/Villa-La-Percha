@@ -43,6 +43,7 @@ Direct-booking website for Villa La Percha in the Chalk Sound neighborhood of Pr
 - Prisma schema now lives at `prisma/schema.prisma`
 - Database client helper: `src/lib/db.ts`
 - Environment template: `.env.example`
+- Runtime should use pooled `DATABASE_URL`; Prisma migrations should use direct `DIRECT_DATABASE_URL`
 - Current schema direction supports:
   - users / owners
   - properties
@@ -51,6 +52,13 @@ Direct-booking website for Villa La Percha in the Chalk Sound neighborhood of Pr
   - payment methods + payment settings
   - inquiries
 - See `docs/directstay-app-architecture.md` for the broader product/data direction
+
+## Database bootstrap
+- Create the schema with `npm run prisma:migrate:deploy`
+- Seed current demo/property data with `npm run db:seed`
+- Supabase setup should use:
+  - `DATABASE_URL` = transaction pooler connection string
+  - `DIRECT_DATABASE_URL` = direct database connection string
 
 ## Contact
 VillaLaPercha@gmail.com

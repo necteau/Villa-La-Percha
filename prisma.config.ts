@@ -6,6 +6,9 @@ export default defineConfig({
     path: "prisma/migrations",
   },
   datasource: {
-    url: process.env.DATABASE_URL || "postgresql://USER:PASSWORD@HOST:5432/directstay?schema=public",
+    url:
+      process.env.DIRECT_DATABASE_URL ||
+      process.env.DATABASE_URL ||
+      "postgresql://USER:PASSWORD@HOST:5432/directstay?schema=public",
   },
 });
