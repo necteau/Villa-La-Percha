@@ -11,6 +11,18 @@ const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
 const RATE_LIMIT_MAX = 5;
 const requestLog = new Map<string, number[]>();
 
+function getFromAddress(): string {
+  return process.env.RESEND_FROM_EMAIL || "Villa La Percha <onboarding@resend.dev>";
+}
+
+function getInquiryNotificationRecipients(): string[] {
+  const configured = process.env.INQUIRY_NOTIFICATION_EMAIL || process.env.INQUIRY_REPLY_TO_EMAIL || "necteau@gmail.com";
+  return configured
+    .split(",")
+    .map((value) => value.trim())
+    .filter(Boolean);
+}
+
 function escapeHtml(value: string) {
   return value
     .replaceAll("&", "&amp;")
@@ -129,11 +141,12 @@ export async function POST(req: Request) {
     }
 
     const result = await resend.emails.send({
-      from: "Villa La Percha <onboarding@resend.dev>",
-      to: ["necteau@gmail.com"],
+      from: getFromAddress(),
+      to: getInquiryNotificationRecipients(),
       subject,
       html,
       text,
+      replyTo: process.env.INQUIRY_REPLY_TO_EMAIL || undefined,
     });
 
     if (result.error) {

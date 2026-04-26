@@ -41,6 +41,7 @@ Direct-booking website for Villa La Percha in the Chalk Sound neighborhood of Pr
 - Inbound email replies can be ingested via `src/app/api/inquiry/reply-webhook/route.ts`
 - Recommended envs for the full loop:
   - `RESEND_FROM_EMAIL`
+  - `INQUIRY_NOTIFICATION_EMAIL`
   - `INQUIRY_REPLY_TO_EMAIL`
   - `INQUIRY_WEBHOOK_SECRET`
 - Inquiry destination: `VillaLaPercha@gmail.com`

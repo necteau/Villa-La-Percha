@@ -43,6 +43,7 @@ Whenever possible, capture basic source/UTM values:
 ### Outbound
 - Drafts are stored as inquiry reply drafts with status (`draft`, `pending_owner_approval`, `approved`, `sent`)
 - Approved drafts send via Resend
+- Initial guest inquiries notify the configured inbox via `INQUIRY_NOTIFICATION_EMAIL`
 - Subjects are tagged with `[DirectStay Inquiry <id>]` for reply threading
 - Sent emails are logged as outbound inquiry messages for full conversation history
 
