@@ -59,7 +59,7 @@ export default function OwnerReservationsPage() {
 
     try {
       const response = await fetch(apiUrl(`/api/owner-portal/reservations/${encodeURIComponent(selectedId)}`), {
-        method: "PATCH",
+        method: "POST",
         credentials: "same-origin",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

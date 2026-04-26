@@ -68,7 +68,7 @@ export default function OwnerPricingPage() {
 
     try {
       const res = await fetch(apiUrl(`/api/owner-portal/pricing/${encodeURIComponent(selectedId)}`), {
-        method: "PATCH",
+        method: "POST",
         credentials: "same-origin",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

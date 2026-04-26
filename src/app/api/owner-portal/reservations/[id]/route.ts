@@ -6,7 +6,7 @@ interface Context {
   params: Promise<{ id: string }>;
 }
 
-export async function PATCH(req: Request, context: Context) {
+async function handleUpdate(req: Request, context: Context) {
   const unauthorized = await requireOwnerPortalSession();
   if (unauthorized) return unauthorized;
 
@@ -24,6 +24,14 @@ export async function PATCH(req: Request, context: Context) {
       { status: 400 }
     );
   }
+}
+
+export async function PATCH(req: Request, context: Context) {
+  return handleUpdate(req, context);
+}
+
+export async function POST(req: Request, context: Context) {
+  return handleUpdate(req, context);
 }
 
 export async function DELETE(_req: Request, context: Context) {
