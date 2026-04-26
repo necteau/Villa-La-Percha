@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { simpleParser } from "mailparser";
-import { appendInquiryMessage, getInquiryThreadById } from "@/lib/inquiries";
+import { appendInquiryMessage, getInquiryThreadById, runInquiryInboundAutomation } from "@/lib/inquiries";
 import {
   extractEmailAddress,
   extractInquiryIdFromRequest,
@@ -124,6 +124,8 @@ export async function POST(req: Request) {
       emailMessageId,
       receivedAt: new Date().toISOString(),
     });
+
+    await runInquiryInboundAutomation(inquiryId);
 
     // ── 8. Analytics ──
     dispatchAnalyticsEvent({

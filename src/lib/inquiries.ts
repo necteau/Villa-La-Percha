@@ -82,6 +82,11 @@ export interface InquiryMessageInput {
   receivedAt?: string;
 }
 
+interface InquiryEnrichmentPatch {
+  phone?: string;
+  preferredContactMethod?: string;
+}
+
 const FALLBACK_PATH = path.join(process.cwd(), "src/data/inquiries.json");
 const THREAD_STATE_PATH = path.join(process.cwd(), "src/data/inquiry-thread-state.json");
 const PROPERTY_SLUG = "villa-la-percha";
@@ -112,6 +117,139 @@ async function readFallbackThreadState(): Promise<FallbackThreadState> {
 
 async function writeFallbackThreadState(state: FallbackThreadState) {
   await writeJsonFallback(THREAD_STATE_PATH, state);
+}
+
+function normalizePhone(value?: string | null): string | undefined {
+  if (!value) return undefined;
+  const trimmed = value.trim();
+  if (!trimmed) return undefined;
+  const plus = trimmed.startsWith("+") ? "+" : "";
+  const digits = trimmed.replace(/\D/g, "");
+  if (digits.length < 10) return undefined;
+  if (digits.length === 11 && digits.startsWith("1")) {
+    return `+1 ${digits.slice(1, 4)}-${digits.slice(4, 7)}-${digits.slice(7)}`;
+  }
+  if (digits.length === 10) {
+    return `${digits.slice(0, 3)}-${digits.slice(3, 6)}-${digits.slice(6)}`;
+  }
+  return `${plus}${digits}`;
+}
+
+function extractPhoneFromText(text: string): string | undefined {
+  const matches = text.match(/(?:\+?1[\s.\-]?)?(?:\(?\d{3}\)?[\s.\-]?){2}\d{4}/g) || [];
+  for (const match of matches) {
+    const normalized = normalizePhone(match);
+    if (normalized) return normalized;
+  }
+  return undefined;
+}
+
+function inferPreferredContactMethod(text: string): string | undefined {
+  const lower = text.toLowerCase();
+  if (/(text|sms|whatsapp|call|phone me|reach me on my phone)/.test(lower)) {
+    if (/(text|sms|whatsapp)/.test(lower)) return "text";
+    if (/(call|phone me|reach me on my phone)/.test(lower)) return "call";
+    return "phone";
+  }
+  if (/(email me|reply by email)/.test(lower)) return "email";
+  return undefined;
+}
+
+function extractInboundEnrichment(text: string): InquiryEnrichmentPatch {
+  return {
+    phone: extractPhoneFromText(text),
+    preferredContactMethod: inferPreferredContactMethod(text),
+  };
+}
+
+async function applyEnrichmentToFallbackInquiry(inquiryId: string, patch: InquiryEnrichmentPatch) {
+  if (!patch.phone && !patch.preferredContactMethod) return;
+  const inquiries = await readFallback();
+  const target = inquiries.find((item) => item.id === inquiryId);
+  if (!target) return;
+  const nextPhone = patch.phone || target.phone;
+  const changed = nextPhone !== target.phone;
+  if (!changed) return;
+  await writeFallback(
+    inquiries.map((item) =>
+      item.id === inquiryId
+        ? {
+            ...item,
+            phone: nextPhone,
+          }
+        : item
+    )
+  );
+}
+
+async function applyEnrichmentToDatabaseInquiry(inquiry: InquiryThreadRecord, patch: InquiryEnrichmentPatch) {
+  if (!patch.phone && !patch.preferredContactMethod) return;
+  const prisma = await getPrismaClient();
+  const phone = patch.phone && patch.phone !== inquiry.phone ? patch.phone : undefined;
+
+  if (phone) {
+    await prisma.inquiry.update({
+      where: { id: inquiry.id },
+      data: { phone },
+    });
+  }
+
+  if (inquiry.customerId && (phone || patch.preferredContactMethod)) {
+    const customer = await prisma.customer.findUnique({
+      where: { id: inquiry.customerId },
+      select: { id: true, phone: true, preferredContactMethod: true },
+    });
+
+    if (customer) {
+      const customerPhone = phone && !customer.phone ? phone : undefined;
+      const preferredContactMethod = patch.preferredContactMethod && patch.preferredContactMethod !== customer.preferredContactMethod
+        ? patch.preferredContactMethod
+        : undefined;
+
+      if (customerPhone || preferredContactMethod) {
+        await prisma.customer.update({
+          where: { id: customer.id },
+          data: {
+            phone: customerPhone,
+            preferredContactMethod,
+          },
+        });
+      }
+    }
+  }
+}
+
+export async function runInquiryInboundAutomation(inquiryId: string): Promise<void> {
+  const inquiry = await getInquiryThreadById(inquiryId);
+  if (!inquiry) return;
+
+  const latestInbound = [...inquiry.messages].reverse().find((message) => message.direction === "inbound");
+  if (!latestInbound?.body?.trim()) return;
+
+  const enrichment = extractInboundEnrichment(latestInbound.body);
+  if (canUseDatabase()) {
+    try {
+      await applyEnrichmentToDatabaseInquiry(inquiry, enrichment);
+    } catch {
+      // Keep automation non-blocking; draft generation matters more than enrichment perfection.
+    }
+  } else {
+    await applyEnrichmentToFallbackInquiry(inquiry.id, enrichment);
+  }
+
+  const refreshedInquiry = (await getInquiryThreadById(inquiryId)) || inquiry;
+  const { getInquiryCopilotInsights } = await import("@/lib/inquiryCopilot");
+  const insights = await getInquiryCopilotInsights(refreshedInquiry);
+  const defaultDraft = insights.draftOptions[0];
+  if (!defaultDraft?.body?.trim()) return;
+
+  await saveInquiryDraft({
+    inquiryId,
+    subject: defaultDraft.subject,
+    body: defaultDraft.body,
+    status: "draft",
+    createdByType: "assistant",
+  });
 }
 
 function fromDbStatus(status: InquiryStatus): InquiryRecord["status"] {
@@ -504,6 +642,7 @@ export async function createInquiry(input: InquiryInput): Promise<InquiryRecord>
         body: input.message,
         receivedAt: base.createdAt,
       });
+      await runInquiryInboundAutomation(base.id);
     }
     return base;
   }
@@ -539,6 +678,7 @@ export async function createInquiry(input: InquiryInput): Promise<InquiryRecord>
         body: input.message,
         receivedAt: created.createdAt.toISOString(),
       });
+      await runInquiryInboundAutomation(created.id);
     }
     return mapDbInquiry(created);
   } catch {
