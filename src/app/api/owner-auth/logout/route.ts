@@ -7,7 +7,7 @@ export async function POST() {
     name: OWNER_SESSION_COOKIE,
     value: "",
     maxAge: 0,
-    path: "/owner-portal",
+    path: "/",
   });
   return response;
 }
