@@ -90,6 +90,13 @@ export function normalizeBody(body: unknown): string {
   return "";
 }
 
+export function extractEmailAddress(value: string | null | undefined): string {
+  if (!value) return "";
+  const trimmed = value.trim();
+  const angleMatch = trimmed.match(/<([^>]+)>/);
+  return (angleMatch?.[1] || trimmed).toLowerCase().trim();
+}
+
 // ─── Deduplication ─────────────────────────────────────────────────
 
 /**
@@ -98,7 +105,7 @@ export function normalizeBody(body: unknown): string {
  */
 export function validateSender(sender: string, inquiryEmail: string): boolean {
   if (!sender || !inquiryEmail) return true; // No validation without email on record
-  const normalize = (e: string) => e.toLowerCase().trim().replace(/\s/g, "");
+  const normalize = (e: string) => extractEmailAddress(e).replace(/\s/g, "");
   return normalize(sender) === normalize(inquiryEmail);
 }
 

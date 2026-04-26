@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
+import { simpleParser } from "mailparser";
 import { appendInquiryMessage, getInquiryThreadById } from "@/lib/inquiries";
 import {
+  extractEmailAddress,
   extractInquiryIdFromRequest,
   extractInquiryIdFromSubject,
   isAuthorized,
@@ -10,6 +12,40 @@ import {
   dispatchAnalyticsEvent,
   isRetryableError,
 } from "@/lib/inquiryWebhook";
+
+async function normalizeInboundPayload(body: unknown) {
+  const record = typeof body === "object" && body !== null ? (body as Record<string, unknown>) : {};
+  const rawBase64 = typeof record.rawBase64 === "string" ? record.rawBase64 : null;
+
+  if (!rawBase64) {
+    return {
+      subject: typeof record.subject === "string" ? record.subject.trim() : null,
+      from: typeof record.from === "string" ? record.from.trim() : null,
+      messageId: typeof record.messageId === "string" ? record.messageId.trim() : null,
+      normalizedBody: normalizeBody(body),
+    };
+  }
+
+  try {
+    const parsed = await simpleParser(Buffer.from(rawBase64, "base64"));
+    return {
+      subject: parsed.subject?.trim() || null,
+      from: parsed.from?.value?.[0]?.address?.trim() || null,
+      messageId: parsed.messageId?.trim() || null,
+      normalizedBody: normalizeBody({
+        text: parsed.text || "",
+        html: parsed.html ? String(parsed.html) : "",
+      }),
+    };
+  } catch {
+    return {
+      subject: typeof record.subject === "string" ? record.subject.trim() : null,
+      from: typeof record.from === "string" ? record.from.trim() : null,
+      messageId: typeof record.messageId === "string" ? record.messageId.trim() : null,
+      normalizedBody: normalizeBody(body),
+    };
+  }
+}
 
 export async function POST(req: Request) {
   if (!process.env.INQUIRY_WEBHOOK_SECRET) {
@@ -25,7 +61,8 @@ export async function POST(req: Request) {
   }
 
   const body = await req.json().catch(() => null);
-  const subjectFromBody = typeof body?.subject === "string" && body.subject.trim() ? body.subject.trim() : null;
+  const inbound = await normalizeInboundPayload(body);
+  const subjectFromBody = inbound.subject;
   const inquiryId =
     (typeof body?.inquiryId === "string" && body.inquiryId.trim()) ||
     extractInquiryIdFromRequest(req) ||
@@ -46,7 +83,7 @@ export async function POST(req: Request) {
   }
 
   // ── 4. Parse and normalize body ──
-  const normalizedBody = normalizeBody(body);
+  const normalizedBody = inbound.normalizedBody;
   if (!normalizedBody) {
     const err = "Missing message body";
     logFailure({ timestamp: new Date().toISOString(), inquiryId, error: err, statusCode: 400, sender: null, subject: null, retryable: true });
@@ -54,7 +91,7 @@ export async function POST(req: Request) {
   }
 
   // ── 5. Validate sender ──
-  const sender = typeof body?.from === "string" ? body.from.toLowerCase() : "";
+  const sender = extractEmailAddress(inbound.from);
   if (sender && !validateSender(sender, thread.email)) {
     const err = `Sender ${sender} did not match inquiry email ${thread.email}`;
     logFailure({ timestamp: new Date().toISOString(), inquiryId, error: err, statusCode: 400, sender, subject: null, retryable: false });
@@ -62,7 +99,7 @@ export async function POST(req: Request) {
   }
 
   // ── 6. Check dedup (emailMessageId) ──
-  const emailMessageId = typeof body?.messageId === "string" ? body.messageId : undefined;
+  const emailMessageId = inbound.messageId || undefined;
   if (emailMessageId) {
     const existingDedup = thread.messages.find((m) => m.emailMessageId === emailMessageId);
     if (existingDedup) {

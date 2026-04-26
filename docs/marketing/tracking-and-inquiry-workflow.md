@@ -49,6 +49,7 @@ Whenever possible, capture basic source/UTM values:
 
 ### Inbound
 - Reply webhook authenticates with `INQUIRY_WEBHOOK_SECRET`
+- Recommended production routing is `villalapercha@directstay.app` via Cloudflare Email Routing + Email Worker
 - Inquiry ID resolution order:
   1. explicit `inquiryId`
   2. `X-DirectStay-Inquiry-Id` header

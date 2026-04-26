@@ -39,12 +39,13 @@ Direct-booking website for Villa La Percha in the Chalk Sound neighborhood of Pr
 - Live email delivery requires `RESEND_API_KEY` to be configured in Vercel
 - Owner-portal draft replies can now be approved and sent through the inquiry workflow
 - Inbound email replies can be ingested via `src/app/api/inquiry/reply-webhook/route.ts`
+- Recommended production inbound route: Cloudflare Email Routing + Email Worker -> `docs/inbound-email-routing-cloudflare.md`
 - Recommended envs for the full loop:
   - `RESEND_FROM_EMAIL`
   - `INQUIRY_NOTIFICATION_EMAIL`
   - `INQUIRY_REPLY_TO_EMAIL`
   - `INQUIRY_WEBHOOK_SECRET`
-- Inquiry destination: `VillaLaPercha@gmail.com`
+- Inquiry destination: `villalapercha@gmail.com`
 
 ## DirectStay App Foundation
 - Prisma schema now lives at `prisma/schema.prisma`
