@@ -3,13 +3,90 @@ import { getPrismaClient } from "@/lib/db";
 import { canUseDatabaseSync } from "@/lib/fallbackOrchestrator";
 import { getInquiryThreadById, saveInquiryDraft, type InquiryThreadRecord } from "@/lib/inquiries";
 
+interface AiDraftCustomerContext {
+  fullName: string;
+  email: string;
+  phone?: string;
+  locationLabel?: string;
+  timezone?: string;
+  preferredContactMethod?: string;
+  status?: string;
+  notes?: string;
+  preferencesSummary?: string;
+  householdSummary?: string;
+  specialOccasions?: string;
+  conciergeInterests?: string;
+  totalInquiries: number;
+  totalReservations: number;
+  totalCompletedStays: number;
+  totalRevenue: number;
+  pastInquiries: Array<{
+    id: string;
+    status: string;
+    checkIn?: string;
+    checkOut?: string;
+    createdAt: string;
+  }>;
+  pastReservations: Array<{
+    id: string;
+    status: string;
+    source: string;
+    checkIn: string;
+    checkOut: string;
+    totalAmount?: number;
+    currency: string;
+  }>;
+}
+
+interface AiDraftContext {
+  property: {
+    name: string;
+    slug: string;
+  };
+  inquiry: {
+    id: string;
+    fullName: string;
+    email: string;
+    phone?: string;
+    checkIn?: string;
+    checkOut?: string;
+    message?: string;
+    status: string;
+    createdAt: string;
+  };
+  threadMessages: Array<{
+    direction: string;
+    authorType: string;
+    subject?: string;
+    body: string;
+    sentAt?: string;
+    receivedAt?: string;
+    createdAt: string;
+  }>;
+  customer?: AiDraftCustomerContext;
+  assistantSignals: {
+    summary: string;
+    urgency: string;
+    leadLabel: string;
+    leadScore: number;
+    missingInfo: string[];
+    keyFacts: Array<{ label: string; value: string }>;
+    objectionSignals: string[];
+    suggestedNextAction: string;
+  };
+}
+
 export interface AiDraftJob {
   draftId: string;
   inquiryId: string;
   subject?: string;
   body: string;
-  inquiry: InquiryThreadRecord;
+  context: AiDraftContext;
+  // Kept for backward compatibility with older local worker scripts.
+  inquiry?: InquiryThreadRecord;
 }
+
+const PROPERTY_CONTEXT = { name: "Villa La Percha", slug: "villa-la-percha" };
 
 export function isInternalAiRequest(req: Request): boolean {
   const secret = process.env.DIRECTSTAY_INTERNAL_API_SECRET;
@@ -23,6 +100,111 @@ async function isStillTemplateDraft(inquiry: InquiryThreadRecord, draft: { subje
   const insights = await getInquiryCopilotInsights(inquiry);
   const templateBodies = new Set(insights.draftOptions.map((option) => option.body.trim()));
   return templateBodies.has(draft.body.trim());
+}
+
+function isoDate(value: Date | null | undefined, dateOnly = false): string | undefined {
+  if (!value) return undefined;
+  const iso = value.toISOString();
+  return dateOnly ? iso.slice(0, 10) : iso;
+}
+
+async function getCustomerContext(inquiry: InquiryThreadRecord): Promise<AiDraftCustomerContext | undefined> {
+  if (!inquiry.customerId || !canUseDatabaseSync()) return undefined;
+  const prisma = await getPrismaClient();
+  const customer = await prisma.customer.findUnique({
+    where: { id: inquiry.customerId },
+    include: {
+      inquiries: {
+        where: { id: { not: inquiry.id } },
+        orderBy: { createdAt: "desc" },
+        take: 10,
+        select: { id: true, status: true, checkIn: true, checkOut: true, createdAt: true },
+      },
+      reservations: {
+        orderBy: { checkIn: "desc" },
+        take: 10,
+        select: { id: true, status: true, source: true, checkIn: true, checkOut: true, totalAmount: true, currency: true },
+      },
+    },
+  });
+  if (!customer) return undefined;
+
+  const pastReservations = customer.reservations.map((reservation) => ({
+    id: reservation.id,
+    status: reservation.status,
+    source: reservation.source,
+    checkIn: reservation.checkIn.toISOString().slice(0, 10),
+    checkOut: reservation.checkOut.toISOString().slice(0, 10),
+    totalAmount: reservation.totalAmount ? Number(reservation.totalAmount) : undefined,
+    currency: reservation.currency,
+  }));
+  const totalRevenue = pastReservations.reduce((sum, reservation) => sum + (reservation.totalAmount || 0), 0);
+  const totalCompletedStays = pastReservations.filter((reservation) => ["COMPLETED", "CHECKED_IN", "CONFIRMED"].includes(reservation.status)).length;
+
+  return {
+    fullName: customer.fullName,
+    email: customer.email,
+    phone: customer.phone ?? undefined,
+    locationLabel: customer.locationLabel ?? undefined,
+    timezone: customer.timezone ?? undefined,
+    preferredContactMethod: customer.preferredContactMethod ?? undefined,
+    status: customer.status,
+    notes: customer.notes ?? undefined,
+    preferencesSummary: customer.preferencesSummary ?? undefined,
+    householdSummary: customer.householdSummary ?? undefined,
+    specialOccasions: customer.specialOccasions ?? undefined,
+    conciergeInterests: customer.conciergeInterests ?? undefined,
+    totalInquiries: customer.inquiries.length + 1,
+    totalReservations: customer.reservations.length,
+    totalCompletedStays,
+    totalRevenue,
+    pastInquiries: customer.inquiries.map((pastInquiry) => ({
+      id: pastInquiry.id,
+      status: pastInquiry.status,
+      checkIn: isoDate(pastInquiry.checkIn, true),
+      checkOut: isoDate(pastInquiry.checkOut, true),
+      createdAt: pastInquiry.createdAt.toISOString(),
+    })),
+    pastReservations,
+  };
+}
+
+async function buildAiDraftContext(inquiry: InquiryThreadRecord): Promise<AiDraftContext> {
+  const insights = await getInquiryCopilotInsights(inquiry);
+  return {
+    property: PROPERTY_CONTEXT,
+    inquiry: {
+      id: inquiry.id,
+      fullName: inquiry.fullName,
+      email: inquiry.email,
+      phone: inquiry.phone,
+      checkIn: inquiry.checkIn,
+      checkOut: inquiry.checkOut,
+      message: inquiry.message,
+      status: inquiry.status,
+      createdAt: inquiry.createdAt,
+    },
+    threadMessages: inquiry.messages.map((message) => ({
+      direction: message.direction,
+      authorType: message.authorType,
+      subject: message.subject,
+      body: message.body,
+      sentAt: message.sentAt,
+      receivedAt: message.receivedAt,
+      createdAt: message.createdAt,
+    })),
+    customer: await getCustomerContext(inquiry),
+    assistantSignals: {
+      summary: insights.summary,
+      urgency: insights.urgency,
+      leadLabel: insights.leadLabel,
+      leadScore: insights.leadScore,
+      missingInfo: insights.missingInfo,
+      keyFacts: insights.keyFacts,
+      objectionSignals: insights.objectionSignals,
+      suggestedNextAction: insights.suggestedNextAction,
+    },
+  };
 }
 
 export async function listPendingAiDraftJobs(limit = 10): Promise<AiDraftJob[]> {
@@ -49,6 +231,7 @@ export async function listPendingAiDraftJobs(limit = 10): Promise<AiDraftJob[]> 
       inquiryId: draft.inquiryId,
       subject: draft.subject ?? undefined,
       body: draft.body,
+      context: await buildAiDraftContext(inquiry),
       inquiry,
     });
   }

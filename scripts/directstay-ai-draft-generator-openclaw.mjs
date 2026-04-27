@@ -11,10 +11,11 @@ for await (const chunk of process.stdin) chunks.push(chunk);
 const input = JSON.parse(Buffer.concat(chunks).toString("utf8") || "{}");
 const model = input.model || process.env.DIRECTSTAY_AI_DEFAULT_MODEL || "openai-codex/gpt-5.5";
 const job = input.job || {};
+const context = job.context || { inquiry: job.inquiry || {}, threadMessages: job.inquiry?.messages || [] };
 
-function latestInbound(inquiry) {
-  const messages = [...(inquiry.messages || [])].reverse();
-  return messages.find((message) => message.direction === "inbound")?.body || inquiry.message || "";
+function latestInbound(ctx) {
+  const messages = [...(ctx.threadMessages || [])].reverse();
+  return messages.find((message) => message.direction === "inbound")?.body || ctx.inquiry?.message || "";
 }
 
 const prompt = `You are DirectStay's guest-reply drafting assistant for Villa La Percha.
@@ -24,20 +25,22 @@ Rules:
 - Return JSON only: {"subject":"...","body":"..."}
 - Warm, concise, professional hospitality tone.
 - Do not invent availability, prices, payment terms, policies, amenities, or guarantees.
-- Use only the provided context.
-- Preserve the owner's ability to review before sending.
+- Use only the DirectStay context provided in this prompt.
+- Do not use memory, assumptions, prior conversations with Jaimal, other customers, other properties, or unrelated OpenClaw context.
+- Use the customer history only if it is present in the provided customer object and relevant to the reply.
 - If facts are missing, ask for them instead of guessing.
+- Preserve the owner's ability to review before sending.
 
 Current deterministic draft to improve:
 Subject: ${job.subject || ""}
 Body:
 ${job.body || ""}
 
-Inquiry context JSON:
-${JSON.stringify(job.inquiry || {}, null, 2)}
+DirectStay scoped context JSON:
+${JSON.stringify(context, null, 2)}
 
 Latest guest message:
-${latestInbound(job.inquiry || {})}
+${latestInbound(context)}
 `;
 
 function runOpenClaw() {
