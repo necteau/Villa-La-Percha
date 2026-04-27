@@ -11,7 +11,7 @@
  *   DIRECTSTAY_AI_DRAFT_COMMAND=/path/to/generator
  *
  * The generator command receives a JSON job on stdin and must return JSON:
- *   { "subject": "...", "body": "...", "modelUsed": "..." }
+ *   { "subject": "...", "body": "...", "modelUsed": "...", "aiInsights": { ... } }
  * If no generator command is configured, the worker records a failed attempt
  * and leaves the website template draft in place.
  */
@@ -63,7 +63,7 @@ function runGenerator(job) {
       try {
         const parsed = JSON.parse(stdout.trim());
         if (!parsed.body) throw new Error("Generator returned no body");
-        resolve({ subject: parsed.subject || job.subject, body: parsed.body, modelUsed: parsed.modelUsed || model });
+        resolve({ subject: parsed.subject || job.subject, body: parsed.body, modelUsed: parsed.modelUsed || model, aiInsights: parsed.aiInsights });
       } catch (error) {
         reject(new Error(`Invalid generator output: ${error instanceof Error ? error.message : String(error)}`));
       }
@@ -95,7 +95,7 @@ async function main() {
       const result = await fetchJson(`${siteUrl}/api/internal/ai-draft-jobs/complete`, {
         method: "POST",
         headers: headers(),
-        body: JSON.stringify({ draftId: job.draftId, subject: draft.subject, body: draft.body, modelUsed: draft.modelUsed }),
+        body: JSON.stringify({ draftId: job.draftId, subject: draft.subject, body: draft.body, modelUsed: draft.modelUsed, aiInsights: draft.aiInsights }),
       });
       console.log(`Upgraded draft ${job.draftId}: ${result.skipped ? "skipped" : draft.modelUsed}`);
     } catch (error) {

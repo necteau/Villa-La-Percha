@@ -11,13 +11,14 @@ export async function POST(req: Request) {
   const responseBody = typeof body?.body === "string" ? body.body.trim() : "";
   const subject = typeof body?.subject === "string" ? body.subject.trim() : undefined;
   const modelUsed = typeof body?.modelUsed === "string" ? body.modelUsed.trim() : "unknown";
+  const aiInsights = body?.aiInsights && typeof body.aiInsights === "object" ? body.aiInsights : undefined;
 
   if (!draftId || !responseBody) {
     return NextResponse.json({ ok: false, error: "Missing draft id or body" }, { status: 400 });
   }
 
   try {
-    const result = await completeAiDraftUpgrade({ draftId, subject, body: responseBody, modelUsed });
+    const result = await completeAiDraftUpgrade({ draftId, subject, body: responseBody, modelUsed, aiInsights });
     return NextResponse.json({ ok: true, ...result });
   } catch (error) {
     return NextResponse.json(

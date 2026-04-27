@@ -78,6 +78,14 @@ interface AiDraftContext {
   };
 }
 
+interface AiInsightOverlayInput {
+  suggestedNextAction?: string;
+  summary?: string;
+  missingInfo?: string[];
+  objectionSignals?: string[];
+  guestFlowSignals?: string[];
+}
+
 export interface AiDraftJob {
   draftId: string;
   inquiryId: string;
@@ -104,6 +112,46 @@ interface AiRevisionJobPayload {
 
 const PROPERTY_CONTEXT = { name: "Villa La Percha", slug: "villa-la-percha" };
 const REVISION_PREFIX = "__DIRECTSTAY_AI_REVISION__";
+const AI_INSIGHTS_PREFIX = "__DIRECTSTAY_AI_INSIGHTS__";
+
+function sanitizeInsightText(value: unknown, max = 500): string | undefined {
+  if (typeof value !== "string") return undefined;
+  const cleaned = value.replace(/[\u0000-\u001f\u007f]/g, " ").replace(/\s+/g, " ").trim();
+  return cleaned ? cleaned.slice(0, max) : undefined;
+}
+
+function sanitizeInsightList(value: unknown): string[] | undefined {
+  if (!Array.isArray(value)) return undefined;
+  const cleaned = value.map((item) => sanitizeInsightText(item, 160)).filter(Boolean) as string[];
+  return cleaned.length > 0 ? cleaned.slice(0, 8) : undefined;
+}
+
+function serializeAiInsights(input?: AiInsightOverlayInput | null): string | null {
+  if (!input) return null;
+  const payload = {
+    kind: "directstay_ai_insights",
+    suggestedNextAction: sanitizeInsightText(input.suggestedNextAction),
+    summary: sanitizeInsightText(input.summary),
+    missingInfo: sanitizeInsightList(input.missingInfo),
+    objectionSignals: sanitizeInsightList(input.objectionSignals),
+    guestFlowSignals: sanitizeInsightList(input.guestFlowSignals),
+    createdAt: new Date().toISOString(),
+  };
+  if (!payload.suggestedNextAction && !payload.summary && !payload.missingInfo && !payload.objectionSignals && !payload.guestFlowSignals) return null;
+  return `${AI_INSIGHTS_PREFIX}${JSON.stringify(payload)}`;
+}
+
+async function saveAiInsightOverlay(inquiryId: string, insights?: AiInsightOverlayInput | null) {
+  const body = serializeAiInsights(insights);
+  if (!body) return null;
+  return saveInquiryDraft({
+    inquiryId,
+    subject: "AI inquiry triage update",
+    body,
+    status: "sent",
+    createdByType: "system",
+  });
+}
 
 function parseRevisionJob(value: string): AiRevisionJobPayload | null {
   if (!value.startsWith(REVISION_PREFIX)) return null;
@@ -315,6 +363,7 @@ export async function completeAiDraftUpgrade(input: {
   subject?: string;
   body: string;
   modelUsed: string;
+  aiInsights?: AiInsightOverlayInput | null;
 }) {
   if (!canUseDatabaseSync()) throw new Error("Database is required for AI draft upgrades");
   const prisma = await getPrismaClient();
@@ -337,6 +386,7 @@ export async function completeAiDraftUpgrade(input: {
       createdByType: "assistant",
     });
     await prisma.inquiryReplyDraft.update({ where: { id: existing.id }, data: { status: "SENT", sentAt: new Date() } });
+    await saveAiInsightOverlay(target.inquiryId, input.aiInsights);
     return { skipped: false, draft, modelUsed: input.modelUsed };
   }
 
@@ -358,6 +408,8 @@ export async function completeAiDraftUpgrade(input: {
     status: "draft",
     createdByType: "assistant",
   });
+
+  await saveAiInsightOverlay(existing.inquiryId, input.aiInsights);
 
   return { skipped: false, draft, modelUsed: input.modelUsed };
 }

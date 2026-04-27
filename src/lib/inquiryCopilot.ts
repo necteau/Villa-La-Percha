@@ -26,6 +26,42 @@ export interface InquiryCopilotInsights {
   draftOptions: InquiryCopilotDraftOption[];
 }
 
+const AI_INSIGHTS_PREFIX = "__DIRECTSTAY_AI_INSIGHTS__";
+
+interface AiInsightOverlay {
+  suggestedNextAction?: string;
+  summary?: string;
+  missingInfo?: string[];
+  objectionSignals?: string[];
+  guestFlowSignals?: string[];
+}
+
+function parseAiInsightOverlay(body: string): AiInsightOverlay | null {
+  if (!body.startsWith(AI_INSIGHTS_PREFIX)) return null;
+  try {
+    const parsed = JSON.parse(body.slice(AI_INSIGHTS_PREFIX.length));
+    if (parsed?.kind !== "directstay_ai_insights") return null;
+    return {
+      suggestedNextAction: typeof parsed.suggestedNextAction === "string" ? parsed.suggestedNextAction.trim().slice(0, 500) : undefined,
+      summary: typeof parsed.summary === "string" ? parsed.summary.trim().slice(0, 500) : undefined,
+      missingInfo: Array.isArray(parsed.missingInfo) ? parsed.missingInfo.filter((item: unknown) => typeof item === "string").slice(0, 8) : undefined,
+      objectionSignals: Array.isArray(parsed.objectionSignals) ? parsed.objectionSignals.filter((item: unknown) => typeof item === "string").slice(0, 8) : undefined,
+      guestFlowSignals: Array.isArray(parsed.guestFlowSignals) ? parsed.guestFlowSignals.filter((item: unknown) => typeof item === "string").slice(0, 8) : undefined,
+    };
+  } catch {
+    return null;
+  }
+}
+
+function latestAiInsightOverlay(inquiry: InquiryThreadRecord): AiInsightOverlay | null {
+  const overlays = inquiry.drafts
+    .filter((draft) => draft.createdByType === "system" && draft.status === "sent")
+    .map((draft) => ({ draft, overlay: parseAiInsightOverlay(draft.body) }))
+    .filter((item): item is { draft: typeof inquiry.drafts[number]; overlay: AiInsightOverlay } => Boolean(item.overlay))
+    .sort((a, b) => Date.parse(b.draft.updatedAt) - Date.parse(a.draft.updatedAt));
+  return overlays[0]?.overlay || null;
+}
+
 function formatDate(value?: string): string | null {
   if (!value) return null;
   const date = new Date(`${value}T12:00:00Z`);
@@ -419,23 +455,25 @@ export async function getInquiryCopilotInsights(inquiry: InquiryThreadRecord): P
     guestFlowSignals.push("The requested dates are blocked — consider offering alternate windows on the availability calendar.");
   }
 
+  const aiOverlay = latestAiInsightOverlay(inquiry);
+  const fallbackSuggestedNextAction = conflictingReservations.length > 0
+    ? "Reply quickly, acknowledge the requested dates, and offer the nearest workable alternatives."
+    : missingInfo.length > 0
+      ? `Reply with a warm clarifying note and collect ${missingInfo.join(", ")}.`
+      : "Send a polished quote-oriented reply while the lead is still warm.";
+
   return {
-    summary: summarizeIntent(inquiry, requestedNights, directNightlyRate),
+    summary: aiOverlay?.summary || summarizeIntent(inquiry, requestedNights, directNightlyRate),
     urgency,
     leadLabel,
     leadScore,
     scoreReasons,
-    missingInfo,
+    missingInfo: aiOverlay?.missingInfo || missingInfo,
     keyFacts,
-    guestFlowSignals,
-    suggestedNextAction:
-      conflictingReservations.length > 0
-        ? "Reply quickly, acknowledge the requested dates, and offer the nearest workable alternatives."
-        : missingInfo.length > 0
-          ? `Reply with a warm clarifying note and collect ${missingInfo.join(", ")}.`
-          : "Send a polished quote-oriented reply while the lead is still warm.",
+    guestFlowSignals: aiOverlay?.guestFlowSignals || guestFlowSignals,
+    suggestedNextAction: aiOverlay?.suggestedNextAction || fallbackSuggestedNextAction,
     recommendedStatus: conflictingReservations.length > 0 ? "new" : inquiry.status === "converted" ? "converted" : "replied",
-    objectionSignals,
+    objectionSignals: aiOverlay?.objectionSignals || objectionSignals,
     draftOptions,
   };
 }
