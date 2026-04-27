@@ -1,14 +1,17 @@
 import Link from "next/link";
 import { getOwnerPortalStats } from "@/lib/ownerPortalDashboard";
 
-const navItems = [
+const primaryNavItems = [
   { label: "Dashboard", href: "/owner-portal" },
-  { label: "Sites", href: "/owner-portal/sites" },
-  { label: "Payments", href: "/owner-portal/payments" },
   { label: "Reservations", href: "/owner-portal/reservations" },
-  { label: "Pricing", href: "/owner-portal/pricing" },
   { label: "Inquiries", href: "/owner-portal/inquiries" },
   { label: "Customers", href: "/owner-portal/customers" },
+];
+
+const setupNavItems = [
+  { label: "Sites", href: "/owner-portal/sites" },
+  { label: "Payments", href: "/owner-portal/payments" },
+  { label: "Pricing", href: "/owner-portal/pricing" },
 ];
 
 export default async function OwnerPortalNav() {
@@ -18,7 +21,7 @@ export default async function OwnerPortalNav() {
       <p className="text-xs font-medium uppercase tracking-[0.24em] text-[#7b7468]">Owner Portal</p>
       <h2 className="mt-3 font-display text-3xl text-[#1b1a17]">DirectStay</h2>
       <nav className="mt-6 flex flex-col gap-2">
-        {navItems.map((item) => {
+        {primaryNavItems.map((item) => {
           const showBadge = item.label === "Inquiries" && stats.inquiriesNew > 0;
           return (
             <Link
@@ -35,13 +38,28 @@ export default async function OwnerPortalNav() {
             </Link>
           );
         })}
+
+        <details className="group rounded-2xl text-sm font-medium text-[#3f3a33]">
+          <summary className="flex cursor-pointer list-none items-center justify-between gap-3 rounded-2xl px-3 py-3 transition hover:bg-[#f4efe6] sm:px-4">
+            <span>Setup</span>
+            <span className="text-xs text-[#7b7468] transition group-open:rotate-180">⌄</span>
+          </summary>
+          <div className="mt-1 flex flex-col gap-1 pl-4">
+            {setupNavItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="rounded-xl px-3 py-2 text-sm text-[#5b554b] transition hover:bg-[#f4efe6]"
+              >
+                {item.label}
+              </Link>
+            ))}
+          </div>
+        </details>
       </nav>
-      <div className="mt-8 rounded-2xl bg-[#f6f2ea] p-4 text-sm leading-6 text-[#5b554b]">
-        Start with site controls, reservations, and pricing. Layer in contracts, payouts, and AI tools over time.
-      </div>
       <Link
         href="/owner-portal/logout"
-        className="mt-4 inline-flex w-full items-center justify-center rounded-full border border-[#d8cebf] px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#5b554b] transition hover:bg-[#f4efe6]"
+        className="mt-6 inline-flex w-full items-center justify-center rounded-full border border-[#d8cebf] px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#5b554b] transition hover:bg-[#f4efe6]"
       >
         Log out
       </Link>
