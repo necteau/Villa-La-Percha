@@ -11,6 +11,14 @@ function needsFreshDraftAfterLatestInbound(inquiry: InquiryThreadRecord): boolea
   if (!latestInbound) return false;
 
   const latestInboundAt = Date.parse(latestInbound.receivedAt || latestInbound.createdAt);
+  if (!Number.isFinite(latestInboundAt)) return false;
+
+  const latestOutbound = [...inquiry.messages].reverse().find((message) => message.direction === "outbound");
+  const latestOutboundAt = latestOutbound ? Date.parse(latestOutbound.sentAt || latestOutbound.createdAt) : null;
+  if (latestOutboundAt && Number.isFinite(latestOutboundAt) && latestOutboundAt > latestInboundAt) {
+    return false;
+  }
+
   const latestOpenDraft = inquiry.drafts.find((draft) => draft.createdByType !== "system" && draft.status === "draft");
   if (!latestOpenDraft) return true;
 
