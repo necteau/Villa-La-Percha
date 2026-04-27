@@ -67,6 +67,7 @@ export default function OwnerInquiriesPage() {
   const [loadingInsightId, setLoadingInsightId] = useState<string | null>(null);
   const [savingId, setSavingId] = useState<string | null>(null);
   const [revisionId, setRevisionId] = useState<string | null>(null);
+  const [pollingRevisionDraftId, setPollingRevisionDraftId] = useState<string | null>(null);
   const [customRevision, setCustomRevision] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -243,6 +244,35 @@ export default function OwnerInquiriesPage() {
     }
   };
 
+  const pollForDraftUpdate = useCallback(async (inquiryId: string, draftId: string, previousBody: string) => {
+    setPollingRevisionDraftId(draftId);
+    const startedAt = Date.now();
+    const timeoutMs = 90_000;
+
+    while (Date.now() - startedAt < timeoutMs) {
+      await new Promise((resolve) => setTimeout(resolve, 4000));
+      try {
+        const response = await fetch(apiUrl("/api/owner-portal/inquiries"), { cache: "no-store", credentials: "same-origin" });
+        const data = await response.json();
+        if (!response.ok || !data.ok) throw new Error(data.error || "Failed to refresh inquiries");
+        setInquiries(data.inquiries);
+        const updatedInquiry = data.inquiries.find((inquiry: InquiryThreadRecord) => inquiry.id === inquiryId);
+        const updatedDraft = updatedInquiry?.drafts?.find((draft: InquiryDraftRecord) => draft.id === draftId);
+        if (updatedDraft && updatedDraft.body.trim() !== previousBody.trim()) {
+          setComposer(composeFromDraft(updatedDraft, updatedInquiry));
+          setSuccess("AI revision ready.");
+          void loadInsights(inquiryId, true);
+          setPollingRevisionDraftId(null);
+          return;
+        }
+      } catch {
+        // Keep polling briefly; transient refresh failures should not erase the queued revision UX.
+      }
+    }
+
+    setPollingRevisionDraftId(null);
+  }, [loadInsights]);
+
   const requestAiRevision = async (revisionIntent: "shorter" | "warmer" | "direct" | "custom") => {
     if (!selected || !composer?.id || !composer.body.trim()) return;
     if (revisionIntent === "custom" && !customRevision.trim()) {
@@ -272,6 +302,7 @@ export default function OwnerInquiriesPage() {
       const data = await response.json();
       if (!response.ok || !data.ok) throw new Error(data.error || "Failed to request AI revision");
       setSuccess("AI revision queued. The assistant will update this draft shortly.");
+      void pollForDraftUpdate(selected.id, composer.id, composer.body);
       if (revisionIntent === "custom") setCustomRevision("");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to request AI revision");
@@ -567,6 +598,9 @@ export default function OwnerInquiriesPage() {
                       <p className="mt-1 text-xs leading-5 text-[#7b7468]">
                         Ask the assistant to revise the current draft. Your existing draft stays in place while the AI update is prepared.
                       </p>
+                      {pollingRevisionDraftId === composer.id ? (
+                        <p className="mt-2 text-xs font-medium text-[#1e4536]">Assistant is revising this draft…</p>
+                      ) : null}
                     </div>
                     {isAiGeneratedDraft ? (
                       <span className="rounded-full bg-[#eef6f1] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-[#1e4536]">
@@ -584,7 +618,7 @@ export default function OwnerInquiriesPage() {
                         key={intent}
                         type="button"
                         onClick={() => void requestAiRevision(intent as "shorter" | "warmer" | "direct")}
-                        disabled={!composer.id || Boolean(revisionId)}
+                        disabled={!composer.id || Boolean(revisionId) || pollingRevisionDraftId === composer.id}
                         className="rounded-full border border-[#ddd4c7] bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-[#5b554b] disabled:opacity-60"
                       >
                         {revisionId === intent ? "Queued..." : label}
@@ -605,7 +639,7 @@ export default function OwnerInquiriesPage() {
                       <button
                         type="button"
                         onClick={() => void requestAiRevision("custom")}
-                        disabled={!composer.id || Boolean(revisionId) || !customRevision.trim()}
+                        disabled={!composer.id || Boolean(revisionId) || pollingRevisionDraftId === composer.id || !customRevision.trim()}
                         className="rounded-full bg-[#1e4536] px-4 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-white disabled:opacity-60"
                       >
                         {revisionId === "custom" ? "Queued..." : "Revise with AI"}
