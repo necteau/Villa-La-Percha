@@ -140,7 +140,10 @@ export default function OwnerInquiriesPage() {
   );
 
   const selectedInsights = selectedId ? insightsById[selectedId] : undefined;
-  const visibleDrafts = useMemo(() => selected?.drafts.filter((draft) => draft.createdByType !== "system") || [], [selected]);
+  const visibleDrafts = useMemo(
+    () => selected?.drafts.filter((draft) => draft.createdByType !== "system" && draft.status !== "sent") || [],
+    [selected]
+  );
   const selectedDraft = composer?.id ? visibleDrafts.find((draft) => draft.id === composer.id) : undefined;
   const canReviseCurrentDraft = composer?.status === "draft";
   const canEditCurrentDraft = composer?.status !== "sent";
@@ -151,9 +154,7 @@ export default function OwnerInquiriesPage() {
   );
 
   useEffect(() => {
-    const latestDraft = selected?.drafts?.find((draft) => draft.createdByType !== "system" && draft.status === "draft")
-      || selected?.drafts?.find((draft) => draft.createdByType !== "system")
-      || null;
+    const latestDraft = selected?.drafts?.find((draft) => draft.createdByType !== "system" && draft.status === "draft") || null;
     setComposer(selected ? composeFromDraft(latestDraft, selected) : null);
     setSuccess("");
     setError("");
@@ -682,7 +683,7 @@ export default function OwnerInquiriesPage() {
 
                 {visibleDrafts.length > 0 ? (
                   <div className="rounded-2xl border border-[#e8e1d6] bg-[#faf8f3] p-4 text-sm text-[#5b554b]">
-                    <p className="font-medium text-[#1b1a17]">Tracked drafts</p>
+                    <p className="font-medium text-[#1b1a17]">Open drafts</p>
                     <div className="mt-3 space-y-2">
                       {visibleDrafts.map((draft) => (
                         <button

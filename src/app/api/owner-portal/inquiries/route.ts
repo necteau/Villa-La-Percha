@@ -1,16 +1,33 @@
 import { NextResponse } from "next/server";
 import { requireOwnerPortalSession } from "@/lib/ownerPortalApi";
-import { getInquiryThreadById, listInquiryThreads, saveInquiryDraft, updateInquiryStatus } from "@/lib/inquiries";
+import { getInquiryThreadById, listInquiryThreads, runInquiryInboundAutomation, saveInquiryDraft, updateInquiryStatus, type InquiryThreadRecord } from "@/lib/inquiries";
 import { sendApprovedInquiryDraft } from "@/lib/inquiryEmail";
 import { getInquiryCopilotInsights } from "@/lib/inquiryCopilot";
 import { createAiRevisionJob, type AiRevisionIntent } from "@/lib/aiDraftJobs";
 import { trackInquiryConverted } from "@/lib/analytics";
 
+function needsFreshDraftAfterLatestInbound(inquiry: InquiryThreadRecord): boolean {
+  const latestInbound = [...inquiry.messages].reverse().find((message) => message.direction === "inbound");
+  if (!latestInbound) return false;
+
+  const latestInboundAt = Date.parse(latestInbound.receivedAt || latestInbound.createdAt);
+  const latestOpenDraft = inquiry.drafts.find((draft) => draft.createdByType !== "system" && draft.status === "draft");
+  if (!latestOpenDraft) return true;
+
+  return Date.parse(latestOpenDraft.updatedAt) < latestInboundAt;
+}
+
 export async function GET() {
   const unauthorized = await requireOwnerPortalSession();
   if (unauthorized) return unauthorized;
 
-  const inquiries = await listInquiryThreads();
+  let inquiries = await listInquiryThreads();
+  const staleDraftInquiries = inquiries.filter(needsFreshDraftAfterLatestInbound).slice(0, 5);
+  if (staleDraftInquiries.length > 0) {
+    await Promise.all(staleDraftInquiries.map((inquiry) => runInquiryInboundAutomation(inquiry.id).catch(() => {})));
+    inquiries = await listInquiryThreads();
+  }
+
   return NextResponse.json({ ok: true, inquiries });
 }
 
