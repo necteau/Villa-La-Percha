@@ -96,7 +96,15 @@ export async function POST(req: Request) {
       if (!inquiryId || !draftId) {
         return NextResponse.json({ ok: false, error: "Missing inquiry or draft id" }, { status: 400 });
       }
-      const sent = await sendApprovedInquiryDraft(inquiryId, draftId);
+      const draft = await saveInquiryDraft({
+        id: draftId,
+        inquiryId,
+        subject: body?.subject ? String(body.subject) : undefined,
+        body: String(body?.body || ""),
+        status: "approved",
+        createdByType: "owner",
+      });
+      const sent = await sendApprovedInquiryDraft(inquiryId, draft.id);
       return NextResponse.json({ ok: true, sent });
     }
 
