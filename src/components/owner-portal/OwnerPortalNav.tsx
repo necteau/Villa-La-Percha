@@ -14,7 +14,7 @@ const navItems = [
 export default async function OwnerPortalNav() {
   const stats = await getOwnerPortalStats();
   return (
-    <aside className="rounded-[28px] border border-[#e8e1d6] bg-white p-6 shadow-[0_12px_40px_rgba(0,0,0,0.04)]">
+    <aside className="w-full min-w-0 rounded-[28px] border border-[#e8e1d6] bg-white p-5 shadow-[0_12px_40px_rgba(0,0,0,0.04)] sm:p-6">
       <p className="text-xs font-medium uppercase tracking-[0.24em] text-[#7b7468]">Owner Portal</p>
       <h2 className="mt-3 font-display text-3xl text-[#1b1a17]">DirectStay</h2>
       <nav className="mt-6 flex flex-col gap-2">
@@ -24,11 +24,11 @@ export default async function OwnerPortalNav() {
             <Link
               key={item.href}
               href={item.href}
-              className="flex items-center justify-between rounded-2xl px-4 py-3 text-sm font-medium text-[#3f3a33] transition hover:bg-[#f4efe6]"
+              className="flex min-w-0 items-center justify-between gap-3 rounded-2xl px-3 py-3 text-sm font-medium text-[#3f3a33] transition hover:bg-[#f4efe6] sm:px-4"
             >
-              <span>{item.label}</span>
+              <span className="min-w-0 truncate">{item.label}</span>
               {showBadge ? (
-                <span className="rounded-full bg-[#1e4536] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-white">
+                <span className="shrink-0 rounded-full bg-[#1e4536] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-white">
                   {stats.inquiriesNew} new
                 </span>
               ) : null}

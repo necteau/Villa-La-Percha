@@ -389,10 +389,10 @@ export default function OwnerInquiriesPage() {
   };
 
   return (
-    <section className="space-y-6">
-      <div className="rounded-[32px] border border-[#e8e1d6] bg-white p-8 shadow-[0_12px_40px_rgba(0,0,0,0.04)] md:p-10">
+    <section className="w-full min-w-0 space-y-5 overflow-x-hidden sm:space-y-6">
+      <div className="min-w-0 rounded-[32px] border border-[#e8e1d6] bg-white p-5 shadow-[0_12px_40px_rgba(0,0,0,0.04)] sm:p-8 md:p-10">
         <p className="text-xs font-medium uppercase tracking-[0.24em] text-[#7b7468]">Inquiries</p>
-        <h1 className="mt-3 font-display text-5xl leading-tight text-[#181612]">Review and manage full guest conversations</h1>
+        <h1 className="mt-3 max-w-full font-display text-4xl leading-tight text-[#181612] sm:text-5xl">Review and manage full guest conversations</h1>
         <p className="mt-4 max-w-3xl text-base leading-7 text-[#5b554b]">
           This is now the beginnings of an AI-assisted booking ops console: guest threads, assistant-guided triage, grounded reply suggestions, owner approval, and sent-message tracking in one place.
         </p>
@@ -409,15 +409,15 @@ export default function OwnerInquiriesPage() {
           No inquiries yet. When guests submit the form, they’ll show up here.
         </div>
       ) : (
-        <div className="grid gap-6 xl:grid-cols-[320px_minmax(0,1fr)]">
-          <aside className="rounded-[28px] border border-[#e8e1d6] bg-white p-6 shadow-[0_12px_40px_rgba(0,0,0,0.04)] xl:sticky xl:top-6 xl:self-start">
-            <div className="flex items-center justify-between gap-3">
+        <div className="grid min-w-0 gap-5 sm:gap-6 xl:grid-cols-[320px_minmax(0,1fr)]">
+          <aside className="min-w-0 rounded-[28px] border border-[#e8e1d6] bg-white p-5 shadow-[0_12px_40px_rgba(0,0,0,0.04)] sm:p-6 xl:sticky xl:top-6 xl:self-start">
+            <div className="flex min-w-0 flex-wrap items-center justify-between gap-3">
               <p className="text-xs font-medium uppercase tracking-[0.18em] text-[#7b7468]">Queue</p>
               <button
                 type="button"
                 onClick={() => selectedId && void loadInsights(selectedId, true)}
                 disabled={!selectedId || loadingInsightId === selectedId}
-                className="rounded-full border border-[#ddd4c7] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-[#5b554b] disabled:opacity-60"
+                className="shrink-0 rounded-full border border-[#ddd4c7] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#5b554b] disabled:opacity-60 sm:tracking-[0.16em]"
               >
                 {loadingInsightId === selectedId ? "Refreshing..." : "Refresh assistant"}
               </button>
@@ -431,13 +431,13 @@ export default function OwnerInquiriesPage() {
                     key={inquiry.id}
                     type="button"
                     onClick={() => setSelectedId(inquiry.id)}
-                    className={`w-full rounded-2xl border px-4 py-3 text-left text-sm transition ${
+                    className={`w-full min-w-0 rounded-2xl border px-4 py-3 text-left text-sm transition ${
                       inquiry.id === selectedId ? "border-[#1e4536] bg-[#eef6f1]" : "border-[#e8e1d6] hover:bg-[#f4efe6]"
                     }`}
                   >
-                    <div className="flex items-center justify-between gap-3">
-                      <p className="font-medium text-[#1b1a17]">{inquiry.fullName}</p>
-                      <span className={`rounded-full px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] ${badgeClass(inquiry.status)}`}>
+                    <div className="flex min-w-0 items-center justify-between gap-3">
+                      <p className="min-w-0 truncate font-medium text-[#1b1a17]">{inquiry.fullName}</p>
+                      <span className={`shrink-0 rounded-full px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] sm:tracking-[0.18em] ${badgeClass(inquiry.status)}`}>
                         {inquiry.status}
                       </span>
                     </div>
@@ -466,8 +466,8 @@ export default function OwnerInquiriesPage() {
             </div>
           </aside>
 
-          <div className="space-y-6">
-            <div className="rounded-[28px] border border-[#e8e1d6] bg-white p-6 shadow-[0_12px_40px_rgba(0,0,0,0.04)] md:p-8">
+          <div className="min-w-0 space-y-5 sm:space-y-6">
+            <div className="min-w-0 rounded-[28px] border border-[#e8e1d6] bg-white p-5 shadow-[0_12px_40px_rgba(0,0,0,0.04)] sm:p-6 md:p-8">
               {!selected ? (
                 <p className="text-sm text-[#5b554b]">Select an inquiry to review details.</p>
               ) : (
@@ -475,11 +475,11 @@ export default function OwnerInquiriesPage() {
                   <div className="flex flex-wrap items-start justify-between gap-4">
                     <div>
                       <p className="text-xs font-medium uppercase tracking-[0.18em] text-[#7b7468]">Inquiry details</p>
-                      <h2 className="mt-2 font-display text-4xl text-[#181612]">{selected.fullName}</h2>
-                      <p className="mt-2 text-sm text-[#5b554b]">{selected.email}</p>
+                      <h2 className="mt-2 break-words font-display text-3xl text-[#181612] sm:text-4xl">{selected.fullName}</h2>
+                      <p className="mt-2 break-all text-sm text-[#5b554b]">{selected.email}</p>
                       {selected.phone ? <p className="text-sm text-[#5b554b]">{selected.phone}</p> : null}
                     </div>
-                    <div className="text-right text-sm text-[#7b7468]">
+                    <div className="text-left text-sm text-[#7b7468] sm:text-right">
                       <p>{formatDate(selected.createdAt)}</p>
                       {(selected.checkIn || selected.checkOut) && (
                         <p className="mt-1">
@@ -522,7 +522,7 @@ export default function OwnerInquiriesPage() {
                           type="button"
                           onClick={() => void updateStatus(selected.id, status)}
                           disabled={savingId === selected.id || selected.status === status}
-                          className={`rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] transition ${
+                          className={`rounded-full px-3 py-2 text-xs font-semibold uppercase tracking-[0.12em] transition sm:px-4 sm:tracking-[0.18em] ${
                             selected.status === status
                               ? "bg-[#1e4536] text-white"
                               : "border border-[#ddd4c7] bg-white text-[#5b554b] hover:bg-[#f7f3eb]"
@@ -536,7 +536,7 @@ export default function OwnerInquiriesPage() {
                           type="button"
                           onClick={() => void updateStatus(selected.id, selectedInsights.recommendedStatus)}
                           disabled={savingId === selected.id || selected.status === selectedInsights.recommendedStatus}
-                          className="rounded-full border border-[#8b7355] bg-[#f6f2ea] px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#8b7355] disabled:opacity-60"
+                          className="rounded-full border border-[#8b7355] bg-[#f6f2ea] px-3 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-[#8b7355] disabled:opacity-60 sm:px-4 sm:tracking-[0.18em]"
                         >
                           Apply suggested status
                         </button>
@@ -544,11 +544,11 @@ export default function OwnerInquiriesPage() {
                     </div>
                   </div>
 
-                  <div className="rounded-2xl border border-[#e8e1d6] bg-[#faf8f3] p-5">
+                  <div className="min-w-0 rounded-2xl border border-[#e8e1d6] bg-[#faf8f3] p-4 sm:p-5">
                     <p className="text-xs font-medium uppercase tracking-[0.18em] text-[#7b7468]">Conversation timeline</p>
                     <div className="mt-4 space-y-3">
                       {selected.messages.map((message) => (
-                        <details key={message.id} className="group rounded-2xl border border-[#e8e1d6] bg-white p-4">
+                        <details key={message.id} className="group min-w-0 rounded-2xl border border-[#e8e1d6] bg-white p-4">
                           <summary className="flex cursor-pointer list-none items-start justify-between gap-4">
                             <div className="min-w-0 flex-1">
                               <div className="flex flex-wrap items-center gap-2">
@@ -565,14 +565,14 @@ export default function OwnerInquiriesPage() {
                               </p>
                               <p className="mt-1 line-clamp-2 text-sm leading-6 text-[#5b554b]">{messagePreview(message)}</p>
                             </div>
-                            <span className="mt-1 rounded-full border border-[#ddd4c7] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-[#7b7468] transition group-open:bg-[#1e4536] group-open:text-white">
+                            <span className="mt-1 shrink-0 rounded-full border border-[#ddd4c7] px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.1em] text-[#7b7468] transition group-open:bg-[#1e4536] group-open:text-white sm:px-3 sm:tracking-[0.16em]">
                               <span className="group-open:hidden">Expand</span>
                               <span className="hidden group-open:inline">Collapse</span>
                             </span>
                           </summary>
                           <div className="mt-4 border-t border-[#e8e1d6] pt-4">
                             {message.subject ? <p className="text-sm font-medium text-[#1b1a17]">{message.subject}</p> : null}
-                            <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-[#5b554b]">{message.body}</p>
+                            <p className="mt-2 whitespace-pre-wrap break-words text-sm leading-6 text-[#5b554b]">{message.body}</p>
                           </div>
                         </details>
                       ))}
@@ -583,7 +583,7 @@ export default function OwnerInquiriesPage() {
             </div>
 
             {selected && selectedInsights ? (
-              <div className="rounded-[28px] border border-[#e8e1d6] bg-white p-6 shadow-[0_12px_40px_rgba(0,0,0,0.04)] md:p-8">
+              <div className="min-w-0 rounded-[28px] border border-[#e8e1d6] bg-white p-5 shadow-[0_12px_40px_rgba(0,0,0,0.04)] sm:p-6 md:p-8">
                 <div className="flex items-start justify-between gap-4">
                   <div>
                     <p className="text-xs font-medium uppercase tracking-[0.18em] text-[#7b7468]">Assistant triage</p>
@@ -667,7 +667,7 @@ export default function OwnerInquiriesPage() {
             ) : null}
           </div>
 
-          <div className="rounded-[28px] border border-[#e8e1d6] bg-white p-6 shadow-[0_12px_40px_rgba(0,0,0,0.04)] md:p-8 xl:col-start-2">
+          <div className="min-w-0 rounded-[28px] border border-[#e8e1d6] bg-white p-5 shadow-[0_12px_40px_rgba(0,0,0,0.04)] sm:p-6 md:p-8 xl:col-start-2">
             {!selected ? (
               <p className="text-sm text-[#5b554b]">Select an inquiry to draft a response.</p>
             ) : !composer ? (
@@ -679,10 +679,10 @@ export default function OwnerInquiriesPage() {
                     There is no active response waiting for this conversation. When the guest replies, DirectStay will generate the next draft automatically. You can also start a proactive message now.
                   </p>
                 </div>
-                <button
+                  <button
                   type="button"
                   onClick={startNewDraft}
-                  className="inline-flex items-center justify-center rounded-full bg-[#1e4536] px-5 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-white shadow-sm hover:bg-[#18372b]"
+                  className="inline-flex max-w-full items-center justify-center rounded-full bg-[#1e4536] px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-white shadow-sm hover:bg-[#18372b] sm:px-5 sm:tracking-[0.18em]"
                 >
                   Start new draft
                 </button>
@@ -691,7 +691,7 @@ export default function OwnerInquiriesPage() {
               <div className="space-y-6">
                 <div>
                   <p className="text-xs font-medium uppercase tracking-[0.18em] text-[#7b7468]">Reply workspace</p>
-                  <h3 className="mt-2 font-display text-3xl text-[#181612]">Draft response</h3>
+                  <h3 className="mt-2 font-display text-2xl text-[#181612] sm:text-3xl">Draft response</h3>
                   <p className="mt-2 text-sm leading-6 text-[#5b554b]">
                     Assistant suggestions below are grounded in live dates, minimum stay, direct pricing, payment setup, and the current conversation — not just generic word soup pretending to be helpful.
                   </p>
@@ -711,17 +711,17 @@ export default function OwnerInquiriesPage() {
                     onChange={(e) => setComposer((current) => (current ? { ...current, body: e.target.value } : current))}
                     rows={16}
                     disabled={!canEditCurrentDraft}
-                    className="w-full rounded-xl border border-[#ddd4c7] px-4 py-3 text-sm leading-6 disabled:bg-[#faf8f3] disabled:text-[#7b7468]"
+                    className="w-full min-w-0 rounded-xl border border-[#ddd4c7] px-4 py-3 text-sm leading-6 disabled:bg-[#faf8f3] disabled:text-[#7b7468]"
                   />
                   {isAiWorkingOnDraft ? <p className="mt-2 text-xs font-medium text-[#1e4536]">Assistant is updating this draft…</p> : null}
                 </div>
 
-                <div className="flex flex-wrap gap-3">
+                <div className="flex min-w-0 flex-wrap gap-3">
                   <button
                     type="button"
                     onClick={() => void saveDraft("draft")}
                     disabled={savingId === selected.id || !canEditCurrentDraft || !hasDraftChanges}
-                    className={`inline-flex items-center justify-center rounded-full px-5 py-2 text-xs font-semibold uppercase tracking-[0.18em] transition disabled:cursor-not-allowed ${
+                    className={`inline-flex max-w-full items-center justify-center rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] transition disabled:cursor-not-allowed sm:px-5 sm:tracking-[0.18em] ${
                       hasDraftChanges && canEditCurrentDraft
                         ? "bg-[#1e4536] text-white shadow-sm hover:bg-[#18372b]"
                         : "border border-[#ddd4c7] bg-[#faf8f3] text-[#a39a8c]"
@@ -733,13 +733,13 @@ export default function OwnerInquiriesPage() {
                     type="button"
                     onClick={() => void sendApprovedDraft()}
                     disabled={savingId === selected.id || !composer.id || !canEditCurrentDraft || !composer.body.trim()}
-                    className="inline-flex items-center justify-center rounded-full border border-[#8b7355] bg-[#f6f2ea] px-5 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#8b7355] disabled:opacity-60"
+                    className="inline-flex max-w-full items-center justify-center rounded-full border border-[#8b7355] bg-[#f6f2ea] px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-[#8b7355] disabled:opacity-60 sm:px-5 sm:tracking-[0.18em]"
                   >
                     {composer.id ? "Send reply" : "Save draft before sending"}
                   </button>
                 </div>
 
-                <div className="rounded-2xl border border-[#e8e1d6] bg-[#faf8f3] p-4 text-sm text-[#5b554b]">
+                <div className="min-w-0 rounded-2xl border border-[#e8e1d6] bg-[#faf8f3] p-4 text-sm text-[#5b554b]">
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div>
                       <p className="font-medium text-[#1b1a17]">Revise with AI</p>
@@ -759,7 +759,7 @@ export default function OwnerInquiriesPage() {
                       ) : null}
                     </div>
                   </div>
-                  <div className="mt-3 flex flex-wrap gap-2">
+                  <div className="mt-3 flex min-w-0 flex-wrap gap-2">
                     {[
                       ["shorter", "Shorter"],
                       ["warmer", "Warmer"],
@@ -770,7 +770,7 @@ export default function OwnerInquiriesPage() {
                         type="button"
                         onClick={() => void requestAiRevision(intent as "shorter" | "warmer" | "direct")}
                         disabled={!composer.id || !canReviseCurrentDraft || Boolean(revisionId) || pollingRevisionDraftId === composer.id}
-                        className="rounded-full border border-[#ddd4c7] bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-[#5b554b] disabled:opacity-60"
+                        className="rounded-full border border-[#ddd4c7] bg-white px-3 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-[#5b554b] disabled:opacity-60 sm:px-4 sm:tracking-[0.16em]"
                       >
                         {revisionId === intent ? "Queued..." : label}
                       </button>
@@ -783,15 +783,15 @@ export default function OwnerInquiriesPage() {
                       onChange={(e) => setCustomRevision(e.target.value.slice(0, 1000))}
                       rows={3}
                       placeholder="Tell the assistant what to change — e.g. sound more like me, mention flexible arrival, or ask about kids."
-                      className="w-full rounded-xl border border-[#ddd4c7] px-4 py-3 text-sm leading-6"
+                      className="w-full min-w-0 rounded-xl border border-[#ddd4c7] px-4 py-3 text-sm leading-6"
                     />
-                    <div className="flex items-center justify-between gap-3">
+                    <div className="flex min-w-0 flex-wrap items-center justify-between gap-3">
                       <p className="text-[11px] text-[#7b7468]">AI uses only this inquiry and this guest's DirectStay context.</p>
                       <button
                         type="button"
                         onClick={() => void requestAiRevision("custom")}
                         disabled={!composer.id || !canReviseCurrentDraft || Boolean(revisionId) || pollingRevisionDraftId === composer.id || !customRevision.trim()}
-                        className="rounded-full bg-[#1e4536] px-4 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-white disabled:opacity-60"
+                        className="rounded-full bg-[#1e4536] px-3 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-white disabled:opacity-60 sm:px-4 sm:tracking-[0.16em]"
                       >
                         {revisionId === "custom" ? "Queued..." : "Revise with AI"}
                       </button>

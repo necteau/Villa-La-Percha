@@ -11,12 +11,12 @@ export default async function OwnerPortalProtectedLayout({ children }: { childre
   }
 
   return (
-    <main className="min-h-screen bg-[#f6f4ef] text-[#1f1f1b]">
-      <div className="mx-auto grid max-w-7xl gap-6 px-6 py-10 md:px-10 lg:grid-cols-[280px_minmax(0,1fr)] lg:py-12">
-        <div className="lg:sticky lg:top-8 lg:self-start">
+    <main className="min-h-screen overflow-x-hidden bg-[#f6f4ef] text-[#1f1f1b]">
+      <div className="mx-auto grid w-full max-w-7xl min-w-0 gap-5 px-4 py-6 sm:px-6 md:px-10 lg:grid-cols-[280px_minmax(0,1fr)] lg:gap-6 lg:py-12">
+        <div className="min-w-0 lg:sticky lg:top-8 lg:self-start">
           <OwnerPortalNav />
         </div>
-        <div>{children}</div>
+        <div className="min-w-0">{children}</div>
       </div>
     </main>
   );
