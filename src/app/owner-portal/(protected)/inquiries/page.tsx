@@ -142,6 +142,8 @@ export default function OwnerInquiriesPage() {
   const selectedInsights = selectedId ? insightsById[selectedId] : undefined;
   const visibleDrafts = useMemo(() => selected?.drafts.filter((draft) => draft.createdByType !== "system") || [], [selected]);
   const selectedDraft = composer?.id ? visibleDrafts.find((draft) => draft.id === composer.id) : undefined;
+  const canReviseCurrentDraft = composer?.status === "draft";
+  const canEditCurrentDraft = composer?.status !== "sent";
   const isAiGeneratedDraft = Boolean(
     selectedDraft?.createdByType === "assistant" &&
     selectedInsights &&
@@ -149,7 +151,9 @@ export default function OwnerInquiriesPage() {
   );
 
   useEffect(() => {
-    const latestDraft = selected?.drafts?.find((draft) => draft.createdByType !== "system") || null;
+    const latestDraft = selected?.drafts?.find((draft) => draft.createdByType !== "system" && draft.status === "draft")
+      || selected?.drafts?.find((draft) => draft.createdByType !== "system")
+      || null;
     setComposer(selected ? composeFromDraft(latestDraft, selected) : null);
     setSuccess("");
     setError("");
@@ -282,6 +286,10 @@ export default function OwnerInquiriesPage() {
 
   const requestAiRevision = async (revisionIntent: "shorter" | "warmer" | "direct" | "custom") => {
     if (!selected || !composer?.id || !composer.body.trim()) return;
+    if (composer.status !== "draft") {
+      setError("AI revisions can only be queued for an unsent draft. Save a fresh draft first, then revise it.");
+      return;
+    }
     if (revisionIntent === "custom" && !customRevision.trim()) {
       setError("Add a short instruction for the custom AI revision.");
       return;
@@ -615,8 +623,13 @@ export default function OwnerInquiriesPage() {
                     <div>
                       <p className="font-medium text-[#1b1a17]">Revise with AI</p>
                       <p className="mt-1 text-xs leading-5 text-[#7b7468]">
-                        Ask the assistant to revise the current draft. Your existing draft stays in place while the AI update is prepared.
+                        Ask the assistant to revise the current unsent draft. Your existing draft stays in place while the AI update is prepared.
                       </p>
+                      {!canReviseCurrentDraft ? (
+                        <p className="mt-2 text-xs font-medium text-[#8b7355]">
+                          This draft is {formatStatusLabel(composer.status)}. Save a fresh draft before asking AI to revise it.
+                        </p>
+                      ) : null}
                       {pollingRevisionDraftId === composer.id ? (
                         <p className="mt-2 text-xs font-medium text-[#1e4536]">Assistant is revising this draft…</p>
                       ) : null}
@@ -637,7 +650,7 @@ export default function OwnerInquiriesPage() {
                         key={intent}
                         type="button"
                         onClick={() => void requestAiRevision(intent as "shorter" | "warmer" | "direct")}
-                        disabled={!composer.id || Boolean(revisionId) || pollingRevisionDraftId === composer.id}
+                        disabled={!composer.id || !canReviseCurrentDraft || Boolean(revisionId) || pollingRevisionDraftId === composer.id}
                         className="rounded-full border border-[#ddd4c7] bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-[#5b554b] disabled:opacity-60"
                       >
                         {revisionId === intent ? "Queued..." : label}
@@ -658,7 +671,7 @@ export default function OwnerInquiriesPage() {
                       <button
                         type="button"
                         onClick={() => void requestAiRevision("custom")}
-                        disabled={!composer.id || Boolean(revisionId) || pollingRevisionDraftId === composer.id || !customRevision.trim()}
+                        disabled={!composer.id || !canReviseCurrentDraft || Boolean(revisionId) || pollingRevisionDraftId === composer.id || !customRevision.trim()}
                         className="rounded-full bg-[#1e4536] px-4 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-white disabled:opacity-60"
                       >
                         {revisionId === "custom" ? "Queued..." : "Revise with AI"}
@@ -697,7 +710,8 @@ export default function OwnerInquiriesPage() {
                   <input
                     value={composer.subject}
                     onChange={(e) => setComposer((current) => (current ? { ...current, subject: e.target.value } : current))}
-                    className="w-full rounded-xl border border-[#ddd4c7] px-4 py-3 text-sm"
+                    disabled={!canEditCurrentDraft}
+                    className="w-full rounded-xl border border-[#ddd4c7] px-4 py-3 text-sm disabled:bg-[#faf8f3] disabled:text-[#7b7468]"
                   />
                 </div>
 
@@ -707,7 +721,8 @@ export default function OwnerInquiriesPage() {
                     value={composer.body}
                     onChange={(e) => setComposer((current) => (current ? { ...current, body: e.target.value } : current))}
                     rows={16}
-                    className="w-full rounded-xl border border-[#ddd4c7] px-4 py-3 text-sm leading-6"
+                    disabled={!canEditCurrentDraft}
+                    className="w-full rounded-xl border border-[#ddd4c7] px-4 py-3 text-sm leading-6 disabled:bg-[#faf8f3] disabled:text-[#7b7468]"
                   />
                 </div>
 
@@ -715,7 +730,7 @@ export default function OwnerInquiriesPage() {
                   <button
                     type="button"
                     onClick={() => void saveDraft("draft")}
-                    disabled={savingId === selected.id}
+                    disabled={savingId === selected.id || !canEditCurrentDraft}
                     className="inline-flex items-center justify-center rounded-full bg-[#1e4536] px-5 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-white disabled:opacity-60"
                   >
                     {savingId === selected.id ? "Saving..." : "Save draft"}
@@ -723,7 +738,7 @@ export default function OwnerInquiriesPage() {
                   <button
                     type="button"
                     onClick={() => void saveDraft("pending_owner_approval")}
-                    disabled={savingId === selected.id}
+                    disabled={savingId === selected.id || !canEditCurrentDraft}
                     className="inline-flex items-center justify-center rounded-full border border-[#ddd4c7] bg-white px-5 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#5b554b] disabled:opacity-60"
                   >
                     Ready for approval
@@ -731,7 +746,7 @@ export default function OwnerInquiriesPage() {
                   <button
                     type="button"
                     onClick={() => void saveDraft("approved")}
-                    disabled={savingId === selected.id}
+                    disabled={savingId === selected.id || !canEditCurrentDraft}
                     className="inline-flex items-center justify-center rounded-full border border-[#1e4536] bg-[#eef6f1] px-5 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#1e4536] disabled:opacity-60"
                   >
                     Approve draft
