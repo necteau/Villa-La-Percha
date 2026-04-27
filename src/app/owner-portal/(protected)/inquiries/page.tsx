@@ -31,6 +31,13 @@ function messageMeta(message: InquiryThreadRecord["messages"][number]) {
   return formatDate(message.createdAt);
 }
 
+function messagePreview(message: InquiryThreadRecord["messages"][number]): string {
+  const source = message.subject?.trim() || message.body.trim();
+  if (!source) return "No message details available.";
+  const compact = source.replace(/\s+/g, " ");
+  return compact.length > 140 ? `${compact.slice(0, 140).trim()}…` : compact;
+}
+
 function badgeClass(value: string) {
   if (value === "sent" || value === "converted" || value === "hot" || value === "high") return "bg-[#eef6f1] text-[#1e4536]";
   if (value === "approved" || value === "warm" || value === "medium") return "bg-[#f6f2ea] text-[#8b7355]";
@@ -332,8 +339,8 @@ export default function OwnerInquiriesPage() {
           No inquiries yet. When guests submit the form, they’ll show up here.
         </div>
       ) : (
-        <div className="grid gap-6 xl:grid-cols-[320px_minmax(0,1fr)_460px]">
-          <aside className="rounded-[28px] border border-[#e8e1d6] bg-white p-6 shadow-[0_12px_40px_rgba(0,0,0,0.04)]">
+        <div className="grid gap-6 xl:grid-cols-[320px_minmax(0,1fr)]">
+          <aside className="rounded-[28px] border border-[#e8e1d6] bg-white p-6 shadow-[0_12px_40px_rgba(0,0,0,0.04)] xl:sticky xl:top-6 xl:self-start">
             <div className="flex items-center justify-between gap-3">
               <p className="text-xs font-medium uppercase tracking-[0.18em] text-[#7b7468]">Queue</p>
               <button
@@ -471,21 +478,33 @@ export default function OwnerInquiriesPage() {
                     <p className="text-xs font-medium uppercase tracking-[0.18em] text-[#7b7468]">Conversation timeline</p>
                     <div className="mt-4 space-y-3">
                       {selected.messages.map((message) => (
-                        <div key={message.id} className="rounded-2xl border border-[#e8e1d6] bg-white p-4">
-                          <div className="flex flex-wrap items-center justify-between gap-3">
-                            <div className="flex flex-wrap items-center gap-2">
-                              <span className={`rounded-full px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] ${badgeClass(message.direction)}`}>
-                                {message.direction}
-                              </span>
-                              <span className={`rounded-full px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] ${badgeClass(message.authorType)}`}>
-                                {message.authorType}
-                              </span>
+                        <details key={message.id} className="group rounded-2xl border border-[#e8e1d6] bg-white p-4">
+                          <summary className="flex cursor-pointer list-none items-start justify-between gap-4">
+                            <div className="min-w-0 flex-1">
+                              <div className="flex flex-wrap items-center gap-2">
+                                <span className={`rounded-full px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] ${badgeClass(message.direction)}`}>
+                                  {message.direction}
+                                </span>
+                                <span className={`rounded-full px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] ${badgeClass(message.authorType)}`}>
+                                  {message.authorType}
+                                </span>
+                                <span className="text-xs text-[#7b7468]">{messageMeta(message)}</span>
+                              </div>
+                              <p className="mt-2 truncate text-sm font-medium text-[#1b1a17]">
+                                {message.subject || (message.direction === "inbound" ? "Guest message" : "Sent message")}
+                              </p>
+                              <p className="mt-1 line-clamp-2 text-sm leading-6 text-[#5b554b]">{messagePreview(message)}</p>
                             </div>
-                            <p className="text-xs text-[#7b7468]">{messageMeta(message)}</p>
+                            <span className="mt-1 rounded-full border border-[#ddd4c7] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-[#7b7468] transition group-open:bg-[#1e4536] group-open:text-white">
+                              <span className="group-open:hidden">Expand</span>
+                              <span className="hidden group-open:inline">Collapse</span>
+                            </span>
+                          </summary>
+                          <div className="mt-4 border-t border-[#e8e1d6] pt-4">
+                            {message.subject ? <p className="text-sm font-medium text-[#1b1a17]">{message.subject}</p> : null}
+                            <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-[#5b554b]">{message.body}</p>
                           </div>
-                          {message.subject ? <p className="mt-2 text-sm text-[#5b554b]">{message.subject}</p> : null}
-                          <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-[#5b554b]">{message.body}</p>
-                        </div>
+                        </details>
                       ))}
                     </div>
                   </div>
@@ -578,7 +597,7 @@ export default function OwnerInquiriesPage() {
             ) : null}
           </div>
 
-          <div className="rounded-[28px] border border-[#e8e1d6] bg-white p-6 shadow-[0_12px_40px_rgba(0,0,0,0.04)] md:p-8">
+          <div className="rounded-[28px] border border-[#e8e1d6] bg-white p-6 shadow-[0_12px_40px_rgba(0,0,0,0.04)] md:p-8 xl:col-start-2">
             {!selected || !composer ? (
               <p className="text-sm text-[#5b554b]">Select an inquiry to draft a response.</p>
             ) : (
