@@ -32,13 +32,15 @@ function messageMeta(message: InquiryThreadRecord["messages"][number]) {
 }
 
 function messagePreview(message: InquiryThreadRecord["messages"][number]): string {
-  const firstLine = message.body
+  const compact = message.body
     .split(/\r?\n/)
     .map((line) => line.trim())
-    .find(Boolean);
-  if (!firstLine) return "No message details available.";
-  const compact = firstLine.replace(/\s+/g, " ");
-  return compact.length > 140 ? `${compact.slice(0, 140).trim()}…` : compact;
+    .filter(Boolean)
+    .join(" ")
+    .replace(/\s+/g, " ")
+    .trim();
+  if (!compact) return "No message details available.";
+  return compact.length > 180 ? `${compact.slice(0, 180).trim()}…` : compact;
 }
 
 function badgeClass(value: string) {
