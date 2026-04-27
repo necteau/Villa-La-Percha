@@ -244,6 +244,25 @@ export async function getInquiryCopilotInsights(inquiry: InquiryThreadRecord): P
     .replace("Thanks for reaching out about Villa La Percha.", "Thanks so much for reaching out about Villa La Percha - I'm glad you found us.")
     .replace("If you'd like, I can firm up the exact quote and next booking steps from here.", "If you'd like, I can help you pin down the exact quote and next steps from here.");
 
+  const firmerBody = [
+    buildGreeting(inquiry.fullName),
+    "",
+    "Thanks for reaching out about Villa La Percha.",
+    availabilityLine,
+    minimumStayLine,
+    pricingLine,
+    depositLine ? `${depositLine}` : null,
+    paymentLine,
+    "If you would like to move forward, the next step is to confirm the guest details and secure the dates with the standard deposit.",
+    "",
+    missingInfo.length > 0
+      ? `Please send ${missingInfo.join(", ")} and I can confirm the cleanest booking path.`
+      : "I can send the exact booking steps as soon as you confirm you would like to proceed.",
+    "",
+    "Best,",
+    "Villa La Percha",
+  ].filter((line): line is string => line !== null).join("\n");
+
   const conciseBody = [
     buildGreeting(inquiry.fullName),
     "",
@@ -294,6 +313,26 @@ export async function getInquiryCopilotInsights(inquiry: InquiryThreadRecord): P
     "Villa La Percha",
   ].join("\n");
 
+  const missingDetailsBody = [
+    buildGreeting(inquiry.fullName),
+    "",
+    "Thanks for reaching out about Villa La Percha - happy to help.",
+    missingInfo.length > 0
+      ? `To give you the most accurate answer, could you please confirm ${missingInfo.join(", ")}?`
+      : "I have the key trip details noted, so I can help with the exact quote or booking steps from here.",
+    requestedNights && inquiry.checkIn && inquiry.checkOut
+      ? `I currently have your requested stay as ${formatDate(inquiry.checkIn)} to ${formatDate(inquiry.checkOut)}.`
+      : null,
+    directNightlyRate
+      ? `As a general guide, direct stays currently start around $${directNightlyRate.toLocaleString()}/night before stay-specific adjustments.`
+      : null,
+    "",
+    "Once I have those details, I can reply with a clear next step.",
+    "",
+    "Best,",
+    "Villa La Percha",
+  ].filter((line): line is string => line !== null).join("\n");
+
   const draftOptions: InquiryCopilotDraftOption[] = [
     {
       key: "base",
@@ -310,6 +349,13 @@ export async function getInquiryCopilotInsights(inquiry: InquiryThreadRecord): P
       body: warmerBody,
     },
     {
+      key: "firm",
+      label: "Make it firmer",
+      description: "More decisive tone with clearer booking next steps.",
+      subject: buildInquiryEmailSubject(inquiry),
+      body: firmerBody,
+    },
+    {
       key: "concise",
       label: "Make it shorter",
       description: "Tighter version for quick replies from mobile.",
@@ -322,6 +368,13 @@ export async function getInquiryCopilotInsights(inquiry: InquiryThreadRecord): P
       description: "Handles rate sensitivity without sounding defensive.",
       subject: buildInquiryEmailSubject(inquiry),
       body: pricingObjectionBody,
+    },
+    {
+      key: "missing_details",
+      label: "Ask for missing details",
+      description: "Collects dates, phone, or trip details before quoting too specifically.",
+      subject: buildInquiryEmailSubject(inquiry),
+      body: missingDetailsBody,
     },
     {
       key: "availability",

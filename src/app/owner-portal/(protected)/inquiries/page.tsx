@@ -234,9 +234,9 @@ export default function OwnerInquiriesPage() {
     }
   };
 
-  const applyDraftOption = (option: InquiryCopilotDraftOption) => {
+  const regenerateDraft = (option: InquiryCopilotDraftOption) => {
     setComposer({ id: undefined, subject: option.subject, body: option.body, status: "draft" });
-    setSuccess(`Loaded assistant suggestion: ${option.label}.`);
+    setSuccess(`Regenerated draft: ${option.label}. Review it, then save or approve when ready.`);
     setError("");
   };
 
@@ -522,18 +522,21 @@ export default function OwnerInquiriesPage() {
 
                 {selectedInsights ? (
                   <div className="rounded-2xl border border-[#e8e1d6] bg-[#faf8f3] p-4 text-sm text-[#5b554b]">
-                    <p className="font-medium text-[#1b1a17]">Assistant shortcuts</p>
+                    <p className="font-medium text-[#1b1a17]">Regenerate draft</p>
+                    <p className="mt-1 text-xs leading-5 text-[#7b7468]">
+                      One-click rewrites for the current conversation. Each option replaces the composer as a new unsaved draft, so the original tracked draft stays intact until you save.
+                    </p>
                     <div className="mt-3 grid gap-3">
                       {selectedInsights.draftOptions.map((option) => (
                         <button
                           key={option.key}
                           type="button"
-                          onClick={() => applyDraftOption(option)}
+                          onClick={() => regenerateDraft(option)}
                           className="rounded-2xl border border-[#e8e1d6] bg-white px-4 py-3 text-left transition hover:bg-[#fdfbf7]"
                         >
                           <div className="flex items-center justify-between gap-3">
                             <span className="font-medium text-[#1b1a17]">{option.label}</span>
-                            <span className="rounded-full bg-[#eef6f1] px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-[#1e4536]">Load</span>
+                            <span className="rounded-full bg-[#eef6f1] px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-[#1e4536]">Regenerate</span>
                           </div>
                           <p className="mt-1 text-xs text-[#7b7468]">{option.description}</p>
                         </button>
