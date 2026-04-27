@@ -15,7 +15,6 @@ interface SiteConfig {
   inquiryEnabled: boolean;
   paymentMethods: { stripe: boolean; zelle: boolean; venmo: boolean; cashApp: boolean };
   aiReplyInstructions: string;
-  globalAiReplyInstructions: string;
 }
 
 interface SiteDraft {
@@ -26,7 +25,6 @@ interface SiteDraft {
   inquiryEnabled: boolean;
   paymentMethods: { stripe: boolean; zelle: boolean; venmo: boolean; cashApp: boolean };
   aiReplyInstructions: string;
-  globalAiReplyInstructions: string;
 }
 
 function toDraft(site: SiteConfig): SiteDraft {
@@ -89,7 +87,6 @@ export default function OwnerSitesPage() {
         inquiryEnabled: draft.inquiryEnabled,
         paymentMethods: draft.paymentMethods,
         aiReplyInstructions: draft.aiReplyInstructions,
-        globalAiReplyInstructions: draft.globalAiReplyInstructions,
       };
 
       const response = await fetch(apiUrl("/api/owner-portal/sites"), {
@@ -195,7 +192,7 @@ export default function OwnerSitesPage() {
             </div>
           </div>
 
-          <div className="mt-6 grid gap-6 md:grid-cols-2">
+          <div className="mt-6">
             <div>
               <label className="mb-1 block text-xs uppercase tracking-[0.18em] text-[#7b7468]">Owner AI reply instructions</label>
               <textarea
@@ -206,18 +203,6 @@ export default function OwnerSitesPage() {
                 className="w-full rounded-xl border border-[#ddd4c7] px-4 py-3 text-sm leading-6"
               />
               <p className="mt-2 text-xs leading-5 text-[#7b7468]">These instructions are added to every ChatGPT-generated reply for this property.</p>
-            </div>
-
-            <div>
-              <label className="mb-1 block text-xs uppercase tracking-[0.18em] text-[#7b7468]">DirectStay global AI instructions</label>
-              <textarea
-                value={draft.globalAiReplyInstructions}
-                readOnly
-                rows={7}
-                placeholder="No global instructions configured yet."
-                className="w-full rounded-xl border border-[#ddd4c7] bg-[#faf8f3] px-4 py-3 text-sm leading-6 text-[#7b7468]"
-              />
-              <p className="mt-2 text-xs leading-5 text-[#7b7468]">Platform-wide instructions are read-only here and come from DirectStay admin configuration.</p>
             </div>
           </div>
 
