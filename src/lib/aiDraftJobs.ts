@@ -2,6 +2,7 @@ import { getInquiryCopilotInsights } from "@/lib/inquiryCopilot";
 import { getPrismaClient } from "@/lib/db";
 import { canUseDatabaseSync } from "@/lib/fallbackOrchestrator";
 import { getInquiryThreadById, saveInquiryDraft, type InquiryThreadRecord } from "@/lib/inquiries";
+import { getGlobalAiReplyInstructions, getSiteSettings } from "@/lib/ownerPortalSettings";
 
 interface AiDraftCustomerContext {
   fullName: string;
@@ -44,6 +45,8 @@ interface AiDraftContext {
   property: {
     name: string;
     slug: string;
+    ownerAiReplyInstructions?: string;
+    globalAiReplyInstructions?: string;
   };
   inquiry: {
     id: string;
@@ -254,9 +257,13 @@ async function getCustomerContext(inquiry: InquiryThreadRecord): Promise<AiDraft
 }
 
 async function buildAiDraftContext(inquiry: InquiryThreadRecord): Promise<AiDraftContext> {
-  const insights = await getInquiryCopilotInsights(inquiry);
+  const [insights, siteSettings] = await Promise.all([getInquiryCopilotInsights(inquiry), getSiteSettings().catch(() => null)]);
   return {
-    property: PROPERTY_CONTEXT,
+    property: {
+      ...PROPERTY_CONTEXT,
+      ownerAiReplyInstructions: siteSettings?.aiReplyInstructions || undefined,
+      globalAiReplyInstructions: getGlobalAiReplyInstructions() || undefined,
+    },
     inquiry: {
       id: inquiry.id,
       fullName: inquiry.fullName,

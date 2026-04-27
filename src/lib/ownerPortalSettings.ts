@@ -10,6 +10,8 @@ export interface SiteSettingsRecord {
   minStayNights: number;
   inquiryEnabled: boolean;
   paymentMethods: { stripe: boolean; zelle: boolean; venmo: boolean; cashApp: boolean };
+  aiReplyInstructions: string;
+  globalAiReplyInstructions: string;
 }
 
 export interface PaymentSettingsRecord {
@@ -57,6 +59,10 @@ function emptyPaymentMethods() {
   return { stripe: false, zelle: false, venmo: false, cashApp: false };
 }
 
+export function getGlobalAiReplyInstructions(): string {
+  return (process.env.DIRECTSTAY_GLOBAL_AI_REPLY_INSTRUCTIONS || "").trim().slice(0, 4000);
+}
+
 export async function getSiteSettings(): Promise<SiteSettingsRecord> {
   const property = await ensureDefaultProperty();
   const paymentMethods = emptyPaymentMethods();
@@ -75,6 +81,8 @@ export async function getSiteSettings(): Promise<SiteSettingsRecord> {
     minStayNights: property.minimumStayNights || 1,
     inquiryEnabled: property.inquiryEnabled,
     paymentMethods,
+    aiReplyInstructions: property.aiReplyInstructions || "",
+    globalAiReplyInstructions: getGlobalAiReplyInstructions(),
   };
 }
 
@@ -89,6 +97,7 @@ export async function updateSiteSettings(input: SiteSettingsRecord): Promise<Sit
       publicDomain: input.domain,
       minimumStayNights: input.minStayNights,
       inquiryEnabled: input.inquiryEnabled,
+      aiReplyInstructions: String(input.aiReplyInstructions || "").trim().slice(0, 4000),
     },
   });
 

@@ -148,6 +148,7 @@ model Property {
   publicDomain              String?
   inquiryEmail              String?
   inquiryPhone              String?
+  aiReplyInstructions       String?
   timezone                  String             @default("America/New_York")
   currency                  String             @default("USD")
   minimumStayNights         Int?

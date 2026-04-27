@@ -14,6 +14,8 @@ interface SiteConfig {
   minStayNights: number;
   inquiryEnabled: boolean;
   paymentMethods: { stripe: boolean; zelle: boolean; venmo: boolean; cashApp: boolean };
+  aiReplyInstructions: string;
+  globalAiReplyInstructions: string;
 }
 
 interface SiteDraft {
@@ -23,6 +25,8 @@ interface SiteDraft {
   minStayNights: string;
   inquiryEnabled: boolean;
   paymentMethods: { stripe: boolean; zelle: boolean; venmo: boolean; cashApp: boolean };
+  aiReplyInstructions: string;
+  globalAiReplyInstructions: string;
 }
 
 function toDraft(site: SiteConfig): SiteDraft {
@@ -84,6 +88,8 @@ export default function OwnerSitesPage() {
         minStayNights: Number(draft.minStayNights || 1),
         inquiryEnabled: draft.inquiryEnabled,
         paymentMethods: draft.paymentMethods,
+        aiReplyInstructions: draft.aiReplyInstructions,
+        globalAiReplyInstructions: draft.globalAiReplyInstructions,
       };
 
       const response = await fetch(apiUrl("/api/owner-portal/sites"), {
@@ -186,6 +192,32 @@ export default function OwnerSitesPage() {
                   </label>
                 ))}
               </div>
+            </div>
+          </div>
+
+          <div className="mt-6 grid gap-6 md:grid-cols-2">
+            <div>
+              <label className="mb-1 block text-xs uppercase tracking-[0.18em] text-[#7b7468]">Owner AI reply instructions</label>
+              <textarea
+                value={draft.aiReplyInstructions}
+                onChange={(e) => setDraft((current) => (current ? { ...current, aiReplyInstructions: e.target.value.slice(0, 4000) } : current))}
+                rows={7}
+                placeholder="Example: Keep replies concise and warm. Mention that we prefer direct booking for the lowest total. Ask guests to confirm phone number before payment."
+                className="w-full rounded-xl border border-[#ddd4c7] px-4 py-3 text-sm leading-6"
+              />
+              <p className="mt-2 text-xs leading-5 text-[#7b7468]">These instructions are added to every ChatGPT-generated reply for this property.</p>
+            </div>
+
+            <div>
+              <label className="mb-1 block text-xs uppercase tracking-[0.18em] text-[#7b7468]">DirectStay global AI instructions</label>
+              <textarea
+                value={draft.globalAiReplyInstructions}
+                readOnly
+                rows={7}
+                placeholder="No global instructions configured yet."
+                className="w-full rounded-xl border border-[#ddd4c7] bg-[#faf8f3] px-4 py-3 text-sm leading-6 text-[#7b7468]"
+              />
+              <p className="mt-2 text-xs leading-5 text-[#7b7468]">Platform-wide instructions are read-only here and come from DirectStay admin configuration.</p>
             </div>
           </div>
 
