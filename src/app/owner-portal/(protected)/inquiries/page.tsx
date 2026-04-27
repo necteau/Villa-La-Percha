@@ -238,12 +238,24 @@ export default function OwnerInquiriesPage() {
     }
   };
 
+  const startNewDraft = () => {
+    if (!selected) return;
+    const nextComposer = composeFromDraft(null, selected);
+    setComposer(nextComposer);
+    setLastSavedBody(nextComposer.body);
+    setCustomRevision("");
+    setError("");
+    setSuccess("New draft started. Write a proactive note, then save it before sending.");
+  };
+
   const sendApprovedDraft = async () => {
     if (!selected || !composer?.id) return;
 
     setSavingId(selected.id);
     setError("");
     setSuccess("");
+    setPollingRevisionDraftId(null);
+    setPollingUpgradeDraftId(null);
 
     try {
       const response = await fetch(apiUrl("/api/owner-portal/inquiries"), {
@@ -261,8 +273,11 @@ export default function OwnerInquiriesPage() {
       const data = await response.json();
       if (!response.ok || !data.ok) throw new Error(data.error || "Failed to send approved draft");
       await reloadInquiries();
+      setComposer(null);
+      setLastSavedBody("");
+      setCustomRevision("");
       void loadInsights(selected.id, true);
-      setSuccess("Approved draft sent and logged to the conversation.");
+      setSuccess("Reply sent and logged to the conversation. You can start a new proactive message if needed.");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to send approved draft");
     } finally {
@@ -653,8 +668,25 @@ export default function OwnerInquiriesPage() {
           </div>
 
           <div className="rounded-[28px] border border-[#e8e1d6] bg-white p-6 shadow-[0_12px_40px_rgba(0,0,0,0.04)] md:p-8 xl:col-start-2">
-            {!selected || !composer ? (
+            {!selected ? (
               <p className="text-sm text-[#5b554b]">Select an inquiry to draft a response.</p>
+            ) : !composer ? (
+              <div className="space-y-5">
+                <div>
+                  <p className="text-xs font-medium uppercase tracking-[0.18em] text-[#7b7468]">Reply workspace</p>
+                  <h3 className="mt-2 font-display text-3xl text-[#181612]">No open draft</h3>
+                  <p className="mt-2 max-w-2xl text-sm leading-6 text-[#5b554b]">
+                    There is no active response waiting for this conversation. When the guest replies, DirectStay will generate the next draft automatically. You can also start a proactive message now.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={startNewDraft}
+                  className="inline-flex items-center justify-center rounded-full bg-[#1e4536] px-5 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-white shadow-sm hover:bg-[#18372b]"
+                >
+                  Start new draft
+                </button>
+              </div>
             ) : (
               <div className="space-y-6">
                 <div>
@@ -703,7 +735,7 @@ export default function OwnerInquiriesPage() {
                     disabled={savingId === selected.id || !composer.id || !canEditCurrentDraft || !composer.body.trim()}
                     className="inline-flex items-center justify-center rounded-full border border-[#8b7355] bg-[#f6f2ea] px-5 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#8b7355] disabled:opacity-60"
                   >
-                    Send reply
+                    {composer.id ? "Send reply" : "Save draft before sending"}
                   </button>
                 </div>
 
