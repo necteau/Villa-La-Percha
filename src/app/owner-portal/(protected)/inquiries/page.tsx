@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import type { InquiryCopilotDraftOption, InquiryCopilotInsights } from "@/lib/inquiryCopilot";
+import type { InquiryCopilotInsights } from "@/lib/inquiryCopilot";
 import type { InquiryDraftRecord, InquiryRecord, InquiryThreadRecord } from "@/lib/inquiries";
 import { buildInquiryEmailSubject } from "@/lib/inquirySubject";
 
@@ -45,11 +45,11 @@ interface DraftComposer {
   status: InquiryDraftRecord["status"];
 }
 
-function isSavedDraft(draft: InquiryDraftRecord | InquiryCopilotDraftOption | null | undefined): draft is InquiryDraftRecord {
+function isSavedDraft(draft: InquiryDraftRecord | null | undefined): draft is InquiryDraftRecord {
   return Boolean(draft && "id" in draft);
 }
 
-function composeFromDraft(draft?: InquiryDraftRecord | InquiryCopilotDraftOption | null, inquiry?: InquiryThreadRecord | null): DraftComposer {
+function composeFromDraft(draft?: InquiryDraftRecord | null, inquiry?: InquiryThreadRecord | null): DraftComposer {
   return {
     id: isSavedDraft(draft) ? draft.id : undefined,
     subject: draft?.subject || buildInquiryEmailSubject(inquiry || {}),
@@ -66,6 +66,8 @@ export default function OwnerInquiriesPage() {
   const [loading, setLoading] = useState(true);
   const [loadingInsightId, setLoadingInsightId] = useState<string | null>(null);
   const [savingId, setSavingId] = useState<string | null>(null);
+  const [revisionId, setRevisionId] = useState<string | null>(null);
+  const [customRevision, setCustomRevision] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
@@ -130,9 +132,16 @@ export default function OwnerInquiriesPage() {
   );
 
   const selectedInsights = selectedId ? insightsById[selectedId] : undefined;
+  const visibleDrafts = useMemo(() => selected?.drafts.filter((draft) => draft.createdByType !== "system") || [], [selected]);
+  const selectedDraft = composer?.id ? visibleDrafts.find((draft) => draft.id === composer.id) : undefined;
+  const isAiGeneratedDraft = Boolean(
+    selectedDraft?.createdByType === "assistant" &&
+    selectedInsights &&
+    !selectedInsights.draftOptions.some((option) => option.body.trim() === selectedDraft.body.trim())
+  );
 
   useEffect(() => {
-    const latestDraft = selected?.drafts?.[0] || null;
+    const latestDraft = selected?.drafts?.find((draft) => draft.createdByType !== "system") || null;
     setComposer(selected ? composeFromDraft(latestDraft, selected) : null);
     setSuccess("");
     setError("");
@@ -234,10 +243,41 @@ export default function OwnerInquiriesPage() {
     }
   };
 
-  const regenerateDraft = (option: InquiryCopilotDraftOption) => {
-    setComposer({ id: undefined, subject: option.subject, body: option.body, status: "draft" });
-    setSuccess(`Regenerated draft: ${option.label}. Review it, then save or approve when ready.`);
+  const requestAiRevision = async (revisionIntent: "shorter" | "warmer" | "direct" | "custom") => {
+    if (!selected || !composer?.id || !composer.body.trim()) return;
+    if (revisionIntent === "custom" && !customRevision.trim()) {
+      setError("Add a short instruction for the custom AI revision.");
+      return;
+    }
+
+    setRevisionId(revisionIntent);
     setError("");
+    setSuccess("");
+
+    try {
+      const response = await fetch(apiUrl("/api/owner-portal/inquiries"), {
+        method: "POST",
+        credentials: "same-origin",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "ai_revision",
+          inquiryId: selected.id,
+          draftId: composer.id,
+          subject: composer.subject,
+          draftBody: composer.body,
+          revisionIntent,
+          instruction: revisionIntent === "custom" ? customRevision : undefined,
+        }),
+      });
+      const data = await response.json();
+      if (!response.ok || !data.ok) throw new Error(data.error || "Failed to request AI revision");
+      setSuccess("AI revision queued. The assistant will update this draft shortly.");
+      if (revisionIntent === "custom") setCustomRevision("");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to request AI revision");
+    } finally {
+      setRevisionId(null);
+    }
   };
 
   return (
@@ -520,36 +560,65 @@ export default function OwnerInquiriesPage() {
                   </p>
                 </div>
 
-                {selectedInsights ? (
-                  <div className="rounded-2xl border border-[#e8e1d6] bg-[#faf8f3] p-4 text-sm text-[#5b554b]">
-                    <p className="font-medium text-[#1b1a17]">Regenerate draft</p>
-                    <p className="mt-1 text-xs leading-5 text-[#7b7468]">
-                      One-click rewrites for the current conversation. Each option replaces the composer as a new unsaved draft, so the original tracked draft stays intact until you save.
-                    </p>
-                    <div className="mt-3 grid gap-3">
-                      {selectedInsights.draftOptions.map((option) => (
-                        <button
-                          key={option.key}
-                          type="button"
-                          onClick={() => regenerateDraft(option)}
-                          className="rounded-2xl border border-[#e8e1d6] bg-white px-4 py-3 text-left transition hover:bg-[#fdfbf7]"
-                        >
-                          <div className="flex items-center justify-between gap-3">
-                            <span className="font-medium text-[#1b1a17]">{option.label}</span>
-                            <span className="rounded-full bg-[#eef6f1] px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-[#1e4536]">Regenerate</span>
-                          </div>
-                          <p className="mt-1 text-xs text-[#7b7468]">{option.description}</p>
-                        </button>
-                      ))}
+                <div className="rounded-2xl border border-[#e8e1d6] bg-[#faf8f3] p-4 text-sm text-[#5b554b]">
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div>
+                      <p className="font-medium text-[#1b1a17]">Revise with AI</p>
+                      <p className="mt-1 text-xs leading-5 text-[#7b7468]">
+                        Ask the assistant to revise the current draft. Your existing draft stays in place while the AI update is prepared.
+                      </p>
+                    </div>
+                    {isAiGeneratedDraft ? (
+                      <span className="rounded-full bg-[#eef6f1] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-[#1e4536]">
+                        ✨ Generated by ChatGPT
+                      </span>
+                    ) : null}
+                  </div>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {[
+                      ["shorter", "Shorter"],
+                      ["warmer", "Warmer"],
+                      ["direct", "More direct"],
+                    ].map(([intent, label]) => (
+                      <button
+                        key={intent}
+                        type="button"
+                        onClick={() => void requestAiRevision(intent as "shorter" | "warmer" | "direct")}
+                        disabled={!composer.id || Boolean(revisionId)}
+                        className="rounded-full border border-[#ddd4c7] bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-[#5b554b] disabled:opacity-60"
+                      >
+                        {revisionId === intent ? "Queued..." : label}
+                      </button>
+                    ))}
+                  </div>
+                  <div className="mt-4 space-y-2">
+                    <label className="block text-xs uppercase tracking-[0.18em] text-[#7b7468]">Custom AI instruction</label>
+                    <textarea
+                      value={customRevision}
+                      onChange={(e) => setCustomRevision(e.target.value.slice(0, 1000))}
+                      rows={3}
+                      placeholder="Tell the assistant what to change — e.g. sound more like me, mention flexible arrival, or ask about kids."
+                      className="w-full rounded-xl border border-[#ddd4c7] px-4 py-3 text-sm leading-6"
+                    />
+                    <div className="flex items-center justify-between gap-3">
+                      <p className="text-[11px] text-[#7b7468]">AI uses only this inquiry and this guest's DirectStay context.</p>
+                      <button
+                        type="button"
+                        onClick={() => void requestAiRevision("custom")}
+                        disabled={!composer.id || Boolean(revisionId) || !customRevision.trim()}
+                        className="rounded-full bg-[#1e4536] px-4 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-white disabled:opacity-60"
+                      >
+                        {revisionId === "custom" ? "Queued..." : "Revise with AI"}
+                      </button>
                     </div>
                   </div>
-                ) : null}
+                </div>
 
-                {selected.drafts.length > 0 ? (
+                {visibleDrafts.length > 0 ? (
                   <div className="rounded-2xl border border-[#e8e1d6] bg-[#faf8f3] p-4 text-sm text-[#5b554b]">
                     <p className="font-medium text-[#1b1a17]">Tracked drafts</p>
                     <div className="mt-3 space-y-2">
-                      {selected.drafts.map((draft) => (
+                      {visibleDrafts.map((draft) => (
                         <button
                           key={draft.id}
                           type="button"

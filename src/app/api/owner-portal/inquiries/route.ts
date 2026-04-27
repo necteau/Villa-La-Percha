@@ -3,6 +3,7 @@ import { requireOwnerPortalSession } from "@/lib/ownerPortalApi";
 import { getInquiryThreadById, listInquiryThreads, saveInquiryDraft, updateInquiryStatus } from "@/lib/inquiries";
 import { sendApprovedInquiryDraft } from "@/lib/inquiryEmail";
 import { getInquiryCopilotInsights } from "@/lib/inquiryCopilot";
+import { createAiRevisionJob, type AiRevisionIntent } from "@/lib/aiDraftJobs";
 import { trackInquiryConverted } from "@/lib/analytics";
 
 export async function GET() {
@@ -51,6 +52,25 @@ export async function POST(req: Request) {
         createdByType: body?.createdByType,
       });
       return NextResponse.json({ ok: true, draft });
+    }
+
+    if (action === "ai_revision") {
+      const inquiryId = String(body?.inquiryId || "");
+      const draftId = String(body?.draftId || "");
+      const revisionIntent = String(body?.revisionIntent || "custom") as AiRevisionIntent;
+      const allowedIntents = new Set(["shorter", "warmer", "direct", "custom"]);
+      if (!inquiryId || !draftId || !allowedIntents.has(revisionIntent)) {
+        return NextResponse.json({ ok: false, error: "Missing inquiry, draft, or revision type" }, { status: 400 });
+      }
+      const job = await createAiRevisionJob({
+        inquiryId,
+        draftId,
+        subject: body?.subject ? String(body.subject) : undefined,
+        body: String(body?.draftBody || ""),
+        intent: revisionIntent,
+        instruction: body?.instruction ? String(body.instruction) : undefined,
+      });
+      return NextResponse.json({ ok: true, job: { id: job.id } });
     }
 
     if (action === "send") {

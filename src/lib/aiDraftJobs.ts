@@ -38,6 +38,8 @@ interface AiDraftCustomerContext {
   }>;
 }
 
+export type AiRevisionIntent = "shorter" | "warmer" | "direct" | "custom";
+
 interface AiDraftContext {
   property: {
     name: string;
@@ -82,11 +84,45 @@ export interface AiDraftJob {
   subject?: string;
   body: string;
   context: AiDraftContext;
+  revisionIntent?: AiRevisionIntent;
+  revisionInstruction?: string;
+  targetDraftId?: string;
   // Kept for backward compatibility with older local worker scripts.
   inquiry?: InquiryThreadRecord;
 }
 
+interface AiRevisionJobPayload {
+  kind: "directstay_ai_revision";
+  targetDraftId: string;
+  inquiryId: string;
+  intent: AiRevisionIntent;
+  instruction?: string;
+  subject?: string;
+  body: string;
+  createdAt: string;
+}
+
 const PROPERTY_CONTEXT = { name: "Villa La Percha", slug: "villa-la-percha" };
+const REVISION_PREFIX = "__DIRECTSTAY_AI_REVISION__";
+
+function parseRevisionJob(value: string): AiRevisionJobPayload | null {
+  if (!value.startsWith(REVISION_PREFIX)) return null;
+  try {
+    const parsed = JSON.parse(value.slice(REVISION_PREFIX.length));
+    if (parsed?.kind !== "directstay_ai_revision" || !parsed.targetDraftId || !parsed.inquiryId || !parsed.body) return null;
+    return parsed as AiRevisionJobPayload;
+  } catch {
+    return null;
+  }
+}
+
+function serializeRevisionJob(payload: AiRevisionJobPayload): string {
+  return `${REVISION_PREFIX}${JSON.stringify(payload)}`;
+}
+
+function sanitizeOwnerInstruction(value: string): string {
+  return value.replace(/[\u0000-\u001f\u007f]/g, " ").replace(/\s+/g, " ").trim().slice(0, 1000);
+}
 
 export function isInternalAiRequest(req: Request): boolean {
   const secret = process.env.DIRECTSTAY_INTERNAL_API_SECRET;
@@ -210,6 +246,35 @@ async function buildAiDraftContext(inquiry: InquiryThreadRecord): Promise<AiDraf
 export async function listPendingAiDraftJobs(limit = 10): Promise<AiDraftJob[]> {
   if (!canUseDatabaseSync()) return [];
   const prisma = await getPrismaClient();
+  const revisionCandidates = await prisma.inquiryReplyDraft.findMany({
+    where: { status: "DRAFT", createdByType: "SYSTEM", sentAt: null },
+    orderBy: { updatedAt: "asc" },
+    take: Math.max(1, Math.min(limit, 25)),
+  });
+
+  const jobs: AiDraftJob[] = [];
+  for (const draft of revisionCandidates) {
+    if (jobs.length >= limit) break;
+    const payload = parseRevisionJob(draft.body);
+    if (!payload) continue;
+    const inquiry = await getInquiryThreadById(payload.inquiryId);
+    if (!inquiry) continue;
+    jobs.push({
+      draftId: draft.id,
+      inquiryId: payload.inquiryId,
+      targetDraftId: payload.targetDraftId,
+      subject: payload.subject,
+      body: payload.body,
+      revisionIntent: payload.intent,
+      revisionInstruction: payload.instruction,
+      context: await buildAiDraftContext(inquiry),
+      inquiry,
+    });
+  }
+
+  const remaining = limit - jobs.length;
+  if (remaining <= 0) return jobs;
+
   const candidates = await prisma.inquiryReplyDraft.findMany({
     where: {
       status: "DRAFT",
@@ -217,10 +282,9 @@ export async function listPendingAiDraftJobs(limit = 10): Promise<AiDraftJob[]> 
       sentAt: null,
     },
     orderBy: { updatedAt: "asc" },
-    take: Math.max(1, Math.min(limit * 4, 50)),
+    take: Math.max(1, Math.min(remaining * 4, 50)),
   });
 
-  const jobs: AiDraftJob[] = [];
   for (const draft of candidates) {
     if (jobs.length >= limit) break;
     const inquiry = await getInquiryThreadById(draft.inquiryId);
@@ -256,6 +320,26 @@ export async function completeAiDraftUpgrade(input: {
   const prisma = await getPrismaClient();
   const existing = await prisma.inquiryReplyDraft.findUnique({ where: { id: input.draftId } });
   if (!existing) throw new Error("Draft not found");
+
+  const revisionPayload = parseRevisionJob(existing.body);
+  if (revisionPayload) {
+    const target = await prisma.inquiryReplyDraft.findUnique({ where: { id: revisionPayload.targetDraftId } });
+    if (!target || target.status !== "DRAFT" || target.sentAt) {
+      await prisma.inquiryReplyDraft.update({ where: { id: existing.id }, data: { status: "SENT", sentAt: new Date() } });
+      return { skipped: true, reason: "Target draft is no longer eligible for AI revision" };
+    }
+    const draft = await saveInquiryDraft({
+      id: target.id,
+      inquiryId: target.inquiryId,
+      subject: input.subject || target.subject || undefined,
+      body: input.body,
+      status: "draft",
+      createdByType: "assistant",
+    });
+    await prisma.inquiryReplyDraft.update({ where: { id: existing.id }, data: { status: "SENT", sentAt: new Date() } });
+    return { skipped: false, draft, modelUsed: input.modelUsed };
+  }
+
   if (existing.status !== "DRAFT" || existing.sentAt || existing.createdByType !== "ASSISTANT") {
     return { skipped: true, reason: "Draft is no longer eligible for silent AI replacement" };
   }
@@ -276,4 +360,35 @@ export async function completeAiDraftUpgrade(input: {
   });
 
   return { skipped: false, draft, modelUsed: input.modelUsed };
+}
+
+
+export async function createAiRevisionJob(input: {
+  inquiryId: string;
+  draftId: string;
+  subject?: string;
+  body: string;
+  intent: AiRevisionIntent;
+  instruction?: string;
+}) {
+  if (!input.body.trim()) throw new Error("Draft body is required for AI revision");
+  const instruction = input.intent === "custom" ? sanitizeOwnerInstruction(input.instruction || "") : undefined;
+  if (input.intent === "custom" && !instruction) throw new Error("Custom revision instructions are required");
+
+  return saveInquiryDraft({
+    inquiryId: input.inquiryId,
+    subject: `AI revision request: ${input.intent}`,
+    body: serializeRevisionJob({
+      kind: "directstay_ai_revision",
+      targetDraftId: input.draftId,
+      inquiryId: input.inquiryId,
+      intent: input.intent,
+      instruction,
+      subject: input.subject,
+      body: input.body,
+      createdAt: new Date().toISOString(),
+    }),
+    status: "draft",
+    createdByType: "system",
+  });
 }
