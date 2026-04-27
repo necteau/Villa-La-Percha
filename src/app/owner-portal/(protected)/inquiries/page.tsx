@@ -75,6 +75,7 @@ export default function OwnerInquiriesPage() {
   const [savingId, setSavingId] = useState<string | null>(null);
   const [revisionId, setRevisionId] = useState<string | null>(null);
   const [pollingRevisionDraftId, setPollingRevisionDraftId] = useState<string | null>(null);
+  const [pollingUpgradeDraftId, setPollingUpgradeDraftId] = useState<string | null>(null);
   const [customRevision, setCustomRevision] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -160,6 +161,7 @@ export default function OwnerInquiriesPage() {
     setError("");
     if (selected?.id) void loadInsights(selected.id);
   }, [selectedId, selected, loadInsights]);
+
 
   const updateStatus = async (id: string, status: InquiryRecord["status"]) => {
     setSavingId(id);
@@ -256,8 +258,14 @@ export default function OwnerInquiriesPage() {
     }
   };
 
-  const pollForDraftUpdate = useCallback(async (inquiryId: string, draftId: string, previousBody: string) => {
-    setPollingRevisionDraftId(draftId);
+  const pollForDraftUpdate = useCallback(async (
+    inquiryId: string,
+    draftId: string,
+    previousBody: string,
+    options: { mode: "revision" | "upgrade"; successMessage: string }
+  ) => {
+    if (options.mode === "revision") setPollingRevisionDraftId(draftId);
+    if (options.mode === "upgrade") setPollingUpgradeDraftId(draftId);
     const startedAt = Date.now();
     const timeoutMs = 90_000;
 
@@ -272,18 +280,43 @@ export default function OwnerInquiriesPage() {
         const updatedDraft = updatedInquiry?.drafts?.find((draft: InquiryDraftRecord) => draft.id === draftId);
         if (updatedDraft && updatedDraft.body.trim() !== previousBody.trim()) {
           setComposer(composeFromDraft(updatedDraft, updatedInquiry));
-          setSuccess("AI revision ready.");
+          setSuccess(options.successMessage);
           void loadInsights(inquiryId, true);
-          setPollingRevisionDraftId(null);
+          if (options.mode === "revision") setPollingRevisionDraftId(null);
+          if (options.mode === "upgrade") setPollingUpgradeDraftId(null);
           return;
         }
       } catch {
-        // Keep polling briefly; transient refresh failures should not erase the queued revision UX.
+        // Keep polling briefly; transient refresh failures should not erase the queued/upgrade UX.
       }
     }
 
-    setPollingRevisionDraftId(null);
+    if (options.mode === "revision") setPollingRevisionDraftId(null);
+    if (options.mode === "upgrade") setPollingUpgradeDraftId(null);
   }, [loadInsights]);
+
+  useEffect(() => {
+    if (!selected?.id || !composer?.id || !selectedDraft || !selectedInsights) return;
+    if (composer.status !== "draft" || selectedDraft.createdByType !== "assistant") return;
+    if (isAiGeneratedDraft || pollingUpgradeDraftId === composer.id || pollingRevisionDraftId === composer.id) return;
+
+    setSuccess("Assistant draft created. Watching for the ChatGPT upgrade…");
+    void pollForDraftUpdate(selected.id, composer.id, composer.body, {
+      mode: "upgrade",
+      successMessage: "ChatGPT draft ready.",
+    });
+  }, [
+    composer?.body,
+    composer?.id,
+    composer?.status,
+    isAiGeneratedDraft,
+    pollForDraftUpdate,
+    pollingRevisionDraftId,
+    pollingUpgradeDraftId,
+    selected?.id,
+    selectedDraft,
+    selectedInsights,
+  ]);
 
   const requestAiRevision = async (revisionIntent: "shorter" | "warmer" | "direct" | "custom") => {
     if (!selected || !composer?.id || !composer.body.trim()) return;
@@ -318,7 +351,7 @@ export default function OwnerInquiriesPage() {
       const data = await response.json();
       if (!response.ok || !data.ok) throw new Error(data.error || "Failed to request AI revision");
       setSuccess("AI revision queued. The assistant will update this draft shortly.");
-      void pollForDraftUpdate(selected.id, composer.id, composer.body);
+      void pollForDraftUpdate(selected.id, composer.id, composer.body, { mode: "revision", successMessage: "AI revision ready." });
       if (revisionIntent === "custom") setCustomRevision("");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to request AI revision");
@@ -633,6 +666,9 @@ export default function OwnerInquiriesPage() {
                       ) : null}
                       {pollingRevisionDraftId === composer.id ? (
                         <p className="mt-2 text-xs font-medium text-[#1e4536]">Assistant is revising this draft…</p>
+                      ) : null}
+                      {pollingUpgradeDraftId === composer.id ? (
+                        <p className="mt-2 text-xs font-medium text-[#1e4536]">Watching for the ChatGPT upgrade…</p>
                       ) : null}
                     </div>
                     {isAiGeneratedDraft ? (
