@@ -85,6 +85,15 @@ export interface InquiryMessageInput {
 interface InquiryEnrichmentPatch {
   phone?: string;
   preferredContactMethod?: string;
+  email?: string;
+  checkIn?: string;
+  checkOut?: string;
+  guestCount?: number;
+  locationLabel?: string;
+  preferencesSummary?: string;
+  householdSummary?: string;
+  conciergeInterests?: string;
+  notes?: string;
 }
 
 const FALLBACK_PATH = path.join(process.cwd(), "src/data/inquiries.json");
@@ -155,20 +164,91 @@ function inferPreferredContactMethod(text: string): string | undefined {
   return undefined;
 }
 
+function normalizeEmail(value?: string | null): string | undefined {
+  const email = String(value || "").trim().toLowerCase();
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ? email : undefined;
+}
+
+function extractEmailFromText(text: string): string | undefined {
+  const matches = text.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi) || [];
+  return matches.map(normalizeEmail).find(Boolean);
+}
+
+function parseDateCandidate(value: string, referenceYear = new Date().getFullYear()): string | undefined {
+  const trimmed = value.trim().replace(/(\d)(st|nd|rd|th)\b/gi, "$1");
+  const numeric = trimmed.match(/\b(\d{1,2})[/-](\d{1,2})(?:[/-](\d{2,4}))?\b/);
+  if (numeric) {
+    const month = Number(numeric[1]);
+    const day = Number(numeric[2]);
+    const year = numeric[3] ? Number(numeric[3].length === 2 ? `20${numeric[3]}` : numeric[3]) : referenceYear;
+    const date = new Date(Date.UTC(year, month - 1, day));
+    if (date.getUTCFullYear() === year && date.getUTCMonth() === month - 1 && date.getUTCDate() === day) return date.toISOString().slice(0, 10);
+  }
+  const parsed = Date.parse(`${trimmed} ${/\b\d{4}\b/.test(trimmed) ? "" : referenceYear}`.trim());
+  if (Number.isFinite(parsed)) return new Date(parsed).toISOString().slice(0, 10);
+  return undefined;
+}
+
+function extractDateRange(text: string): Pick<InquiryEnrichmentPatch, "checkIn" | "checkOut"> {
+  const range = text.match(/(?:from|arriv(?:e|ing)|check(?:ing)?\s*in)?\s*([A-Z][a-z]+\s+\d{1,2}(?:st|nd|rd|th)?|\d{1,2}[/-]\d{1,2}(?:[/-]\d{2,4})?)\s*(?:to|through|thru|until|-|–|—)\s*(?:depart(?:ing)?|leav(?:e|ing)|check(?:ing)?\s*out)?\s*([A-Z][a-z]+\s+\d{1,2}(?:st|nd|rd|th)?|\d{1,2}[/-]\d{1,2}(?:[/-]\d{2,4})?)/i);
+  if (range) return { checkIn: parseDateCandidate(range[1]), checkOut: parseDateCandidate(range[2]) };
+  const checkIn = text.match(/(?:check(?:ing)?\s*in|arriv(?:e|ing|al)|from)\s*:?[\s-]*([A-Z][a-z]+\s+\d{1,2}(?:st|nd|rd|th)?|\d{1,2}[/-]\d{1,2}(?:[/-]\d{2,4})?)/i);
+  const checkOut = text.match(/(?:check(?:ing)?\s*out|depart(?:ure|ing)?|leav(?:e|ing)|to)\s*:?[\s-]*([A-Z][a-z]+\s+\d{1,2}(?:st|nd|rd|th)?|\d{1,2}[/-]\d{1,2}(?:[/-]\d{2,4})?)/i);
+  return { checkIn: checkIn ? parseDateCandidate(checkIn[1]) : undefined, checkOut: checkOut ? parseDateCandidate(checkOut[1]) : undefined };
+}
+
+function extractGuestCount(text: string): number | undefined {
+  const match = text.match(/\b(\d{1,2})\s*(?:guests?|people|adults?|travelers?|travellers?)\b/i) || text.match(/\bparty of\s*(\d{1,2})\b/i);
+  if (!match) return undefined;
+  const count = Number(match[1]);
+  return count > 0 && count < 40 ? count : undefined;
+}
+
+function extractSegment(text: string, patterns: RegExp[]): string | undefined {
+  for (const pattern of patterns) {
+    const match = text.match(pattern);
+    const value = match?.[1]?.trim().replace(/\s+/g, " ").replace(/[.\n]+$/, "");
+    if (value && value.length >= 3 && value.length <= 240) return value;
+  }
+  return undefined;
+}
+
+function buildInboundNotes(text: string, patch: InquiryEnrichmentPatch): string | undefined {
+  const lines = [
+    patch.guestCount ? `Guest count mentioned: ${patch.guestCount}` : null,
+    patch.checkIn || patch.checkOut ? `Dates mentioned: ${patch.checkIn || "?"} to ${patch.checkOut || "?"}` : null,
+    /\b(urgent|asap|soon|today|tonight|this week|ready to book|book now)\b/i.test(text) ? "Booking urgency/intent mentioned." : null,
+    /\b(price|pricing|rate|discount|deal|budget|expensive|fee|fees|tax)\b/i.test(text) ? "Pricing/budget question or objection mentioned." : null,
+  ].filter(Boolean);
+  return lines.length ? lines.join("\n") : undefined;
+}
+
 function extractInboundEnrichment(text: string): InquiryEnrichmentPatch {
-  return {
+  const concierge = extractSegment(text, [/\b((?:boat|chef|grocery|airport transfer|snorkel|fishing|concierge|rental car|kayak|paddleboard|excursion)[^\n.]*)/i]);
+  const patch: InquiryEnrichmentPatch = {
     phone: extractPhoneFromText(text),
     preferredContactMethod: inferPreferredContactMethod(text),
+    email: extractEmailFromText(text),
+    ...extractDateRange(text),
+    guestCount: extractGuestCount(text),
+    locationLabel: extractSegment(text, [/\b(?:we are|i am|coming) from\s+([^.,\n]+)/i, /\b(?:based in|located in)\s+([^.,\n]+)/i]),
+    preferencesSummary: extractSegment(text, [/\b(?:looking for|hoping for|would love|prefer|interested in)\s+([^\n.]+)/i]),
+    householdSummary: extractSegment(text, [/\b(?:family of|group of|traveling with|travelling with)\s+([^\n.]+)/i]),
+    conciergeInterests: concierge ? `Interest: ${concierge}` : undefined,
   };
+  patch.notes = buildInboundNotes(text, patch);
+  return patch;
 }
 
 async function applyEnrichmentToFallbackInquiry(inquiryId: string, patch: InquiryEnrichmentPatch) {
-  if (!patch.phone && !patch.preferredContactMethod) return;
+  if (!patch.phone && !patch.checkIn && !patch.checkOut) return;
   const inquiries = await readFallback();
   const target = inquiries.find((item) => item.id === inquiryId);
   if (!target) return;
   const nextPhone = patch.phone || target.phone;
-  const changed = nextPhone !== target.phone;
+  const nextCheckIn = patch.checkIn || target.checkIn;
+  const nextCheckOut = patch.checkOut || target.checkOut;
+  const changed = nextPhone !== target.phone || nextCheckIn !== target.checkIn || nextCheckOut !== target.checkOut;
   if (!changed) return;
   await writeFallback(
     inquiries.map((item) =>
@@ -176,6 +256,8 @@ async function applyEnrichmentToFallbackInquiry(inquiryId: string, patch: Inquir
         ? {
             ...item,
             phone: nextPhone,
+            checkIn: nextCheckIn,
+            checkOut: nextCheckOut,
           }
         : item
     )
@@ -183,21 +265,24 @@ async function applyEnrichmentToFallbackInquiry(inquiryId: string, patch: Inquir
 }
 
 async function applyEnrichmentToDatabaseInquiry(inquiry: InquiryThreadRecord, patch: InquiryEnrichmentPatch) {
-  if (!patch.phone && !patch.preferredContactMethod) return;
+  const hasPatch = Object.values(patch).some(Boolean);
+  if (!hasPatch) return;
   const prisma = await getPrismaClient();
   const phone = patch.phone && patch.phone !== inquiry.phone ? patch.phone : undefined;
+  const checkIn = patch.checkIn && !inquiry.checkIn ? new Date(`${patch.checkIn}T00:00:00.000Z`) : undefined;
+  const checkOut = patch.checkOut && !inquiry.checkOut ? new Date(`${patch.checkOut}T00:00:00.000Z`) : undefined;
 
-  if (phone) {
+  if (phone || checkIn || checkOut) {
     await prisma.inquiry.update({
       where: { id: inquiry.id },
-      data: { phone },
+      data: { phone, checkIn, checkOut },
     });
   }
 
-  if (inquiry.customerId && (phone || patch.preferredContactMethod)) {
+  if (inquiry.customerId) {
     const customer = await prisma.customer.findUnique({
       where: { id: inquiry.customerId },
-      select: { id: true, phone: true, preferredContactMethod: true },
+      select: { id: true, phone: true, email: true, preferredContactMethod: true, locationLabel: true, notes: true, preferencesSummary: true, householdSummary: true, conciergeInterests: true },
     });
 
     if (customer) {
@@ -205,13 +290,24 @@ async function applyEnrichmentToDatabaseInquiry(inquiry: InquiryThreadRecord, pa
       const preferredContactMethod = patch.preferredContactMethod && patch.preferredContactMethod !== customer.preferredContactMethod
         ? patch.preferredContactMethod
         : undefined;
+      const locationLabel = patch.locationLabel && !customer.locationLabel ? patch.locationLabel : undefined;
+      const append = (current: string | null, next?: string) => next && !String(current || "").includes(next) ? [current, next].filter(Boolean).join("\n") : undefined;
+      const notes = append(customer.notes, [patch.notes, patch.email && patch.email !== customer.email ? `Alternate email mentioned: ${patch.email}` : undefined].filter(Boolean).join("\n"));
+      const preferencesSummary = append(customer.preferencesSummary, patch.preferencesSummary);
+      const householdSummary = append(customer.householdSummary, patch.householdSummary || (patch.guestCount ? `Party size: ${patch.guestCount}` : undefined));
+      const conciergeInterests = append(customer.conciergeInterests, patch.conciergeInterests);
 
-      if (customerPhone || preferredContactMethod) {
+      if (customerPhone || preferredContactMethod || locationLabel || notes || preferencesSummary || householdSummary || conciergeInterests) {
         await prisma.customer.update({
           where: { id: customer.id },
           data: {
             phone: customerPhone,
             preferredContactMethod,
+            locationLabel,
+            notes,
+            preferencesSummary,
+            householdSummary,
+            conciergeInterests,
           },
         });
       }
