@@ -141,13 +141,14 @@ export default function OwnerInquiriesPage() {
   );
 
   const selectedInsights = selectedId ? insightsById[selectedId] : undefined;
-  const visibleDrafts = useMemo(
+  const openDrafts = useMemo(
     () => selected?.drafts.filter((draft) => draft.createdByType !== "system" && draft.status !== "sent") || [],
     [selected]
   );
-  const selectedDraft = composer?.id ? visibleDrafts.find((draft) => draft.id === composer.id) : undefined;
-  const canReviseCurrentDraft = composer?.status === "draft";
-  const canEditCurrentDraft = composer?.status !== "sent";
+  const selectedDraft = composer?.id ? openDrafts.find((draft) => draft.id === composer.id) : undefined;
+  const isAiWorkingOnDraft = Boolean(composer?.id && (pollingRevisionDraftId === composer.id || pollingUpgradeDraftId === composer.id));
+  const canReviseCurrentDraft = composer?.status === "draft" && !isAiWorkingOnDraft;
+  const canEditCurrentDraft = composer?.status !== "sent" && !isAiWorkingOnDraft;
   const isAiGeneratedDraft = Boolean(
     selectedDraft?.createdByType === "assistant" &&
     selectedInsights &&
@@ -717,38 +718,12 @@ export default function OwnerInquiriesPage() {
                   </div>
                 </div>
 
-                {visibleDrafts.length > 0 ? (
-                  <div className="rounded-2xl border border-[#e8e1d6] bg-[#faf8f3] p-4 text-sm text-[#5b554b]">
-                    <p className="font-medium text-[#1b1a17]">Open drafts</p>
-                    <div className="mt-3 space-y-2">
-                      {visibleDrafts.map((draft) => (
-                        <button
-                          key={draft.id}
-                          type="button"
-                          onClick={() => setComposer(composeFromDraft(draft, selected))}
-                          className="w-full rounded-xl border border-[#e8e1d6] bg-white px-3 py-3 text-left"
-                        >
-                          <div className="flex items-center justify-between gap-3">
-                            <span className="font-medium text-[#1b1a17]">{draft.subject || "Untitled draft"}</span>
-                            <span className={`rounded-full px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] ${badgeClass(draft.status)}`}>
-                              {formatStatusLabel(draft.status)}
-                            </span>
-                          </div>
-                          <p className="mt-1 text-xs text-[#7b7468]">Updated {formatDate(draft.updatedAt)}</p>
-                          {draft.sentAt ? <p className="mt-1 text-xs text-[#1e4536]">Sent {formatDate(draft.sentAt)}</p> : null}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                ) : null}
-
                 <div>
                   <label className="mb-1 block text-xs uppercase tracking-[0.18em] text-[#7b7468]">Subject</label>
                   <input
                     value={composer.subject}
-                    onChange={(e) => setComposer((current) => (current ? { ...current, subject: e.target.value } : current))}
-                    disabled={!canEditCurrentDraft}
-                    className="w-full rounded-xl border border-[#ddd4c7] px-4 py-3 text-sm disabled:bg-[#faf8f3] disabled:text-[#7b7468]"
+                    readOnly
+                    className="w-full rounded-xl border border-[#ddd4c7] bg-[#faf8f3] px-4 py-3 text-sm text-[#7b7468]"
                   />
                 </div>
 
