@@ -30,11 +30,11 @@ export default function DockFishing() {
             From the Dock
           </p>
           <h2 className="font-display text-3xl md:text-5xl font-light mb-4" style={{ color: "#2C2C2C" }}>
-            Good Dock Fishing, Right at the House
+            Easy Dock Fishing, Right at the House
           </h2>
           <p className="text-sm md:text-base text-[#6B6B6B] leading-relaxed max-w-3xl mx-auto">
-            Fishing from the dock is a genuinely nice part of staying at Villa La Percha.
-            It is not meant to sound like a major sportfishing experience — just an easy, enjoyable bonus
+            Fishing from the dock is a relaxed, enjoyable part of staying at Villa La Percha.
+            It is not meant to be a major sportfishing promise — just an easy bonus
             for guests who like casting a line without booking a charter or leaving the house.
           </p>
         </div>
@@ -50,7 +50,7 @@ export default function DockFishing() {
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent" />
             <div className="absolute left-6 bottom-6 max-w-md text-white">
-              <p className="text-[10px] tracking-[0.24em] uppercase text-white/70 mb-3">Actual Guest Fishing Photos</p>
+              <p className="text-[10px] tracking-[0.24em] uppercase text-white/70 mb-3">Actual guest fishing photos</p>
               <p className="text-sm md:text-base leading-relaxed text-white/85">
                 Bring a rod, fish at your own pace, and enjoy it for what it is: a fun, easy extra right at the property.
               </p>
@@ -62,11 +62,11 @@ export default function DockFishing() {
               <h3 className="font-display text-2xl font-light mb-4" style={{ color: "#2C2C2C" }}>
                 Why guests notice it
               </h3>
-              <ul className="space-y-3 text-sm md:text-base text-[#6B6B6B] leading-relaxed">
-                <li>• Easy fishing access without booking a charter</li>
-                <li>• A nice option for early mornings and sunset evenings</li>
-                <li>• Best framed as a fun vacation extra, not the main event</li>
-                <li>• Pairs naturally with swimming, dock time, and outdoor dinner</li>
+              <ul className="list-disc space-y-3 pl-5 text-sm md:text-base text-[#6B6B6B] leading-relaxed">
+                <li>Easy fishing access without booking a charter</li>
+                <li>A nice option for early mornings and sunset evenings</li>
+                <li>Best framed as a fun vacation extra, not the main event</li>
+                <li>Pairs naturally with swimming, dock time, and outdoor dinner</li>
               </ul>
             </div>
 

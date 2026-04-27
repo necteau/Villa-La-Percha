@@ -174,7 +174,7 @@ export default function ContactForm({ checkIn, checkOut, embedded = false }: Pro
               style={{
                 backgroundColor: canSubmit ? "#8B7355" : "transparent",
                 color: canSubmit ? "#FFFFFF" : embedded ? "#A39A8C" : "#FFFFFF30",
-                borderColor: canSubmit ? "#8B7355" : embedded ? "#D8D1C5" : "white/30",
+                borderColor: canSubmit ? "#8B7355" : embedded ? "#D8D1C5" : "rgba(255,255,255,0.3)",
                 cursor: canSubmit ? "pointer" : "not-allowed",
                 opacity: canSubmit ? 1 : 0.6,
               }}

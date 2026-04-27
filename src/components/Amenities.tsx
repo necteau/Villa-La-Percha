@@ -2,9 +2,9 @@ const categories = [
   {
     title: "Waterfront & outdoors",
     items: [
-      "65ft infinity pool and connected hot tub",
+      "65-foot infinity pool and connected hot tub",
       "Private dock with swimming and water access",
-      "2 kayaks + 2 paddle boards ready to launch",
+      "2 kayaks and 2 paddleboards ready to launch",
       "Outdoor kitchen, pro grill, pergolas, and fire pit",
       "Dock fishing for bonefish, snapper, and jacks",
     ],
@@ -12,7 +12,7 @@ const categories = [
   {
     title: "Living & dining",
     items: [
-      "Chef's kitchen for group meals and easy entertaining",
+      "Fully equipped kitchen for group meals and easy entertaining",
       "Screened indoor-outdoor living that opens fully to the water",
       "Sonos across key indoor and outdoor spaces",
       "Sunset views and tropical landscaping throughout the property",
@@ -22,7 +22,7 @@ const categories = [
   {
     title: "Bedrooms & layout",
     items: [
-      "4 en-suite suites plus 1 half bath",
+      "4 en-suite bedrooms plus 1 half bath",
       "Designed for families, couples, and group trips",
       "Private space for everyone without losing the shared-home feel",
       "Quick access to Taylor Bay and Sapodilla Bay",

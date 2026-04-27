@@ -13,7 +13,7 @@ export default function OwnersNote() {
         </div>
 
         <blockquote className="font-display text-2xl md:text-3xl lg:text-4xl font-light leading-relaxed mb-10 text-[#2C2C2C]">
-          This site is the simplest way to book Villa La Percha directly. Instead of paying the stacked taxes, platform fees, and extra charges that usually come with Airbnb or VRBO, guests here get straightforward pricing and direct communication before and during their stay. The result is a more personal booking experience and a better overall value.
+          This site is the simplest way to book Villa La Percha directly. Instead of paying the stacked platform markups and extra charges that often come with Airbnb or VRBO, guests here get straightforward pricing and direct communication before and during their stay. The result is a more personal booking experience and a better overall value.
         </blockquote>
 
         <div className="w-48 h-px bg-[#E8E4DF] mx-auto mb-8" />

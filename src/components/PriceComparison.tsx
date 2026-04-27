@@ -177,7 +177,7 @@ export default function DirectBookingCalculator({ checkIn = null, checkOut = nul
 
         <div className="mt-8 rounded-2xl border border-[#E8E4DF] bg-[#FAFAF8] p-6 text-center shadow-sm">
           <p className="text-sm text-[#6B6B6B] leading-relaxed max-w-3xl mx-auto">
-            Totals now come from the shared DirectStay pricing data layer so owner-side pricing updates can feed the guest flow.
+            Direct inquiries keep the process simple: choose your dates, compare estimated totals, and connect with the villa team before you book.
           </p>
         </div>
       </div>

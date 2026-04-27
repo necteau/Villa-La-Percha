@@ -13,12 +13,12 @@ const highlights = [
   },
   {
     title: "Dock, Swimming & Water Toys",
-    description: "Steps lead from the dock into clear water for swimming. Two kayaks and two stand-up paddle boards are ready to launch right from the house.",
+    description: "Steps lead from the dock into clear water for swimming. Two kayaks and two stand-up paddleboards are ready to launch right from the house.",
     image: "/images/aerial-ocean-dock-stairs-pool-house.jpg",
   },
   {
-    title: "Four En-Suite Suites",
-    description: "Four private suites with their own bathrooms, plus a fifth half bath off the main living area, make the layout ideal for couples, families, or groups traveling together.",
+    title: "Four En-Suite Bedrooms",
+    description: "Four private bedrooms with their own bathrooms, plus a fifth half bath off the main living area, make the layout ideal for couples, families, or groups traveling together.",
     image: "/images/master-suite-balcony-taylor-bay.jpg",
   },
 ];

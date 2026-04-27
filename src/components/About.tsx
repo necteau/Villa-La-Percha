@@ -9,9 +9,9 @@ export default function About() {
         <div className="section-divider mb-6 md:mb-8" />
         <p className="font-body text-[#6B6B6B] text-lg leading-relaxed text-balance max-w-3xl mx-auto">
           Villa La Percha is a private waterfront villa in the quiet Chalk Sound neighborhood of Providenciales,
-          positioned between Taylor Bay and Sapodilla Bay. The home features four spacious en-suite suites,
+          positioned between Taylor Bay and Sapodilla Bay. The home features four spacious en-suite bedrooms,
           a fifth half bath off the main living area, a fully equipped kitchen and living room that open completely
-          to a screened-in space through massive sliding glass doors, and seamless access to the water, pool, and
+          to a screened lanai through oversized sliding glass doors, and seamless access to the water, pool, and
           outdoor entertaining areas.
         </p>
         <div className="mt-6 md:mt-8">

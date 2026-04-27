@@ -22,12 +22,12 @@ export const faqs: FAQItem[] = [
   {
     question: "How many people does the house work well for?",
     answer:
-      "Villa La Percha has four en-suite suites plus a half bath off the main living area, making it a strong fit for families, couples traveling together, or groups who want shared space without sacrificing privacy.",
+      "Villa La Percha has four en-suite bedrooms plus a half bath off the main living area, making it a strong fit for families, couples traveling together, or groups who want shared space without sacrificing privacy.",
   },
   {
     question: "What is included at the house?",
     answer:
-      "Highlights include the pool and hot tub, dock access for swimming and fishing, two kayaks, two paddle boards, a screened indoor-outdoor living area, a full kitchen, an outdoor kitchen with professional grill and sink, Sonos throughout, and multiple outdoor gathering spaces.",
+      "Highlights include the pool and hot tub, dock access for swimming and fishing, two kayaks, two paddleboards, a screened indoor-outdoor living area, a full kitchen, an outdoor kitchen with a professional grill and sink, Sonos throughout, and multiple outdoor gathering spaces.",
   },
   {
     question: "Is the water access good for kids and casual swimmers?",

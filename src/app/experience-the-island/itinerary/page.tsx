@@ -52,7 +52,7 @@ export default function ItineraryPage() {
             Check availability and we'll weave your picks into a custom plan.
           </p>
           <Link
-            href="/#availability"
+            href="/villa-la-percha#availability"
             className="inline-block px-8 md:px-10 py-3.5 md:py-4 text-xs md:text-sm tracking-[0.2em] uppercase text-white font-medium"
             style={{ backgroundColor: "#8B7355" }}
           >

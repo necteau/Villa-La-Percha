@@ -27,7 +27,7 @@ export default function FAQPage() {
           </p>
           <div className="mt-8">
             <Link
-              href="/"
+              href="/villa-la-percha"
               className="inline-block px-8 md:px-10 py-3.5 md:py-4 text-xs md:text-sm tracking-[0.2em] uppercase text-white font-medium border border-white/30 hover:bg-white hover:text-[#2C2C2C] transition-all duration-500"
             >
               Back to Villa La Percha
@@ -43,7 +43,7 @@ export default function FAQPage() {
           Still have a question? Choose your preferred dates and send an inquiry directly.
         </p>
         <Link
-          href="/#availability"
+          href="/villa-la-percha#availability"
           className="inline-block px-8 md:px-10 py-3.5 md:py-4 text-xs md:text-sm tracking-[0.2em] uppercase text-white font-medium"
           style={{ backgroundColor: "#8B7355" }}
         >

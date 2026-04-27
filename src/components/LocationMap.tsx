@@ -16,7 +16,7 @@ export default function LocationMap() {
                 <span className="text-xl mt-0.5">🏄</span>
                 <div>
                   <h4 className="font-medium text-slate-900">Water Access</h4>
-                  <p className="text-sm text-slate-500">Launch two kayaks and two paddle boards from the dock, swim from the stairs into the water, or fish right from the property.</p>
+                  <p className="text-sm text-slate-500">Launch two kayaks and two paddleboards from the dock, swim from the stairs into the water, or fish right from the property.</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
