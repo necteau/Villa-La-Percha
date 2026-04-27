@@ -16,3 +16,6 @@ Thumbs.db
 *.swo
 *~
 .vercel
+
+# Vercel pulled secrets
+.env.vercel.local
