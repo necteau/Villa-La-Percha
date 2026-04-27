@@ -1,4 +1,4 @@
-export default {
+const inquiryReplyWorker = {
   async email(message, env, ctx) {
     const forwardTo = env.FORWARD_TO_EMAIL;
     const webhookUrl = env.INQUIRY_WEBHOOK_URL;
@@ -41,6 +41,8 @@ export default {
     }));
   },
 };
+
+export default inquiryReplyWorker;
 
 function arrayBufferToBase64(buffer) {
   let binary = "";
