@@ -32,9 +32,12 @@ function messageMeta(message: InquiryThreadRecord["messages"][number]) {
 }
 
 function messagePreview(message: InquiryThreadRecord["messages"][number]): string {
-  const source = message.subject?.trim() || message.body.trim();
-  if (!source) return "No message details available.";
-  const compact = source.replace(/\s+/g, " ");
+  const firstLine = message.body
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .find(Boolean);
+  if (!firstLine) return "No message details available.";
+  const compact = firstLine.replace(/\s+/g, " ");
   return compact.length > 140 ? `${compact.slice(0, 140).trim()}…` : compact;
 }
 
@@ -560,10 +563,7 @@ export default function OwnerInquiriesPage() {
                                 </span>
                                 <span className="text-xs text-[#7b7468]">{messageMeta(message)}</span>
                               </div>
-                              <p className="mt-2 truncate text-sm font-medium text-[#1b1a17]">
-                                {message.subject || (message.direction === "inbound" ? "Guest message" : "Sent message")}
-                              </p>
-                              <p className="mt-1 line-clamp-2 text-sm leading-6 text-[#5b554b]">{messagePreview(message)}</p>
+                              <p className="mt-2 truncate text-sm leading-6 text-[#5b554b]">{messagePreview(message)}</p>
                             </div>
                             <span className="mt-1 shrink-0 rounded-full border border-[#ddd4c7] px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.1em] text-[#7b7468] transition group-open:bg-[#1e4536] group-open:text-white sm:px-3 sm:tracking-[0.16em]">
                               <span className="group-open:hidden">Expand</span>
