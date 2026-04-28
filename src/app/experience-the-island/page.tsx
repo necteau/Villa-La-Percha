@@ -13,26 +13,28 @@ export default function ExperiencePage() {
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: "url(/images/aerial-ocean-dock-stairs-pool-house.jpg)" }}
         >
-          <div className="absolute inset-0 bg-[#091818]/62" />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#091818]/35 via-transparent to-[#091818]/45" />
+          <div className="absolute inset-0 bg-[#091818]/72" />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#091818]/45 via-[#091818]/28 to-[#091818]/55" />
         </div>
-        <div className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center [text-shadow:0_2px_18px_rgba(0,0,0,0.55)]">
-          <p className="mb-4 text-xs uppercase tracking-[0.4em] text-white/85 md:text-sm">
-            Discover
-          </p>
-          <h1 className="mb-6 font-display text-4xl font-light leading-tight text-white md:text-7xl">
-            Experience the<br />Island
-          </h1>
-          <p className="max-w-lg text-sm leading-relaxed text-white/90 md:text-lg">
-            Stay near Taylor Bay and Sapodilla Bay, then use this guide to plan the beaches,
-            restaurants, and outings that are actually worth your vacation time.
-          </p>
-          <Link
-            href="/villa-la-percha"
-            className="mt-8 px-8 md:px-10 py-3.5 md:py-4 text-xs md:text-sm tracking-[0.2em] uppercase text-white font-medium border border-white/30 hover:bg-white hover:text-[#2C2C2C] transition-all duration-500"
-          >
-            Back to Villa La Percha
-          </Link>
+        <div className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center">
+          <div className="max-w-2xl rounded-[32px] bg-[#091818]/48 px-6 py-8 shadow-[0_24px_80px_rgba(0,0,0,0.35)] backdrop-blur-[2px] md:px-10 md:py-10">
+            <p className="mb-4 text-xs uppercase tracking-[0.4em] text-white md:text-sm">
+              Discover
+            </p>
+            <h1 className="mb-6 font-display text-4xl font-light leading-tight text-white md:text-7xl">
+              Experience the<br />Island
+            </h1>
+            <p className="mx-auto max-w-lg text-sm font-medium leading-relaxed text-white md:text-lg">
+              Stay near Taylor Bay and Sapodilla Bay, then use this guide to plan the beaches,
+              restaurants, and outings that are actually worth your vacation time.
+            </p>
+            <Link
+              href="/villa-la-percha"
+              className="mt-8 inline-block px-8 md:px-10 py-3.5 md:py-4 text-xs md:text-sm tracking-[0.2em] uppercase text-white font-medium border border-white/45 hover:bg-white hover:text-[#2C2C2C] transition-all duration-500"
+            >
+              Back to Villa La Percha
+            </Link>
+          </div>
         </div>
       </section>
 
