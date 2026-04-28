@@ -91,7 +91,7 @@ const experiences = [
     name: "Sapodilla Bay",
     category: "Beach Bar · 30 min",
     copy: "Endless white sand, trade winds, beach bar energy. No resort gates, no cover charge.",
-    image: "/images/lounge-chairs-landscaping-sapodilla-bay.jpg",
+    image: "/images/sapodilla-bay-beach.jpg",
     tags: ["Beach", "Local Vibes"] as const,
   },
   {

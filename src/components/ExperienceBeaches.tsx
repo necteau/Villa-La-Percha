@@ -39,6 +39,7 @@ const beaches = [
     category: "Lively · Family-Friendly · Nearby",
     description: "Close to the villa and usually livelier than Taylor Bay, with shallow water, more people around, and a fun local beach atmosphere. A good choice when you want beach energy instead of total quiet.",
     highlight: "Best for a nearby beach with more action",
+    image: "/images/sapodilla-bay-beach.jpg",
   },
 ];
 
