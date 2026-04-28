@@ -221,6 +221,7 @@ export default function OwnerInquiriesPage() {
   );
   const selectedDraft = composer?.id ? openDrafts.find((draft) => draft.id === composer.id) : undefined;
   const isClosedInquiry = selected?.status === "closed";
+  const shouldLoadAssistantInsights = selected?.status === "needs_reply" || selected?.status === "awaiting_guest";
   const isAiWorkingOnDraft = Boolean(composer?.id && (pollingRevisionDraftId === composer.id || pollingUpgradeDraftId === composer.id));
   const canReviseCurrentDraft = composer?.status === "draft" && !isAiWorkingOnDraft && !isClosedInquiry;
   const canEditCurrentDraft = composer?.status !== "sent" && !isAiWorkingOnDraft && !isClosedInquiry;
@@ -243,12 +244,12 @@ export default function OwnerInquiriesPage() {
     setBookingRevenue("");
     setSuccess("");
     setError("");
-    if (selected?.status === "closed") {
+    if (!shouldLoadAssistantInsights) {
       setLoadingInsightId(null);
       return;
     }
     if (selected?.id) void loadInsights(selected.id);
-  }, [selectedId, selected, loadInsights]);
+  }, [selectedId, selected, shouldLoadAssistantInsights, loadInsights]);
 
 
   const updateStatus = async (id: string, status: InquiryRecord["status"], reason?: string) => {
@@ -583,10 +584,10 @@ export default function OwnerInquiriesPage() {
               <button
                 type="button"
                 onClick={() => selectedId && void loadInsights(selectedId, true)}
-                disabled={!selectedId || loadingInsightId === selectedId || selected?.status === "closed"}
+                disabled={!selectedId || loadingInsightId === selectedId || !shouldLoadAssistantInsights}
                 className="shrink-0 rounded-full border border-[#ddd4c7] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#5b554b] disabled:opacity-60 sm:tracking-[0.16em]"
               >
-                {selected?.status === "closed" ? "Closed" : loadingInsightId === selectedId ? "Refreshing..." : "Refresh assistant"}
+                {!selectedId ? "No selection" : !shouldLoadAssistantInsights ? formatStatusLabel(selected?.status || "") : loadingInsightId === selectedId ? "Refreshing..." : "Refresh assistant"}
               </button>
             </div>
             <label className="mt-4 block text-xs font-medium uppercase tracking-[0.16em] text-[#7b7468]">
@@ -598,7 +599,8 @@ export default function OwnerInquiriesPage() {
                   setQueueStatusFilter(next);
                   setLoadingInsightId(null);
                   const nextSelection = inquiries.find((inquiry) => next === "all" || inquiry.status === next);
-                  setSelectedId(nextSelection?.id || null);
+                  setSelectedId(null);
+                  window.requestAnimationFrame(() => setSelectedId(nextSelection?.id || null));
                 }}
                 className="mt-2 w-full rounded-xl border border-[#ddd4c7] bg-white px-3 py-2 text-sm normal-case tracking-normal text-[#1b1a17]"
               >
@@ -834,7 +836,7 @@ export default function OwnerInquiriesPage() {
                   <button
                     type="button"
                     onClick={() => void loadInsights(selected.id, true)}
-                    disabled={loadingInsightId === selected.id || isClosedInquiry}
+                    disabled={loadingInsightId === selected.id || !shouldLoadAssistantInsights}
                     className="rounded-full border border-[#ddd4c7] px-4 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-[#5b554b] disabled:opacity-60"
                   >
                     {loadingInsightId === selected.id ? "Refreshing..." : "Refresh"}
