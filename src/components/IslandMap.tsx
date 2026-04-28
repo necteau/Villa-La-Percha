@@ -103,18 +103,20 @@ export default function IslandMap() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-[1.55fr_1fr] gap-8 items-start">
-          <div className="relative rounded-2xl border border-[#E8E4DF] bg-white p-3 md:p-4 shadow-[0_15px_50px_rgba(44,44,44,0.08)]">
-            <div className="relative aspect-[1280/764] overflow-hidden rounded-xl bg-[#EEF1F3]">
-              <Image
-                src={islandMapImage}
-                alt="Providenciales island map"
-                fill
-                className="object-contain"
-                sizes="(max-width: 1024px) 100vw, 65vw"
-                priority
-              />
+          <div className="relative rounded-2xl border border-[#E8E4DF] bg-white p-4 shadow-[0_15px_50px_rgba(44,44,44,0.08)] md:p-5">
+            <div className="relative aspect-[1280/764] overflow-hidden rounded-xl bg-[#EEF1F3] p-4 sm:p-5 md:p-6">
+              <div className="absolute inset-4 sm:inset-5 md:inset-6">
+                <Image
+                  src={islandMapImage}
+                  alt="Providenciales island map"
+                  fill
+                  className="object-contain"
+                  sizes="(max-width: 1024px) 100vw, 65vw"
+                  priority
+                />
+              </div>
 
-              <div className="absolute inset-0">
+              <div className="absolute inset-4 sm:inset-5 md:inset-6">
                 <button
                   type="button"
                   onMouseEnter={() => setHoveredId(positionedVillaBase.id)}
