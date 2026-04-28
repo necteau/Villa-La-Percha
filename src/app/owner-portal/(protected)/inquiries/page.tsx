@@ -128,6 +128,7 @@ export default function OwnerInquiriesPage() {
   const [bookingRevenue, setBookingRevenue] = useState("");
   const [showCloseInquiry, setShowCloseInquiry] = useState(false);
   const [closeReason, setCloseReason] = useState(closeReasons[0]);
+  const [showReopenConfirm, setShowReopenConfirm] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
@@ -197,9 +198,10 @@ export default function OwnerInquiriesPage() {
     [selected]
   );
   const selectedDraft = composer?.id ? openDrafts.find((draft) => draft.id === composer.id) : undefined;
+  const isClosedInquiry = selected?.status === "closed";
   const isAiWorkingOnDraft = Boolean(composer?.id && (pollingRevisionDraftId === composer.id || pollingUpgradeDraftId === composer.id));
-  const canReviseCurrentDraft = composer?.status === "draft" && !isAiWorkingOnDraft;
-  const canEditCurrentDraft = composer?.status !== "sent" && !isAiWorkingOnDraft;
+  const canReviseCurrentDraft = composer?.status === "draft" && !isAiWorkingOnDraft && !isClosedInquiry;
+  const canEditCurrentDraft = composer?.status !== "sent" && !isAiWorkingOnDraft && !isClosedInquiry;
   const hasDraftChanges = Boolean(composer && composer.body.trim() !== lastSavedBody.trim());
   const isAiGeneratedDraft = Boolean(
     selectedDraft?.createdByType === "assistant" &&
@@ -214,6 +216,7 @@ export default function OwnerInquiriesPage() {
     setLastSavedBody(nextComposer?.body || "");
     setShowConfirmBooking(false);
     setShowCloseInquiry(false);
+    setShowReopenConfirm(false);
     setCloseReason(closeReasons[0]);
     setBookingRevenue("");
     setSuccess("");
@@ -247,6 +250,7 @@ export default function OwnerInquiriesPage() {
 
   const confirmBooking = async () => {
     if (!selected) return;
+    if (selected.status === "closed") return;
     if (!selected.checkIn || !selected.checkOut) {
       setError("Confirm dates before creating a reservation.");
       return;
@@ -295,8 +299,33 @@ export default function OwnerInquiriesPage() {
 
   const closeInquiry = async () => {
     if (!selected) return;
+    if (selected.status === "closed") return;
     await updateStatus(selected.id, "closed", closeReason);
     setShowCloseInquiry(false);
+  };
+
+  const reopenInquiry = async () => {
+    if (!selected) return;
+    setSavingId(selected.id);
+    setError("");
+    setSuccess("");
+    try {
+      const response = await fetch(apiUrl("/api/owner-portal/inquiries"), {
+        method: "POST",
+        credentials: "same-origin",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "reopen", id: selected.id }),
+      });
+      const data = await response.json();
+      if (!response.ok || !data.ok) throw new Error(data.error || "Failed to reopen inquiry");
+      await reloadInquiries();
+      setShowReopenConfirm(false);
+      setSuccess("Inquiry reopened.");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to reopen inquiry");
+    } finally {
+      setSavingId(null);
+    }
   };
 
   const saveDraft = async (status: InquiryDraftRecord["status"]) => {
@@ -348,6 +377,10 @@ export default function OwnerInquiriesPage() {
 
   const startNewDraft = () => {
     if (!selected) return;
+    if (selected.status === "closed") {
+      setError("Reopen this inquiry before starting a new draft.");
+      return;
+    }
     const nextComposer = composeFromDraft(null, selected);
     setComposer(nextComposer);
     setLastSavedBody(nextComposer.body);
@@ -524,7 +557,7 @@ export default function OwnerInquiriesPage() {
               <button
                 type="button"
                 onClick={() => selectedId && void loadInsights(selectedId, true)}
-                disabled={!selectedId || loadingInsightId === selectedId}
+                disabled={!selectedId || loadingInsightId === selectedId || selected?.status === "closed"}
                 className="shrink-0 rounded-full border border-[#ddd4c7] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#5b554b] disabled:opacity-60 sm:tracking-[0.16em]"
               >
                 {loadingInsightId === selectedId ? "Refreshing..." : "Refresh assistant"}
@@ -632,33 +665,66 @@ export default function OwnerInquiriesPage() {
 
                   <div className="rounded-2xl border border-[#e8e1d6] bg-[#faf8f3] p-4">
                     <p className="text-xs font-medium uppercase tracking-[0.18em] text-[#7b7468]">Inquiry actions</p>
+                    {isClosedInquiry ? (
+                      <p className="mt-2 text-sm leading-6 text-[#5b554b]">
+                        This inquiry is closed. Reopen it before confirming bookings, drafting replies, sending messages, or using AI revisions.
+                      </p>
+                    ) : null}
                     <div className="mt-4 flex flex-wrap gap-3">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setBookingRevenue(String(estimatedRevenueFromInsights(selectedInsights) || ""));
-                          setShowConfirmBooking((current) => !current);
-                          setShowCloseInquiry(false);
-                        }}
-                        disabled={savingId === selected.id || selected.status === "booked"}
-                        className="rounded-full bg-[#1e4536] px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-white disabled:opacity-60 sm:tracking-[0.16em]"
-                      >
-                        Confirm booking
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setShowCloseInquiry((current) => !current);
-                          setShowConfirmBooking(false);
-                        }}
-                        disabled={savingId === selected.id || selected.status === "closed"}
-                        className="rounded-full border border-[#d8cebf] bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-[#5b554b] disabled:opacity-60 sm:tracking-[0.16em]"
-                      >
-                        Close inquiry
-                      </button>
+                      {isClosedInquiry ? (
+                        <button
+                          type="button"
+                          onClick={() => setShowReopenConfirm(true)}
+                          disabled={savingId === selected.id}
+                          className="rounded-full bg-[#1e4536] px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-white disabled:opacity-60 sm:tracking-[0.16em]"
+                        >
+                          Reopen
+                        </button>
+                      ) : (
+                        <>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setBookingRevenue(String(estimatedRevenueFromInsights(selectedInsights) || ""));
+                              setShowConfirmBooking((current) => !current);
+                              setShowCloseInquiry(false);
+                            }}
+                            disabled={savingId === selected.id || selected.status === "booked"}
+                            className="rounded-full bg-[#1e4536] px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-white disabled:opacity-60 sm:tracking-[0.16em]"
+                          >
+                            Confirm booking
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setShowCloseInquiry((current) => !current);
+                              setShowConfirmBooking(false);
+                            }}
+                            disabled={savingId === selected.id}
+                            className="rounded-full border border-[#d8cebf] bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-[#5b554b] disabled:opacity-60 sm:tracking-[0.16em]"
+                          >
+                            Close inquiry
+                          </button>
+                        </>
+                      )}
                     </div>
 
-                    {showConfirmBooking ? (
+                    {showReopenConfirm ? (
+                      <div className="mt-4 rounded-2xl border border-[#e8e1d6] bg-white p-4">
+                        <p className="text-sm font-medium text-[#1b1a17]">Are you sure you want to reopen the inquiry?</p>
+                        <p className="mt-2 text-xs leading-5 text-[#7b7468]">This will restore its previous status and re-enable drafting, AI revisions, sending, and booking actions.</p>
+                        <div className="mt-4 flex flex-wrap gap-3">
+                          <button type="button" onClick={() => void reopenInquiry()} disabled={savingId === selected.id} className="rounded-full bg-[#1e4536] px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-white disabled:opacity-60 sm:tracking-[0.16em]">
+                            Yes, reopen
+                          </button>
+                          <button type="button" onClick={() => setShowReopenConfirm(false)} disabled={savingId === selected.id} className="rounded-full border border-[#d8cebf] bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-[#5b554b] disabled:opacity-60 sm:tracking-[0.16em]">
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
+                    ) : null}
+
+                    {showConfirmBooking && !isClosedInquiry ? (
                       <div className="mt-4 rounded-2xl border border-[#e8e1d6] bg-white p-4">
                         <p className="text-sm font-medium text-[#1b1a17]">Confirm reservation details</p>
                         <div className="mt-3 grid gap-3 text-sm text-[#5b554b] sm:grid-cols-2">
@@ -694,7 +760,7 @@ export default function OwnerInquiriesPage() {
                       </div>
                     ) : null}
 
-                    {showCloseInquiry ? (
+                    {showCloseInquiry && !isClosedInquiry ? (
                       <div className="mt-4 rounded-2xl border border-[#e8e1d6] bg-white p-4">
                         <label className="block text-sm font-medium text-[#1b1a17]">Why is this inquiry being closed?</label>
                         <select value={closeReason} onChange={(e) => setCloseReason(e.target.value)} className="mt-3 w-full rounded-xl border border-[#ddd4c7] px-3 py-2 text-sm">
@@ -722,7 +788,7 @@ export default function OwnerInquiriesPage() {
                   <button
                     type="button"
                     onClick={() => void loadInsights(selected.id, true)}
-                    disabled={loadingInsightId === selected.id}
+                    disabled={loadingInsightId === selected.id || isClosedInquiry}
                     className="rounded-full border border-[#ddd4c7] px-4 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-[#5b554b] disabled:opacity-60"
                   >
                     {loadingInsightId === selected.id ? "Refreshing..." : "Refresh"}
@@ -803,7 +869,8 @@ export default function OwnerInquiriesPage() {
                   <button
                   type="button"
                   onClick={startNewDraft}
-                  className="inline-flex max-w-full items-center justify-center rounded-full bg-[#1e4536] px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-white shadow-sm hover:bg-[#18372b] sm:px-5 sm:tracking-[0.18em]"
+                  disabled={isClosedInquiry}
+                  className="inline-flex max-w-full items-center justify-center rounded-full bg-[#1e4536] px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-white shadow-sm hover:bg-[#18372b] disabled:opacity-60 sm:px-5 sm:tracking-[0.18em]"
                 >
                   Start new draft
                 </button>

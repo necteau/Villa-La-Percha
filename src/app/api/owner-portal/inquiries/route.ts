@@ -7,6 +7,8 @@ import { createAiRevisionJob, type AiRevisionIntent } from "@/lib/aiDraftJobs";
 import { trackInquiryConverted } from "@/lib/analytics";
 
 function needsFreshDraftAfterLatestInbound(inquiry: InquiryThreadRecord): boolean {
+  if (inquiry.status === "closed") return false;
+
   const latestInbound = [...inquiry.messages].reverse().find((message) => message.direction === "inbound");
   if (!latestInbound) return false;
 
@@ -54,6 +56,8 @@ export async function POST(req: Request) {
         return NextResponse.json({ ok: false, error: "Missing inquiry id or status" }, { status: 400 });
       }
 
+      const previousThread = await getInquiryThreadById(id);
+      const previousStatus = previousThread?.status || "needs_reply";
       const inquiry = await updateInquiryStatus(id, status);
       if (!inquiry) {
         return NextResponse.json({ ok: false, error: "Inquiry not found" }, { status: 404 });
@@ -68,16 +72,47 @@ export async function POST(req: Request) {
           direction: "outbound",
           authorType: "system",
           subject: "Inquiry closed",
-          body: `Inquiry closed. Reason: ${String(body.reason).slice(0, 200)}`,
+          body: `Inquiry closed. Reason: ${String(body.reason).slice(0, 200)}\nPrevious status: ${previousStatus}`,
           sentAt: new Date().toISOString(),
         });
+        await updateInquiryStatus(id, "closed");
       }
+
+      return NextResponse.json({ ok: true, inquiry });
+    }
+
+    if (action === "reopen") {
+      const id = String(body?.id || "");
+      if (!id) return NextResponse.json({ ok: false, error: "Missing inquiry id" }, { status: 400 });
+
+      const thread = await getInquiryThreadById(id);
+      if (!thread) return NextResponse.json({ ok: false, error: "Inquiry not found" }, { status: 404 });
+
+      const closedMessage = [...thread.messages]
+        .reverse()
+        .find((message) => message.authorType === "system" && message.subject === "Inquiry closed" && message.body.includes("Previous status:"));
+      const previousStatus = closedMessage?.body.match(/Previous status:\s*(needs_reply|awaiting_guest|booked|closed)/)?.[1] || "needs_reply";
+      const nextStatus = previousStatus === "closed" ? "needs_reply" : previousStatus;
+      const inquiry = await updateInquiryStatus(id, nextStatus as InquiryThreadRecord["status"]);
+      await appendInquiryMessage({
+        inquiryId: id,
+        direction: "outbound",
+        authorType: "system",
+        subject: "Inquiry reopened",
+        body: `Inquiry reopened. Restored status: ${nextStatus}`,
+        sentAt: new Date().toISOString(),
+      });
+      await updateInquiryStatus(id, nextStatus as InquiryThreadRecord["status"]);
 
       return NextResponse.json({ ok: true, inquiry });
     }
 
     if (action === "draft") {
       const inquiryId = String(body?.inquiryId || "");
+      const thread = await getInquiryThreadById(inquiryId);
+      if (thread?.status === "closed") {
+        return NextResponse.json({ ok: false, error: "Closed inquiries must be reopened before drafting." }, { status: 400 });
+      }
       const draft = await saveInquiryDraft({
         id: body?.id ? String(body.id) : undefined,
         inquiryId,
@@ -97,6 +132,10 @@ export async function POST(req: Request) {
       if (!inquiryId || !draftId || !allowedIntents.has(revisionIntent)) {
         return NextResponse.json({ ok: false, error: "Missing inquiry, draft, or revision type" }, { status: 400 });
       }
+      const thread = await getInquiryThreadById(inquiryId);
+      if (thread?.status === "closed") {
+        return NextResponse.json({ ok: false, error: "Closed inquiries must be reopened before AI revisions." }, { status: 400 });
+      }
       const job = await createAiRevisionJob({
         inquiryId,
         draftId,
@@ -111,6 +150,10 @@ export async function POST(req: Request) {
     if (action === "send") {
       const inquiryId = String(body?.inquiryId || "");
       const draftId = String(body?.draftId || "");
+      const thread = await getInquiryThreadById(inquiryId);
+      if (thread?.status === "closed") {
+        return NextResponse.json({ ok: false, error: "Closed inquiries must be reopened before sending replies." }, { status: 400 });
+      }
       if (!inquiryId || !draftId) {
         return NextResponse.json({ ok: false, error: "Missing inquiry or draft id" }, { status: 400 });
       }
