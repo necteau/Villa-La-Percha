@@ -84,7 +84,7 @@ const experiences = [
     name: "Northwest Point Marine Park",
     category: "Nature · 45 min",
     copy: "300+ wild conchs on the beach. The only place on earth you'll see that.",
-    image: "/images/aerial-house-ocean-neighbors.jpg",
+    image: "/images/northwest-point-marine-park.jpg",
     tags: ["Nature", "Unique"] as const,
   },
   {

@@ -20,6 +20,7 @@ const beaches = [
     category: "Nature · Conch Cays · Snorkeling",
     description: "A more natural, less built-up part of the island with protected water, striking scenery, and good exploring if you want to get away from the Grace Bay corridor for a while.",
     highlight: "Best for nature lovers and a quieter outing",
+    image: "/images/northwest-point-marine-park.jpg",
   },
   {
     name: "Taylor Bay Beach",
