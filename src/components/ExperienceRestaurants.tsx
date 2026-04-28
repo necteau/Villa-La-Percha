@@ -87,6 +87,7 @@ const restaurants = [
     mustTry: "Truffle Fried Mac and Cheese Balls",
     link: "https://www.cocovan.tc/",
     icon: "🌮",
+    image: "/images/cocovan-airstream-lounge.jpg",
     bestFor: "quick bite · families · casual night",
   },
   {
