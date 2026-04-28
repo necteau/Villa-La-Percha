@@ -9,6 +9,7 @@ import {
   type IslandMapCategory as Category,
 } from "@/data/islandMapData";
 import { gpsToSvg, provMapAnchors } from "@/data/mapCalibration";
+import { guideAnchor } from "@/data/islandGuide";
 
 type Filter = "all" | Category;
 
@@ -128,7 +129,7 @@ export default function IslandMap() {
   };
 
   return (
-    <section className="py-16 md:py-24 bg-[#FAFAF8]">
+    <section id="island-map" className="scroll-mt-24 py-16 md:py-24 bg-[#FAFAF8]">
       <div className="max-w-7xl mx-auto px-6 md:px-8">
         <div className="text-center mb-10 md:mb-14">
           <p className="text-xs tracking-[0.3em] uppercase mb-4" style={{ color: "#8B7355" }}>
@@ -138,7 +139,7 @@ export default function IslandMap() {
             Interactive Island Map
           </h2>
           <p className="text-sm md:text-base max-w-2xl mx-auto text-[#6B6B6B] leading-relaxed">
-            Built on the actual Providenciales map silhouette, with clustered pins you can expand in crowded areas.
+            Use the map to understand where each place sits relative to the villa, then jump into the planning notes below when something catches your eye.
           </p>
         </div>
 
@@ -281,9 +282,17 @@ export default function IslandMap() {
                 Drive time from villa: {detail.driveTime}
               </p>
             )}
+            {"id" in detail && detail.id !== positionedVillaBase.id && (
+              <a
+                href={`#${guideAnchor(detail.id)}`}
+                className="mt-4 block w-fit rounded-full bg-[#2C2C2C] px-4 py-2 text-xs uppercase tracking-[0.16em] text-white transition-colors hover:bg-[#8B7355]"
+              >
+                View planning notes below
+              </a>
+            )}
             <div className="mt-6 pt-6 border-t border-[#E8E4DF]">
               <p className="text-xs text-[#6B6B6B] leading-relaxed mb-4">
-                Tap numbered clusters to spread out crowded pins, or choose a place from the list below.
+                Tap numbered clusters to spread out crowded pins. Choose a place here to update the map, then use the detail button to jump to its planning card.
               </p>
               <div className="max-h-72 space-y-2 overflow-y-auto pr-1">
                 {filteredPoints.map((point) => (
