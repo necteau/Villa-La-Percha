@@ -21,6 +21,14 @@ const closeReasons = [
   "Other",
 ];
 
+const queueStatusOptions: Array<{ value: InquiryRecord["status"] | "all"; label: string }> = [
+  { value: "needs_reply", label: "Needs reply" },
+  { value: "awaiting_guest", label: "Awaiting guest" },
+  { value: "booked", label: "Booked" },
+  { value: "closed", label: "Closed" },
+  { value: "all", label: "All statuses" },
+];
+
 function formatDate(value: string): string {
   return new Date(value).toLocaleString(undefined, {
     month: "short",
@@ -114,6 +122,7 @@ function composeFromDraft(draft?: InquiryDraftRecord | null, inquiry?: InquiryTh
 export default function OwnerInquiriesPage() {
   const [inquiries, setInquiries] = useState<InquiryThreadRecord[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [queueStatusFilter, setQueueStatusFilter] = useState<InquiryRecord["status"] | "all">("needs_reply");
   const [composer, setComposer] = useState<DraftComposer | null>(null);
   const [lastSavedBody, setLastSavedBody] = useState("");
   const [insightsById, setInsightsById] = useState<Record<string, InquiryCopilotInsights>>({});
@@ -137,7 +146,7 @@ export default function OwnerInquiriesPage() {
     const data = await response.json();
     if (!response.ok || !data.ok) throw new Error(data.error || "Failed to load inquiries");
     setInquiries(data.inquiries);
-    setSelectedId((current) => current || data.inquiries[0]?.id || null);
+    setSelectedId((current) => current || data.inquiries.find((inquiry: InquiryThreadRecord) => inquiry.status === "needs_reply")?.id || data.inquiries[0]?.id || null);
   }, []);
 
   const loadInsights = useCallback(async (inquiryId: string, force = false) => {
@@ -172,7 +181,7 @@ export default function OwnerInquiriesPage() {
         if (!response.ok || !data.ok) throw new Error(data.error || "Failed to load inquiries");
         if (!cancelled) {
           setInquiries(data.inquiries);
-          setSelectedId((current) => current || data.inquiries[0]?.id || null);
+          setSelectedId((current) => current || data.inquiries.find((inquiry: InquiryThreadRecord) => inquiry.status === "needs_reply")?.id || data.inquiries[0]?.id || null);
         }
       } catch (err) {
         if (!cancelled) setError(err instanceof Error ? err.message : "Failed to load inquiries");
@@ -190,6 +199,10 @@ export default function OwnerInquiriesPage() {
   const selected = useMemo(
     () => (selectedId ? inquiries.find((inquiry) => inquiry.id === selectedId) || null : null),
     [inquiries, selectedId]
+  );
+  const filteredQueueInquiries = useMemo(
+    () => inquiries.filter((inquiry) => queueStatusFilter === "all" || inquiry.status === queueStatusFilter),
+    [inquiries, queueStatusFilter]
   );
 
   const selectedInsights = selectedId ? insightsById[selectedId] : undefined;
@@ -563,8 +576,27 @@ export default function OwnerInquiriesPage() {
                 {loadingInsightId === selectedId ? "Refreshing..." : "Refresh assistant"}
               </button>
             </div>
-            <div className="mt-4 space-y-2">
-              {inquiries.map((inquiry) => {
+            <label className="mt-4 block text-xs font-medium uppercase tracking-[0.16em] text-[#7b7468]">
+              Status filter
+              <select
+                value={queueStatusFilter}
+                onChange={(e) => {
+                  const next = e.target.value as InquiryRecord["status"] | "all";
+                  setQueueStatusFilter(next);
+                  const nextSelection = inquiries.find((inquiry) => next === "all" || inquiry.status === next);
+                  setSelectedId(nextSelection?.id || null);
+                }}
+                className="mt-2 w-full rounded-xl border border-[#ddd4c7] bg-white px-3 py-2 text-sm normal-case tracking-normal text-[#1b1a17]"
+              >
+                {queueStatusOptions.map((option) => (
+                  <option key={option.value} value={option.value}>{option.label}</option>
+                ))}
+              </select>
+            </label>
+            <div className="mt-4 max-h-[440px] space-y-2 overflow-y-auto pr-2">
+              {filteredQueueInquiries.length === 0 ? (
+                <p className="rounded-2xl border border-[#e8e1d6] bg-[#faf8f3] px-4 py-3 text-sm text-[#7b7468]">No inquiries match this status.</p>
+              ) : filteredQueueInquiries.map((inquiry) => {
                 const openCount = inquiry.drafts.filter((draft) => draft.status !== "sent").length;
                 const insight = insightsById[inquiry.id];
                 const awaitingGuestElapsed = inquiry.status === "awaiting_guest" ? formatElapsedSince(latestOutboundSentAt(inquiry)) : null;
