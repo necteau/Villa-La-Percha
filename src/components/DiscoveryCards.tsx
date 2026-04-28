@@ -28,7 +28,7 @@ const experiences = [
     name: "Da Conch Shack",
     category: "Dining · 15 min",
     copy: "Legendary conch salad, live Junkanoo music, zero pretense. Pure island culture.",
-    image: "/images/dock-lounge-chairs-ocean.jpg",
+    image: "/images/da-conch-shack-beachfront.jpg",
     tags: ["Dining", "Iconic"] as const,
   },
   {
