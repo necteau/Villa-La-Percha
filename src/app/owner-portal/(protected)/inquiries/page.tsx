@@ -10,7 +10,16 @@ function apiUrl(path: string): string {
   return new URL(path, window.location.origin).toString();
 }
 
-const statusOptions: InquiryRecord["status"][] = ["needs_reply", "awaiting_guest", "booked", "closed"];
+const closeReasons = [
+  "Dates unavailable",
+  "Guest chose another property",
+  "Price or budget mismatch",
+  "No response from guest",
+  "Duplicate or test inquiry",
+  "Spam or not a real lead",
+  "Owner declined",
+  "Other",
+];
 
 function formatDate(value: string): string {
   return new Date(value).toLocaleString(undefined, {
@@ -64,6 +73,17 @@ function messagePreview(message: InquiryThreadRecord["messages"][number]): strin
   return compact.length > 180 ? `${compact.slice(0, 180).trim()}…` : compact;
 }
 
+function daysBetweenDates(checkIn?: string, checkOut?: string): number {
+  if (!checkIn || !checkOut) return 0;
+  return Math.max(0, Math.round((new Date(checkOut).getTime() - new Date(checkIn).getTime()) / (1000 * 60 * 60 * 24)));
+}
+
+function estimatedRevenueFromInsights(insights?: InquiryCopilotInsights): number {
+  const value = insights?.keyFacts.find((fact) => fact.label === "Estimated revenue")?.value || "";
+  const parsed = Number(value.replace(/[^0-9.]/g, ""));
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+
 function badgeClass(value: string) {
   if (value === "sent" || value === "booked" || value === "hot" || value === "high") return "bg-[#eef6f1] text-[#1e4536]";
   if (value === "awaiting_guest" || value === "warm" || value === "medium") return "bg-[#f6f2ea] text-[#8b7355]";
@@ -104,6 +124,10 @@ export default function OwnerInquiriesPage() {
   const [pollingRevisionDraftId, setPollingRevisionDraftId] = useState<string | null>(null);
   const [pollingUpgradeDraftId, setPollingUpgradeDraftId] = useState<string | null>(null);
   const [customRevision, setCustomRevision] = useState("");
+  const [showConfirmBooking, setShowConfirmBooking] = useState(false);
+  const [bookingRevenue, setBookingRevenue] = useState("");
+  const [showCloseInquiry, setShowCloseInquiry] = useState(false);
+  const [closeReason, setCloseReason] = useState(closeReasons[0]);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
@@ -188,13 +212,17 @@ export default function OwnerInquiriesPage() {
     const nextComposer = selected ? composeFromDraft(latestDraft, selected) : null;
     setComposer(nextComposer);
     setLastSavedBody(nextComposer?.body || "");
+    setShowConfirmBooking(false);
+    setShowCloseInquiry(false);
+    setCloseReason(closeReasons[0]);
+    setBookingRevenue("");
     setSuccess("");
     setError("");
     if (selected?.id) void loadInsights(selected.id);
   }, [selectedId, selected, loadInsights]);
 
 
-  const updateStatus = async (id: string, status: InquiryRecord["status"]) => {
+  const updateStatus = async (id: string, status: InquiryRecord["status"], reason?: string) => {
     setSavingId(id);
     setError("");
     setSuccess("");
@@ -204,7 +232,7 @@ export default function OwnerInquiriesPage() {
         method: "POST",
         credentials: "same-origin",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "status", id, status }),
+        body: JSON.stringify({ action: "status", id, status, reason }),
       });
       const data = await response.json();
       if (!response.ok || !data.ok) throw new Error(data.error || "Failed to update inquiry");
@@ -215,6 +243,60 @@ export default function OwnerInquiriesPage() {
     } finally {
       setSavingId(null);
     }
+  };
+
+  const confirmBooking = async () => {
+    if (!selected) return;
+    if (!selected.checkIn || !selected.checkOut) {
+      setError("Confirm dates before creating a reservation.");
+      return;
+    }
+    const income = Number(bookingRevenue || estimatedRevenueFromInsights(selectedInsights));
+    if (!Number.isFinite(income) || income <= 0) {
+      setError("Confirm the estimated revenue before creating a reservation.");
+      return;
+    }
+
+    setSavingId(selected.id);
+    setError("");
+    setSuccess("");
+    try {
+      const response = await fetch(apiUrl("/api/owner-portal/reservations"), {
+        method: "POST",
+        credentials: "same-origin",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          status: "Confirmed",
+          type: "Direct",
+          unit: "Villa La Percha",
+          bookedDate: new Date().toISOString().slice(0, 10),
+          guestName: selected.fullName,
+          guestEmail: selected.email,
+          guestPhone: selected.phone,
+          checkIn: selected.checkIn,
+          checkOut: selected.checkOut,
+          income,
+          currency: "USD",
+          isOwnerWeek: false,
+        }),
+      });
+      const data = await response.json();
+      if (!response.ok || !data.ok) throw new Error(data.error || "Failed to create reservation");
+      await updateStatus(selected.id, "booked");
+      await reloadInquiries();
+      setShowConfirmBooking(false);
+      setSuccess("Reservation created and inquiry marked booked.");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to confirm booking");
+    } finally {
+      setSavingId(null);
+    }
+  };
+
+  const closeInquiry = async () => {
+    if (!selected) return;
+    await updateStatus(selected.id, "closed", closeReason);
+    setShowCloseInquiry(false);
   };
 
   const saveDraft = async (status: InquiryDraftRecord["status"]) => {
@@ -506,20 +588,20 @@ export default function OwnerInquiriesPage() {
                       <h2 className="mt-2 break-words font-display text-3xl text-[#181612] sm:text-4xl">{selected.fullName}</h2>
                       <p className="mt-2 break-all text-sm text-[#5b554b]">{selected.email}</p>
                       {selected.phone ? <p className="text-sm text-[#5b554b]">{selected.phone}</p> : null}
-                    </div>
-                    <div className="text-left text-sm text-[#7b7468] sm:text-right">
-                      <span className={`inline-flex rounded-full px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] ${badgeClass(selected.status)}`}>
-                        {formatStatusLabel(selected.status)}
-                      </span>
-                      {selected.status === "awaiting_guest" ? (
-                        <p className="mt-2 font-medium text-[#8b7355]">{formatElapsedSince(latestOutboundSentAt(selected))}</p>
-                      ) : null}
-                      <p>{formatDate(selected.createdAt)}</p>
-                      {(selected.checkIn || selected.checkOut) && (
-                        <p className="mt-1">
-                          {selected.checkIn || "?"} → {selected.checkOut || "?"}
-                        </p>
-                      )}
+                      <div className="mt-4 text-sm text-[#7b7468]">
+                        <span className={`inline-flex rounded-full px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] ${badgeClass(selected.status)}`}>
+                          {formatStatusLabel(selected.status)}
+                        </span>
+                        {selected.status === "awaiting_guest" ? (
+                          <p className="mt-2 font-medium text-[#8b7355]">{formatElapsedSince(latestOutboundSentAt(selected))}</p>
+                        ) : null}
+                        <p className="mt-2">{formatDate(selected.createdAt)}</p>
+                        {(selected.checkIn || selected.checkOut) && (
+                          <p className="mt-1">
+                            {selected.checkIn || "?"} → {selected.checkOut || "?"}
+                          </p>
+                        )}
+                      </div>
                     </div>
                   </div>
 
@@ -548,67 +630,84 @@ export default function OwnerInquiriesPage() {
                     </div>
                   )}
 
-                  <div>
-                    <div className="mb-3 flex flex-wrap gap-3">
-                      {statusOptions.map((status) => (
-                        <button
-                          key={status}
-                          type="button"
-                          onClick={() => void updateStatus(selected.id, status)}
-                          disabled={savingId === selected.id || selected.status === status}
-                          className={`rounded-full px-3 py-2 text-xs font-semibold uppercase tracking-[0.12em] transition sm:px-4 sm:tracking-[0.18em] ${
-                            selected.status === status
-                              ? "bg-[#1e4536] text-white"
-                              : "border border-[#ddd4c7] bg-white text-[#5b554b] hover:bg-[#f7f3eb]"
-                          } disabled:opacity-60`}
-                        >
-                          {savingId === selected.id && selected.status !== status ? "Saving..." : formatStatusLabel(status)}
-                        </button>
-                      ))}
-                      {selectedInsights ? (
-                        <button
-                          type="button"
-                          onClick={() => void updateStatus(selected.id, selectedInsights.recommendedStatus)}
-                          disabled={savingId === selected.id || selected.status === selectedInsights.recommendedStatus}
-                          className="rounded-full border border-[#8b7355] bg-[#f6f2ea] px-3 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-[#8b7355] disabled:opacity-60 sm:px-4 sm:tracking-[0.18em]"
-                        >
-                          Apply suggested status
-                        </button>
-                      ) : null}
+                  <div className="rounded-2xl border border-[#e8e1d6] bg-[#faf8f3] p-4">
+                    <p className="text-xs font-medium uppercase tracking-[0.18em] text-[#7b7468]">Inquiry actions</p>
+                    <div className="mt-4 flex flex-wrap gap-3">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setBookingRevenue(String(estimatedRevenueFromInsights(selectedInsights) || ""));
+                          setShowConfirmBooking((current) => !current);
+                          setShowCloseInquiry(false);
+                        }}
+                        disabled={savingId === selected.id || selected.status === "booked"}
+                        className="rounded-full bg-[#1e4536] px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-white disabled:opacity-60 sm:tracking-[0.16em]"
+                      >
+                        Confirm booking
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setShowCloseInquiry((current) => !current);
+                          setShowConfirmBooking(false);
+                        }}
+                        disabled={savingId === selected.id || selected.status === "closed"}
+                        className="rounded-full border border-[#d8cebf] bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-[#5b554b] disabled:opacity-60 sm:tracking-[0.16em]"
+                      >
+                        Close inquiry
+                      </button>
                     </div>
+
+                    {showConfirmBooking ? (
+                      <div className="mt-4 rounded-2xl border border-[#e8e1d6] bg-white p-4">
+                        <p className="text-sm font-medium text-[#1b1a17]">Confirm reservation details</p>
+                        <div className="mt-3 grid gap-3 text-sm text-[#5b554b] sm:grid-cols-2">
+                          <label className="block">
+                            <span className="text-xs uppercase tracking-[0.14em] text-[#7b7468]">Guest</span>
+                            <input readOnly value={selected.fullName} className="mt-1 w-full rounded-xl border border-[#ddd4c7] bg-[#faf8f3] px-3 py-2" />
+                          </label>
+                          <label className="block">
+                            <span className="text-xs uppercase tracking-[0.14em] text-[#7b7468]">Email</span>
+                            <input readOnly value={selected.email} className="mt-1 w-full rounded-xl border border-[#ddd4c7] bg-[#faf8f3] px-3 py-2" />
+                          </label>
+                          <label className="block">
+                            <span className="text-xs uppercase tracking-[0.14em] text-[#7b7468]">Check-in</span>
+                            <input readOnly value={selected.checkIn || "Missing"} className="mt-1 w-full rounded-xl border border-[#ddd4c7] bg-[#faf8f3] px-3 py-2" />
+                          </label>
+                          <label className="block">
+                            <span className="text-xs uppercase tracking-[0.14em] text-[#7b7468]">Check-out</span>
+                            <input readOnly value={selected.checkOut || "Missing"} className="mt-1 w-full rounded-xl border border-[#ddd4c7] bg-[#faf8f3] px-3 py-2" />
+                          </label>
+                          <label className="block">
+                            <span className="text-xs uppercase tracking-[0.14em] text-[#7b7468]">Nights</span>
+                            <input readOnly value={daysBetweenDates(selected.checkIn, selected.checkOut)} className="mt-1 w-full rounded-xl border border-[#ddd4c7] bg-[#faf8f3] px-3 py-2" />
+                          </label>
+                          <label className="block">
+                            <span className="text-xs uppercase tracking-[0.14em] text-[#7b7468]">Total revenue</span>
+                            <input type="number" min={0} value={bookingRevenue} onChange={(e) => setBookingRevenue(e.target.value)} className="mt-1 w-full rounded-xl border border-[#ddd4c7] px-3 py-2" />
+                          </label>
+                        </div>
+                        <p className="mt-3 text-xs leading-5 text-[#7b7468]">This creates a confirmed direct reservation and marks the inquiry booked. Next useful fields: deposit amount/status, payment link status, rental agreement status, and booking source.</p>
+                        <button type="button" onClick={() => void confirmBooking()} disabled={savingId === selected.id} className="mt-4 rounded-full bg-[#1e4536] px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-white disabled:opacity-60 sm:tracking-[0.16em]">
+                          Create reservation
+                        </button>
+                      </div>
+                    ) : null}
+
+                    {showCloseInquiry ? (
+                      <div className="mt-4 rounded-2xl border border-[#e8e1d6] bg-white p-4">
+                        <label className="block text-sm font-medium text-[#1b1a17]">Why is this inquiry being closed?</label>
+                        <select value={closeReason} onChange={(e) => setCloseReason(e.target.value)} className="mt-3 w-full rounded-xl border border-[#ddd4c7] px-3 py-2 text-sm">
+                          {closeReasons.map((reason) => (<option key={reason} value={reason}>{reason}</option>))}
+                        </select>
+                        <button type="button" onClick={() => void closeInquiry()} disabled={savingId === selected.id} className="mt-4 rounded-full border border-[#b42318] bg-[#fbefef] px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-[#b42318] disabled:opacity-60 sm:tracking-[0.16em]">
+                          Close inquiry
+                        </button>
+                      </div>
+                    ) : null}
                   </div>
 
-                  <div className="min-w-0 rounded-2xl border border-[#e8e1d6] bg-[#faf8f3] p-4 sm:p-5">
-                    <p className="text-xs font-medium uppercase tracking-[0.18em] text-[#7b7468]">Conversation timeline</p>
-                    <div className="mt-4 space-y-3">
-                      {selected.messages.map((message) => (
-                        <details key={message.id} className="group min-w-0 rounded-2xl border border-[#e8e1d6] bg-white p-4">
-                          <summary className="flex cursor-pointer list-none items-start justify-between gap-4">
-                            <div className="min-w-0 flex-1">
-                              <div className="flex flex-wrap items-center gap-2">
-                                <span className={`rounded-full px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] ${badgeClass(message.direction)}`}>
-                                  {message.direction}
-                                </span>
-                                <span className={`rounded-full px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] ${badgeClass(message.authorType)}`}>
-                                  {message.authorType}
-                                </span>
-                                <span className="text-xs text-[#7b7468]">{messageMeta(message)}</span>
-                              </div>
-                              <p className="mt-2 truncate text-sm leading-6 text-[#5b554b]">{messagePreview(message)}</p>
-                            </div>
-                            <span className="mt-1 shrink-0 rounded-full border border-[#ddd4c7] px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.1em] text-[#7b7468] transition group-open:bg-[#1e4536] group-open:text-white sm:px-3 sm:tracking-[0.16em]">
-                              <span className="group-open:hidden">Expand</span>
-                              <span className="hidden group-open:inline">Collapse</span>
-                            </span>
-                          </summary>
-                          <div className="mt-4 border-t border-[#e8e1d6] pt-4">
-                            {message.subject ? <p className="text-sm font-medium text-[#1b1a17]">{message.subject}</p> : null}
-                            <p className="mt-2 whitespace-pre-wrap break-words text-sm leading-6 text-[#5b554b]">{message.body}</p>
-                          </div>
-                        </details>
-                      ))}
-                    </div>
-                  </div>
+
                 </div>
               )}
             </div>
@@ -822,6 +921,43 @@ export default function OwnerInquiriesPage() {
                 </div>
               </div>
             )}
+
+
+          {selected ? (
+            <div className="min-w-0 xl:col-start-2">
+                  <div className="min-w-0 rounded-2xl border border-[#e8e1d6] bg-[#faf8f3] p-4 sm:p-5">
+                    <p className="text-xs font-medium uppercase tracking-[0.18em] text-[#7b7468]">Conversation timeline</p>
+                    <div className="mt-4 space-y-3">
+                      {selected.messages.map((message) => (
+                        <details key={message.id} className="group min-w-0 rounded-2xl border border-[#e8e1d6] bg-white p-4">
+                          <summary className="flex cursor-pointer list-none items-start justify-between gap-4">
+                            <div className="min-w-0 flex-1">
+                              <div className="flex flex-wrap items-center gap-2">
+                                <span className={`rounded-full px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] ${badgeClass(message.direction)}`}>
+                                  {message.direction}
+                                </span>
+                                <span className={`rounded-full px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] ${badgeClass(message.authorType)}`}>
+                                  {message.authorType}
+                                </span>
+                                <span className="text-xs text-[#7b7468]">{messageMeta(message)}</span>
+                              </div>
+                              <p className="mt-2 truncate text-sm leading-6 text-[#5b554b]">{messagePreview(message)}</p>
+                            </div>
+                            <span className="mt-1 shrink-0 rounded-full border border-[#ddd4c7] px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.1em] text-[#7b7468] transition group-open:bg-[#1e4536] group-open:text-white sm:px-3 sm:tracking-[0.16em]">
+                              <span className="group-open:hidden">Expand</span>
+                              <span className="hidden group-open:inline">Collapse</span>
+                            </span>
+                          </summary>
+                          <div className="mt-4 border-t border-[#e8e1d6] pt-4">
+                            {message.subject ? <p className="text-sm font-medium text-[#1b1a17]">{message.subject}</p> : null}
+                            <p className="mt-2 whitespace-pre-wrap break-words text-sm leading-6 text-[#5b554b]">{message.body}</p>
+                          </div>
+                        </details>
+                      ))}
+                    </div>
+                  </div>
+            </div>
+          ) : null}
           </div>
         </div>
       )}

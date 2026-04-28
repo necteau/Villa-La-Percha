@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { requireOwnerPortalSession } from "@/lib/ownerPortalApi";
-import { getInquiryThreadById, listInquiryThreads, runInquiryInboundAutomation, saveInquiryDraft, updateInquiryStatus, type InquiryThreadRecord } from "@/lib/inquiries";
+import { appendInquiryMessage, getInquiryThreadById, listInquiryThreads, runInquiryInboundAutomation, saveInquiryDraft, updateInquiryStatus, type InquiryThreadRecord } from "@/lib/inquiries";
 import { sendApprovedInquiryDraft } from "@/lib/inquiryEmail";
 import { getInquiryCopilotInsights } from "@/lib/inquiryCopilot";
 import { createAiRevisionJob, type AiRevisionIntent } from "@/lib/aiDraftJobs";
@@ -61,6 +61,16 @@ export async function POST(req: Request) {
 
       if (status === "booked") {
         void trackInquiryConverted(id).catch(() => {});
+      }
+      if (status === "closed" && body?.reason) {
+        await appendInquiryMessage({
+          inquiryId: id,
+          direction: "outbound",
+          authorType: "system",
+          subject: "Inquiry closed",
+          body: `Inquiry closed. Reason: ${String(body.reason).slice(0, 200)}`,
+          sentAt: new Date().toISOString(),
+        });
       }
 
       return NextResponse.json({ ok: true, inquiry });
