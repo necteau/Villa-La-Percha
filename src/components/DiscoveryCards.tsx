@@ -21,7 +21,7 @@ const experiences = [
     name: "Malcolm's Road Snorkeling",
     category: "Dive · 35 min",
     copy: "Where the reef wall drops into the abyss. World-class snorkeling at your doorstep.",
-    image: "/images/aerial-cliff-taylor-bay-chalk-sound.jpg",
+    image: "/images/malcolms-road-beach.jpg",
     tags: ["Dive", "Remote"] as const,
   },
   {

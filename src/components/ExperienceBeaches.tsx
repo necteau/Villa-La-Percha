@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 const beaches = [
   {
     name: "Grace Bay Beach",
@@ -10,6 +12,7 @@ const beaches = [
     category: "Secluded · Snorkeling · 4x4 Required",
     description: "Remote and worth the effort if you want a wilder beach experience. The road is rough, conditions matter, and it is better for adventurous beachgoers than an easy family outing.",
     highlight: "Best for adventurous snorkeling days, not convenience",
+    image: "/images/malcolms-road-beach.jpg",
   },
   {
     name: "Northwest Point Marine National Park",
@@ -60,8 +63,12 @@ export default function Beaches() {
               key={b.name}
               className="bg-white rounded-xl border border-[#E8E4DF] overflow-hidden hover:shadow-lg transition-shadow duration-300"
             >
-              <div className="h-56 bg-gradient-to-br from-[#E8F4F8] to-[#D4ECF0] flex items-center justify-center text-6xl">
-                🏖️
+              <div className="relative h-56 bg-gradient-to-br from-[#E8F4F8] to-[#D4ECF0] flex items-center justify-center text-6xl">
+                {b.image ? (
+                  <Image src={b.image} alt={b.name} fill className="object-cover" sizes="(min-width: 768px) 50vw, 100vw" />
+                ) : (
+                  "🏖️"
+                )}
               </div>
               <div className="p-7">
                 <span className="text-[10px] tracking-wider uppercase font-medium" style={{ color: "#8B7355" }}>
