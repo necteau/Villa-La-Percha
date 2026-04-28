@@ -14,7 +14,7 @@ const experiences = [
     name: "Grace Bay at Sunrise",
     category: "Beach · 20 min",
     copy: "Eight miles of the world's best beach. You'll be first in line.",
-    image: "/images/pool-lounge-ocean.jpg",
+    image: "/images/grace-bay-beach.jpg",
     tags: ["Beach", "Must Do"] as const,
   },
   {

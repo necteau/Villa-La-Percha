@@ -6,6 +6,7 @@ const beaches = [
     category: "Classic · Beautiful · Easy Day Trip",
     description: "The island's famous beach for a reason: long white sand, clear water, and easy access to restaurants and resorts. Best when you want a classic Provo beach day with plenty nearby.",
     highlight: "Best for a full classic Grace Bay beach day",
+    image: "/images/grace-bay-beach.jpg",
   },
   {
     name: "Malcolm's Road Beach",
