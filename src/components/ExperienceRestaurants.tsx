@@ -66,6 +66,7 @@ const restaurants = [
     mustTry: "Sunset Raw Bar Flight",
     link: "https://gracebayclub.gracebayresorts.com/restaurant/infiniti-restaurant-raw-bar/",
     icon: "🌅",
+    image: "/images/infiniti-restaurant-raw-bar.jpg",
     reservations: true,
     bestFor: "sunset dinner · upscale night out · celebrations",
   },
