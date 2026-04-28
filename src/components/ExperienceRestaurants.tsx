@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 const restaurants = [
   {
     name: "Da Conch Shack",
@@ -7,6 +9,7 @@ const restaurants = [
     mustTry: "Conch Salad",
     link: "https://daconchshack.com/",
     icon: "🦞",
+    image: "/images/da-conch-shack-beachfront.jpg",
     bestFor: "casual lunch · sunset · first-day island vibes",
   },
   {
@@ -17,6 +20,7 @@ const restaurants = [
     mustTry: "Eggs on the Beach",
     link: "https://www.hemingwaystci.com/",
     icon: "🍹",
+    image: "/images/hemingways-beachfront-patio.jpg",
     bestFor: "breakfast · easy family meal · beachfront table",
   },
   {
@@ -132,8 +136,12 @@ export default function Restaurants() {
               rel="noopener noreferrer"
               className="group border border-[#E8E4DF] rounded-xl overflow-hidden hover:shadow-lg hover:border-[#8B7355]/30 transition-all duration-300"
             >
-              <div className="h-48 bg-gradient-to-br from-[#F5F0E8] to-[#EDE8DF] flex items-center justify-center text-5xl">
-                {r.icon}
+              <div className="relative h-48 overflow-hidden bg-gradient-to-br from-[#F5F0E8] to-[#EDE8DF]">
+                {"image" in r && r.image ? (
+                  <Image src={r.image} alt={r.name} fill className="object-cover transition duration-500 group-hover:scale-105" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" />
+                ) : (
+                  <div className="flex h-full items-center justify-center text-5xl">{r.icon}</div>
+                )}
               </div>
               <div className="p-6">
                 <span className="text-[10px] tracking-wider uppercase font-medium" style={{ color: "#8B7355" }}>
