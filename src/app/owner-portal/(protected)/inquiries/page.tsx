@@ -1039,7 +1039,7 @@ export default function OwnerInquiriesPage() {
 
 
           {selected ? (
-            <div className="min-w-0 xl:col-start-2">
+            <div className="min-w-0 mt-5 sm:mt-6 xl:col-start-2">
                   <div className="min-w-0 rounded-2xl border border-[#e8e1d6] bg-[#faf8f3] p-4 sm:p-5">
                     <p className="text-xs font-medium uppercase tracking-[0.18em] text-[#7b7468]">Conversation timeline</p>
                     <div className="mt-4 space-y-3">
