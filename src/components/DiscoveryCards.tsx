@@ -56,7 +56,7 @@ const experiences = [
     name: "Taylor Bay Swimming",
     category: "Beach · 10 min",
     copy: "Knee-deep turquoise water in total silence. The kind of bay you never want to leave.",
-    image: "/images/aerial-cliff-taylor-bay-chalk-sound.jpg",
+    image: "/images/taylor-bay-beach.jpg",
     tags: ["Beach", "Hidden Gem"] as const,
   },
   {

@@ -26,6 +26,7 @@ const beaches = [
     category: "Family · Calm Waters · Hidden Gem",
     description: "One of the biggest advantages of staying here. Taylor Bay is a very short walk from the villa and is ideal for calm-water swimming, kids, floating, and sunset without committing to a whole expedition.",
     highlight: "Best for easy family beach time and sunsets close to home",
+    image: "/images/taylor-bay-beach.jpg",
   },
   {
     name: "West Harbour Bluff (Pirate's Cove)",
