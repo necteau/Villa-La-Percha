@@ -205,6 +205,15 @@ export default function OwnerInquiriesPage() {
     [inquiries, queueStatusFilter]
   );
 
+  useEffect(() => {
+    if (inquiries.length === 0) return;
+    const currentMatchesFilter = selectedId ? filteredQueueInquiries.some((inquiry) => inquiry.id === selectedId) : false;
+    if (!currentMatchesFilter) {
+      setSelectedId(filteredQueueInquiries[0]?.id || null);
+      setLoadingInsightId(null);
+    }
+  }, [filteredQueueInquiries, inquiries.length, selectedId]);
+
   const selectedInsights = selectedId ? insightsById[selectedId] : undefined;
   const openDrafts = useMemo(
     () => selected?.drafts.filter((draft) => draft.createdByType !== "system" && draft.status !== "sent") || [],
@@ -234,6 +243,10 @@ export default function OwnerInquiriesPage() {
     setBookingRevenue("");
     setSuccess("");
     setError("");
+    if (selected?.status === "closed") {
+      setLoadingInsightId(null);
+      return;
+    }
     if (selected?.id) void loadInsights(selected.id);
   }, [selectedId, selected, loadInsights]);
 
@@ -573,7 +586,7 @@ export default function OwnerInquiriesPage() {
                 disabled={!selectedId || loadingInsightId === selectedId || selected?.status === "closed"}
                 className="shrink-0 rounded-full border border-[#ddd4c7] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#5b554b] disabled:opacity-60 sm:tracking-[0.16em]"
               >
-                {loadingInsightId === selectedId ? "Refreshing..." : "Refresh assistant"}
+                {selected?.status === "closed" ? "Closed" : loadingInsightId === selectedId ? "Refreshing..." : "Refresh assistant"}
               </button>
             </div>
             <label className="mt-4 block text-xs font-medium uppercase tracking-[0.16em] text-[#7b7468]">
@@ -583,6 +596,7 @@ export default function OwnerInquiriesPage() {
                 onChange={(e) => {
                   const next = e.target.value as InquiryRecord["status"] | "all";
                   setQueueStatusFilter(next);
+                  setLoadingInsightId(null);
                   const nextSelection = inquiries.find((inquiry) => next === "all" || inquiry.status === next);
                   setSelectedId(nextSelection?.id || null);
                 }}
