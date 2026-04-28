@@ -65,11 +65,10 @@ enum PaymentMethodType {
 }
 
 enum InquiryStatus {
-  NEW
-  REPLIED
-  APPROVED
-  DECLINED
-  CONVERTED
+  NEEDS_REPLY
+  AWAITING_GUEST
+  BOOKED
+  CLOSED
 }
 
 enum InquiryMessageDirection {
@@ -304,7 +303,7 @@ model Inquiry {
   checkIn      DateTime?
   checkOut     DateTime?
   message      String?
-  status       InquiryStatus @default(NEW)
+  status       InquiryStatus @default(NEEDS_REPLY)
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
   property     Property      @relation(fields: [propertyId], references: [id], onDelete: Cascade)

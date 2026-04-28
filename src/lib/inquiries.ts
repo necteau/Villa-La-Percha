@@ -350,14 +350,13 @@ export async function runInquiryInboundAutomation(inquiryId: string): Promise<vo
 
 function fromDbStatus(status: InquiryStatus): InquiryRecord["status"] {
   switch (status) {
-    case InquiryStatus.REPLIED:
-    case InquiryStatus.APPROVED:
+    case InquiryStatus.AWAITING_GUEST:
       return "awaiting_guest";
-    case InquiryStatus.CONVERTED:
+    case InquiryStatus.BOOKED:
       return "booked";
-    case InquiryStatus.DECLINED:
+    case InquiryStatus.CLOSED:
       return "closed";
-    case InquiryStatus.NEW:
+    case InquiryStatus.NEEDS_REPLY:
     default:
       return "needs_reply";
   }
@@ -366,14 +365,14 @@ function fromDbStatus(status: InquiryStatus): InquiryRecord["status"] {
 function toDbStatus(status: InquiryRecord["status"]): InquiryStatus {
   switch (status) {
     case "awaiting_guest":
-      return InquiryStatus.REPLIED;
+      return InquiryStatus.AWAITING_GUEST;
     case "booked":
-      return InquiryStatus.CONVERTED;
+      return InquiryStatus.BOOKED;
     case "closed":
-      return InquiryStatus.DECLINED;
+      return InquiryStatus.CLOSED;
     case "needs_reply":
     default:
-      return InquiryStatus.NEW;
+      return InquiryStatus.NEEDS_REPLY;
   }
 }
 
