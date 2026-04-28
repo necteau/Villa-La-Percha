@@ -13,16 +13,17 @@ export default function ExperiencePage() {
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: "url(/images/aerial-ocean-dock-stairs-pool-house.jpg)" }}
         >
-          <div className="absolute inset-0 bg-black/40" />
+          <div className="absolute inset-0 bg-[#091818]/62" />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#091818]/35 via-transparent to-[#091818]/45" />
         </div>
-        <div className="relative z-10 flex flex-col items-center justify-center h-full text-center px-6">
-          <p className="text-xs md:text-sm tracking-[0.4em] uppercase text-white/70 mb-4">
+        <div className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center [text-shadow:0_2px_18px_rgba(0,0,0,0.55)]">
+          <p className="mb-4 text-xs uppercase tracking-[0.4em] text-white/85 md:text-sm">
             Discover
           </p>
-          <h1 className="font-display text-4xl md:text-7xl font-light text-white mb-6 leading-tight">
+          <h1 className="mb-6 font-display text-4xl font-light leading-tight text-white md:text-7xl">
             Experience the<br />Island
           </h1>
-          <p className="text-white/70 text-sm md:text-lg max-w-lg leading-relaxed">
+          <p className="max-w-lg text-sm leading-relaxed text-white/90 md:text-lg">
             Stay near Taylor Bay and Sapodilla Bay, then use this guide to plan the beaches,
             restaurants, and outings that are actually worth your vacation time.
           </p>
