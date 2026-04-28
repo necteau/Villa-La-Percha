@@ -31,6 +31,7 @@ const restaurants = [
     mustTry: "Lobster Pasta",
     link: "https://www.omars-beachhut.com/",
     icon: "🍽️",
+    image: "/images/omars-beach-hut-waterfront.jpg",
     bestFor: "local feel · seafood lunch · casual dinner",
   },
   {

@@ -42,7 +42,7 @@ const experiences = [
     name: "Omar's Beach Hut",
     category: "Dining · 30 min",
     copy: "Lobster pasta where dinner was swimming this morning. Fisherman's dock next door.",
-    image: "/images/hot-tub-pool-ocean-sapodilla-bay.jpg",
+    image: "/images/omars-beach-hut-waterfront.jpg",
     tags: ["Dining", "Beachfront"] as const,
   },
   {
