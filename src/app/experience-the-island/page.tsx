@@ -13,11 +13,11 @@ export default function ExperiencePage() {
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: "url(/images/aerial-ocean-dock-stairs-pool-house.jpg)" }}
         >
-          <div className="absolute inset-0 bg-[#091818]/72" />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#091818]/45 via-[#091818]/28 to-[#091818]/55" />
+          <div className="absolute inset-0 bg-[#091818]/78" />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#091818]/55 via-[#091818]/35 to-[#091818]/68" />
         </div>
-        <div className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center">
-          <div className="max-w-2xl rounded-[32px] bg-[#091818]/48 px-6 py-8 shadow-[0_24px_80px_rgba(0,0,0,0.35)] backdrop-blur-[2px] md:px-10 md:py-10">
+        <div className="relative z-10 flex h-full flex-col items-center justify-center px-5 text-center">
+          <div className="max-w-2xl rounded-[32px] border border-white/18 bg-[#071414]/72 px-6 py-8 shadow-[0_24px_90px_rgba(0,0,0,0.5)] backdrop-blur-sm md:px-10 md:py-10">
             <p className="mb-4 text-xs uppercase tracking-[0.4em] text-white md:text-sm">
               Discover
             </p>
