@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { simpleParser } from "mailparser";
-import { appendInquiryMessage, getInquiryThreadById, runInquiryInboundAutomation } from "@/lib/inquiries";
+import { appendInquiryMessage, getInquiryThreadById, runInquiryInboundAutomation, updateInquiryStatus } from "@/lib/inquiries";
 import {
   extractEmailAddress,
   extractInquiryIdFromRequest,
@@ -109,6 +109,7 @@ export async function POST(req: Request) {
   }
 
   // ── 7. Append to thread ──
+  const wasClosed = thread.status === "closed";
   const subject =
     subjectFromBody ||
     (req.headers.get("x-inquiry-subject") || req.headers.get("subject")) ||
@@ -126,6 +127,11 @@ export async function POST(req: Request) {
     });
 
     await runInquiryInboundAutomation(inquiryId);
+    if (wasClosed) {
+      // A guest reply means the inquiry is active again even if the owner previously closed it.
+      // Keep this explicit so future close-state guards do not accidentally strand inbound replies.
+      await updateInquiryStatus(inquiryId, "needs_reply");
+    }
 
     // ── 8. Analytics ──
     dispatchAnalyticsEvent({
@@ -135,7 +141,7 @@ export async function POST(req: Request) {
       payload: { responseTime: thread.messages.length },
     });
 
-    return NextResponse.json({ ok: true, message });
+    return NextResponse.json({ ok: true, message, reopened: wasClosed });
   } catch (error) {
     const err = error instanceof Error ? error.message : "Failed to ingest inbound reply";
     logFailure({
