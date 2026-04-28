@@ -78,6 +78,7 @@ const restaurants = [
     mustTry: "Sunset Dinner",
     link: "https://www.magnoliaprovo.com/",
     icon: "🍷",
+    image: "/images/magnolia-hilltop-dining.jpg",
     reservations: true,
     bestFor: "sunset views · quieter dinner · couples",
   },
