@@ -49,7 +49,7 @@ const experiences = [
     name: "Pirate's Cove Exploration",
     category: "Adventure · 40 min",
     copy: "Limestone sea stacks, hidden caves, a secret cove. Pirates used to love this place.",
-    image: "/images/aerial-ocean-dock-stairs-pool-house.jpg",
+    image: "/images/pirates-cove.jpg",
     tags: ["Adventure", "Hidden"] as const,
   },
   {

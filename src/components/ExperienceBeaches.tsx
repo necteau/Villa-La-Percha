@@ -34,6 +34,7 @@ const beaches = [
     category: "Secluded · Cave · Beach",
     description: "A scenic, less polished outing with rocky coastline, dramatic formations, and a more rugged feel than the island's soft-sand crowd-pleasers. Good for exploring and photos on the right day.",
     highlight: "Best for scenery, exploring, and something different",
+    image: "/images/pirates-cove.jpg",
   },
   {
     name: "Sapodilla Bay",
