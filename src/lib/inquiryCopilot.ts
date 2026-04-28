@@ -21,7 +21,7 @@ export interface InquiryCopilotInsights {
   keyFacts: Array<{ label: string; value: string }>;
   guestFlowSignals: string[];
   suggestedNextAction: string;
-  recommendedStatus: "new" | "replied" | "approved" | "declined" | "converted";
+  recommendedStatus: "needs_reply" | "awaiting_guest" | "booked" | "closed";
   objectionSignals: string[];
   draftOptions: InquiryCopilotDraftOption[];
 }
@@ -209,7 +209,7 @@ export async function getInquiryCopilotInsights(inquiry: InquiryThreadRecord): P
   const urgency: InquiryCopilotInsights["urgency"] =
     textLower.includes("asap") || textLower.includes("urgent") || textLower.includes("tonight") || textLower.includes("soon")
       ? "high"
-      : inquiry.status === "new"
+      : inquiry.status === "needs_reply"
         ? "medium"
         : "low";
 
@@ -472,7 +472,7 @@ export async function getInquiryCopilotInsights(inquiry: InquiryThreadRecord): P
     keyFacts,
     guestFlowSignals: aiOverlay?.guestFlowSignals || guestFlowSignals,
     suggestedNextAction: aiOverlay?.suggestedNextAction || fallbackSuggestedNextAction,
-    recommendedStatus: conflictingReservations.length > 0 ? "new" : inquiry.status === "converted" ? "converted" : "replied",
+    recommendedStatus: conflictingReservations.length > 0 ? "needs_reply" : inquiry.status === "booked" ? "booked" : "awaiting_guest",
     objectionSignals: aiOverlay?.objectionSignals || objectionSignals,
     draftOptions,
   };

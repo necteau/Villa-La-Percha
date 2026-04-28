@@ -263,7 +263,7 @@ function deriveFallbackCustomers(inquiries: FallbackInquiry[], reservations: Fal
       id: inquiry.id,
       propertyId: "fallback-villa-la-percha",
       propertyName: "Villa La Percha",
-      status: (inquiry.status || "new") as InquiryRecord["status"],
+      status: (inquiry.status || "needs_reply") as InquiryRecord["status"],
       checkIn: inquiry.checkIn,
       checkOut: inquiry.checkOut,
       createdAt: inquiry.createdAt || new Date().toISOString(),

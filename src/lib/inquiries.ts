@@ -18,7 +18,7 @@ export interface InquiryRecord {
   checkIn?: string;
   checkOut?: string;
   message?: string;
-  status: "new" | "replied" | "approved" | "declined" | "converted";
+  status: "needs_reply" | "awaiting_guest" | "booked" | "closed";
   createdAt: string;
 }
 
@@ -349,20 +349,29 @@ export async function runInquiryInboundAutomation(inquiryId: string): Promise<vo
 }
 
 function fromDbStatus(status: InquiryStatus): InquiryRecord["status"] {
-  return status.toLowerCase() as InquiryRecord["status"];
+  switch (status) {
+    case InquiryStatus.REPLIED:
+    case InquiryStatus.APPROVED:
+      return "awaiting_guest";
+    case InquiryStatus.CONVERTED:
+      return "booked";
+    case InquiryStatus.DECLINED:
+      return "closed";
+    case InquiryStatus.NEW:
+    default:
+      return "needs_reply";
+  }
 }
 
 function toDbStatus(status: InquiryRecord["status"]): InquiryStatus {
   switch (status) {
-    case "replied":
+    case "awaiting_guest":
       return InquiryStatus.REPLIED;
-    case "approved":
-      return InquiryStatus.APPROVED;
-    case "declined":
-      return InquiryStatus.DECLINED;
-    case "converted":
+    case "booked":
       return InquiryStatus.CONVERTED;
-    case "new":
+    case "closed":
+      return InquiryStatus.DECLINED;
+    case "needs_reply":
     default:
       return InquiryStatus.NEW;
   }
@@ -615,8 +624,8 @@ export async function appendInquiryMessage(input: InquiryMessageInput): Promise<
     const state = await readFallbackThreadState();
     const deduped = base.emailMessageId ? state.messages.filter((m) => m.emailMessageId !== base.emailMessageId) : state.messages;
     await writeFallbackThreadState({ ...state, messages: [...deduped, base] });
-    if (input.direction === "inbound") await updateInquiryStatus(input.inquiryId, "new");
-    if (input.direction === "outbound") await updateInquiryStatus(input.inquiryId, "replied");
+    if (input.direction === "inbound") await updateInquiryStatus(input.inquiryId, "needs_reply");
+    if (input.direction === "outbound") await updateInquiryStatus(input.inquiryId, "awaiting_guest");
     return base;
   }
 
@@ -636,7 +645,7 @@ export async function appendInquiryMessage(input: InquiryMessageInput): Promise<
 
   await prisma.inquiry.update({
     where: { id: input.inquiryId },
-    data: { status: toDbStatus(input.direction === "inbound" ? "new" : "replied") },
+    data: { status: toDbStatus(input.direction === "inbound" ? "needs_reply" : "awaiting_guest") },
   });
 
   return mapDbMessage(created);
@@ -722,7 +731,7 @@ export async function createInquiry(input: InquiryInput): Promise<InquiryRecord>
     checkIn: input.checkIn,
     checkOut: input.checkOut,
     message: input.message,
-    status: "new",
+    status: "needs_reply",
     createdAt: new Date().toISOString(),
   };
 

@@ -10,7 +10,7 @@ function apiUrl(path: string): string {
   return new URL(path, window.location.origin).toString();
 }
 
-const statusOptions: InquiryRecord["status"][] = ["new", "replied", "approved", "declined", "converted"];
+const statusOptions: InquiryRecord["status"][] = ["needs_reply", "awaiting_guest", "booked", "closed"];
 
 function formatDate(value: string): string {
   return new Date(value).toLocaleString(undefined, {
@@ -23,6 +23,27 @@ function formatDate(value: string): string {
 
 function formatStatusLabel(value: string): string {
   return value.replaceAll("_", " ");
+}
+
+function latestOutboundSentAt(inquiry: InquiryThreadRecord): string | null {
+  const outbound = [...inquiry.messages]
+    .reverse()
+    .find((message) => message.direction === "outbound" && (message.sentAt || message.createdAt));
+  return outbound?.sentAt || outbound?.createdAt || null;
+}
+
+function formatElapsedSince(value: string | null): string | null {
+  if (!value) return null;
+  const sentAt = Date.parse(value);
+  if (!Number.isFinite(sentAt)) return null;
+  const elapsedMs = Date.now() - sentAt;
+  if (elapsedMs < 0) return "Sent just now";
+  const hours = Math.floor(elapsedMs / (1000 * 60 * 60));
+  if (hours < 1) return "Sent less than 1 hour ago";
+  if (hours < 24) return `Sent ${hours} hour${hours === 1 ? "" : "s"} ago`;
+  const days = Math.floor(hours / 24);
+  const remainingHours = hours % 24;
+  return `Sent ${days} day${days === 1 ? "" : "s"}${remainingHours ? ` ${remainingHours}h` : ""} ago`;
 }
 
 function messageMeta(message: InquiryThreadRecord["messages"][number]) {
@@ -44,9 +65,9 @@ function messagePreview(message: InquiryThreadRecord["messages"][number]): strin
 }
 
 function badgeClass(value: string) {
-  if (value === "sent" || value === "converted" || value === "hot" || value === "high") return "bg-[#eef6f1] text-[#1e4536]";
-  if (value === "approved" || value === "warm" || value === "medium") return "bg-[#f6f2ea] text-[#8b7355]";
-  if (value === "declined" || value === "cold" || value === "low") return "bg-[#fbefef] text-[#b42318]";
+  if (value === "sent" || value === "booked" || value === "hot" || value === "high") return "bg-[#eef6f1] text-[#1e4536]";
+  if (value === "awaiting_guest" || value === "warm" || value === "medium") return "bg-[#f6f2ea] text-[#8b7355]";
+  if (value === "closed" || value === "cold" || value === "low") return "bg-[#fbefef] text-[#b42318]";
   return "bg-[#f7f3eb] text-[#5b554b]";
 }
 
@@ -431,6 +452,7 @@ export default function OwnerInquiriesPage() {
               {inquiries.map((inquiry) => {
                 const openCount = inquiry.drafts.filter((draft) => draft.status !== "sent").length;
                 const insight = insightsById[inquiry.id];
+                const awaitingGuestElapsed = inquiry.status === "awaiting_guest" ? formatElapsedSince(latestOutboundSentAt(inquiry)) : null;
                 return (
                   <button
                     key={inquiry.id}
@@ -443,9 +465,10 @@ export default function OwnerInquiriesPage() {
                     <div className="flex min-w-0 items-center justify-between gap-3">
                       <p className="min-w-0 truncate font-medium text-[#1b1a17]">{inquiry.fullName}</p>
                       <span className={`shrink-0 rounded-full px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] sm:tracking-[0.18em] ${badgeClass(inquiry.status)}`}>
-                        {inquiry.status}
+                        {formatStatusLabel(inquiry.status)}
                       </span>
                     </div>
+                    {awaitingGuestElapsed ? <p className="mt-1 text-[11px] font-medium text-[#8b7355]">{awaitingGuestElapsed}</p> : null}
                     <p className="mt-1 text-xs text-[#7b7468]">{formatDate(inquiry.createdAt)}</p>
                     {(inquiry.checkIn || inquiry.checkOut) && (
                       <p className="mt-1 text-xs text-[#7b7468]">
@@ -485,6 +508,12 @@ export default function OwnerInquiriesPage() {
                       {selected.phone ? <p className="text-sm text-[#5b554b]">{selected.phone}</p> : null}
                     </div>
                     <div className="text-left text-sm text-[#7b7468] sm:text-right">
+                      <span className={`inline-flex rounded-full px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] ${badgeClass(selected.status)}`}>
+                        {formatStatusLabel(selected.status)}
+                      </span>
+                      {selected.status === "awaiting_guest" ? (
+                        <p className="mt-2 font-medium text-[#8b7355]">{formatElapsedSince(latestOutboundSentAt(selected))}</p>
+                      ) : null}
                       <p>{formatDate(selected.createdAt)}</p>
                       {(selected.checkIn || selected.checkOut) && (
                         <p className="mt-1">
@@ -533,7 +562,7 @@ export default function OwnerInquiriesPage() {
                               : "border border-[#ddd4c7] bg-white text-[#5b554b] hover:bg-[#f7f3eb]"
                           } disabled:opacity-60`}
                         >
-                          {savingId === selected.id && selected.status !== status ? "Saving..." : status}
+                          {savingId === selected.id && selected.status !== status ? "Saving..." : formatStatusLabel(status)}
                         </button>
                       ))}
                       {selectedInsights ? (

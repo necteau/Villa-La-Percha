@@ -40,13 +40,13 @@ export async function getOwnerPortalStats(): Promise<OwnerPortalStats> {
 
   const today = todayYmd();
   const directEntry = pricingEntries.find((entry) => entry.platform === "direct");
-  const inquiriesNew = inquiries.filter((inquiry) => inquiry.status === "new").length;
-  const inquiriesUnreplied = inquiries.filter((inquiry) => inquiry.status === "new" || inquiry.status === "replied").length;
+  const inquiriesNew = inquiries.filter((inquiry) => inquiry.status === "needs_reply").length;
+  const inquiriesUnreplied = inquiries.filter((inquiry) => inquiry.status === "needs_reply" || inquiry.status === "awaiting_guest").length;
   const inquiriesAwaitingApproval = inquiries.filter((inquiry) =>
     inquiry.drafts.some((draft) => draft.status === "pending_owner_approval" || draft.status === "approved")
   ).length;
   const inquiriesSentReplies = inquiries.filter((inquiry) => inquiry.messages.some((message) => message.direction === "outbound")).length;
-  const inquiriesConverted = inquiries.filter((inquiry) => inquiry.status === "converted").length;
+  const inquiriesConverted = inquiries.filter((inquiry) => inquiry.status === "booked").length;
 
   const firstResponseHours = inquiries
     .map((inquiry) => {

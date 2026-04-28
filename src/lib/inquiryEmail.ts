@@ -74,7 +74,7 @@ export async function sendApprovedInquiryDraft(inquiryId: string, draftId: strin
     status: "sent",
     createdByType: draft.createdByType,
   });
-  await updateInquiryStatus(thread.id, "replied");
+  await updateInquiryStatus(thread.id, "awaiting_guest");
 
   const firstInbound = thread.messages.find((message) => message.direction === "inbound");
   if (firstInbound) {

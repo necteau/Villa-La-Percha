@@ -59,7 +59,7 @@ export async function POST(req: Request) {
         return NextResponse.json({ ok: false, error: "Inquiry not found" }, { status: 404 });
       }
 
-      if (status === "converted") {
+      if (status === "booked") {
         void trackInquiryConverted(id).catch(() => {});
       }
 
