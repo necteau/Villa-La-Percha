@@ -27,6 +27,15 @@ const filters: { key: Filter; label: string }[] = [
 
 type PositionedPoint = (typeof points)[number] & { renderX: number; renderY: number };
 type PositionedBase = typeof villaBase & { renderX: number; renderY: number };
+type MapCluster = {
+  id: string;
+  x: number;
+  y: number;
+  points: PositionedPoint[];
+};
+
+const clusterDistance = 4.8;
+const spiderRadius = 4.2;
 
 function getRenderedPosition(item: { x: number; y: number; lat?: number; lon?: number }) {
   if (typeof item.lat === "number" && typeof item.lon === "number") {
@@ -37,10 +46,50 @@ function getRenderedPosition(item: { x: number; y: number; lat?: number; lon?: n
   return { x: item.x, y: item.y };
 }
 
+function distance(a: { renderX: number; renderY: number }, b: { renderX: number; renderY: number }) {
+  return Math.hypot(a.renderX - b.renderX, a.renderY - b.renderY);
+}
+
+function buildClusters(items: PositionedPoint[]) {
+  const clusters: MapCluster[] = [];
+
+  items.forEach((point) => {
+    const cluster = clusters.find((candidate) =>
+      candidate.points.some((clusterPoint) => distance(clusterPoint, point) <= clusterDistance),
+    );
+
+    if (cluster) {
+      cluster.points.push(point);
+      cluster.x = cluster.points.reduce((sum, item) => sum + item.renderX, 0) / cluster.points.length;
+      cluster.y = cluster.points.reduce((sum, item) => sum + item.renderY, 0) / cluster.points.length;
+    } else {
+      clusters.push({ id: point.id, x: point.renderX, y: point.renderY, points: [point] });
+    }
+  });
+
+  return clusters.map((cluster) => ({
+    ...cluster,
+    id: cluster.points.map((point) => point.id).sort().join("--"),
+  }));
+}
+
+function spiderPoint(cluster: MapCluster, point: PositionedPoint, index: number) {
+  if (cluster.points.length === 1) {
+    return { x: point.renderX, y: point.renderY };
+  }
+
+  const angle = (index / cluster.points.length) * Math.PI * 2 - Math.PI / 2;
+  return {
+    x: cluster.x + Math.cos(angle) * spiderRadius,
+    y: cluster.y + Math.sin(angle) * spiderRadius,
+  };
+}
+
 export default function IslandMap() {
   const [filter, setFilter] = useState<Filter>("all");
   const [selectedId, setSelectedId] = useState<string>(villaBase.id);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
+  const [expandedClusterId, setExpandedClusterId] = useState<string | null>(null);
 
   const positionedVillaBase = useMemo<PositionedBase>(() => {
     const { x, y } = getRenderedPosition(villaBase);
@@ -61,6 +110,8 @@ export default function IslandMap() {
     [filter, positionedPoints],
   );
 
+  const clusters = useMemo(() => buildClusters(filteredPoints), [filteredPoints]);
+
   const detail = useMemo(() => {
     if (hoveredId === positionedVillaBase.id || selectedId === positionedVillaBase.id) {
       return { ...positionedVillaBase, category: "Home Base" };
@@ -69,6 +120,12 @@ export default function IslandMap() {
     const id = hoveredId ?? selectedId;
     return positionedPoints.find((point) => point.id === id) ?? { ...positionedVillaBase, category: "Home Base" };
   }, [hoveredId, selectedId, positionedPoints, positionedVillaBase]);
+
+  const selectPoint = (pointId: string) => {
+    setSelectedId(pointId);
+    const cluster = clusters.find((candidate) => candidate.points.some((point) => point.id === pointId));
+    if (cluster && cluster.points.length > 1) setExpandedClusterId(cluster.id);
+  };
 
   return (
     <section className="py-16 md:py-24 bg-[#FAFAF8]">
@@ -81,7 +138,7 @@ export default function IslandMap() {
             Interactive Island Map
           </h2>
           <p className="text-sm md:text-base max-w-2xl mx-auto text-[#6B6B6B] leading-relaxed">
-            Built on the actual Providenciales map silhouette, with pins positioned by their real area on the island.
+            Built on the actual Providenciales map silhouette, with clustered pins you can expand in crowded areas.
           </p>
         </div>
 
@@ -90,7 +147,10 @@ export default function IslandMap() {
             <button
               key={option.key}
               type="button"
-              onClick={() => setFilter(option.key)}
+              onClick={() => {
+                setFilter(option.key);
+                setExpandedClusterId(null);
+              }}
               className={`px-5 py-2.5 text-xs md:text-sm tracking-[0.16em] uppercase border transition-all duration-300 ${
                 filter === option.key
                   ? "text-white border-[#8B7355] bg-[#8B7355]"
@@ -121,8 +181,11 @@ export default function IslandMap() {
                   type="button"
                   onMouseEnter={() => setHoveredId(positionedVillaBase.id)}
                   onMouseLeave={() => setHoveredId(null)}
-                  onClick={() => setSelectedId(positionedVillaBase.id)}
-                  className="absolute -translate-x-1/2 -translate-y-1/2 cursor-pointer"
+                  onClick={() => {
+                    setSelectedId(positionedVillaBase.id);
+                    setExpandedClusterId(null);
+                  }}
+                  className="absolute -translate-x-1/2 -translate-y-1/2 cursor-pointer p-2"
                   style={{ left: `${positionedVillaBase.renderX}%`, top: `${positionedVillaBase.renderY}%` }}
                   aria-label="Villa La Percha"
                 >
@@ -132,39 +195,73 @@ export default function IslandMap() {
                   </span>
                 </button>
 
-                {filteredPoints.map((point) => {
-                  const isActive = point.id === selectedId || point.id === hoveredId;
-                  const color = categoryMeta[point.category].color;
+                {clusters.map((cluster) => {
+                  const isExpanded = expandedClusterId === cluster.id;
+                  const hasSelectedPoint = cluster.points.some((point) => point.id === selectedId);
 
-                  return (
-                    <button
-                      key={point.id}
-                      type="button"
-                      onMouseEnter={() => setHoveredId(point.id)}
-                      onMouseLeave={() => setHoveredId(null)}
-                      onClick={() => setSelectedId(point.id)}
-                      className="absolute -translate-x-1/2 -translate-y-1/2 cursor-pointer"
-                      style={{ left: `${point.renderX}%`, top: `${point.renderY}%` }}
-                      aria-label={point.name}
-                    >
-                      <span
-                        className="relative flex items-center justify-center rounded-full border-2 border-white shadow-md transition-all duration-200"
-                        style={{
-                          width: isActive ? 22 : 16,
-                          height: isActive ? 22 : 16,
-                          backgroundColor: color,
-                        }}
+                  if (cluster.points.length > 1 && !isExpanded) {
+                    return (
+                      <button
+                        key={cluster.id}
+                        type="button"
+                        onClick={() => setExpandedClusterId(cluster.id)}
+                        className="absolute -translate-x-1/2 -translate-y-1/2 cursor-pointer p-2"
+                        style={{ left: `${cluster.x}%`, top: `${cluster.y}%` }}
+                        aria-label={`Expand ${cluster.points.length} places near ${cluster.points[0].area}`}
                       >
                         <span
-                          className="absolute rounded-full border"
+                          className={`flex h-9 w-9 items-center justify-center rounded-full border-2 border-white text-xs font-semibold text-white shadow-lg transition-transform duration-200 ${
+                            hasSelectedPoint ? "scale-110" : "hover:scale-105"
+                          }`}
+                          style={{ backgroundColor: "#2C2C2C" }}
+                        >
+                          {cluster.points.length}
+                        </span>
+                      </button>
+                    );
+                  }
+
+                  return cluster.points.map((point, index) => {
+                    const isActive = point.id === selectedId || point.id === hoveredId;
+                    const color = categoryMeta[point.category].color;
+                    const position = spiderPoint(cluster, point, index);
+
+                    return (
+                      <button
+                        key={point.id}
+                        type="button"
+                        onMouseEnter={() => setHoveredId(point.id)}
+                        onMouseLeave={() => setHoveredId(null)}
+                        onClick={() => selectPoint(point.id)}
+                        className="absolute -translate-x-1/2 -translate-y-1/2 cursor-pointer p-2"
+                        style={{ left: `${position.x}%`, top: `${position.y}%` }}
+                        aria-label={point.name}
+                      >
+                        {isExpanded && cluster.points.length > 1 && (
+                          <span
+                            className="pointer-events-none absolute left-1/2 top-1/2 h-px origin-left bg-[#2C2C2C]/20"
+                            style={{ width: `${spiderRadius * 3.6}px`, transform: `rotate(${Math.atan2(position.y - cluster.y, position.x - cluster.x)}rad)` }}
+                          />
+                        )}
+                        <span
+                          className="relative flex items-center justify-center rounded-full border-2 border-white shadow-md transition-all duration-200"
                           style={{
-                            inset: isActive ? -7 : -5,
-                            borderColor: `${color}55`,
+                            width: isActive ? 24 : 18,
+                            height: isActive ? 24 : 18,
+                            backgroundColor: color,
                           }}
-                        />
-                      </span>
-                    </button>
-                  );
+                        >
+                          <span
+                            className="absolute rounded-full border"
+                            style={{
+                              inset: isActive ? -7 : -5,
+                              borderColor: `${color}55`,
+                            }}
+                          />
+                        </span>
+                      </button>
+                    );
+                  });
                 })}
               </div>
             </div>
@@ -185,9 +282,30 @@ export default function IslandMap() {
               </p>
             )}
             <div className="mt-6 pt-6 border-t border-[#E8E4DF]">
-              <p className="text-xs text-[#6B6B6B] leading-relaxed">
-                This version uses your supplied island map as the exact base, then overlays the filtered points of interest on top.
+              <p className="text-xs text-[#6B6B6B] leading-relaxed mb-4">
+                Tap numbered clusters to spread out crowded pins, or choose a place from the list below.
               </p>
+              <div className="max-h-72 space-y-2 overflow-y-auto pr-1">
+                {filteredPoints.map((point) => (
+                  <button
+                    key={point.id}
+                    type="button"
+                    onMouseEnter={() => setHoveredId(point.id)}
+                    onMouseLeave={() => setHoveredId(null)}
+                    onClick={() => selectPoint(point.id)}
+                    className={`flex w-full items-center justify-between rounded-xl border px-3 py-2 text-left text-sm transition-colors ${
+                      selectedId === point.id
+                        ? "border-[#8B7355] bg-[#F5F0E8] text-[#2C2C2C]"
+                        : "border-[#E8E4DF] bg-white text-[#6B6B6B] hover:border-[#8B7355]/40"
+                    }`}
+                  >
+                    <span>{point.name}</span>
+                    <span className="ml-3 text-[10px] uppercase tracking-[0.16em] text-[#8B7355]">
+                      {categoryMeta[point.category].label}
+                    </span>
+                  </button>
+                ))}
+              </div>
             </div>
           </aside>
         </div>
