@@ -646,15 +646,6 @@ export default function OwnerInquiriesPage() {
                   <div className="rounded-2xl border border-[#e8e1d6] bg-[#faf8f3] p-4">
                     <p className="text-xs uppercase tracking-[0.16em] text-[#7b7468]">Suggested next action</p>
                     <p className="mt-3 text-sm leading-6 text-[#5b554b]">{selectedInsights.suggestedNextAction}</p>
-                    {selectedInsights.objectionSignals.length > 0 ? (
-                      <div className="mt-4 flex flex-wrap gap-2">
-                        {selectedInsights.objectionSignals.map((signal) => (
-                          <span key={signal} className="rounded-full bg-[#f6f2ea] px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-[#8b7355]">
-                            {signal}
-                          </span>
-                        ))}
-                      </div>
-                    ) : null}
                   </div>
 
                   <div className="rounded-2xl border border-[#e8e1d6] bg-[#faf8f3] p-4">

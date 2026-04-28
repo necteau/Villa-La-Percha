@@ -435,7 +435,7 @@ export async function getInquiryCopilotInsights(inquiry: InquiryThreadRecord): P
     inquiry.checkIn ? { label: "Check-in", value: sentenceCase(formatDate(inquiry.checkIn) || inquiry.checkIn) } : null,
     inquiry.checkOut ? { label: "Check-out", value: sentenceCase(formatDate(inquiry.checkOut) || inquiry.checkOut) } : null,
     requestedNights ? { label: "Requested stay", value: `${requestedNights} nights` } : null,
-    directNightlyRate ? { label: "Direct rate", value: `$${directNightlyRate.toLocaleString()}/night` } : null,
+    requestedNights && directNightlyRate ? { label: "Estimated revenue", value: `$${(requestedNights * directNightlyRate).toLocaleString()}` } : null,
     { label: "Payment options", value: paymentMethods.length > 0 ? joinPaymentMethods(paymentMethods) : "Not configured" },
     paymentSettings.depositPercent > 0 ? { label: "Deposit", value: `${paymentSettings.depositPercent}%` } : null,
     { label: "Minimum stay", value: `${siteSettings.minStayNights} nights` },
