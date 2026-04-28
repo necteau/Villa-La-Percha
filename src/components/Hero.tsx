@@ -8,8 +8,8 @@ const navItems = [
   { label: "About", href: "#about" },
   { label: "Amenities", href: "#amenities" },
   { label: "Gallery", href: "#gallery" },
-  { label: "Experience", href: "/experience-the-island", isRoute: true },
-  { label: "FAQ", href: "/faq", isRoute: true },
+  { label: "Experience", href: "/villa-la-percha/experience-the-island", isRoute: true },
+  { label: "FAQ", href: "/villa-la-percha/faq", isRoute: true },
   { label: "Availability", href: "#availability" },
 ];
 

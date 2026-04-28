@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
 
 export default function InteractiveMapPage() {
-  redirect("/experience-the-island");
+  redirect("/villa-la-percha/experience-the-island");
 }

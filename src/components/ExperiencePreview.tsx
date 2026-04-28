@@ -15,7 +15,7 @@ export default function ExperiencePreview() {
           </p>
           <div className="mt-8 flex justify-center">
             <Link
-              href="/experience-the-island"
+              href="/villa-la-percha/experience-the-island"
               className="inline-block px-8 md:px-10 py-3.5 text-xs md:text-sm tracking-[0.2em] uppercase text-white font-medium"
               style={{ backgroundColor: "#8B7355" }}
             >

@@ -191,7 +191,7 @@ export default function ItineraryBuilder() {
               No generic templates — just a plan made for you.
             </p>
             <a
-              href="/#contact"
+              href="/villa-la-percha#availability"
               className="inline-block px-8 py-4 text-xs md:text-sm tracking-[0.2em] uppercase text-white font-medium"
               style={{ backgroundColor: "#8B7355" }}
               onClick={(e) => {

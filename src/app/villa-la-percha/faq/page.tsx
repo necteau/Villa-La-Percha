@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   description:
     "Answers to common Villa La Percha questions about direct booking, pricing, location, amenities, beaches, and what to expect during your stay in Providenciales.",
   alternates: {
-    canonical: "/faq",
+    canonical: "/villa-la-percha/faq",
   },
 };
 

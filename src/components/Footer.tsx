@@ -14,10 +14,10 @@ export default function Footer() {
           <a href="#gallery" className="text-white/30 text-xs tracking-wider hover:text-white/60 transition-colors uppercase">
             Gallery
           </a>
-          <Link href="/experience-the-island" className="text-white/30 text-xs tracking-wider hover:text-white/60 transition-colors uppercase">
+          <Link href="/villa-la-percha/experience-the-island" className="text-white/30 text-xs tracking-wider hover:text-white/60 transition-colors uppercase">
             Experience
           </Link>
-          <Link href="/faq" className="text-white/30 text-xs tracking-wider hover:text-white/60 transition-colors uppercase">
+          <Link href="/villa-la-percha/faq" className="text-white/30 text-xs tracking-wider hover:text-white/60 transition-colors uppercase">
             FAQ
           </Link>
           <a href="#contact" className="text-white/30 text-xs tracking-wider hover:text-white/60 transition-colors uppercase">
