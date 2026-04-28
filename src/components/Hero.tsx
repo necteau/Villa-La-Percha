@@ -94,15 +94,9 @@ export default function Hero() {
       ) : null}
 
       <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-white z-10 px-6 pt-14 md:pt-0">
-        <p className="text-xs md:text-sm tracking-[0.35em] uppercase mb-4 md:mb-6 text-white/80">
+        <p className="mb-5 text-xs uppercase tracking-[0.35em] text-white/85 md:mb-8 md:text-sm">
           Chalk Sound · Providenciales
         </p>
-        <h1
-          className="font-display text-3xl md:text-6xl lg:text-7xl font-light tracking-wide mb-5 md:mb-8 leading-tight"
-          style={{ maxWidth: "90vw" }}
-        >
-          A Private Villa in Chalk Sound
-        </h1>
         <p className="max-w-xl text-sm md:text-lg text-white/82 leading-relaxed mb-8 md:mb-10">
           Waterfront, private, and made for an easy Turks and Caicos stay.
         </p>
