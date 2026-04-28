@@ -70,7 +70,7 @@ const experiences = [
     name: "Coco Bistro",
     category: "Dining · 25 min",
     copy: "Fresh catch under twinkling lights in a palm grove. Your own herb garden in every dish.",
-    image: "/images/aerial-pool-house-chalk-sound.jpg",
+    image: "/images/coco-bistro-palm-garden.jpg",
     tags: ["Dining", "Romantic"] as const,
   },
   {

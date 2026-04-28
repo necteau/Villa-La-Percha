@@ -42,6 +42,7 @@ const restaurants = [
     mustTry: "Fresh Catch of the Day",
     link: "https://www.cocobistro.tc/",
     icon: "🌴",
+    image: "/images/coco-bistro-palm-garden.jpg",
     reservations: true,
     bestFor: "date night · polished dinner · special evening",
   },
