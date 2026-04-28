@@ -104,7 +104,7 @@ export default function IslandMap() {
 
         <div className="grid grid-cols-1 lg:grid-cols-[1.55fr_1fr] gap-8 items-start">
           <div className="relative rounded-2xl border border-[#E8E4DF] bg-white p-4 shadow-[0_15px_50px_rgba(44,44,44,0.08)] md:p-5">
-            <div className="relative aspect-[1280/764] overflow-hidden rounded-xl bg-[#EEF1F3] p-4 sm:p-5 md:p-6">
+            <div className="relative aspect-[1280/764] overflow-hidden rounded-xl bg-white p-4 sm:p-5 md:p-6">
               <div className="absolute inset-4 sm:inset-5 md:inset-6">
                 <Image
                   src={islandMapImage}
