@@ -11,6 +11,10 @@ export interface OwnerPortalStats {
   directPricingNightly: number | null;
   inquiriesTotal: number;
   inquiriesNew: number;
+  inquiriesNeedsReply: number;
+  inquiriesAwaitingGuest: number;
+  inquiriesBooked: number;
+  inquiriesClosed: number;
   inquiriesUnreplied: number;
   inquiriesAwaitingApproval: number;
   inquiriesSentReplies: number;
@@ -41,12 +45,15 @@ export async function getOwnerPortalStats(): Promise<OwnerPortalStats> {
   const today = todayYmd();
   const directEntry = pricingEntries.find((entry) => entry.platform === "direct");
   const inquiriesNew = inquiries.filter((inquiry) => inquiry.status === "needs_reply").length;
+  const inquiriesAwaitingGuest = inquiries.filter((inquiry) => inquiry.status === "awaiting_guest").length;
+  const inquiriesBooked = inquiries.filter((inquiry) => inquiry.status === "booked").length;
+  const inquiriesClosed = inquiries.filter((inquiry) => inquiry.status === "closed").length;
   const inquiriesUnreplied = inquiries.filter((inquiry) => inquiry.status === "needs_reply" || inquiry.status === "awaiting_guest").length;
   const inquiriesAwaitingApproval = inquiries.filter((inquiry) =>
     inquiry.drafts.some((draft) => draft.status === "pending_owner_approval" || draft.status === "approved")
   ).length;
   const inquiriesSentReplies = inquiries.filter((inquiry) => inquiry.messages.some((message) => message.direction === "outbound")).length;
-  const inquiriesConverted = inquiries.filter((inquiry) => inquiry.status === "booked").length;
+  const inquiriesConverted = inquiriesBooked;
 
   const firstResponseHours = inquiries
     .map((inquiry) => {
@@ -68,6 +75,10 @@ export async function getOwnerPortalStats(): Promise<OwnerPortalStats> {
     directPricingNightly: directEntry?.nightlyRate ?? null,
     inquiriesTotal: inquiries.length,
     inquiriesNew,
+    inquiriesNeedsReply: inquiriesNew,
+    inquiriesAwaitingGuest,
+    inquiriesBooked,
+    inquiriesClosed,
     inquiriesUnreplied,
     inquiriesAwaitingApproval,
     inquiriesSentReplies,
