@@ -176,7 +176,7 @@ export default function Gallery() {
 
       {isFullscreen && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/92 p-4 md:p-8"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-[#091818]/85 p-4 backdrop-blur-[2px] md:p-8"
           onClick={() => setIsFullscreen(false)}
         >
           <div
