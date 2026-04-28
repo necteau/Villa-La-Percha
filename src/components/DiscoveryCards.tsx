@@ -35,7 +35,7 @@ const experiences = [
     name: "Hemingway's Sunday Brunch",
     category: "Dining · 25 min",
     copy: "Eggs on the Beach. Beachfront. Sunday. What more do you need?",
-    image: "/images/pool-lounge-chairs-artistic.jpg",
+    image: "/images/hemingways-beachfront-patio.jpg",
     tags: ["Dining", "Legendary"] as const,
   },
   {
