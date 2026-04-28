@@ -101,6 +101,7 @@ const restaurants = [
     mustTry: "Lobster Eggs Benedict",
     link: "https://turksandcaicoscatering.com/",
     icon: "🥞",
+    image: "/images/bay-bistro-oceanfront-sunset.jpg",
     bestFor: "brunch · daytime Grace Bay stop · ocean view",
   },
   {
