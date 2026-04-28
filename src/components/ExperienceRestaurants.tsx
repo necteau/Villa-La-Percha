@@ -54,6 +54,7 @@ const restaurants = [
     mustTry: "Five-Course Blind Tasting",
     link: "https://www.provencebyeric.com/",
     icon: "🇫🇷",
+    image: "/images/provence-by-eric-chefs-table.jpg",
     reservations: true,
     bestFor: "foodies · quieter evening · special occasion",
   },
