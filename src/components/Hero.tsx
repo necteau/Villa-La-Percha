@@ -17,8 +17,8 @@ export default function Hero() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <section className="relative w-full overflow-hidden bg-[#1a1a1a]">
-      <div className="relative w-full" style={{ height: "50vh" }}>
+    <section className="relative min-h-[76svh] w-full overflow-hidden bg-[#1a1a1a] md:min-h-[78svh] lg:min-h-[720px]">
+      <div className="absolute inset-0">
         <Image
           src="/images/aerial-house-ocean-neighbors.jpg"
           alt="Villa La Percha"
@@ -28,7 +28,8 @@ export default function Hero() {
           sizes="100vw"
           quality={85}
         />
-        <div className="absolute inset-0 bg-black/35" />
+        <div className="absolute inset-0 bg-black/30" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/10 to-black/35" />
       </div>
 
       <nav className="absolute top-0 left-0 right-0 z-20 flex items-center justify-between px-6 py-4 md:px-10 md:py-6 lg:px-16">
@@ -93,7 +94,7 @@ export default function Hero() {
         </div>
       ) : null}
 
-      <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-white z-10 px-6 pt-14 md:pt-0">
+      <div className="relative z-10 flex min-h-[76svh] flex-col items-center justify-end px-6 pb-12 pt-28 text-center text-white md:min-h-[78svh] md:pb-16 lg:min-h-[720px] lg:pb-20">
         <p className="mb-5 text-xs uppercase tracking-[0.35em] text-white/85 md:mb-8 md:text-sm">
           Chalk Sound · Providenciales
         </p>
