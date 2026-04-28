@@ -112,6 +112,7 @@ const restaurants = [
     mustTry: "Dry-Aged Steak",
     link: "https://www.ritzcarlton.com/en/hotels/caribbean/turks-and-caicos/dining",
     icon: "🥩",
+    image: "/images/blt-steak-ritz-carlton.jpg",
     reservations: true,
     bestFor: "steak dinner · splurge night · celebratory meal",
   },
