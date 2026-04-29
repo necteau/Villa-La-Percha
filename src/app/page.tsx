@@ -102,7 +102,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-6 py-18 md:px-10 md:py-24">
+      <section className="mx-auto max-w-7xl px-6 py-20 md:px-10 md:py-24">
         <div className="grid gap-6 lg:grid-cols-3">
           <article className="rounded-[32px] bg-white p-8 shadow-[0_18px_55px_rgba(31,31,27,0.07)] lg:col-span-2 md:p-10">
             <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#8B7355]">For guests</p>
@@ -156,7 +156,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-6 pb-18 md:px-10 md:pb-24">
+      <section className="mx-auto max-w-7xl px-6 pb-20 md:px-10 md:pb-24">
         <div className="grid gap-6 lg:grid-cols-[0.8fr_1.2fr]">
           <div className="rounded-[32px] bg-[#10261f] p-8 text-white shadow-[0_18px_55px_rgba(31,31,27,0.12)] md:p-10">
             <p className="text-xs font-semibold uppercase tracking-[0.28em] text-white/55">AI operations</p>
@@ -170,7 +170,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-6 py-18 md:px-10 md:py-24">
+      <section className="mx-auto max-w-7xl px-6 py-20 md:px-10 md:py-24">
         <div className="rounded-[40px] bg-white p-8 shadow-[0_18px_55px_rgba(31,31,27,0.07)] md:p-12">
           <div className="grid gap-10 lg:grid-cols-[1fr_0.8fr] lg:items-center">
             <div>
