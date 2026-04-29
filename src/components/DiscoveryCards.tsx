@@ -46,11 +46,18 @@ const experiences = [
     tags: ["Dining", "Beachfront"] as const,
   },
   {
-    name: "Pirate's Cove Exploration",
-    category: "Adventure · 40 min",
-    copy: "Limestone sea stacks, hidden caves, a secret cove. Pirates used to love this place.",
-    image: "/images/pirates-cove.jpg",
-    tags: ["Adventure", "Hidden"] as const,
+    name: "Bight Reef Snorkeling",
+    category: "Snorkel · 20 min",
+    copy: "Easy shore snorkeling at Coral Gardens, with lunch and drinks nearby when everyone gets hungry.",
+    image: "/images/grace-bay-beach.jpg",
+    tags: ["Dive", "Family"] as const,
+  },
+  {
+    name: "Las Brisas",
+    category: "Dining · 5 min",
+    copy: "Chalk Sound views close to the villa — the easy dinner move when nobody wants the Grace Bay drive.",
+    image: "/images/chalk-sound.jpg",
+    tags: ["Dining", "Nearby"] as const,
   },
   {
     name: "Taylor Bay Swimming",
@@ -58,27 +65,6 @@ const experiences = [
     copy: "Knee-deep turquoise water in total silence. The kind of bay you never want to leave.",
     image: "/images/taylor-bay-beach.jpg",
     tags: ["Beach", "Hidden Gem"] as const,
-  },
-  {
-    name: "Sundog Sunset Sail",
-    category: "Experience · 60 min",
-    copy: "A wooden schooner, rum punch, and the Caribbean sun going down. Absolute magic.",
-    image: "/images/nighttime-pergola-pool-fire-pit-ocean.jpg",
-    tags: ["Romance", "Unforgettable"] as const,
-  },
-  {
-    name: "Coco Bistro",
-    category: "Dining · 25 min",
-    copy: "Fresh catch under twinkling lights in a palm grove. Your own herb garden in every dish.",
-    image: "/images/coco-bistro-palm-garden.jpg",
-    tags: ["Dining", "Romantic"] as const,
-  },
-  {
-    name: "Caicos Wall Diving",
-    category: "Dive · Offshore",
-    copy: "From 50 feet to 6,000 feet of ocean drop-off. Sea turtles, sharks, everything.",
-    image: "/images/aerial-house-pool-ocean.jpg",
-    tags: ["Dive", "Epic"] as const,
   },
   {
     name: "Northwest Point Marine Park",
@@ -93,13 +79,6 @@ const experiences = [
     copy: "Endless white sand, trade winds, beach bar energy. No resort gates, no cover charge.",
     image: "/images/sapodilla-bay-beach.jpg",
     tags: ["Beach", "Local Vibes"] as const,
-  },
-  {
-    name: "Turtle Watching at Conch Farm",
-    category: "Wildlife · 30 min",
-    copy: "Swim alongside hundreds of wild green sea turtles. Kids lose their minds. Adults lose their minds.",
-    image: "/images/downstairs-suite-hammock.jpg",
-    tags: ["Wildlife", "Family"] as const,
   },
 ];
 
