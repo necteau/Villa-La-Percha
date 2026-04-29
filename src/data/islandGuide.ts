@@ -166,7 +166,7 @@ export const islandGuideItems: IslandGuideItem[] = [
     description: "A casual beachside stop by the Bight Reef, useful for pairing tacos, drinks, and an easy snorkel session in one outing.",
     highlight: "Best for lunch or drinks after snorkeling the Bight Reef",
     mustTry: "Fish tacos",
-    link: "https://somewherecafeandlounge.com/",
+    link: "https://somewherecafeandlounge.com",
     icon: "🌮",
     bestFor: "snorkel lunch · beach drinks · casual sunset",
   },
@@ -256,6 +256,7 @@ export const islandGuideItems: IslandGuideItem[] = [
     area: "Leeward / East Provo",
     description: "A floating bar stop that fits best as part of a boat day, with shallow turquoise water and a more social island scene.",
     highlight: "Best for a fun boat-day stop with drinks and shallow water",
+    link: "https://www.instagram.com/noahsarktci/",
   },
   {
     id: "salt-mills-shopping",
@@ -274,6 +275,7 @@ export const islandGuideItems: IslandGuideItem[] = [
     area: "Turtle Cove / Marina Departure",
     description: "A private boat-charter option for snorkeling, beach stops, and seeing the water around Provo without joining a big group tour.",
     highlight: "Best for a private family boat day",
+    link: "https://ladyturkuoise.com/home/",
   },
   {
     id: "catching-caicos-fishing",
@@ -283,6 +285,7 @@ export const islandGuideItems: IslandGuideItem[] = [
     area: "Turtle Cove / Marina Departure",
     description: "A dedicated fishing-charter option for guests who want the real version of a fishing day beyond casting from the dock.",
     highlight: "Best for anglers who want a focused charter day",
+    link: "https://www.catchincaicos.com",
   },
   {
     id: "north-caicos-day-trip",
