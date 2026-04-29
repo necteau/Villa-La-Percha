@@ -125,6 +125,7 @@ export const islandGuideItems: IslandGuideItem[] = [
     area: "Industrial Park / Downtown",
     description: "The island's local brewery, good for a relaxed tasting stop, casual bites, and picking up local beer for the villa fridge.",
     highlight: "Best for local beer, easy lunch, and a low-key afternoon stop",
+    image: "/images/turks-head-brewery-taproom.jpg",
     mustTry: "Beer flight",
     link: "https://turksheadbrewery.tc/",
     icon: "🍺",
