@@ -285,15 +285,6 @@ export const islandGuideItems: IslandGuideItem[] = [
     highlight: "Best for anglers who want a focused charter day",
   },
   {
-    id: "shipwreck-diving",
-    kind: "activity",
-    name: "Dive the Shipwrecks",
-    category: "Diving · Wreck Diving",
-    area: "Off North Shore Reefs",
-    description: "For certified divers or more serious underwater people, this is one of the more memorable off-property experiences on the island. Better as a planned activity than a spontaneous same-day idea.",
-    highlight: "Best for experienced divers",
-  },
-  {
     id: "north-caicos-day-trip",
     kind: "activity",
     name: "North Caicos Day Trip",
