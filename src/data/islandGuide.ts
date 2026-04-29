@@ -256,6 +256,7 @@ export const islandGuideItems: IslandGuideItem[] = [
     area: "Leeward / East Provo",
     description: "A floating bar stop that fits best as part of a boat day, with shallow turquoise water and a more social island scene.",
     highlight: "Best for a fun boat-day stop with drinks and shallow water",
+    image: "/images/noahs-ark-floating-bar.jpg",
     link: "https://www.instagram.com/noahsarktci/",
   },
   {
