@@ -138,6 +138,7 @@ export const islandGuideItems: IslandGuideItem[] = [
     area: "Chalk Sound",
     description: "A scenic nearby restaurant overlooking Chalk Sound, useful when you want a proper meal close to the villa without driving across the island.",
     highlight: "Best for a nearby dinner with Chalk Sound views",
+    image: "/images/las-brisas-chalk-sound.jpg",
     mustTry: "Seafood by the water",
     link: "https://www.neptunevillastci.com/las-brisas-restaurant/",
     icon: "🌊",
