@@ -165,6 +165,7 @@ export const islandGuideItems: IslandGuideItem[] = [
     area: "The Bight / Coral Gardens",
     description: "A casual beachside stop by the Bight Reef, useful for pairing tacos, drinks, and an easy snorkel session in one outing.",
     highlight: "Best for lunch or drinks after snorkeling the Bight Reef",
+    image: "/images/somewhere-cafe-beachfront.jpg",
     mustTry: "Fish tacos",
     link: "https://somewherecafeandlounge.com",
     icon: "🌮",
