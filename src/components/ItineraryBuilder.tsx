@@ -22,12 +22,11 @@ const itineraries: Record<SegmentType, Activity[]> = {
   afternoon: [
     { name: "Da Conch Shack", description: "Legendary conch salad. Watch chefs crack fresh conch at outdoor tables. Wednesday = live Junkanoo.", time: "12:30 PM", label: "Dining" },
     { name: "Omar's Beach Hut", description: "Lobster pasta where dinner was swimming this morning. Beachside rum punch.", time: "1:00 PM", label: "Dining" },
-    { name: "Pirate's Cove Exploration", description: "Limestone sea stacks, hidden caves, a secret cove. Pirates loved this place.", time: "2:00 PM", label: "Adventure" },
     { name: "CocoVan Airstream Lunch", description: "Gourmet tacos and tapas from an authentic 1974 Airstream in a palm oasis.", time: "12:00 PM", label: "Casual" },
   ],
   evening: [
     { name: "Hemingway's Sunset Dinner", description: "Beachfront patio at The Sands. Surf-and-turf, tropical drinks, legendary sunsets.", time: "6:00 PM", label: "Dining" },
-    { name: "Sundog Sunset Sail", description: "Wooden schooner, rum punch, Golden Circle snorkel stop. The quintessential TCI experience.", time: "5:00 PM", label: "Experience" },
+    { name: "Snorkel at Bight Reef", description: "Easy shore snorkeling at Coral Gardens with lunch nearby after the water.", time: "9:30 AM", label: "Snorkel" },
     { name: "Infiniti Raw Bar", description: "Oceanfront gourmet seafood and raw bar at Grace Bay Club. Dress code enforced. Milestone-worthy.", time: "7:00 PM", label: "Fine Dining" },
     { name: "Magnolia Hilltop Sunset", description: "Hilltop dining overlooking Turtle Cove Marina. Sunset views + specialty wine list.", time: "6:30 PM", label: "Dining" },
   ],
