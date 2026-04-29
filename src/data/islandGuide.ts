@@ -271,6 +271,7 @@ export const islandGuideItems: IslandGuideItem[] = [
     area: "Grace Bay",
     description: "A convenient Grace Bay shopping stop for boutiques, gifts, resort wear, and an easy stroll before or after lunch nearby.",
     highlight: "Best for gifts, boutiques, and a low-key Grace Bay stroll",
+    image: "/images/salt-mills-shopping-grace-bay.jpg",
   },
   {
     id: "lady-turquoise-charter",
