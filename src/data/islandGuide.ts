@@ -291,6 +291,7 @@ export const islandGuideItems: IslandGuideItem[] = [
     area: "Turtle Cove / Marina Departure",
     description: "A dedicated fishing-charter option for guests who want the real version of a fishing day beyond casting from the dock.",
     highlight: "Best for anglers who want a focused charter day",
+    image: "/images/catching-caicos-fishing-charter.jpg",
     link: "https://www.catchincaicos.com",
   },
   {
