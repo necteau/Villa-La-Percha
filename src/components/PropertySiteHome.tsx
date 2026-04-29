@@ -6,7 +6,6 @@ import About from "@/components/About";
 import PropertyHighlights from "@/components/PropertyHighlights";
 import Amenities from "@/components/Amenities";
 import Gallery from "@/components/Gallery";
-import DayAtTheVilla from "@/components/DayAtTheVilla";
 import DockFishing from "@/components/DockFishing";
 import OwnersNote from "@/components/OwnersNote";
 import Location from "@/components/Location";
@@ -27,7 +26,6 @@ export default function PropertySiteHome() {
       <PropertyHighlights />
       <Amenities />
       <Gallery />
-      <DayAtTheVilla />
       <DockFishing />
       <OwnersNote />
       <Location />

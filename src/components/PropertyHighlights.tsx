@@ -41,22 +41,21 @@ export default function PropertyHighlights() {
           {highlights.map((item, i) => (
             <div
               key={i}
-              className="group relative overflow-hidden rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 cursor-pointer"
+              className="group overflow-hidden rounded-2xl bg-white shadow-lg hover:shadow-xl transition-shadow duration-300"
             >
-              <div className="absolute inset-0">
+              <div className="relative h-56 md:h-72 overflow-hidden">
                 <Image
                   src={item.image}
                   alt={item.title}
                   fill
                   className="object-cover group-hover:scale-105 transition-transform duration-700"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
               </div>
-              <div className="relative h-full flex flex-col justify-end p-6 md:p-8">
-                <h3 className="text-xl md:text-2xl font-medium text-white mb-2">
+              <div className="p-6 md:p-8">
+                <h3 className="text-xl md:text-2xl font-medium text-slate-900 mb-2">
                   {item.title}
                 </h3>
-                <p className="text-white/80 text-sm md:text-base leading-relaxed">
+                <p className="text-slate-600 text-sm md:text-base leading-relaxed">
                   {item.description}
                 </p>
               </div>
