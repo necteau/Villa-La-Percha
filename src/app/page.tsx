@@ -1,117 +1,151 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "DirectStay | Direct booking infrastructure for vacation rental owners",
+  title: "DirectStay | Book exceptional vacation homes direct",
   description:
-    "DirectStay helps vacation rental owners book more guests directly with premium booking sites, direct inquiry funnels, and AI-powered operating systems.",
+    "DirectStay connects guests with premium vacation homes they can book directly with owners — fewer platform fees, clearer communication, and a more personal stay.",
   alternates: {
     canonical: "/",
   },
+  openGraph: {
+    title: "DirectStay | Book exceptional vacation homes direct",
+    description:
+      "Premium vacation homes, direct owner relationships, and a cleaner booking experience without marketplace friction.",
+    url: "/",
+    siteName: "DirectStay",
+    type: "website",
+    images: [
+      {
+        url: "/images/aerial-house-ocean-neighbors.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Villa La Percha in Providenciales",
+      },
+    ],
+  },
 };
 
-const pillars = [
-  {
-    title: "Guest-facing booking sites",
-    body: "Standalone property sites that feel premium, credible, and easier to trust than another Airbnb or VRBO listing page.",
-  },
-  {
-    title: "Direct conversion systems",
-    body: "Inquiry flows, pricing comparisons, owner response workflows, and the operating layer needed to turn interest into booked stays.",
-  },
-  {
-    title: "AI-powered operations",
-    body: "Use AI to handle the repetitive work around hosting, lead response, pricing support, and property marketing without adding headcount.",
-  },
+const guestBenefits = [
+  "Book directly with the property team instead of through a marketplace queue.",
+  "Avoid the inflated platform-fee stack that can make luxury rentals feel needlessly expensive.",
+  "Get local planning notes, beach guidance, and arrival details from people who know the home.",
 ];
 
-const roadmap = [
-  "Property websites and direct inquiry funnels",
-  "Owner dashboards, configuration, and response workflows",
-  "Calendar, pricing, payment, and booking operations",
-  "A real alternative to marketplace-first vacation rental selling",
+const ownerBenefits = [
+  "A polished property site that looks like a real hospitality brand, not a copied listing.",
+  "Inquiry, pricing, calendar, and payment workflows designed for direct conversion.",
+  "Guest relationships, repeat bookings, and operating data that stay with the owner.",
 ];
 
-const audience = [
-  "Independent owners with strong properties and no real direct presence",
-  "Hosts who want repeat guests and referrals to book outside Airbnb and VRBO",
-  "Hospitality brands that need more control over margin, conversion, and guest relationships",
+const trustPoints = [
+  { value: "Direct", label: "Owner-led booking path" },
+  { value: "Lower", label: "Marketplace dependency" },
+  { value: "Better", label: "Guest relationship" },
 ];
 
 export default function HomePage() {
   return (
-    <main className="min-h-screen bg-[#f6f4ef] text-[#1f1f1b]">
-      <section className="border-b border-black/5 bg-white">
-        <div className="mx-auto flex min-h-[74vh] w-full max-w-6xl flex-col justify-center px-6 py-20 md:px-10">
-          <p className="mb-4 text-sm font-medium uppercase tracking-[0.24em] text-[#7b7468]">DirectStay</p>
-          <h1 className="max-w-5xl font-display text-5xl leading-tight text-[#181612] md:text-7xl">
-            The direct-booking operating system for vacation rental owners.
-          </h1>
-          <p className="mt-6 max-w-3xl text-lg leading-8 text-[#5b554b] md:text-xl">
-            DirectStay helps owners reduce dependence on Airbnb and VRBO with polished guest-facing booking
-            sites, stronger direct conversion, and AI-powered systems behind the scenes.
-          </p>
-          <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:flex-wrap">
-            <a
-              href="mailto:hello@directstay.app?subject=DirectStay%20owner%20inquiry"
-              className="inline-flex items-center justify-center rounded-full bg-[#1e4536] px-7 py-3 text-sm font-semibold text-white transition hover:bg-[#18372b]"
-            >
-              Talk to DirectStay
-            </a>
-            <Link
-              href="/villa-la-percha"
-              className="inline-flex items-center justify-center rounded-full border border-[#1f1f1b]/15 px-7 py-3 text-sm font-semibold text-[#1f1f1b] transition hover:bg-[#f2efe8]"
-            >
-              View live property example
-            </Link>
-            <Link
-              href="/owner-portal"
-              className="inline-flex items-center justify-center rounded-full border border-[#1f1f1b]/15 px-7 py-3 text-sm font-semibold text-[#1f1f1b] transition hover:bg-[#f2efe8]"
-            >
-              Preview owner portal
-            </Link>
+    <main className="min-h-screen bg-[#f7f3ec] text-[#1f1f1b]">
+      <section className="relative overflow-hidden bg-[#10261f] text-white">
+        <div className="absolute inset-0">
+          <Image
+            src="/images/aerial-house-ocean-neighbors.jpg"
+            alt="DirectStay featured vacation home"
+            fill
+            priority
+            className="object-cover opacity-35"
+            sizes="100vw"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#10261f] via-[#10261f]/86 to-[#10261f]/35" />
+        </div>
+
+        <div className="relative mx-auto grid min-h-[82vh] max-w-7xl items-center gap-10 px-6 py-20 md:px-10 lg:grid-cols-[1.05fr_0.95fr]">
+          <div>
+            <p className="mb-5 text-xs font-semibold uppercase tracking-[0.32em] text-white/70">DirectStay</p>
+            <h1 className="max-w-4xl font-display text-5xl leading-[0.95] md:text-7xl">
+              Premium vacation homes, booked direct.
+            </h1>
+            <p className="mt-7 max-w-2xl text-lg leading-8 text-white/82 md:text-xl">
+              DirectStay helps guests book exceptional private homes without the marketplace runaround — and gives owners the tools to build a real direct-booking business.
+            </p>
+            <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:flex-wrap">
+              <Link
+                href="/villa-la-percha"
+                className="inline-flex items-center justify-center rounded-full bg-white px-7 py-3 text-sm font-semibold text-[#10261f] transition hover:bg-[#f2efe8]"
+              >
+                View Villa La Percha
+              </Link>
+              <a
+                href="mailto:hello@directstay.app?subject=DirectStay%20owner%20inquiry"
+                className="inline-flex items-center justify-center rounded-full border border-white/25 px-7 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
+              >
+                List with DirectStay
+              </a>
+            </div>
           </div>
-          <p className="mt-6 max-w-2xl text-sm leading-6 text-[#7b7468]">
-            Start with one high-converting direct site. Build toward a world where owners control the guest
-            relationship, the margin, and the operating system.
-          </p>
+
+          <div className="rounded-[34px] border border-white/15 bg-white/10 p-5 shadow-2xl backdrop-blur-md md:p-6">
+            <div className="relative aspect-[4/3] overflow-hidden rounded-[26px]">
+              <Image src="/images/pool-lounge-ocean.jpg" alt="Luxury villa pool with ocean view" fill className="object-cover" sizes="(max-width: 1024px) 100vw, 45vw" />
+            </div>
+            <div className="grid grid-cols-3 gap-3 pt-5 text-center">
+              {trustPoints.map((point) => (
+                <div key={point.label} className="rounded-2xl bg-white/12 px-3 py-4">
+                  <p className="font-display text-2xl">{point.value}</p>
+                  <p className="mt-1 text-[11px] leading-4 text-white/65">{point.label}</p>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-6 py-20 md:px-10">
-        <div className="grid gap-6 md:grid-cols-3">
-          {pillars.map((pillar) => (
-            <article key={pillar.title} className="rounded-[28px] bg-white p-8 shadow-[0_12px_40px_rgba(0,0,0,0.05)]">
-              <h2 className="font-display text-3xl text-[#1b1a17]">{pillar.title}</h2>
-              <p className="mt-4 text-base leading-7 text-[#5b554b]">{pillar.body}</p>
-            </article>
-          ))}
+      <section className="mx-auto max-w-7xl px-6 py-18 md:px-10 md:py-24">
+        <div className="grid gap-6 lg:grid-cols-3">
+          <article className="rounded-[32px] bg-white p-8 shadow-[0_18px_55px_rgba(31,31,27,0.07)] lg:col-span-2 md:p-10">
+            <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#8B7355]">For guests</p>
+            <h2 className="mt-4 max-w-3xl font-display text-4xl leading-tight text-[#181612] md:text-5xl">
+              A more personal way to book homes worth traveling for.
+            </h2>
+            <ul className="mt-8 grid gap-5 md:grid-cols-3">
+              {guestBenefits.map((item) => (
+                <li key={item} className="rounded-2xl border border-[#e8e0d2] bg-[#fbfaf7] p-5 text-sm leading-6 text-[#5b554b]">
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </article>
+
+          <article className="rounded-[32px] bg-[#1a1916] p-8 text-white shadow-[0_18px_55px_rgba(31,31,27,0.12)] md:p-10">
+            <p className="text-xs font-semibold uppercase tracking-[0.28em] text-white/55">Featured stay</p>
+            <h2 className="mt-4 font-display text-4xl leading-tight">Villa La Percha</h2>
+            <p className="mt-5 text-base leading-7 text-white/72">
+              A private Chalk Sound villa in Providenciales with four en-suite bedrooms, dock swimming, kayaks, paddleboards, pool, hot tub, and a direct booking path.
+            </p>
+            <Link href="/villa-la-percha" className="mt-8 inline-flex rounded-full bg-white px-6 py-3 text-sm font-semibold text-[#1a1916] transition hover:bg-[#f2efe8]">
+              Open property site
+            </Link>
+          </article>
         </div>
       </section>
 
       <section className="border-y border-black/5 bg-[#efe8dc]">
-        <div className="mx-auto grid max-w-6xl gap-12 px-6 py-20 md:grid-cols-[1.05fr_0.95fr] md:px-10">
-          <div>
-            <p className="text-sm font-medium uppercase tracking-[0.24em] text-[#7b7468]">Who this is for</p>
-            <h2 className="mt-4 max-w-3xl font-display text-4xl leading-tight text-[#181612] md:text-5xl">
-              Owners with strong properties should not have to rely on marketplace pages as their whole brand.
-            </h2>
-            <ul className="mt-6 space-y-4 text-lg leading-8 text-[#5b554b]">
-              {audience.map((item) => (
-                <li key={item} className="flex gap-3">
-                  <span className="mt-3 h-2.5 w-2.5 shrink-0 rounded-full bg-[#1e4536]" />
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
+        <div className="mx-auto grid max-w-7xl gap-10 px-6 py-20 md:px-10 lg:grid-cols-[0.95fr_1.05fr]">
+          <div className="relative min-h-[380px] overflow-hidden rounded-[36px] shadow-[0_18px_55px_rgba(31,31,27,0.12)]">
+            <Image src="/images/screened-living-room-ocean-pool.jpg" alt="Indoor outdoor villa living space" fill className="object-cover" sizes="(max-width: 1024px) 100vw, 45vw" />
           </div>
-          <div className="rounded-[32px] bg-white p-8 shadow-[0_12px_40px_rgba(0,0,0,0.05)]">
-            <p className="text-sm font-medium uppercase tracking-[0.24em] text-[#7b7468]">What DirectStay becomes</p>
-            <h3 className="mt-4 font-display text-3xl leading-tight text-[#1b1a17] md:text-4xl">
-              Start with direct websites. Build toward a real marketplace alternative.
-            </h3>
-            <ul className="mt-6 space-y-4 text-base leading-7 text-[#5b554b]">
-              {roadmap.map((item) => (
+          <div className="self-center">
+            <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#8B7355]">For owners</p>
+            <h2 className="mt-4 max-w-3xl font-display text-4xl leading-tight text-[#181612] md:text-5xl">
+              Turn a great property into a direct-booking brand.
+            </h2>
+            <p className="mt-6 text-lg leading-8 text-[#5b554b]">
+              DirectStay is built for owners who want more control over guest relationships, pricing, presentation, and repeat bookings — without asking travelers to trust a barebones landing page.
+            </p>
+            <ul className="mt-7 space-y-4 text-base leading-7 text-[#5b554b]">
+              {ownerBenefits.map((item) => (
                 <li key={item} className="flex gap-3">
                   <span className="mt-2 h-2.5 w-2.5 shrink-0 rounded-full bg-[#1e4536]" />
                   <span>{item}</span>
@@ -122,49 +156,24 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-6 py-20 md:px-10">
-        <div className="grid gap-6 lg:grid-cols-2">
-          <div className="rounded-[36px] bg-[#1a1916] px-8 py-12 text-white md:px-12 md:py-16">
-            <p className="text-sm font-medium uppercase tracking-[0.24em] text-white/60">Live example</p>
-            <h2 className="mt-4 font-display text-4xl leading-tight md:text-5xl">Villa La Percha</h2>
-            <p className="mt-5 max-w-3xl text-lg leading-8 text-white/78">
-              A direct-booking villa site designed to show what happens when a property is positioned like a
-              real hospitality brand instead of just another listing on someone else&apos;s platform.
-            </p>
-            <div className="mt-8 flex flex-col gap-4 sm:flex-row">
-              <Link
-                href="/villa-la-percha"
-                className="inline-flex items-center justify-center rounded-full bg-white px-7 py-3 text-sm font-semibold text-[#1a1916] transition hover:bg-[#f2efe8]"
-              >
-                Open the Villa La Percha site
-              </Link>
-              <a
-                href="mailto:hello@directstay.app?subject=DirectStay%20demo%20request"
-                className="inline-flex items-center justify-center rounded-full border border-white/20 px-7 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
-              >
-                Request a site like this
-              </a>
+      <section className="mx-auto max-w-7xl px-6 py-18 md:px-10 md:py-24">
+        <div className="rounded-[40px] bg-white p-8 shadow-[0_18px_55px_rgba(31,31,27,0.07)] md:p-12">
+          <div className="grid gap-10 lg:grid-cols-[1fr_0.8fr] lg:items-center">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#8B7355]">DirectStay network</p>
+              <h2 className="mt-4 font-display text-4xl leading-tight text-[#181612] md:text-5xl">
+                Starting with select homes. Built to grow carefully.
+              </h2>
+              <p className="mt-5 max-w-3xl text-lg leading-8 text-[#5b554b]">
+                We are focused on properties where the direct experience can genuinely be better: strong homes, clear guest communication, useful local guidance, and owners who care about the stay after the booking is made.
+              </p>
             </div>
-          </div>
-
-          <div className="rounded-[36px] bg-white px-8 py-12 text-[#1a1916] shadow-[0_12px_40px_rgba(0,0,0,0.05)] md:px-12 md:py-16">
-            <p className="text-sm font-medium uppercase tracking-[0.24em] text-[#7b7468]">Owner portal</p>
-            <h2 className="mt-4 font-display text-4xl leading-tight md:text-5xl">Per-site controls for payments, booking flow, and operations.</h2>
-            <p className="mt-5 max-w-3xl text-lg leading-8 text-[#5b554b]">
-              DirectStay should eventually let each owner decide whether their site supports Stripe, Zelle, Venmo, Cash App, or a hybrid setup — along with booking rules, notifications, and operational preferences.
-            </p>
-            <div className="mt-8 flex flex-col gap-4 sm:flex-row">
-              <Link
-                href="/owner-portal"
-                className="inline-flex items-center justify-center rounded-full bg-[#1e4536] px-7 py-3 text-sm font-semibold text-white transition hover:bg-[#18372b]"
-              >
-                Explore owner portal preview
+            <div className="flex flex-col gap-4 sm:flex-row lg:flex-col">
+              <Link href="/villa-la-percha/experience-the-island" className="inline-flex items-center justify-center rounded-full bg-[#1e4536] px-7 py-3 text-sm font-semibold text-white transition hover:bg-[#18372b]">
+                Explore the island guide
               </Link>
-              <a
-                href="mailto:hello@directstay.app?subject=DirectStay%20owner%20portal"
-                className="inline-flex items-center justify-center rounded-full border border-[#1f1f1b]/15 px-7 py-3 text-sm font-semibold text-[#1f1f1b] transition hover:bg-[#f2efe8]"
-              >
-                Talk through owner needs
+              <a href="mailto:hello@directstay.app?subject=DirectStay%20inquiry" className="inline-flex items-center justify-center rounded-full border border-[#1f1f1b]/15 px-7 py-3 text-sm font-semibold text-[#1f1f1b] transition hover:bg-[#f2efe8]">
+                Contact DirectStay
               </a>
             </div>
           </div>
