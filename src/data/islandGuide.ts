@@ -304,6 +304,7 @@ export const islandGuideItems: IslandGuideItem[] = [
     area: "Ferry / Charter East",
     description: "A bigger day out for guests who want to see more than Providenciales. Worth it if your group likes exploring, but probably not necessary if the goal is mostly to relax at the villa and nearby beaches.",
     highlight: "Best for a full-day island adventure",
+    image: "/images/north-caicos-day-trip.jpg",
   },
 ];
 
