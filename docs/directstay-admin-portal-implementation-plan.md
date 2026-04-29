@@ -70,6 +70,15 @@ Status values: `Not started`, `In progress`, `Agent complete`, `Jaimal accepted`
    - Owner onboarding/invite emails must be previewed and explicitly sent.
    - No automatic external sends on lead conversion unless Jaimal explicitly approves that behavior later.
 
+8. **Property URL strategy: subfolder by default, custom domain ready**
+   - Default DirectStay-hosted property URL is `directstay.app/<property-slug>`.
+   - Properties must also support optional custom domains such as `villalapercha.com` or `www.customer-property.com`.
+   - Keep `property.slug` as the stable internal/public path key even when a custom domain is primary.
+   - Store custom domains as property/site domain records with primary/alias/status fields; do not hardcode one domain per property.
+   - Routing must eventually resolve both path-based requests and host-header custom-domain requests to the same property context.
+   - Avoid SEO duplicate issues: each property needs one primary canonical URL, with aliases/subfolder behavior intentionally configured.
+   - DirectStay will manage repo/Vercel/DNS guidance operationally; owners may own the registrar/domain but DirectStay handles setup instructions and Vercel configuration.
+
 ---
 
 # Phase 0 — Safety Prep / Baseline
@@ -251,6 +260,7 @@ Launch the public DirectStay owner-acquisition funnel safely.
   - property count
   - property location
   - current website/OTA links
+  - desired custom domain, if they already own or want one
   - PMS/channel manager optional
   - launch timeline
   - goal
@@ -282,6 +292,7 @@ Launch the public DirectStay owner-acquisition funnel safely.
 - Run `npm run lint`.
 - Run `npm run build`.
 - Submit valid PlatformLead form and confirm DB record exists.
+- Submit valid PlatformLead form with desired custom domain and confirm it is stored/displayed.
 - Submit invalid email and confirm validation error.
 - Submit missing required fields and confirm validation errors.
 - Submit obvious spam/honeypot/rate-limit case and confirm rejection.
@@ -296,7 +307,7 @@ Launch the public DirectStay owner-acquisition funnel safely.
 - Confirm thank-you page appears and explains next steps.
 - Log into `/admin`.
 - Open Platform Leads list; confirm test lead appears.
-- Open lead detail; confirm all submitted fields are present and readable.
+- Open lead detail; confirm all submitted fields are present and readable, including desired custom domain if provided.
 - Submit a bad/partial form and confirm helpful errors.
 - Submit a normal Villa guest inquiry and confirm it still appears in the owner inquiry flow, not Platform Leads.
 
@@ -447,6 +458,8 @@ Add safe write operations one category at a time.
   - owner display name/support contact
   - property status
   - property inquiry settings
+  - property default subfolder slug, with duplicate/conflict protection
+  - property public/canonical URL metadata, without automatically changing DNS/Vercel yet
   - internal admin fields
 - Confirmation/reason required for higher-risk writes.
 - Audit before/after diffs.
@@ -466,6 +479,7 @@ Add safe write operations one category at a time.
 - Edit allowed owner field and confirm persistence.
 - Edit allowed property field and confirm persistence.
 - Confirm before/after diffs appear in audit log.
+- Confirm duplicate/conflicting property slug changes are rejected.
 - Confirm reason prompt appears for configured sensitive fields.
 - Confirm disallowed fields cannot be changed by normal admin.
 - Confirm non-admin cannot call mutation APIs.
@@ -476,6 +490,7 @@ Add safe write operations one category at a time.
 - As admin, edit a safe owner field.
 - Confirm the update appears on owner detail.
 - Edit a safe property/admin field.
+- If exposed, edit a test property slug/public URL field and confirm duplicate conflicts are blocked.
 - Confirm update appears correctly.
 - Open audit/activity and confirm before/after is understandable.
 - Try a risky/disallowed action if exposed; confirm it is blocked or requires confirmation/reason.
@@ -502,12 +517,14 @@ Convert a qualified PlatformLead into real owner/property setup.
   - existing user by email
   - existing owner by email/company
   - existing property/domain/slug
+  - desired custom domain availability/conflict state
   - conflicts before creating anything
 - Convert action creates transactionally:
   - `Owner`
   - `User` if needed
   - `OwnerMember`
-  - optional draft `Property`
+  - optional draft `Property` with stable `slug`
+  - optional property domain record for desired custom domain, marked unverified/pending setup
   - onboarding status/checklist if implemented
 - Mark `PlatformLead` as `CONVERTED`.
 - Link lead to converted owner/property.
@@ -528,6 +545,7 @@ Convert a qualified PlatformLead into real owner/property setup.
 - Test duplicate email detection.
 - Test duplicate company/owner detection.
 - Test duplicate property slug/domain detection.
+- Test desired custom domain conflict/pending-domain handling.
 - Confirm no onboarding email is sent automatically.
 - Confirm converted owner appears in admin owners list.
 - Confirm owner-context view can load the converted owner.
@@ -540,6 +558,7 @@ Convert a qualified PlatformLead into real owner/property setup.
 - Convert the lead.
 - Confirm new owner appears in Owners.
 - Confirm optional draft property appears under that owner if created.
+- Confirm any desired custom domain appears as pending/unverified, not falsely live.
 - Confirm lead status becomes `CONVERTED`.
 - Confirm no external invite email was sent unless explicitly clicked.
 - Try converting a duplicate-style lead and confirm the UI warns before action.
@@ -619,6 +638,7 @@ Add settings without creating a chaos drawer.
   - Inquiry routing
   - Email templates
   - Site defaults
+  - Domain/custom-domain setup defaults and DNS instruction templates
   - Feature flags
 - Keep secrets/integrations mostly read-only or environment-backed at first.
 - Audit every setting change.
@@ -636,6 +656,7 @@ Add settings without creating a chaos drawer.
 - Update inquiry routing and confirm it affects new lead behavior if implemented.
 - Update email template draft and confirm persistence/rendering.
 - Toggle feature flag and confirm gated behavior changes as expected.
+- Update/test a DNS instruction template or custom-domain setup default if implemented.
 - Confirm secret/integration values are masked or read-only.
 - Confirm invalid setting values are rejected.
 - Confirm audit log records all setting changes.
@@ -647,6 +668,7 @@ Add settings without creating a chaos drawer.
 - Confirm it saves and displays correctly.
 - Update an email template draft and preview it.
 - Toggle a safe feature flag if available and confirm expected behavior.
+- Review custom-domain/DNS setup copy and confirm it is clear for future owner domains.
 - Confirm no raw secrets are visible.
 - Open activity/audit and confirm setting changes are recorded.
 
@@ -672,6 +694,8 @@ Make the admin portal feel like a real operating system.
 - Global search.
 - Filters/saved views.
 - Domain/site health cards.
+- Custom domain readiness/status cards: primary domain, aliases, DNS target, Vercel status, SSL status, canonical URL.
+- Host-header property resolution for custom domains, if not completed earlier.
 - PlatformLead pipeline board.
 - Owner health indicators.
 - Task/reminder system if still needed.
@@ -688,6 +712,8 @@ Make the admin portal feel like a real operating system.
 - Test filters/saved views if implemented.
 - Test pipeline board drag/status updates if implemented.
 - Test domain/site health cards display real or intentionally unavailable states.
+- Test custom-domain host routing with a controlled domain/subdomain or local host-header simulation.
+- Confirm canonical URL behavior avoids duplicate SEO confusion between `directstay.app/<slug>` and custom domain.
 - Confirm no placeholder buttons or dead links remain.
 - Run a full regression pass:
   - public site
@@ -704,6 +730,7 @@ Make the admin portal feel like a real operating system.
 - Move or update a PlatformLead if pipeline board exists.
 - Check an owner health/status area.
 - Check domain/site health display.
+- If a controlled test domain/subdomain is available, verify it loads the correct property site and owner inquiry flow.
 - Confirm there are no confusing placeholders, dead buttons, or misleading widgets.
 - Confirm owner portal and public site still feel normal.
 
