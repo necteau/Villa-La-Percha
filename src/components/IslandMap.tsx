@@ -241,7 +241,7 @@ export default function IslandMap() {
                 {zoom > 1 && <button type="button" onClick={resetZoom} className="px-2 text-[10px] uppercase tracking-[0.12em] text-[#8B7355]">Reset</button>}
               </div>
 
-              <div className="absolute inset-4 transition-transform duration-150 sm:inset-5 md:inset-6" style={{ transform: mapTransform, transformOrigin: "50% 50%" }}>
+              <div className="absolute inset-4 will-change-transform sm:inset-5 md:inset-6" style={{ transform: mapTransform, transformOrigin: "50% 50%" }}>
                 <Image
                   src={islandMapImage}
                   alt="Providenciales island map"
@@ -252,7 +252,7 @@ export default function IslandMap() {
                 />
               </div>
 
-              <div className="absolute inset-4 transition-transform duration-150 sm:inset-5 md:inset-6" style={{ transform: mapTransform, transformOrigin: "50% 50%" }}>
+              <div className="absolute inset-4 will-change-transform sm:inset-5 md:inset-6" style={{ transform: mapTransform, transformOrigin: "50% 50%" }}>
                 <button
                   type="button"
                   onMouseEnter={() => setHoveredId(positionedVillaBase.id)}
@@ -262,7 +262,7 @@ export default function IslandMap() {
                     setExpandedClusterId(null);
                   }}
                   className="absolute -translate-x-1/2 -translate-y-1/2 cursor-pointer p-2"
-                  style={{ left: `${positionedVillaBase.renderX}%`, top: `${positionedVillaBase.renderY}%` }}
+                  style={{ left: `${positionedVillaBase.renderX}%`, top: `${positionedVillaBase.renderY}%`, transform: `translate(-50%, -50%) scale(${1 / zoom})` }}
                   aria-label="Villa La Percha"
                 >
                   <span className="relative flex h-8 w-8 items-center justify-center rounded-full bg-[#2C2C2C] shadow-lg">
@@ -282,7 +282,7 @@ export default function IslandMap() {
                         type="button"
                         onClick={() => setExpandedClusterId(cluster.id)}
                         className="absolute -translate-x-1/2 -translate-y-1/2 cursor-pointer p-2"
-                        style={{ left: `${cluster.x}%`, top: `${cluster.y}%` }}
+                        style={{ left: `${cluster.x}%`, top: `${cluster.y}%`, transform: `translate(-50%, -50%) scale(${1 / zoom})` }}
                         aria-label={`Expand ${cluster.points.length} places near ${cluster.points[0].area}`}
                       >
                         <span
@@ -310,7 +310,7 @@ export default function IslandMap() {
                         onMouseLeave={() => setHoveredId(null)}
                         onClick={() => selectPoint(point.id)}
                         className="absolute -translate-x-1/2 -translate-y-1/2 cursor-pointer p-2"
-                        style={{ left: `${position.x}%`, top: `${position.y}%` }}
+                        style={{ left: `${position.x}%`, top: `${position.y}%`, transform: `translate(-50%, -50%) scale(${1 / zoom})` }}
                         aria-label={point.name}
                       >
                         {isExpanded && cluster.points.length > 1 && (
