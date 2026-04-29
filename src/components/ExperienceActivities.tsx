@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { activities, guideAnchor } from "@/data/islandGuide";
 
 export default function Activities() {
@@ -22,8 +23,14 @@ export default function Activities() {
             <article
               key={a.id}
               id={guideAnchor(a.id)}
-              className="group scroll-mt-28 bg-[#FAFAF8] rounded-xl border border-[#E8E4DF] p-7 hover:shadow-lg hover:border-[#8B7355]/30 transition-all duration-300 target:ring-2 target:ring-[#8B7355]/40"
+              className="group scroll-mt-28 overflow-hidden bg-[#FAFAF8] rounded-xl border border-[#E8E4DF] hover:shadow-lg hover:border-[#8B7355]/30 transition-all duration-300 target:ring-2 target:ring-[#8B7355]/40"
             >
+              {a.image ? (
+                <div className="relative h-52 w-full overflow-hidden bg-[#E8E4DF]">
+                  <Image src={a.image} alt={a.name} fill className="object-cover transition duration-500 group-hover:scale-105" sizes="(max-width: 768px) 100vw, 50vw" />
+                </div>
+              ) : null}
+              <div className="p-7">
               <span className="text-[10px] tracking-wider uppercase font-medium" style={{ color: "#8B7355" }}>
                 {a.category}
               </span>
@@ -38,6 +45,7 @@ export default function Activities() {
               <a href="#island-map" className="mt-4 inline-block text-[10px] px-2 py-0.5 rounded border border-[#E8E4DF] text-[#8B7355] hover:border-[#8B7355]/50">
                 See on map
               </a>
+              </div>
             </article>
           ))}
         </div>
