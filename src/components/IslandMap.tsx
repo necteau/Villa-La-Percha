@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import {
   islandMapHomeBase as villaBase,
   islandMapImage,
@@ -37,6 +37,9 @@ type MapCluster = {
 
 const clusterDistance = 4.8;
 const spiderRadius = 4.2;
+const unclusteredZoom = 1.65;
+const minZoom = 1;
+const maxZoom = 3.2;
 
 function getRenderedPosition(item: { x: number; y: number; lat?: number; lon?: number }) {
   if (typeof item.lat === "number" && typeof item.lon === "number") {
@@ -91,6 +94,9 @@ export default function IslandMap() {
   const [selectedId, setSelectedId] = useState<string>(villaBase.id);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const [expandedClusterId, setExpandedClusterId] = useState<string | null>(null);
+  const [zoom, setZoom] = useState(1);
+  const activePointers = useRef(new Map<number, { x: number; y: number }>());
+  const pinchStart = useRef<{ distance: number; zoom: number } | null>(null);
 
   const positionedVillaBase = useMemo<PositionedBase>(() => {
     const { x, y } = getRenderedPosition(villaBase);
@@ -112,6 +118,7 @@ export default function IslandMap() {
   );
 
   const clusters = useMemo(() => buildClusters(filteredPoints), [filteredPoints]);
+  const shouldCluster = zoom < unclusteredZoom;
 
   const detail = useMemo(() => {
     if (hoveredId === positionedVillaBase.id || selectedId === positionedVillaBase.id) {
@@ -125,7 +132,24 @@ export default function IslandMap() {
   const selectPoint = (pointId: string) => {
     setSelectedId(pointId);
     const cluster = clusters.find((candidate) => candidate.points.some((point) => point.id === pointId));
-    if (cluster && cluster.points.length > 1) setExpandedClusterId(cluster.id);
+    if (shouldCluster && cluster && cluster.points.length > 1) setExpandedClusterId(cluster.id);
+  };
+
+  const setClampedZoom = (nextZoom: number) => {
+    const clamped = Math.min(maxZoom, Math.max(minZoom, nextZoom));
+    setZoom(clamped);
+    if (clamped >= unclusteredZoom) setExpandedClusterId(null);
+  };
+
+  const getPinchDistance = () => {
+    const pointers = Array.from(activePointers.current.values());
+    if (pointers.length < 2) return null;
+    return Math.hypot(pointers[0].x - pointers[1].x, pointers[0].y - pointers[1].y);
+  };
+
+  const resetZoom = () => {
+    setZoom(1);
+    setExpandedClusterId(null);
   };
 
   return (
@@ -165,8 +189,40 @@ export default function IslandMap() {
 
         <div className="grid grid-cols-1 lg:grid-cols-[1.55fr_1fr] gap-8 items-start">
           <div className="relative rounded-2xl border border-[#E8E4DF] bg-white p-4 shadow-[0_15px_50px_rgba(44,44,44,0.08)] md:p-5">
-            <div className="relative aspect-[1280/764] overflow-hidden rounded-xl bg-white p-4 sm:p-5 md:p-6">
-              <div className="absolute inset-4 sm:inset-5 md:inset-6">
+            <div
+              className="relative aspect-[1280/764] overflow-hidden rounded-xl bg-white p-4 touch-none select-none sm:p-5 md:p-6"
+              onPointerDown={(event) => {
+                activePointers.current.set(event.pointerId, { x: event.clientX, y: event.clientY });
+                event.currentTarget.setPointerCapture(event.pointerId);
+                if (activePointers.current.size === 2) {
+                  const distance = getPinchDistance();
+                  if (distance) pinchStart.current = { distance, zoom };
+                }
+              }}
+              onPointerMove={(event) => {
+                if (!activePointers.current.has(event.pointerId)) return;
+                activePointers.current.set(event.pointerId, { x: event.clientX, y: event.clientY });
+                const distance = getPinchDistance();
+                if (distance && pinchStart.current) {
+                  setClampedZoom((pinchStart.current.zoom * distance) / pinchStart.current.distance);
+                }
+              }}
+              onPointerUp={(event) => {
+                activePointers.current.delete(event.pointerId);
+                if (activePointers.current.size < 2) pinchStart.current = null;
+              }}
+              onPointerCancel={(event) => {
+                activePointers.current.delete(event.pointerId);
+                if (activePointers.current.size < 2) pinchStart.current = null;
+              }}
+            >
+              <div className="absolute right-3 top-3 z-20 flex items-center gap-2 rounded-full bg-white/90 px-2 py-1 shadow-sm backdrop-blur">
+                <button type="button" onClick={() => setClampedZoom(zoom - 0.25)} className="h-7 w-7 rounded-full border border-[#E8E4DF] text-sm text-[#2C2C2C]" aria-label="Zoom out">−</button>
+                <button type="button" onClick={() => setClampedZoom(zoom + 0.25)} className="h-7 w-7 rounded-full border border-[#E8E4DF] text-sm text-[#2C2C2C]" aria-label="Zoom in">+</button>
+                {zoom > 1 && <button type="button" onClick={resetZoom} className="px-2 text-[10px] uppercase tracking-[0.12em] text-[#8B7355]">Reset</button>}
+              </div>
+
+              <div className="absolute inset-4 transition-transform duration-150 sm:inset-5 md:inset-6" style={{ transform: `scale(${zoom})`, transformOrigin: "50% 50%" }}>
                 <Image
                   src={islandMapImage}
                   alt="Providenciales island map"
@@ -177,7 +233,7 @@ export default function IslandMap() {
                 />
               </div>
 
-              <div className="absolute inset-4 sm:inset-5 md:inset-6">
+              <div className="absolute inset-4 transition-transform duration-150 sm:inset-5 md:inset-6" style={{ transform: `scale(${zoom})`, transformOrigin: "50% 50%" }}>
                 <button
                   type="button"
                   onMouseEnter={() => setHoveredId(positionedVillaBase.id)}
@@ -200,7 +256,7 @@ export default function IslandMap() {
                   const isExpanded = expandedClusterId === cluster.id;
                   const hasSelectedPoint = cluster.points.some((point) => point.id === selectedId);
 
-                  if (cluster.points.length > 1 && !isExpanded) {
+                  if (shouldCluster && cluster.points.length > 1 && !isExpanded) {
                     return (
                       <button
                         key={cluster.id}
@@ -290,32 +346,9 @@ export default function IslandMap() {
                 View planning notes below
               </a>
             )}
-            <div className="mt-6 pt-6 border-t border-[#E8E4DF]">
-              <p className="text-xs text-[#6B6B6B] leading-relaxed mb-4">
-                Tap numbered clusters to spread out crowded pins. Choose a place here to update the map, then use the detail button to jump to its planning card.
-              </p>
-              <div className="max-h-72 space-y-2 overflow-y-auto pr-1">
-                {filteredPoints.map((point) => (
-                  <button
-                    key={point.id}
-                    type="button"
-                    onMouseEnter={() => setHoveredId(point.id)}
-                    onMouseLeave={() => setHoveredId(null)}
-                    onClick={() => selectPoint(point.id)}
-                    className={`flex w-full items-center justify-between rounded-xl border px-3 py-2 text-left text-sm transition-colors ${
-                      selectedId === point.id
-                        ? "border-[#8B7355] bg-[#F5F0E8] text-[#2C2C2C]"
-                        : "border-[#E8E4DF] bg-white text-[#6B6B6B] hover:border-[#8B7355]/40"
-                    }`}
-                  >
-                    <span>{point.name}</span>
-                    <span className="ml-3 text-[10px] uppercase tracking-[0.16em] text-[#8B7355]">
-                      {categoryMeta[point.category].label}
-                    </span>
-                  </button>
-                ))}
-              </div>
-            </div>
+            <p className="mt-5 border-t border-[#E8E4DF] pt-5 text-xs leading-relaxed text-[#6B6B6B]">
+              Pinch or use the zoom controls to inspect crowded areas. At closer zoom levels, numbered clusters automatically become individual pins.
+            </p>
           </aside>
         </div>
       </div>
