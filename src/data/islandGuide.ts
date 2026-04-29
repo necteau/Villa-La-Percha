@@ -251,6 +251,7 @@ export const islandGuideItems: IslandGuideItem[] = [
     area: "The Bight / Coral Gardens",
     description: "One of the easiest shore-snorkeling spots on Providenciales, with reef starting close to the beach and restaurants nearby for a low-friction half-day outing.",
     highlight: "Best for an easy snorkel day without booking a boat",
+    image: "/images/bight-reef-snorkeling.jpg",
   },
   {
     id: "noahs-ark",
@@ -281,6 +282,7 @@ export const islandGuideItems: IslandGuideItem[] = [
     area: "Turtle Cove / Marina Departure",
     description: "A private boat-charter option for snorkeling, beach stops, and seeing the water around Provo without joining a big group tour.",
     highlight: "Best for a private family boat day",
+    image: "/images/lady-turkoise-boat-charter.jpg",
     link: "https://ladyturkuoise.com/home/",
   },
   {
