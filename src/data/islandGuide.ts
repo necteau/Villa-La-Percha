@@ -242,6 +242,7 @@ export const islandGuideItems: IslandGuideItem[] = [
     area: "By the Villa",
     description: "One of the advantages of this location is being close to the Chalk Sound area without needing to plan a full excursion. Great for a lower-key day on the water by kayak or paddle board.",
     highlight: "Best for an easy, scenic on-the-water outing",
+    image: "/images/chalk-sound-national-park.jpg",
   },
   {
     id: "bight-reef-snorkel",
