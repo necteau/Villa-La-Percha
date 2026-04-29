@@ -151,6 +151,7 @@ export const islandGuideItems: IslandGuideItem[] = [
     area: "Regent Village / Grace Bay",
     description: "A lively French bistro in the heart of Grace Bay that works well when you want dinner energy, wine, and something different from beach-bar fare.",
     highlight: "Best for bistro energy, wine, and a Grace Bay night out",
+    image: "/images/le-bouchon-du-village-patio.jpg",
     mustTry: "French bistro classics",
     link: "https://lebouchonduvillage.com/",
     icon: "🇫🇷",
