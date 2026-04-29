@@ -39,6 +39,7 @@ const ownerBenefits = [
   "Guest relationships, repeat bookings, and operating data that stay with the owner.",
 ];
 
+// TODO: Change DirectStay contact mailto links back to a branded DirectStay inbox once the public contact mailbox is finalized.
 const trustPoints = [
   { value: "Direct", label: "Owner-led booking path" },
   { value: "Lower", label: "Marketplace dependency" },
@@ -78,7 +79,7 @@ export default function HomePage() {
                 View Villa La Percha
               </Link>
               <a
-                href="mailto:hello@directstay.app?subject=DirectStay%20owner%20inquiry"
+                href="mailto:necteau@gmail.com?subject=DirectStay%20owner%20inquiry"
                 className="inline-flex items-center justify-center rounded-full border border-white/25 px-7 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
               >
                 List with DirectStay
@@ -186,7 +187,7 @@ export default function HomePage() {
               <Link href="/villa-la-percha/experience-the-island" className="inline-flex items-center justify-center rounded-full bg-[#1e4536] px-7 py-3 text-sm font-semibold text-white transition hover:bg-[#18372b]">
                 Explore the island guide
               </Link>
-              <a href="mailto:hello@directstay.app?subject=DirectStay%20inquiry" className="inline-flex items-center justify-center rounded-full border border-[#1f1f1b]/15 px-7 py-3 text-sm font-semibold text-[#1f1f1b] transition hover:bg-[#f2efe8]">
+              <a href="mailto:necteau@gmail.com?subject=DirectStay%20inquiry" className="inline-flex items-center justify-center rounded-full border border-[#1f1f1b]/15 px-7 py-3 text-sm font-semibold text-[#1f1f1b] transition hover:bg-[#f2efe8]">
                 Contact DirectStay
               </a>
             </div>
