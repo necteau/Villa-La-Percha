@@ -95,8 +95,10 @@ export default function IslandMap() {
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const [expandedClusterId, setExpandedClusterId] = useState<string | null>(null);
   const [zoom, setZoom] = useState(1);
+  const [pan, setPan] = useState({ x: 0, y: 0 });
   const activePointers = useRef(new Map<number, { x: number; y: number }>());
   const pinchStart = useRef<{ distance: number; zoom: number } | null>(null);
+  const dragStart = useRef<{ x: number; y: number; panX: number; panY: number } | null>(null);
 
   const positionedVillaBase = useMemo<PositionedBase>(() => {
     const { x, y } = getRenderedPosition(villaBase);
@@ -149,8 +151,11 @@ export default function IslandMap() {
 
   const resetZoom = () => {
     setZoom(1);
+    setPan({ x: 0, y: 0 });
     setExpandedClusterId(null);
   };
+
+  const mapTransform = `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`;
 
   return (
     <section id="island-map" className="scroll-mt-24 py-16 md:py-24 bg-[#FAFAF8]">
@@ -194,7 +199,11 @@ export default function IslandMap() {
               onPointerDown={(event) => {
                 activePointers.current.set(event.pointerId, { x: event.clientX, y: event.clientY });
                 event.currentTarget.setPointerCapture(event.pointerId);
+                if (activePointers.current.size === 1 && zoom > 1) {
+                  dragStart.current = { x: event.clientX, y: event.clientY, panX: pan.x, panY: pan.y };
+                }
                 if (activePointers.current.size === 2) {
+                  dragStart.current = null;
                   const distance = getPinchDistance();
                   if (distance) pinchStart.current = { distance, zoom };
                 }
@@ -205,15 +214,25 @@ export default function IslandMap() {
                 const distance = getPinchDistance();
                 if (distance && pinchStart.current) {
                   setClampedZoom((pinchStart.current.zoom * distance) / pinchStart.current.distance);
+                  return;
+                }
+                if (zoom > 1 && activePointers.current.size === 1 && dragStart.current) {
+                  setPan({
+                    x: dragStart.current.panX + event.clientX - dragStart.current.x,
+                    y: dragStart.current.panY + event.clientY - dragStart.current.y,
+                  });
                 }
               }}
               onPointerUp={(event) => {
                 activePointers.current.delete(event.pointerId);
                 if (activePointers.current.size < 2) pinchStart.current = null;
+                if (activePointers.current.size === 0) dragStart.current = null;
+                if (activePointers.current.size === 0) dragStart.current = null;
               }}
               onPointerCancel={(event) => {
                 activePointers.current.delete(event.pointerId);
                 if (activePointers.current.size < 2) pinchStart.current = null;
+                if (activePointers.current.size === 0) dragStart.current = null;
               }}
             >
               <div className="absolute right-3 top-3 z-20 flex items-center gap-2 rounded-full bg-white/90 px-2 py-1 shadow-sm backdrop-blur">
@@ -222,7 +241,7 @@ export default function IslandMap() {
                 {zoom > 1 && <button type="button" onClick={resetZoom} className="px-2 text-[10px] uppercase tracking-[0.12em] text-[#8B7355]">Reset</button>}
               </div>
 
-              <div className="absolute inset-4 transition-transform duration-150 sm:inset-5 md:inset-6" style={{ transform: `scale(${zoom})`, transformOrigin: "50% 50%" }}>
+              <div className="absolute inset-4 transition-transform duration-150 sm:inset-5 md:inset-6" style={{ transform: mapTransform, transformOrigin: "50% 50%" }}>
                 <Image
                   src={islandMapImage}
                   alt="Providenciales island map"
@@ -233,7 +252,7 @@ export default function IslandMap() {
                 />
               </div>
 
-              <div className="absolute inset-4 transition-transform duration-150 sm:inset-5 md:inset-6" style={{ transform: `scale(${zoom})`, transformOrigin: "50% 50%" }}>
+              <div className="absolute inset-4 transition-transform duration-150 sm:inset-5 md:inset-6" style={{ transform: mapTransform, transformOrigin: "50% 50%" }}>
                 <button
                   type="button"
                   onMouseEnter={() => setHoveredId(positionedVillaBase.id)}
