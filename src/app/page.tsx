@@ -5,7 +5,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "DirectStay | Book exceptional vacation homes direct",
   description:
-    "DirectStay connects guests with premium vacation homes they can book directly with owners — fewer platform fees, clearer communication, and a more personal stay.",
+    "DirectStay connects guests with premium vacation homes they can book directly with owners — fewer platform fees, clearer communication, AI-assisted operations, and a more personal stay.",
   alternates: {
     canonical: "/",
   },
@@ -35,7 +35,7 @@ const guestBenefits = [
 
 const ownerBenefits = [
   "A polished property site that looks like a real hospitality brand, not a copied listing.",
-  "Inquiry, pricing, calendar, and payment workflows designed for direct conversion.",
+  "AI-assisted inquiry, pricing, calendar, and payment workflows designed for direct conversion.",
   "Guest relationships, repeat bookings, and operating data that stay with the owner.",
 ];
 
@@ -68,7 +68,7 @@ export default function HomePage() {
               Premium vacation homes, booked direct.
             </h1>
             <p className="mt-7 max-w-2xl text-lg leading-8 text-white/82 md:text-xl">
-              DirectStay helps guests book exceptional private homes without the marketplace runaround — and gives owners the tools to build a real direct-booking business.
+              DirectStay helps guests book exceptional private homes without the marketplace runaround — and gives owners AI-assisted tools to build a real direct-booking business.
             </p>
             <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:flex-wrap">
               <Link
@@ -142,7 +142,7 @@ export default function HomePage() {
               Turn a great property into a direct-booking brand.
             </h2>
             <p className="mt-6 text-lg leading-8 text-[#5b554b]">
-              DirectStay is built for owners who want more control over guest relationships, pricing, presentation, and repeat bookings — without asking travelers to trust a barebones landing page.
+              DirectStay is built for owners who want more control over guest relationships, pricing, presentation, repeat bookings, and AI-assisted operations — without asking travelers to trust a barebones landing page.
             </p>
             <ul className="mt-7 space-y-4 text-base leading-7 text-[#5b554b]">
               {ownerBenefits.map((item) => (
@@ -156,6 +156,20 @@ export default function HomePage() {
         </div>
       </section>
 
+      <section className="mx-auto max-w-7xl px-6 pb-18 md:px-10 md:pb-24">
+        <div className="grid gap-6 lg:grid-cols-[0.8fr_1.2fr]">
+          <div className="rounded-[32px] bg-[#10261f] p-8 text-white shadow-[0_18px_55px_rgba(31,31,27,0.12)] md:p-10">
+            <p className="text-xs font-semibold uppercase tracking-[0.28em] text-white/55">AI operations</p>
+            <h2 className="mt-4 font-display text-4xl leading-tight md:text-5xl">A smarter back office for direct stays.</h2>
+          </div>
+          <div className="rounded-[32px] bg-white p-8 shadow-[0_18px_55px_rgba(31,31,27,0.07)] md:p-10">
+            <p className="text-lg leading-8 text-[#5b554b]">
+              DirectStay is designed to use AI where it actually helps owners: summarizing inquiries, drafting guest replies, surfacing missing details, tracking lead quality, and keeping booking operations organized without making the guest experience feel robotic.
+            </p>
+          </div>
+        </div>
+      </section>
+
       <section className="mx-auto max-w-7xl px-6 py-18 md:px-10 md:py-24">
         <div className="rounded-[40px] bg-white p-8 shadow-[0_18px_55px_rgba(31,31,27,0.07)] md:p-12">
           <div className="grid gap-10 lg:grid-cols-[1fr_0.8fr] lg:items-center">
@@ -165,7 +179,7 @@ export default function HomePage() {
                 Starting with select homes. Built to grow carefully.
               </h2>
               <p className="mt-5 max-w-3xl text-lg leading-8 text-[#5b554b]">
-                We are focused on properties where the direct experience can genuinely be better: strong homes, clear guest communication, useful local guidance, and owners who care about the stay after the booking is made.
+                We are focused on properties where the direct experience can genuinely be better: strong homes, clear guest communication, useful local guidance, AI-supported response workflows, and owners who care about the stay after the booking is made.
               </p>
             </div>
             <div className="flex flex-col gap-4 sm:flex-row lg:flex-col">
