@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useMemo, useRef, useState } from "react";
+import { type PointerEvent, useMemo, useRef, useState } from "react";
 import {
   islandMapHomeBase as villaBase,
   islandMapImage,
@@ -155,6 +155,13 @@ export default function IslandMap() {
     setExpandedClusterId(null);
   };
 
+  const stopMapDrag = (event: PointerEvent<HTMLElement>) => {
+    // The map surface uses pointer capture for pan/pinch. Without stopping
+    // propagation here, desktop clicks on pins and zoom controls are captured
+    // by the pan layer before the button click can complete.
+    event.stopPropagation();
+  };
+
   const mapTransform = `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`;
 
   return (
@@ -236,9 +243,9 @@ export default function IslandMap() {
               }}
             >
               <div className="absolute right-3 top-3 z-20 flex items-center gap-2 rounded-full bg-white/90 px-2 py-1 shadow-sm backdrop-blur">
-                <button type="button" onClick={() => setClampedZoom(zoom - 0.25)} className="h-7 w-7 rounded-full border border-[#E8E4DF] text-sm text-[#2C2C2C]" aria-label="Zoom out">−</button>
-                <button type="button" onClick={() => setClampedZoom(zoom + 0.25)} className="h-7 w-7 rounded-full border border-[#E8E4DF] text-sm text-[#2C2C2C]" aria-label="Zoom in">+</button>
-                {zoom > 1 && <button type="button" onClick={resetZoom} className="px-2 text-[10px] uppercase tracking-[0.12em] text-[#8B7355]">Reset</button>}
+                <button type="button" onPointerDown={stopMapDrag} onClick={() => setClampedZoom(zoom - 0.25)} className="h-7 w-7 rounded-full border border-[#E8E4DF] text-sm text-[#2C2C2C]" aria-label="Zoom out">−</button>
+                <button type="button" onPointerDown={stopMapDrag} onClick={() => setClampedZoom(zoom + 0.25)} className="h-7 w-7 rounded-full border border-[#E8E4DF] text-sm text-[#2C2C2C]" aria-label="Zoom in">+</button>
+                {zoom > 1 && <button type="button" onPointerDown={stopMapDrag} onClick={resetZoom} className="px-2 text-[10px] uppercase tracking-[0.12em] text-[#8B7355]">Reset</button>}
               </div>
 
               <div className="absolute inset-4 will-change-transform sm:inset-5 md:inset-6" style={{ transform: mapTransform, transformOrigin: "50% 50%" }}>
@@ -255,6 +262,7 @@ export default function IslandMap() {
               <div className="absolute inset-4 will-change-transform sm:inset-5 md:inset-6" style={{ transform: mapTransform, transformOrigin: "50% 50%" }}>
                 <button
                   type="button"
+                  onPointerDown={stopMapDrag}
                   onMouseEnter={() => setHoveredId(positionedVillaBase.id)}
                   onMouseLeave={() => setHoveredId(null)}
                   onClick={() => {
@@ -280,6 +288,7 @@ export default function IslandMap() {
                       <button
                         key={cluster.id}
                         type="button"
+                        onPointerDown={stopMapDrag}
                         onClick={() => setExpandedClusterId(cluster.id)}
                         className="absolute -translate-x-1/2 -translate-y-1/2 cursor-pointer p-2"
                         style={{ left: `${cluster.x}%`, top: `${cluster.y}%`, transform: `translate(-50%, -50%) scale(${1 / zoom})` }}
@@ -306,6 +315,7 @@ export default function IslandMap() {
                       <button
                         key={point.id}
                         type="button"
+                        onPointerDown={stopMapDrag}
                         onMouseEnter={() => setHoveredId(point.id)}
                         onMouseLeave={() => setHoveredId(null)}
                         onClick={() => selectPoint(point.id)}
