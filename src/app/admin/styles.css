@@ -21,7 +21,8 @@
   padding: 28px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  gap: 28px;
+  justify-content: flex-start;
   background: linear-gradient(180deg, #17212d, #0b1118);
   border-right: 1px solid rgba(255, 255, 255, 0.1);
 }
@@ -59,8 +60,13 @@
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.admin-rail span {
+.admin-rail nav span {
   opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.admin-rail nav span + span {
+  margin-top: 2px;
 }
 
 .admin-user {
