@@ -25,7 +25,7 @@ This is the durable working plan for the DirectStay Admin Portal and PlatformLea
 | Phase | Name | Status | Completed | Commit/Deploy | Notes |
 |---|---|---:|---|---|---|
 | 0 | Safety Prep / Baseline | Agent complete | 2026-05-01 | pending commit | Lint/build passed; Prisma schema/migrations inspected; no admin routes exposed. |
-| 1 | Admin Foundation, Read-Only | Not started | — | — | — |
+| 1 | Admin Foundation, Read-Only | Agent complete | 2026-05-01 | pending commit/deploy | Read-only `/admin` routes implemented with ADMIN guard; unauth redirect tested locally; authenticated admin acceptance pending Jaimal/test admin login. |
 | 2 | Audit Log Foundation | Not started | — | — | — |
 | 3 | PlatformLead Public Intake | Not started | — | — | — |
 | 4 | PlatformLead Triage Tools | Not started | — | — | — |
@@ -182,7 +182,7 @@ Create a real `/admin` portal without dangerous write operations.
 - Production deploy safe.
 
 ## Completion Notes
-_Not started._
+Agent complete 2026-05-01. Implemented `/admin`, `/admin/owners`, `/admin/owners/[ownerId]`, `/admin/properties`, and `/admin/properties/[propertyId]` as read-only DB-backed pages. Added ADMIN role guard via Supabase session + Prisma `User.role === ADMIN`; no admin mutation buttons/actions exist. Added responsive admin styling and dynamic rendering to avoid static auth leakage. Agent tests: `npm run lint`, `npm run build`, and local unauthenticated `/admin` redirect to `/owner-portal/login?next=/admin` passed. Authenticated admin/non-admin browser acceptance remains pending a safe test login.
 
 ---
 
