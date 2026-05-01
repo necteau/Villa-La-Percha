@@ -24,7 +24,7 @@ This is the durable working plan for the DirectStay Admin Portal and PlatformLea
 
 | Phase | Name | Status | Completed | Commit/Deploy | Notes |
 |---|---|---:|---|---|---|
-| 0 | Safety Prep / Baseline | Not started | — | — | — |
+| 0 | Safety Prep / Baseline | Agent complete | 2026-05-01 | pending commit | Lint/build passed; Prisma schema/migrations inspected; no admin routes exposed. |
 | 1 | Admin Foundation, Read-Only | Not started | — | — | — |
 | 2 | Audit Log Foundation | Not started | — | — | — |
 | 3 | PlatformLead Public Intake | Not started | — | — | — |
@@ -118,7 +118,7 @@ Make sure implementation starts from a clean, deployable baseline.
 - This plan exists and is committed.
 
 ## Completion Notes
-_Not started._
+Agent complete 2026-05-01. Baseline checks performed: `git status --short`, `npm run lint`, `npm run build`, Prisma schema/migration file inspection, and route manifest review from Next build. Existing owner portal routes compile. No `/admin` routes are present yet, so no partial admin UI is publicly exposed. `.DS_Store` artifact under `prisma/migrations/` was removed before commit.
 
 ---
 
