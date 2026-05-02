@@ -218,6 +218,31 @@
   background: rgba(255, 255, 255, 0.05);
 }
 
+.admin-form-stack {
+  display: grid;
+  gap: 10px;
+}
+
+.admin-form-stack select {
+  width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 12px;
+  background: #111a24;
+  color: #f8f3ea;
+  padding: 10px 12px;
+}
+
+.admin-form-stack button {
+  width: fit-content;
+  border: 0;
+  border-radius: 999px;
+  background: #c6a878;
+  color: #111a24;
+  cursor: pointer;
+  font-weight: 700;
+  padding: 10px 16px;
+}
+
 @media (max-width: 900px) {
   .admin-shell {
     display: block;

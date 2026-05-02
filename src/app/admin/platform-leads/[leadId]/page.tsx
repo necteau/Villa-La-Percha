@@ -1,7 +1,47 @@
 import { notFound } from "next/navigation";
-import { getAdminSession } from "@/lib/admin/adminAuth";
+import { revalidatePath } from "next/cache";
+import type { PlatformLeadStatus } from "@prisma/client";
+import { getAdminSession, requireAdminSession } from "@/lib/admin/adminAuth";
 import { recordAdminAuditEvent } from "@/lib/admin/auditLog";
-import { getAdminPlatformLead } from "@/lib/platformLeads";
+import { getAdminPlatformLead, updatePlatformLeadStatus } from "@/lib/platformLeads";
+
+const PLATFORM_LEAD_STATUSES: PlatformLeadStatus[] = [
+  "NEW",
+  "CONTACTED",
+  "QUALIFIED",
+  "PROPOSAL_SENT",
+  "CONVERTED",
+  "UNQUALIFIED",
+  "ARCHIVED",
+];
+
+async function updateLeadStatusAction(formData: FormData) {
+  "use server";
+
+  const admin = await requireAdminSession();
+  const leadId = String(formData.get("leadId") || "");
+  const status = String(formData.get("status") || "") as PlatformLeadStatus;
+
+  if (!leadId || !PLATFORM_LEAD_STATUSES.includes(status)) {
+    throw new Error("Invalid PlatformLead status update");
+  }
+
+  const before = await getAdminPlatformLead(leadId);
+  if (!before) notFound();
+
+  const updated = await updatePlatformLeadStatus(leadId, status);
+  await recordAdminAuditEvent({
+    actor: admin,
+    action: "admin.platform_lead.status_updated",
+    entityType: "PlatformLead",
+    entityId: updated.id,
+    metadata: { from: before.status, to: updated.status },
+  });
+
+  revalidatePath("/admin/platform-leads");
+  revalidatePath(`/admin/platform-leads/${leadId}`);
+  revalidatePath("/admin/activity");
+}
 
 function Field({ label, value }: { label: string; value?: string | number | null }) {
   return <p><span className="admin-muted">{label}:</span> {value || "—"}</p>;
@@ -22,6 +62,7 @@ export default async function AdminPlatformLeadDetailPage({ params }: { params: 
         <article className="admin-card"><h3>Property</h3><Field label="Property name" value={lead.propertyName || lead.company} /><Field label="Location" value={lead.propertyLocation} /><Field label="Current website / OTA" value={lead.currentWebsite} /></article>
       </section>
       <section className="admin-detail-grid admin-section">
+        <article className="admin-card"><h3>Triage</h3><form action={updateLeadStatusAction} className="admin-form-stack"><input type="hidden" name="leadId" value={lead.id} /><label className="admin-muted" htmlFor="status">Lead status</label><select id="status" name="status" defaultValue={lead.status}>{PLATFORM_LEAD_STATUSES.map((status) => <option key={status} value={status}>{status.replaceAll("_", " ")}</option>)}</select><button type="submit">Update status</button></form></article>
         <article className="admin-card"><h3>Source</h3><Field label="Source" value={lead.source} /><Field label="Legacy company / brand" value={lead.company} /><Field label="Legacy desired domain" value={lead.desiredCustomDomain} /></article>
         <article className="admin-card"><h3>Message</h3><p>{lead.message || "—"}</p></article>
       </section>

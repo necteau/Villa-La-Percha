@@ -1,4 +1,5 @@
 import { getPrismaClient } from "@/lib/db";
+import type { PlatformLeadStatus } from "@prisma/client";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const URL_REGEX = /^https?:\/\/.+\..+/i;
@@ -94,4 +95,12 @@ export async function getAdminPlatformLeads() {
 export async function getAdminPlatformLead(leadId: string) {
   const prisma = await getPrismaClient();
   return prisma.platformLead.findUnique({ where: { id: leadId } });
+}
+
+export async function updatePlatformLeadStatus(leadId: string, status: PlatformLeadStatus) {
+  const prisma = await getPrismaClient();
+  return prisma.platformLead.update({
+    where: { id: leadId },
+    data: { status },
+  });
 }
