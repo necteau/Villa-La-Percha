@@ -27,7 +27,7 @@ This is the durable working plan for the DirectStay Admin Portal and PlatformLea
 | 0 | Safety Prep / Baseline | Agent complete | 2026-05-01 | `897933f` | Lint/build passed; Prisma schema/migrations inspected; no admin routes exposed. |
 | 1 | Admin Foundation, Read-Only | Jaimal accepted | 2026-05-01 | `d4fd3e9`, `d50bcd5`, `a60e1f4` / pending deploy | Read-only `/admin` routes implemented with ADMIN guard; Jaimal verified ADMIN access and OWNER/MANAGER blocking. Mobile/admin nav polish completed. |
 | 2 | Audit Log Foundation | Agent complete | 2026-05-02 | `4f2762a`, `3ee71cc` / production `directstay.app` | AuditLog model/migration, audit helper, admin read logging, denied-role logging, and `/admin/activity` deployed. Preview QA unblocked with Vercel automation bypass + Preview owner allowlist fix; production authenticated QA passed 6/6. |
-| 3 | PlatformLead Public Intake | Not started | — | — | — |
+| 3 | PlatformLead Public Intake | In progress | — | `feature/platform-lead-public-intake` / preview `villa-la-percha-ad6h7s37n-necteau-7189s-projects.vercel.app` | First vertical slice implemented: PlatformLead model/migration, public owner pages/form/API, admin list/detail. Gates passed: prisma validate/generate, lint, build. Preview API lead submission succeeded and DB record verified. Authenticated preview QA passed 6/6. Remaining: richer validation/browser form QA, guest inquiry regression, production deploy after acceptance. |
 | 4 | PlatformLead Triage Tools | Not started | — | — | — |
 | 5 | Admin Owner Context, Read-Only Owner Workspace | Not started | — | — | — |
 | 6 | Controlled Admin Writes | Not started | — | — | — |
@@ -319,7 +319,7 @@ Launch the public DirectStay owner-acquisition funnel safely.
 - Preview and production test lead submissions verified.
 
 ## Completion Notes
-_Not started._
+In progress 2026-05-02. First vertical slice adds `PlatformLead` model/migration, public `/for-property-owners`, `/request-a-site`, `/thank-you`, `POST /api/platform-leads`, and admin `/admin/platform-leads` list/detail pages. Supabase migration applied through the pooler SQL path. Local gates passed: `npm run prisma:validate`, `npm run prisma:generate`, `npm run lint`, `npm run build`. Protected preview deployed to `https://villa-la-percha-ad6h7s37n-necteau-7189s-projects.vercel.app`; API QA submitted a realistic lead including desired custom domain and verified the DB record. DirectStay authenticated preview QA passed 6/6. Remaining before Phase 3 agent-complete: browser form submission/validation/spam QA, guest inquiry regression, production deploy + production test lead verification.
 
 ---
 
