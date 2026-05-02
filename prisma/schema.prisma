@@ -107,7 +107,44 @@ enum PlatformLeadStatus {
   PROPOSAL_SENT
   CONVERTED
   UNQUALIFIED
+  SUSPICIOUS
+  SPAM
   ARCHIVED
+}
+
+enum PlatformLeadArtifactType {
+  LEAD_BRIEF
+  FIRST_RESPONSE_DRAFT
+  PROPOSAL_RATIONALE
+  PROPOSAL_DRAFT
+  ONBOARDING_BRIEF
+  ONBOARDING_EMAIL_DRAFT
+}
+
+enum PlatformLeadArtifactStatus {
+  DRAFT
+  NEEDS_APPROVAL
+  APPROVED
+  SENT
+  REJECTED
+  SUPERSEDED
+}
+
+enum PreviewBuildStatus {
+  DRAFT
+  READY_FOR_REVIEW
+  SHARED_WITH_LEAD
+  PROMOTED_TO_SITE
+  ARCHIVED
+}
+
+enum ContractExecutionStatus {
+  NOT_STARTED
+  DRAFTED
+  SENT
+  SIGNED
+  COUNTERSIGNED
+  VOIDED
 }
 
 model User {
@@ -165,10 +202,70 @@ model PlatformLead {
   source              String             @default("direct")
   createdAt           DateTime           @default(now())
   updatedAt           DateTime           @updatedAt
+  firstRead           String?
+  nextAction          String?
+  nextFollowUpAt      DateTime?
+  assignedToUserId    String?
+  spamReason          String?
+  spamReviewedAt      DateTime?
+  pricingSetupFeeCents Int?
+  pricingMonthlyFeeCents Int?
+  pricingCommissionBps Int?
+  pricingPaymentProcessingBps Int?
+  pricingNotes        String?
+  contractStatus      ContractExecutionStatus @default(NOT_STARTED)
+  contractSentAt      DateTime?
+  contractSignedAt    DateTime?
+  contractStorageUrl  String?
+  launchChecklist     Json?
   notes               PlatformLeadNote[]
+  artifacts           PlatformLeadArtifact[]
+  previewBuilds       PreviewBuild[]
 
   @@index([status, createdAt])
   @@index([email])
+  @@index([assignedToUserId, nextFollowUpAt])
+}
+
+model PlatformLeadArtifact {
+  id             String                     @id @default(cuid())
+  platformLeadId String
+  type           PlatformLeadArtifactType
+  status         PlatformLeadArtifactStatus @default(DRAFT)
+  title          String
+  body           String
+  metadata       Json?
+  createdByEmail String?
+  approvedByEmail String?
+  approvedAt     DateTime?
+  sentAt         DateTime?
+  createdAt      DateTime                   @default(now())
+  updatedAt      DateTime                   @updatedAt
+  platformLead   PlatformLead               @relation(fields: [platformLeadId], references: [id], onDelete: Cascade)
+
+  @@index([platformLeadId, createdAt])
+  @@index([type, status, createdAt])
+}
+
+model PreviewBuild {
+  id             String             @id @default(cuid())
+  platformLeadId String
+  slug           String             @unique
+  status         PreviewBuildStatus @default(DRAFT)
+  propertyName   String
+  location       String
+  sourceUrls     String[]
+  heroTitle      String?
+  positioning    String?
+  sections       Json?
+  ownerCallouts  Json?
+  sharedAt       DateTime?
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+  platformLead   PlatformLead       @relation(fields: [platformLeadId], references: [id], onDelete: Cascade)
+
+  @@index([platformLeadId, createdAt])
+  @@index([status, createdAt])
 }
 
 model PlatformLeadNote {
