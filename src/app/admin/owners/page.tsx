@@ -1,8 +1,12 @@
 import Link from "next/link";
+import { getAdminSession } from "@/lib/admin/adminAuth";
+import { recordAdminAuditEvent } from "@/lib/admin/auditLog";
 import { getAdminOwners } from "@/lib/admin/adminData";
 
 export default async function AdminOwnersPage() {
+  const admin = await getAdminSession();
   const owners = await getAdminOwners();
+  await recordAdminAuditEvent({ actor: admin, action: "admin.read.owners", entityType: "Owner", metadata: { count: owners.length } });
   return (
     <div>
       <header className="admin-page-head"><div><p className="admin-eyebrow">Read-only</p><h2>Owners</h2><p>Owner account scope, primary users, property counts, and customer counts.</p></div></header>

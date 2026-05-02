@@ -26,7 +26,7 @@ This is the durable working plan for the DirectStay Admin Portal and PlatformLea
 |---|---|---:|---|---|---|
 | 0 | Safety Prep / Baseline | Agent complete | 2026-05-01 | `897933f` | Lint/build passed; Prisma schema/migrations inspected; no admin routes exposed. |
 | 1 | Admin Foundation, Read-Only | Jaimal accepted | 2026-05-01 | `d4fd3e9`, `d50bcd5`, `a60e1f4` / pending deploy | Read-only `/admin` routes implemented with ADMIN guard; Jaimal verified ADMIN access and OWNER/MANAGER blocking. Mobile/admin nav polish completed. |
-| 2 | Audit Log Foundation | Not started | — | — | — |
+| 2 | Audit Log Foundation | In progress | — | `feature/admin-audit-log-phase-2` | First vertical slice implemented locally: AuditLog model/migration, audit helper, admin read logging, denied-role logging, and `/admin/activity`. Gates passed: `npm run prisma:validate`, `npm run prisma:generate`, `npm run lint`, `npm run build`. Migration file created but not applied to Supabase yet. |
 | 3 | PlatformLead Public Intake | Not started | — | — | — |
 | 4 | PlatformLead Triage Tools | Not started | — | — | — |
 | 5 | Admin Owner Context, Read-Only Owner Workspace | Not started | — | — | — |
@@ -237,7 +237,7 @@ Establish accountability before admin writes exist.
 - Preview deploy verified.
 
 ## Completion Notes
-_Not started._
+In progress 2026-05-02. First slice adds the AuditLog Prisma model and migration, a non-blocking audit helper, logging for admin dashboard/owner/property/activity reads, best-effort non-admin denied-role logging, and a reverse-chronological `/admin/activity` page. Agent gates passed locally: `npm run prisma:validate`, `npm run prisma:generate`, `npm run lint`, and `npm run build`. Migration has not been applied to Supabase yet; apply through the approved deployment/migration path before preview/prod verification.
 
 ---
 

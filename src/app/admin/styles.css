@@ -166,6 +166,10 @@
   background: rgba(255, 255, 255, 0.04);
 }
 
+.admin-activity-table {
+  min-width: 980px;
+}
+
 .admin-table th,
 .admin-table td {
   text-align: left;

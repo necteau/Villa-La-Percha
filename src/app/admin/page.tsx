@@ -1,8 +1,12 @@
 import Link from "next/link";
+import { getAdminSession } from "@/lib/admin/adminAuth";
+import { recordAdminAuditEvent } from "@/lib/admin/auditLog";
 import { getAdminDashboardData } from "@/lib/admin/adminData";
 
 export default async function AdminDashboardPage() {
+  const admin = await getAdminSession();
   const data = await getAdminDashboardData();
+  await recordAdminAuditEvent({ actor: admin, action: "admin.read.dashboard", entityType: "AdminDashboard", entityId: "/admin" });
   const metrics = [
     ["Owners", data.ownerCount],
     ["Properties", data.propertyCount],

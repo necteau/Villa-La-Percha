@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { getPrismaClient } from "@/lib/db";
 import { getOwnerSessionUser } from "@/lib/ownerAuth";
+import { recordAdminAuditEvent } from "./auditLog";
 
 export type AdminSession = {
   id: string;
@@ -20,7 +21,19 @@ export async function getAdminSession(): Promise<AdminSession | null> {
     select: { id: true, email: true, fullName: true, role: true },
   });
 
-  if (user?.role !== "ADMIN") return null;
+  if (user?.role !== "ADMIN") {
+    if (user) {
+      await recordAdminAuditEvent({
+        actorEmail: user.email,
+        actorRole: user.role,
+        action: "admin.access_denied",
+        entityType: "AdminPortal",
+        entityId: "/admin",
+        metadata: { reason: "non_admin_role" },
+      });
+    }
+    return null;
+  }
 
   return {
     id: user.id,

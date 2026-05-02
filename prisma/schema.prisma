@@ -110,6 +110,29 @@ model User {
   updatedAt      DateTime      @updatedAt
   ownerProfiles  Owner[]       @relation("OwnerPrimaryUser")
   memberships    OwnerMember[]
+  auditLogs      AuditLog[]
+}
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  actorUserId String?
+  actorEmail  String?
+  actorRole   UserRole?
+  action      String
+  entityType  String
+  entityId    String?
+  ownerId     String?
+  propertyId  String?
+  metadata    Json?
+  createdAt   DateTime @default(now())
+  actorUser   User?    @relation(fields: [actorUserId], references: [id], onDelete: SetNull)
+
+  @@index([createdAt])
+  @@index([actorUserId, createdAt])
+  @@index([action, createdAt])
+  @@index([entityType, entityId])
+  @@index([ownerId, createdAt])
+  @@index([propertyId, createdAt])
 }
 
 model Owner {

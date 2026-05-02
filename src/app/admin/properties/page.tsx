@@ -1,8 +1,12 @@
 import Link from "next/link";
+import { getAdminSession } from "@/lib/admin/adminAuth";
+import { recordAdminAuditEvent } from "@/lib/admin/auditLog";
 import { getAdminProperties } from "@/lib/admin/adminData";
 
 export default async function AdminPropertiesPage() {
+  const admin = await getAdminSession();
   const properties = await getAdminProperties();
+  await recordAdminAuditEvent({ actor: admin, action: "admin.read.properties", entityType: "Property", metadata: { count: properties.length } });
   return (
     <div>
       <header className="admin-page-head"><div><p className="admin-eyebrow">Read-only</p><h2>Properties</h2><p>DirectStay property inventory, owner relationships, inquiry counts, and reservation counts.</p></div></header>

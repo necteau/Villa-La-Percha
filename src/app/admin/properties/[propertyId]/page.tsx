@@ -1,11 +1,15 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { getAdminSession } from "@/lib/admin/adminAuth";
+import { recordAdminAuditEvent } from "@/lib/admin/auditLog";
 import { getAdminProperty } from "@/lib/admin/adminData";
 
 export default async function AdminPropertyDetailPage({ params }: { params: Promise<{ propertyId: string }> }) {
   const { propertyId } = await params;
+  const admin = await getAdminSession();
   const property = await getAdminProperty(propertyId);
   if (!property) notFound();
+  await recordAdminAuditEvent({ actor: admin, action: "admin.read.property", entityType: "Property", entityId: property.id, ownerId: property.owner.id, propertyId: property.id });
   return (
     <div>
       <header className="admin-page-head"><div><p className="admin-eyebrow">Property detail</p><h2>{property.name}</h2><p>Owner: <Link href={`/admin/owners/${property.owner.id}`}>{property.owner.displayName}</Link> · /{property.slug}</p></div><span className="admin-chip">{property.status}</span></header>
