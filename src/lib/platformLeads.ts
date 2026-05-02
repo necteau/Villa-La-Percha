@@ -94,7 +94,7 @@ export async function getAdminPlatformLeads() {
 
 export async function getAdminPlatformLead(leadId: string) {
   const prisma = await getPrismaClient();
-  return prisma.platformLead.findUnique({ where: { id: leadId } });
+  return prisma.platformLead.findFirst({ where: { id: leadId } });
 }
 
 export async function updatePlatformLeadStatus(leadId: string, status: PlatformLeadStatus) {
