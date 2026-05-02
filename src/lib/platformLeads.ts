@@ -232,6 +232,10 @@ export async function getAdminPlatformLead(leadId: string) {
         orderBy: { createdAt: "desc" },
         take: 20,
       },
+      processingJobs: {
+        orderBy: { createdAt: "desc" },
+        take: 10,
+      },
     },
   });
 }
