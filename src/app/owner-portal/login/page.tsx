@@ -29,7 +29,9 @@ export default function OwnerPortalLoginPage() {
         return;
       }
 
-      router.push("/owner-portal");
+      const nextPath = new URLSearchParams(window.location.search).get("next");
+      const destination = nextPath?.startsWith("/") && !nextPath.startsWith("//") ? nextPath : "/owner-portal";
+      router.push(destination);
       router.refresh();
     } catch {
       setError("Unable to sign in right now. Please try again.");
