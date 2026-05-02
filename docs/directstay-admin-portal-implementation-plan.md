@@ -770,3 +770,7 @@ Notes:
 Follow-ups:
 - ...
 ```
+
+### AI-led PlatformLead ops foundation — 2026-05-02
+
+Agent complete. Added the first AI-led operating foundation from `docs/platform-lead-ai-ops-process.md`: PlatformLead spam/suspicious statuses, first-read/next-action/follow-up/source fields, flexible pricing fields including separate payment-processing bps, contract execution tracking, artifact records for Lead Briefs/first responses/proposal rationale/proposal drafts/onboarding drafts, Preview Build records, admin routes for artifacts/ops/previews, and public noindex Preview Build pages at `/p/{slug}`. Removed the stale Vercel catch-all rewrite because it forced new public dynamic routes to match `/`. Migration `20260502164000_add_platform_lead_ai_ops` was applied to Supabase through the pooler SQL path after direct Prisma deploy hit the known `HOST:5432` connectivity placeholder failure. Local gates passed: `npm run prisma:validate`, `npm run prisma:generate`, `npm run lint`, and `npm run build`. Production deployed to `directstay.app`; QA passed for creating a PlatformLead, saving operating state, saving a Lead Brief artifact, creating a Preview Build, verifying owner-view callouts and disabled inquiry on `/p/{slug}`, plus full authenticated DirectStay QA 6/6.
