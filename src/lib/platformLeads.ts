@@ -1,5 +1,6 @@
 import { recordAdminAuditEvent } from "@/lib/admin/auditLog";
 import { getPrismaClient } from "@/lib/db";
+import { triggerInternalOpsWake } from "@/lib/internalWake";
 import type { ContractExecutionStatus, PlatformLead, PlatformLeadArtifactStatus, PlatformLeadArtifactType, PlatformLeadStatus, PreviewBuildStatus } from "@prisma/client";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -86,6 +87,45 @@ export function validatePlatformLeadInput(body: Record<string, unknown>): Platfo
 export async function createPlatformLead(input: PlatformLeadInput) {
   const prisma = await getPrismaClient();
   return prisma.platformLead.create({ data: input });
+}
+
+export async function createPlatformLeadWithIntakeJob(input: PlatformLeadInput) {
+  const prisma = await getPrismaClient();
+  const { lead, job } = await prisma.$transaction(async (tx) => {
+    const lead = await tx.platformLead.create({ data: input });
+    const job = await tx.platformLeadProcessingJob.create({ data: { platformLeadId: lead.id, kind: "INTAKE" } });
+    return { lead, job };
+  });
+  await triggerInternalOpsWake({ kind: "platform_lead_intake", id: job.id, label: lead.id });
+  return { lead, job };
+}
+
+export async function enqueuePlatformLeadIntakeJob(leadId: string) {
+  const prisma = await getPrismaClient();
+  const existing = await prisma.platformLeadProcessingJob.findFirst({
+    where: { platformLeadId: leadId, kind: "INTAKE", status: { in: ["PENDING", "PROCESSING", "COMPLETED"] } },
+    orderBy: { createdAt: "desc" },
+  });
+  if (existing) return existing;
+  const job = await prisma.platformLeadProcessingJob.create({ data: { platformLeadId: leadId, kind: "INTAKE" } });
+  await triggerInternalOpsWake({ kind: "platform_lead_intake", id: job.id, label: leadId });
+  return job;
+}
+
+export async function processPlatformLeadIntakeJob(jobId: string) {
+  const prisma = await getPrismaClient();
+  const job = await prisma.platformLeadProcessingJob.findUnique({ where: { id: jobId } });
+  if (!job || job.status === "COMPLETED") return null;
+  await prisma.platformLeadProcessingJob.update({ where: { id: jobId }, data: { status: "PROCESSING", attempts: { increment: 1 }, lastError: null } });
+  try {
+    const result = await processPlatformLeadIntakeEvent(job.platformLeadId);
+    const completed = await prisma.platformLeadProcessingJob.update({ where: { id: jobId }, data: { status: "COMPLETED", processedAt: new Date(), lastError: null } });
+    return { job: completed, result };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    await prisma.platformLeadProcessingJob.update({ where: { id: jobId }, data: { status: "FAILED", lastError: message.slice(0, 2000) } });
+    throw error;
+  }
 }
 
 function summarizePlatformLead(lead: PlatformLead) {

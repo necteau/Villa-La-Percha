@@ -147,6 +147,13 @@ enum ContractExecutionStatus {
   VOIDED
 }
 
+enum PlatformLeadProcessingJobStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
 model User {
   id             String        @id @default(cuid())
   email          String        @unique
@@ -221,10 +228,27 @@ model PlatformLead {
   notes               PlatformLeadNote[]
   artifacts           PlatformLeadArtifact[]
   previewBuilds       PreviewBuild[]
+  processingJobs      PlatformLeadProcessingJob[]
 
   @@index([status, createdAt])
   @@index([email])
   @@index([assignedToUserId, nextFollowUpAt])
+}
+
+model PlatformLeadProcessingJob {
+  id             String                          @id @default(cuid())
+  platformLeadId String
+  status         PlatformLeadProcessingJobStatus @default(PENDING)
+  kind           String                          @default("INTAKE")
+  attempts       Int                             @default(0)
+  lastError      String?
+  processedAt    DateTime?
+  createdAt      DateTime                        @default(now())
+  updatedAt      DateTime                        @updatedAt
+  platformLead   PlatformLead                    @relation(fields: [platformLeadId], references: [id], onDelete: Cascade)
+
+  @@index([status, createdAt])
+  @@index([platformLeadId, createdAt])
 }
 
 model PlatformLeadArtifact {

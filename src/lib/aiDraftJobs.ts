@@ -1,5 +1,6 @@
 import { getInquiryCopilotInsights } from "@/lib/inquiryCopilot";
 import { getPrismaClient } from "@/lib/db";
+import { triggerInternalOpsWake } from "@/lib/internalWake";
 import { canUseDatabaseSync } from "@/lib/fallbackOrchestrator";
 import { getInquiryThreadById, saveInquiryDraft, type InquiryThreadRecord } from "@/lib/inquiries";
 import { getGlobalAiReplyInstructions, getSiteSettings } from "@/lib/ownerPortalSettings";
@@ -434,7 +435,7 @@ export async function createAiRevisionJob(input: {
   const instruction = input.intent === "custom" ? sanitizeOwnerInstruction(input.instruction || "") : undefined;
   if (input.intent === "custom" && !instruction) throw new Error("Custom revision instructions are required");
 
-  return saveInquiryDraft({
+  const job = await saveInquiryDraft({
     inquiryId: input.inquiryId,
     subject: `AI revision request: ${input.intent}`,
     body: serializeRevisionJob({
@@ -450,4 +451,6 @@ export async function createAiRevisionJob(input: {
     status: "draft",
     createdByType: "system",
   });
+  await triggerInternalOpsWake({ kind: "villa_ai_revision", id: job.id, label: input.inquiryId });
+  return job;
 }

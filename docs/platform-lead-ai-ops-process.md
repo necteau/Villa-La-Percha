@@ -279,13 +279,18 @@ Prioritize lightweight surfaces that support Bishop-led operations:
 9. Launch checklist gates.
 10. Later Owner Portal post-launch feedback/change-request workflows.
 
-## 2026-05-02 Update — Event-triggered intake processing
+## 2026-05-02 Update — Durable intake jobs + best-effort wake
 
-PlatformLead intake processing no longer depends on a five-minute polling cron for the first operational pass. After `/api/platform-leads` validates and stores a lead, the route schedules post-response work with Next `after()`:
+PlatformLead intake processing no longer depends on a five-minute polling cron for the first operational pass, and it no longer relies only on app-level post-submit work. `/api/platform-leads` now writes the lead and a `PlatformLeadProcessingJob` in one database transaction. The job row is the durable source of truth; OpenClaw/Bishop wake calls are only the doorbell.
 
-- obvious spam is marked `SPAM` with a recoverable `spamReason` and audit event;
+Current behavior:
+
+- public form submission stores the lead plus durable `INTAKE` job before returning success;
+- the app attempts a short-timeout wake webhook when `DIRECTSTAY_OPENCLAW_WAKE_URL` is configured;
+- if the wake fails or is not configured, the `PENDING` job remains recoverable by worker/heartbeat/manual fallback;
+- worker processing marks attempts, records `COMPLETED` or `FAILED`, and stores `lastError` on failure;
 - plausible leads receive `LEAD_BRIEF` and `FIRST_RESPONSE_DRAFT` artifacts with `NEEDS_APPROVAL` status;
-- the lead receives `firstRead` and `nextAction` guidance;
-- an audit event records the event-triggered processing.
+- obvious spam filtering still stays recoverable through lead status/spam metadata;
+- generated drafts are internal artifacts only; external lead email remains Jaimal-approval-gated.
 
-The public form still returns quickly after the database write. External lead email remains approval-gated; generated drafts are internal artifacts only. The prior OpenClaw polling cron (`cd55f83b-8434-450b-87c9-df91dc425a94`) was disabled after preview and production QA passed.
+The prior OpenClaw polling cron (`cd55f83b-8434-450b-87c9-df91dc425a94`) remains disabled. The fallback helper is `tools/directstay/platform-lead-ops.mjs process-pending` or `process-job --job=<id>`.
