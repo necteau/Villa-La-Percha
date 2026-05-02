@@ -38,6 +38,24 @@ export default async function AdminPlatformLeadDetailPage({ searchParams }: { se
         <article className="admin-card"><h3>Source</h3><Field label="Source" value={lead.source} /><Field label="Legacy company / brand" value={lead.company} /><Field label="Legacy desired domain" value={lead.desiredCustomDomain} /></article>
         <article className="admin-card"><h3>Message</h3><p>{lead.message || "—"}</p></article>
       </section>
+      <section className="admin-section admin-card">
+        <h3>Internal notes</h3>
+        <form action="/admin/platform-leads/notes" method="post" className="admin-form-stack">
+          <input type="hidden" name="leadId" value={lead.id} />
+          <label className="admin-muted" htmlFor="note-body">Add a private note</label>
+          <textarea id="note-body" name="body" rows={4} maxLength={4000} required placeholder="Call summary, qualification detail, next-step context…" />
+          <button type="submit">Add note</button>
+        </form>
+      </section>
+      <section className="admin-section admin-card">
+        <h3>Lead timeline</h3>
+        <ul className="admin-list">
+          <li><strong>Lead created</strong><br /><span className="admin-muted">{lead.createdAt.toISOString().slice(0, 16).replace("T", " ")} UTC</span></li>
+          {lead.notes.map((note) => (
+            <li key={note.id}><strong>Internal note</strong><br /><span className="admin-muted">{note.authorEmail || "Admin"} · {note.createdAt.toISOString().slice(0, 16).replace("T", " ")} UTC</span><p>{note.body}</p></li>
+          ))}
+        </ul>
+      </section>
     </div>
   );
 }

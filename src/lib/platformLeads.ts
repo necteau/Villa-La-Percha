@@ -94,7 +94,15 @@ export async function getAdminPlatformLeads() {
 
 export async function getAdminPlatformLead(leadId: string) {
   const prisma = await getPrismaClient();
-  return prisma.platformLead.findFirst({ where: { id: leadId } });
+  return prisma.platformLead.findFirst({
+    where: { id: leadId },
+    include: {
+      notes: {
+        orderBy: { createdAt: "desc" },
+        take: 50,
+      },
+    },
+  });
 }
 
 export async function updatePlatformLeadStatus(leadId: string, status: PlatformLeadStatus) {
@@ -102,5 +110,22 @@ export async function updatePlatformLeadStatus(leadId: string, status: PlatformL
   return prisma.platformLead.update({
     where: { id: leadId },
     data: { status },
+  });
+}
+
+export async function addPlatformLeadNote(input: {
+  leadId: string;
+  body: string;
+  authorUserId?: string | null;
+  authorEmail?: string | null;
+}) {
+  const prisma = await getPrismaClient();
+  return prisma.platformLeadNote.create({
+    data: {
+      platformLeadId: input.leadId,
+      body: input.body.trim().slice(0, 4000),
+      authorUserId: input.authorUserId ?? undefined,
+      authorEmail: input.authorEmail ?? undefined,
+    },
   });
 }

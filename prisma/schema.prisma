@@ -121,6 +121,7 @@ model User {
   ownerProfiles  Owner[]       @relation("OwnerPrimaryUser")
   memberships    OwnerMember[]
   auditLogs      AuditLog[]
+  platformLeadNotes PlatformLeadNote[]
 }
 
 model AuditLog {
@@ -164,9 +165,24 @@ model PlatformLead {
   source              String             @default("direct")
   createdAt           DateTime           @default(now())
   updatedAt           DateTime           @updatedAt
+  notes               PlatformLeadNote[]
 
   @@index([status, createdAt])
   @@index([email])
+}
+
+model PlatformLeadNote {
+  id             String       @id @default(cuid())
+  platformLeadId String
+  authorUserId   String?
+  authorEmail    String?
+  body           String
+  createdAt      DateTime     @default(now())
+  platformLead   PlatformLead @relation(fields: [platformLeadId], references: [id], onDelete: Cascade)
+  authorUser     User?        @relation(fields: [authorUserId], references: [id], onDelete: SetNull)
+
+  @@index([platformLeadId, createdAt])
+  @@index([authorUserId, createdAt])
 }
 
 model Owner {
