@@ -1,5 +1,6 @@
+import { recordAdminAuditEvent } from "@/lib/admin/auditLog";
 import { getPrismaClient } from "@/lib/db";
-import type { ContractExecutionStatus, PlatformLeadArtifactStatus, PlatformLeadArtifactType, PlatformLeadStatus, PreviewBuildStatus } from "@prisma/client";
+import type { ContractExecutionStatus, PlatformLead, PlatformLeadArtifactStatus, PlatformLeadArtifactType, PlatformLeadStatus, PreviewBuildStatus } from "@prisma/client";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const URL_REGEX = /^https?:\/\/.+\..+/i;
@@ -85,6 +86,81 @@ export function validatePlatformLeadInput(body: Record<string, unknown>): Platfo
 export async function createPlatformLead(input: PlatformLeadInput) {
   const prisma = await getPrismaClient();
   return prisma.platformLead.create({ data: input });
+}
+
+function summarizePlatformLead(lead: PlatformLead) {
+  const source = lead.currentWebsite ? `Source/listing: ${lead.currentWebsite}` : "Source/listing: not provided yet";
+  const note = lead.message ? `Owner note: ${lead.message}` : "Owner note: none yet";
+  return [
+    `Lead: ${lead.fullName} <${lead.email}>${lead.phone ? ` / ${lead.phone}` : ""}`,
+    `Property: ${lead.propertyName || "Unnamed property"} in ${lead.propertyLocation || "location not provided"}`,
+    source,
+    note,
+  ].join("\n");
+}
+
+function isObviousSpam(lead: PlatformLead) {
+  const haystack = [lead.fullName, lead.email, lead.phone, lead.propertyName, lead.propertyLocation, lead.currentWebsite, lead.message]
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase();
+  const spamSignals = ["casino", "crypto", "seo backlink", "guest post", "loan offer", "forex", "viagra"];
+  const matched = spamSignals.find((signal) => haystack.includes(signal));
+  return matched ? `Matched spam signal: ${matched}` : null;
+}
+
+export async function processPlatformLeadIntakeEvent(leadId: string) {
+  const prisma = await getPrismaClient();
+  const lead = await prisma.platformLead.findUnique({
+    where: { id: leadId },
+    include: { artifacts: { where: { type: "LEAD_BRIEF" }, take: 1 } },
+  });
+  if (!lead || lead.artifacts.length > 0 || lead.email.endsWith("@example.com") || lead.source.startsWith("qa")) return null;
+
+  const spamReason = isObviousSpam(lead);
+  if (spamReason) {
+    const updated = await updatePlatformLeadOps({
+      leadId,
+      status: "SPAM",
+      spamReason,
+      firstRead: `Obvious spam. ${spamReason}`,
+      nextAction: "No owner notification. Leave recoverable in spam queue.",
+    });
+    await recordAdminAuditEvent({
+      actorEmail: "bishop@directstay.internal",
+      actorRole: "ADMIN",
+      action: "admin.platform_lead.event_spam_filtered",
+      entityType: "PlatformLead",
+      entityId: leadId,
+      metadata: { spamReason },
+    });
+    return { lead: updated, spam: true };
+  }
+
+  const summary = summarizePlatformLead(lead);
+  const firstRead = `Plausible single-property owner lead. ${lead.propertyName || "The property"} is in ${lead.propertyLocation || "an unspecified market"}. ${lead.currentWebsite ? "There is a public listing/source to review before responding." : "Ask for a current listing or photos before any Preview Build."}`;
+  const nextAction = "Review Lead Brief and approve/edit the first-response draft before any external email is sent.";
+  const leadBrief = `Lead Brief\n\n${summary}\n\nFirst read:\n${firstRead}\n\nRecommended next step:\n${nextAction}`;
+  const responseDraft = `Subject: Re: DirectStay site request for ${lead.propertyName || "your property"}\n\nHi ${lead.fullName.split(" ")[0] || lead.fullName},\n\nThanks for reaching out — ${lead.propertyName ? `${lead.propertyName} looks like exactly the kind of property` : "your property sounds like the kind of rental"} DirectStay is built for: a dedicated direct-booking presence that helps owners keep more of the guest relationship instead of handing it all to the big marketplaces.\n\nI’d love to take a closer look and put together a thoughtful next step. If you have a current Airbnb/VRBO/direct listing, a photo folder, or even a rough brain dump about what makes the place special, send that over and I’ll use it to shape the initial direction.\n\nBest,\nJaimal\n\n[Draft only — requires Jaimal approval before sending.]`;
+
+  const [briefArtifact, draftArtifact, updatedLead] = await prisma.$transaction([
+    prisma.platformLeadArtifact.create({
+      data: { platformLeadId: leadId, type: "LEAD_BRIEF", status: "NEEDS_APPROVAL", title: `Lead Brief — ${lead.propertyName || lead.fullName}`, body: leadBrief, createdByEmail: "bishop@directstay.internal" },
+    }),
+    prisma.platformLeadArtifact.create({
+      data: { platformLeadId: leadId, type: "FIRST_RESPONSE_DRAFT", status: "NEEDS_APPROVAL", title: `First response draft — ${lead.propertyName || lead.fullName}`, body: responseDraft, createdByEmail: "bishop@directstay.internal" },
+    }),
+    prisma.platformLead.update({ where: { id: leadId }, data: { firstRead, nextAction, updatedAt: new Date() } }),
+  ]);
+  await recordAdminAuditEvent({
+    actorEmail: "bishop@directstay.internal",
+    actorRole: "ADMIN",
+    action: "admin.platform_lead.event_processed",
+    entityType: "PlatformLead",
+    entityId: leadId,
+    metadata: { briefArtifactId: briefArtifact.id, draftArtifactId: draftArtifact.id },
+  });
+  return { lead: updatedLead, briefArtifact, draftArtifact, spam: false };
 }
 
 export async function getAdminPlatformLeads() {

@@ -278,3 +278,14 @@ Prioritize lightweight surfaces that support Bishop-led operations:
 8. Contract sent/executed tracking.
 9. Launch checklist gates.
 10. Later Owner Portal post-launch feedback/change-request workflows.
+
+## 2026-05-02 Update — Event-triggered intake processing
+
+PlatformLead intake processing no longer depends on a five-minute polling cron for the first operational pass. After `/api/platform-leads` validates and stores a lead, the route schedules post-response work with Next `after()`:
+
+- obvious spam is marked `SPAM` with a recoverable `spamReason` and audit event;
+- plausible leads receive `LEAD_BRIEF` and `FIRST_RESPONSE_DRAFT` artifacts with `NEEDS_APPROVAL` status;
+- the lead receives `firstRead` and `nextAction` guidance;
+- an audit event records the event-triggered processing.
+
+The public form still returns quickly after the database write. External lead email remains approval-gated; generated drafts are internal artifacts only. The prior OpenClaw polling cron (`cd55f83b-8434-450b-87c9-df91dc425a94`) was disabled after preview and production QA passed.

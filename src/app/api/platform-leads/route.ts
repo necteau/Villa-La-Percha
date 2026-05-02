@@ -1,5 +1,5 @@
-import { NextResponse } from "next/server";
-import { createPlatformLead, validatePlatformLeadInput } from "@/lib/platformLeads";
+import { after, NextResponse } from "next/server";
+import { createPlatformLead, processPlatformLeadIntakeEvent, validatePlatformLeadInput } from "@/lib/platformLeads";
 
 const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
 const RATE_LIMIT_MAX = 4;
@@ -44,6 +44,13 @@ export async function POST(req: Request) {
     }
 
     const lead = await createPlatformLead(validation.data);
+    after(async () => {
+      try {
+        await processPlatformLeadIntakeEvent(lead.id);
+      } catch (error) {
+        console.error("PlatformLead event processing failed", { leadId: lead.id, error });
+      }
+    });
     if (isFormPost) {
       return NextResponse.redirect(new URL("/thank-you", req.url), { status: 303 });
     }
