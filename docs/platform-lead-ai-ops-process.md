@@ -294,3 +294,11 @@ Current behavior:
 - generated drafts are internal artifacts only; external lead email remains Jaimal-approval-gated.
 
 The prior OpenClaw polling cron (`cd55f83b-8434-450b-87c9-df91dc425a94`) remains disabled. The fallback helper is `tools/directstay/platform-lead-ops.mjs process-pending` or `process-job --job=<id>`.
+
+Mac Studio fallback worker files:
+
+- `scripts/directstay-platform-lead-worker.mjs`
+- `scripts/run-directstay-platform-lead-worker.sh`
+- `scripts/com.directstay.platform-lead-worker.plist`
+
+This launchd worker is the safety net for the exact failure mode where the DirectStay site cannot reach the Mac Studio/OpenClaw gateway from the internet. The public site writes the durable DB job; the local Mac worker later drains pending jobs through database access.
