@@ -20,7 +20,7 @@ export default function RequestASitePage() {
           <div className="grid gap-5 md:grid-cols-2">
             <label className="grid gap-2 text-sm font-semibold">Name<input required name="fullName" className="rounded-2xl border border-[#ddd2c2] px-4 py-3 font-normal" /></label>
             <label className="grid gap-2 text-sm font-semibold">Email<input required type="email" name="email" className="rounded-2xl border border-[#ddd2c2] px-4 py-3 font-normal" /></label>
-            <label className="grid gap-2 text-sm font-semibold">Phone<input name="phone" className="rounded-2xl border border-[#ddd2c2] px-4 py-3 font-normal" /></label>
+            <label className="grid gap-2 text-sm font-semibold">Phone<input required name="phone" className="rounded-2xl border border-[#ddd2c2] px-4 py-3 font-normal" /></label>
             <label className="grid gap-2 text-sm font-semibold">Property name<input required name="propertyName" className="rounded-2xl border border-[#ddd2c2] px-4 py-3 font-normal" placeholder="e.g. Villa La Percha" /></label>
             <label className="grid gap-2 text-sm font-semibold">Property location<input required name="propertyLocation" className="rounded-2xl border border-[#ddd2c2] px-4 py-3 font-normal" placeholder="e.g. Turks and Caicos" /></label>
           </div>

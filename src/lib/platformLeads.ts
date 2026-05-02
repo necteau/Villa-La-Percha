@@ -39,8 +39,10 @@ export function validatePlatformLeadInput(body: Record<string, unknown>): Platfo
   const propertyLocation = cleanString(body.propertyLocation, 180);
   const goal = cleanString(body.goal, 220);
 
-  if (!fullName || !email || !propertyName || !propertyLocation) {
-    return { ok: false, error: "Please include your name, email, property name, and property location." };
+  const phone = cleanString(body.phone, 80);
+
+  if (!fullName || !email || !phone || !propertyName || !propertyLocation) {
+    return { ok: false, error: "Please include your name, email, phone number, property name, and property location." };
   }
 
   if (!EMAIL_REGEX.test(email)) {
@@ -63,7 +65,7 @@ export function validatePlatformLeadInput(body: Record<string, unknown>): Platfo
     data: {
       fullName,
       email,
-      phone: cleanString(body.phone, 80),
+      phone,
       company,
       propertyName,
       propertyCount,
