@@ -28,7 +28,7 @@ This is the durable working plan for the DirectStay Admin Portal and PlatformLea
 | 1 | Admin Foundation, Read-Only | Jaimal accepted | 2026-05-01 | `d4fd3e9`, `d50bcd5`, `a60e1f4` / pending deploy | Read-only `/admin` routes implemented with ADMIN guard; Jaimal verified ADMIN access and OWNER/MANAGER blocking. Mobile/admin nav polish completed. |
 | 2 | Audit Log Foundation | Agent complete | 2026-05-02 | `4f2762a`, `3ee71cc` / production `directstay.app` | AuditLog model/migration, audit helper, admin read logging, denied-role logging, and `/admin/activity` deployed. Preview QA unblocked with Vercel automation bypass + Preview owner allowlist fix; production authenticated QA passed 6/6. |
 | 3 | PlatformLead Public Intake | Agent complete | 2026-05-02 | `0b38935`, `9584edc`, `fd22f5c` / production `directstay.app` | PlatformLead model/migration, public owner funnel, form/API, thank-you redirect, validation/spam basics, and admin list/detail deployed. Preview and production owner-intake QA passed; production authenticated QA passed 6/6 and PlatformLead DB records verified. |
-| 4 | PlatformLead Triage Tools | Not started | — | — | — |
+| 4 | PlatformLead Triage Tools | In progress | — | `bcf22be`, `e10b8bc`, `55243f3`, `3b49965` / production `directstay.app` | First triage slice shipped: admin can open a PlatformLead detail route, update status, persist the change, and record `admin.platform_lead.status_updated` audit event. Preview and production status-update QA passed; production authenticated QA passed 6/6. Remaining: assignment, notes, follow-up date, source tracking, timeline polish. |
 | 5 | Admin Owner Context, Read-Only Owner Workspace | Not started | — | — | — |
 | 6 | Controlled Admin Writes | Not started | — | — | — |
 | 7 | PlatformLead Conversion | Not started | — | — | — |
@@ -376,8 +376,7 @@ Make PlatformLead records operationally useful without creating tenants yet.
 - Preview deploy verified.
 
 ## Completion Notes
-_Not started._
-
+In progress 2026-05-02. First vertical triage slice shipped to production: admin PlatformLead list links to a stable `/admin/platform-leads/detail?leadId=...` detail view; detail includes a status selector; status updates post to `/admin/platform-leads/status`, require an ADMIN session, persist the new `PlatformLead.status`, revalidate admin pages, redirect back to detail, and record `admin.platform_lead.status_updated` in `AuditLog` with from/to metadata. Local gates passed: `npm run lint` and `npm run build`. Protected preview QA created a lead, changed status from `NEW` to `CONTACTED`, and verified the audit event appeared in `/admin/activity`. Production QA repeated the status update successfully and authenticated DirectStay QA passed 6/6. During implementation, the original dynamic detail route `/admin/platform-leads/[leadId]` behaved like a not-found route in preview for newly-created leads despite list visibility, so the stable query-param detail route was added and list links now use it. Remaining Phase 4 work: assignment, internal notes, next follow-up date, source tracking, and richer lead activity timeline.
 ---
 
 # Phase 5 — Admin Owner Context, Read-Only Owner Workspace
