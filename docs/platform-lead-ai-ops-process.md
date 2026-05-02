@@ -72,7 +72,7 @@ Exception: if the initial lead is extremely promising or includes a hot note, Bi
 
 Use public-but-obscure shareable URLs:
 
-`https://directstay.app/preview/property-name-randomtoken`
+`https://directstay.app/p/property-name-randomtoken`
 
 Rules:
 
