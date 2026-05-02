@@ -25,7 +25,9 @@ function isRateLimited(ip: string) {
 
 export async function POST(req: Request) {
   try {
-    const body = await req.json();
+    const contentType = req.headers.get("content-type") || "";
+    const isFormPost = contentType.includes("application/x-www-form-urlencoded") || contentType.includes("multipart/form-data");
+    const body = isFormPost ? Object.fromEntries((await req.formData()).entries()) : await req.json();
 
     if (typeof body.website === "string" && body.website.trim() !== "") {
       return NextResponse.json({ ok: true });
@@ -42,6 +44,9 @@ export async function POST(req: Request) {
     }
 
     const lead = await createPlatformLead(validation.data);
+    if (isFormPost) {
+      return NextResponse.redirect(new URL("/thank-you", req.url), { status: 303 });
+    }
     return NextResponse.json({ ok: true, leadId: lead.id });
   } catch (error) {
     console.error("PlatformLead intake failed", error);
