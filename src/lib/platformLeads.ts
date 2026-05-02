@@ -8,6 +8,7 @@ export type PlatformLeadInput = {
   email: string;
   phone?: string;
   company?: string;
+  propertyName?: string;
   propertyCount?: number;
   propertyLocation?: string;
   currentWebsite?: string;
@@ -34,11 +35,12 @@ export function validatePlatformLeadInput(body: Record<string, unknown>): Platfo
   const fullName = cleanString(body.fullName, 140);
   const email = cleanString(body.email, 180)?.toLowerCase();
   const company = cleanString(body.company, 180);
+  const propertyName = cleanString(body.propertyName, 180);
   const propertyLocation = cleanString(body.propertyLocation, 180);
   const goal = cleanString(body.goal, 220);
 
-  if (!fullName || !email || !propertyLocation || !goal) {
-    return { ok: false, error: "Please include your name, email, property location, and goal." };
+  if (!fullName || !email || !propertyName || !propertyLocation) {
+    return { ok: false, error: "Please include your name, email, property name, and property location." };
   }
 
   if (!EMAIL_REGEX.test(email)) {
@@ -63,6 +65,7 @@ export function validatePlatformLeadInput(body: Record<string, unknown>): Platfo
       email,
       phone: cleanString(body.phone, 80),
       company,
+      propertyName,
       propertyCount,
       propertyLocation,
       currentWebsite,

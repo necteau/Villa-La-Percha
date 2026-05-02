@@ -152,6 +152,7 @@ model PlatformLead {
   email               String
   phone               String?
   company             String?
+  propertyName        String?
   propertyCount       Int?
   propertyLocation    String?
   currentWebsite      String?
