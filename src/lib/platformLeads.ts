@@ -328,6 +328,68 @@ export async function createPlatformLeadArtifact(input: {
   });
 }
 
+function formatPricingDollars(cents: number | null) {
+  if (cents == null) return "TBD";
+  return `$${(cents / 100).toLocaleString("en-US", { maximumFractionDigits: 0 })}`;
+}
+
+function formatBps(bps: number | null) {
+  if (bps == null) return "TBD";
+  return `${(bps / 100).toFixed(2).replace(/\.00$/, "")}%`;
+}
+
+export async function createPlatformLeadProposalArtifacts(input: {
+  leadId: string;
+  createdByEmail?: string | null;
+}) {
+  const prisma = await getPrismaClient();
+  const lead = await prisma.platformLead.findUnique({
+    where: { id: input.leadId },
+    include: {
+      artifacts: { orderBy: { createdAt: "desc" }, take: 20 },
+      previewBuilds: { orderBy: { updatedAt: "desc" }, take: 3 },
+      notes: { orderBy: { createdAt: "desc" }, take: 5 },
+    },
+  });
+  if (!lead) throw new Error("PlatformLead not found");
+
+  const activeProposal = lead.artifacts.find((artifact) => artifact.type === "PROPOSAL_DRAFT" && !["REJECTED", "SUPERSEDED"].includes(artifact.status));
+  if (activeProposal) return { created: false, artifacts: [], existingProposalId: activeProposal.id };
+
+  const property = lead.propertyName || lead.company || "the property";
+  const firstName = lead.fullName.split(" ")[0] || lead.fullName;
+  const preview = lead.previewBuilds[0];
+  const latestBrief = lead.artifacts.find((artifact) => artifact.type === "LEAD_BRIEF");
+  const setupFee = formatPricingDollars(lead.pricingSetupFeeCents);
+  const monthlyFee = formatPricingDollars(lead.pricingMonthlyFeeCents);
+  const commission = formatBps(lead.pricingCommissionBps);
+  const processing = formatBps(lead.pricingPaymentProcessingBps);
+
+  const rationale = `Proposal Rationale\n\nLead: ${lead.fullName} <${lead.email}>\nProperty: ${property}${lead.propertyLocation ? ` in ${lead.propertyLocation}` : ""}\nStatus: ${lead.status}\n\nWhy this is proposal-ready:\n- First read: ${lead.firstRead || "No first read saved yet; review before sending."}\n- Next action: ${lead.nextAction || "No next action saved."}\n- Preview Build: ${preview ? `/p/${preview.slug} (${preview.status.replaceAll("_", " ")})` : "No Preview Build yet; consider creating one before sending."}\n- Current source/listing: ${lead.currentWebsite || "Not provided."}\n\nRecommended commercial terms:\n- Setup fee: ${setupFee}\n- Monthly fee: ${monthlyFee}\n- Direct booking commission: ${commission}\n- Payment processing pass-through: ${processing}\n${lead.pricingNotes ? `\nPricing notes:\n${lead.pricingNotes}\n` : ""}\nRisk / review notes:\n- Confirm Jaimal is comfortable with terms before sending.\n- Confirm preview assumptions against owner-provided truth before launch.\n- No external email is sent by this artifact; approval is required before any outreach.`;
+
+  const proposalDraft = `Subject: DirectStay proposal for ${property}\n\nHi ${firstName},\n\nThanks again for sharing the details on ${property}. Based on what you sent over, I think DirectStay could be a strong fit: a dedicated direct-booking presence that positions the property as its own hospitality brand, gives you a cleaner place to send repeat guests, and reduces dependence on marketplace fees over time.\n\nHere’s the proposed starting structure:\n\n- Setup/build fee: ${setupFee}\n- Monthly platform/support fee: ${monthlyFee}\n- Direct booking commission: ${commission}\n- Payment processing: ${processing} pass-through where applicable\n\n${preview ? `I also put together a working Preview Build here for review:\n${preview.slug.startsWith("http") ? preview.slug : `https://directstay.app/p/${preview.slug}`}\n\n` : "The next step would be a Preview Build so you can see the direction before anything is launched.\n\n"}The preview is intentionally not a live booking site yet. Before launch, we would confirm the final property details, remove any owner-facing callouts, execute the agreement, and complete the launch checklist.\n\nIf this direction feels right, the next step is a quick approval on the proposed terms and then we can move into onboarding/refinement.\n\nBest,\nJaimal\n\n[Draft only — requires Jaimal approval before sending.]`;
+
+  const artifacts = await prisma.$transaction([
+    prisma.platformLeadArtifact.create({
+      data: { platformLeadId: lead.id, type: "PROPOSAL_RATIONALE", status: "NEEDS_APPROVAL", title: `Proposal Rationale — ${property}`, body: rationale, createdByEmail: input.createdByEmail ?? "bishop@directstay.internal" },
+    }),
+    prisma.platformLeadArtifact.create({
+      data: { platformLeadId: lead.id, type: "PROPOSAL_DRAFT", status: "NEEDS_APPROVAL", title: `Proposal Draft — ${property}`, body: proposalDraft, createdByEmail: input.createdByEmail ?? "bishop@directstay.internal" },
+    }),
+    prisma.platformLead.update({ where: { id: lead.id }, data: { status: lead.status === "NEW" ? "QUALIFIED" : lead.status, nextAction: "Review proposal rationale and approve/edit proposal draft before sending.", updatedAt: new Date() } }),
+  ]);
+
+  await recordAdminAuditEvent({
+    actorEmail: input.createdByEmail ?? "bishop@directstay.internal",
+    actorRole: "ADMIN",
+    action: "admin.platform_lead.proposal_artifacts_generated",
+    entityType: "PlatformLead",
+    entityId: lead.id,
+    metadata: { rationaleArtifactId: artifacts[0].id, proposalArtifactId: artifacts[1].id, sourceBriefId: latestBrief?.id ?? null },
+  });
+  return { created: true, artifacts: artifacts.slice(0, 2) };
+}
+
 export async function updatePlatformLeadArtifactStatus(input: {
   artifactId: string;
   status: PlatformLeadArtifactStatus;
