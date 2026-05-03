@@ -380,7 +380,39 @@ Make PlatformLead records operationally useful without creating tenants yet.
 In progress 2026-05-02. First vertical triage slice shipped to production: admin PlatformLead list links to a stable `/admin/platform-leads/detail?leadId=...` detail view; detail includes a status selector; status updates post to `/admin/platform-leads/status`, require an ADMIN session, persist the new `PlatformLead.status`, revalidate admin pages, redirect back to detail, and record `admin.platform_lead.status_updated` in `AuditLog` with from/to metadata. Local gates passed: `npm run lint` and `npm run build`. Protected preview QA created a lead, changed status from `NEW` to `CONTACTED`, and verified the audit event appeared in `/admin/activity`. Production QA repeated the status update successfully and authenticated DirectStay QA passed 6/6. During implementation, the original dynamic detail route `/admin/platform-leads/[leadId]` behaved like a not-found route in preview for newly-created leads despite list visibility, so the stable query-param detail route was added and list links now use it. Second slice 2026-05-02 added internal notes: `PlatformLeadNote` model/migration, ADMIN-guarded `/admin/platform-leads/notes` POST route, note form on lead detail, timeline rendering for lead creation + notes, and `admin.platform_lead.note_added` audit events. Migration applied via pooler SQL path. Local gates passed: Prisma validate/generate, lint, build. Preview and production QA created a lead, added a note, verified note visibility on detail timeline, and verified audit event in `/admin/activity`; production authenticated QA passed 6/6. Third slice adds list-level owner ops visibility (assignment, follow-up/next action, latest AI artifact) and upgrades the detail timeline into a reverse-chronological operating history that includes intake jobs, first read, assignment, follow-ups, spam review, artifacts/approvals/sent markers, preview builds, contract milestones, and notes. Local gates passed: `npm run lint` and `npm run build`. Pushed branch `feature/platform-lead-public-intake` and deployed to production `directstay.app` via Vercel deployment `https://villa-la-percha-e5dkzp4ta-necteau-7189s-projects.vercel.app`. QA passed: `DIRECTSTAY_PROCESS_PLATFORM_LEAD_JOBS_FOR_QA=1 node qa/browser-sweeps/test-platform-lead-ai-ops.mjs`, `node tools/browser-operator/tests/directstay-authenticated.mjs` with 6/6 authenticated checks, and direct marker check for `Owner ops`, `Latest AI artifact`, and `Reverse-chronological operating history`. Fourth slice adds queue views/counts for `All latest`, `Needs first read`, `Needs approval`, `Follow-up due`, `Preview in progress`, `Proposal-ready`, and `Spam review`, with preview status/slugs visible in the list and empty-state handling. Local gates passed: `npm run lint` and `npm run build`. Deployed to production `directstay.app`; QA passed for queue markers across all 7 views and authenticated DirectStay QA passed 6/6. Phase 4 is functionally complete unless live use reveals another triage blocker; next workstream is proposal automation.
 ---
 
-# Phase 5 — Admin Owner Context, Read-Only Owner Workspace
+# Phase 5 — PlatformLead Proposal Automation
+
+## Goal
+Turn qualified PlatformLeads into proposal-ready artifacts while preserving Jaimal approval before any external send.
+
+## Deliverables
+- Generate proposal rationale artifact from lead context, pricing fields, Preview Build, Lead Brief, and notes.
+- Generate proposal email draft artifact with explicit draft-only/approval warning.
+- Store both as `NEEDS_APPROVAL` artifacts in the PlatformLead timeline.
+- Prevent duplicate active proposal drafts unless previous draft is rejected/superseded.
+- Audit proposal generation requests and generated artifacts.
+- Keep external sends manual; `SENT` remains a marker, not an email action.
+
+## Production State After Phase
+- Admin can create a reviewable proposal package for a lead.
+- Jaimal can approve/edit/reject proposal artifacts before any owner-facing outreach.
+- No owner email is sent automatically.
+
+## Agent Testing Steps
+- Run `npm run lint`.
+- Run `npm run build`.
+- Create/provision a test PlatformLead.
+- Generate proposal rationale + draft.
+- Confirm both artifacts appear as `NEEDS_APPROVAL`.
+- Confirm artifact/timeline text contains draft-only approval language.
+- Confirm authenticated DirectStay QA still passes.
+
+## Completion Notes
+In progress 2026-05-03. First proposal slice shipped locally and to production: detail page has a `Generate proposal rationale + draft` control; `/admin/platform-leads/artifacts` supports `generate-proposal`; `createPlatformLeadProposalArtifacts` derives a proposal rationale and email draft from lead context, pricing fields, Preview Build, and latest Lead Brief; both artifacts are stored as `NEEDS_APPROVAL`, duplicate active proposal drafts are avoided, proposal generation is audited, and no external send occurs. Local gates passed: `npm run lint` and `npm run build`. Deployed to production `directstay.app`; QA passed for generating proposal artifacts on a test PlatformLead with markers `Proposal Rationale`, `Proposal Draft`, `Draft only`, `requires Jaimal approval before sending`, and `NEEDS APPROVAL`; authenticated DirectStay QA passed 6/6.
+
+---
+
+# Phase 6 — Admin Owner Context, Read-Only Owner Workspace
 
 ## Goal
 Let admin view the owner portal in a scoped owner context safely.
