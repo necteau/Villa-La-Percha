@@ -13,11 +13,16 @@ const CONTRACT_STATUSES: ContractExecutionStatus[] = ["NOT_STARTED", "DRAFTED", 
 
 function Field({ label, value }: { label: string; value?: string | number | null }) { return <p><span className="admin-muted">{label}:</span> {value || "—"}</p>; }
 function money(cents?: number | null) { return cents == null ? "" : String(cents); }
+function assignmentLabel(lead: { assignedToUserId?: string | null }, admin: { id: string; email: string }) {
+  if (!lead.assignedToUserId) return "Unassigned";
+  return lead.assignedToUserId === admin.id ? `Assigned to me (${admin.email})` : `Assigned user ${lead.assignedToUserId}`;
+}
 
 export default async function AdminPlatformLeadDetailPage({ searchParams }: { searchParams: Promise<{ leadId?: string }> }) {
   const { leadId } = await searchParams;
   if (!leadId) notFound();
   const admin = await getAdminSession();
+  if (!admin) notFound();
   const lead = await getAdminPlatformLead(leadId);
   if (!lead) notFound();
   await recordAdminAuditEvent({ actor: admin, action: "admin.read.platform_lead", entityType: "PlatformLead", entityId: lead.id });
@@ -27,7 +32,7 @@ export default async function AdminPlatformLeadDetailPage({ searchParams }: { se
     <section className="admin-detail-grid">
       <article className="admin-card"><h3>Contact</h3><Field label="Name" value={lead.fullName} /><Field label="Email" value={lead.email} /><Field label="Phone" value={lead.phone} /><code>{lead.id}</code></article>
       <article className="admin-card"><h3>Property</h3><Field label="Property name" value={lead.propertyName || lead.company} /><Field label="Location" value={lead.propertyLocation} /><Field label="Current website / OTA" value={lead.currentWebsite} /></article>
-      <article className="admin-card"><h3>Bishop first read</h3><p>{lead.firstRead || "No AI brief saved yet."}</p><Field label="Next action" value={lead.nextAction} /><Field label="Follow-up" value={lead.nextFollowUpAt?.toISOString().slice(0,10)} /></article>
+      <article className="admin-card"><h3>Bishop first read</h3><p>{lead.firstRead || "No AI brief saved yet."}</p><Field label="Next action" value={lead.nextAction} /><Field label="Follow-up" value={lead.nextFollowUpAt?.toISOString().slice(0,10)} /><Field label="Assignment" value={assignmentLabel(lead, admin)} /></article>
     </section>
 
     <section className="admin-section admin-card"><h3>Durable intake jobs</h3>{lead.processingJobs.length ? <ul className="admin-list">{lead.processingJobs.map((job) => <li key={job.id}><strong>{job.kind}</strong> <span className="admin-chip">{job.status}</span><br /><span className="admin-muted">Attempts: {job.attempts} · Created {job.createdAt.toISOString().slice(0,16).replace("T", " ")} UTC{job.processedAt ? ` · Processed ${job.processedAt.toISOString().slice(0,16).replace("T", " ")} UTC` : ""}</span>{job.lastError ? <p style={{whiteSpace: "pre-wrap"}}>Last error: {job.lastError}</p> : null}<code>{job.id}</code></li>)}</ul> : <p className="admin-muted">No durable processing jobs recorded for this lead yet.</p>}</section>
@@ -37,6 +42,7 @@ export default async function AdminPlatformLeadDetailPage({ searchParams }: { se
       <label className="admin-muted" htmlFor="firstRead">First read</label><textarea id="firstRead" name="firstRead" rows={3} defaultValue={lead.firstRead || ""} />
       <label className="admin-muted" htmlFor="nextAction">Next action</label><textarea id="nextAction" name="nextAction" rows={3} defaultValue={lead.nextAction || ""} />
       <label className="admin-muted" htmlFor="nextFollowUpAt">Next follow-up date</label><input id="nextFollowUpAt" type="date" name="nextFollowUpAt" defaultValue={lead.nextFollowUpAt?.toISOString().slice(0,10) || ""} />
+      <label className="admin-muted" htmlFor="assignment">Assignment</label><select id="assignment" name="assignment" defaultValue={lead.assignedToUserId === admin.id ? "me" : ""}><option value="">Unassigned</option><option value="me">Assign to me ({admin.email})</option></select>
       <label className="admin-muted" htmlFor="source">Source</label><input id="source" name="source" defaultValue={lead.source} />
       <label className="admin-muted" htmlFor="spamReason">Spam/suspicious reason</label><textarea id="spamReason" name="spamReason" rows={2} defaultValue={lead.spamReason || ""} />
       <div className="admin-detail-grid"><label>Setup cents<input name="pricingSetupFeeCents" inputMode="numeric" defaultValue={money(lead.pricingSetupFeeCents)} /></label><label>Monthly cents<input name="pricingMonthlyFeeCents" inputMode="numeric" defaultValue={money(lead.pricingMonthlyFeeCents)} /></label><label>Commission bps<input name="pricingCommissionBps" inputMode="numeric" defaultValue={money(lead.pricingCommissionBps)} /></label><label>Processing bps<input name="pricingPaymentProcessingBps" inputMode="numeric" defaultValue={money(lead.pricingPaymentProcessingBps)} /></label></div>

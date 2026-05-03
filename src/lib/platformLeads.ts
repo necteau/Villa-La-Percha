@@ -272,6 +272,7 @@ export async function updatePlatformLeadOps(input: {
   firstRead?: string | null;
   nextAction?: string | null;
   nextFollowUpAt?: Date | null;
+  assignedToUserId?: string | null;
   source?: string | null;
   spamReason?: string | null;
   pricingSetupFeeCents?: number | null;
@@ -288,6 +289,7 @@ export async function updatePlatformLeadOps(input: {
     ...(input.firstRead !== undefined ? { firstRead: input.firstRead?.trim().slice(0, 2000) || null } : {}),
     ...(input.nextAction !== undefined ? { nextAction: input.nextAction?.trim().slice(0, 2000) || null } : {}),
     ...(input.nextFollowUpAt !== undefined ? { nextFollowUpAt: input.nextFollowUpAt } : {}),
+    ...(input.assignedToUserId !== undefined ? { assignedToUserId: input.assignedToUserId?.trim() || null } : {}),
     ...(input.source !== undefined ? { source: input.source?.trim().slice(0, 80) || "direct" } : {}),
     ...(input.spamReason !== undefined ? { spamReason: input.spamReason?.trim().slice(0, 1000) || null, spamReviewedAt: new Date() } : {}),
     ...(input.pricingSetupFeeCents !== undefined ? { pricingSetupFeeCents: input.pricingSetupFeeCents } : {}),
