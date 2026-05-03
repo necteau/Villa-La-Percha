@@ -7,6 +7,7 @@ import { updatePlatformLeadOps } from "@/lib/platformLeads";
 const STATUSES = new Set<PlatformLeadStatus>(["NEW", "CONTACTED", "QUALIFIED", "PROPOSAL_SENT", "CONVERTED", "UNQUALIFIED", "SUSPICIOUS", "SPAM", "ARCHIVED"]);
 const CONTRACTS = new Set<ContractExecutionStatus>(["NOT_STARTED", "DRAFTED", "SENT", "SIGNED", "COUNTERSIGNED", "VOIDED"]);
 function optionalInt(value: FormDataEntryValue | null) { const raw = String(value || "").trim(); if (!raw) return null; const n = Number(raw); return Number.isFinite(n) ? Math.round(n) : null; }
+function checked(form: FormData, key: string) { return form.get(key) === "on"; }
 
 export async function POST(request: Request) {
   const admin = await requireAdminSession();
@@ -33,7 +34,20 @@ export async function POST(request: Request) {
     pricingNotes: String(form.get("pricingNotes") || ""),
     ...(CONTRACTS.has(contractStatus) ? { contractStatus } : {}),
     contractStorageUrl: String(form.get("contractStorageUrl") || ""),
+    launchChecklist: {
+      ownerAcceptedProposal: checked(form, "launch_ownerAcceptedProposal"),
+      contractExecuted: checked(form, "launch_contractExecuted"),
+      onboardingBriefApproved: checked(form, "launch_onboardingBriefApproved"),
+      ownerContentReceived: checked(form, "launch_ownerContentReceived"),
+      previewAssumptionsResolved: checked(form, "launch_previewAssumptionsResolved"),
+      inquiryFlowApproved: checked(form, "launch_inquiryFlowApproved"),
+      paymentFlowApproved: checked(form, "launch_paymentFlowApproved"),
+      finalLaunchApprovedByJaimal: checked(form, "launch_finalLaunchApprovedByJaimal"),
+      notes: String(form.get("launch_notes") || "").trim().slice(0, 2000) || null,
+      updatedAt: new Date().toISOString(),
+      updatedBy: admin.email,
+    },
   });
-  await recordAdminAuditEvent({ actor: admin, action: "admin.platform_lead.ops_updated", entityType: "PlatformLead", entityId: leadId, metadata: { status, contractStatus, assignment } });
+  await recordAdminAuditEvent({ actor: admin, action: "admin.platform_lead.ops_updated", entityType: "PlatformLead", entityId: leadId, metadata: { status, contractStatus, assignment, launchChecklistUpdated: true } });
   redirect(`/admin/platform-leads/detail?leadId=${leadId}`);
 }

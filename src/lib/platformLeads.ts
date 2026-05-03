@@ -1,7 +1,7 @@
 import { recordAdminAuditEvent } from "@/lib/admin/auditLog";
 import { getPrismaClient } from "@/lib/db";
 import { triggerInternalOpsWake } from "@/lib/internalWake";
-import type { ContractExecutionStatus, PlatformLead, PlatformLeadArtifactStatus, PlatformLeadArtifactType, PlatformLeadStatus, PreviewBuildStatus } from "@prisma/client";
+import type { ContractExecutionStatus, PlatformLead, PlatformLeadArtifactStatus, PlatformLeadArtifactType, PlatformLeadStatus, PreviewBuildStatus, Prisma } from "@prisma/client";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const URL_REGEX = /^https?:\/\/.+\..+/i;
@@ -282,6 +282,7 @@ export async function updatePlatformLeadOps(input: {
   pricingNotes?: string | null;
   contractStatus?: ContractExecutionStatus;
   contractStorageUrl?: string | null;
+  launchChecklist?: Prisma.InputJsonValue;
 }) {
   const prisma = await getPrismaClient();
   const data = {
@@ -303,6 +304,7 @@ export async function updatePlatformLeadOps(input: {
       ...(input.contractStatus === "SIGNED" || input.contractStatus === "COUNTERSIGNED" ? { contractSignedAt: new Date() } : {}),
     } : {}),
     ...(input.contractStorageUrl !== undefined ? { contractStorageUrl: input.contractStorageUrl?.trim().slice(0, 500) || null } : {}),
+    ...(input.launchChecklist !== undefined ? { launchChecklist: input.launchChecklist } : {}),
   };
   return prisma.platformLead.update({ where: { id: input.leadId }, data });
 }

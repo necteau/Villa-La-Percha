@@ -31,6 +31,25 @@ function reviewGuidance(status: PlatformLeadArtifactStatus) {
   if (status === "SUPERSEDED") return "Superseded by a newer artifact; retained for history.";
   return "Draft artifact; not ready for external use.";
 }
+const LAUNCH_CHECKS = [
+  ["launch_ownerAcceptedProposal", "Owner accepted proposal"],
+  ["launch_contractExecuted", "Contract executed"],
+  ["launch_onboardingBriefApproved", "Onboarding brief approved"],
+  ["launch_ownerContentReceived", "Owner content/photos received"],
+  ["launch_previewAssumptionsResolved", "Preview assumptions resolved"],
+  ["launch_inquiryFlowApproved", "Inquiry flow approved"],
+  ["launch_paymentFlowApproved", "Payment flow approved"],
+  ["launch_finalLaunchApprovedByJaimal", "Final launch approved by Jaimal"],
+] as const;
+function checklistValue(raw: unknown, key: string) {
+  return typeof raw === "object" && raw !== null && key in raw && Boolean((raw as Record<string, unknown>)[key]);
+}
+function checklistNotes(raw: unknown) {
+  return typeof raw === "object" && raw !== null && typeof (raw as Record<string, unknown>).notes === "string" ? String((raw as Record<string, unknown>).notes) : "";
+}
+function launchReady(raw: unknown) {
+  return LAUNCH_CHECKS.every(([key]) => checklistValue(raw, key.replace("launch_", "")));
+}
 
 type TimelineEvent = {
   id: string;
@@ -97,6 +116,7 @@ export default async function AdminPlatformLeadDetailPage({ searchParams }: { se
       <label className="admin-muted" htmlFor="pricingNotes">Pricing notes</label><textarea id="pricingNotes" name="pricingNotes" rows={2} defaultValue={lead.pricingNotes || ""} />
       <label className="admin-muted" htmlFor="contractStatus">Contract status</label><select id="contractStatus" name="contractStatus" defaultValue={lead.contractStatus}>{CONTRACT_STATUSES.map((status) => <option key={status} value={status}>{status.replaceAll("_", " ")}</option>)}</select>
       <label className="admin-muted" htmlFor="contractStorageUrl">Contract storage URL</label><input id="contractStorageUrl" name="contractStorageUrl" defaultValue={lead.contractStorageUrl || ""} />
+      <div className="admin-card"><h4>Launch readiness gate</h4><p className="admin-muted">Keep this conservative. A Preview Build is not launch-ready until every operational, contract, content, inquiry, payment, and final Jaimal approval box is checked.</p><span className={launchReady(lead.launchChecklist) ? "admin-chip" : "admin-chip admin-chip-warn"}>{launchReady(lead.launchChecklist) ? "Launch gate complete" : "Launch blocked"}</span><div className="admin-detail-grid" style={{ marginTop: 12 }}>{LAUNCH_CHECKS.map(([key, label]) => <label key={key}><input type="checkbox" name={key} defaultChecked={checklistValue(lead.launchChecklist, key.replace("launch_", ""))} /> {label}</label>)}</div><label className="admin-muted" htmlFor="launch_notes">Launch/onboarding notes</label><textarea id="launch_notes" name="launch_notes" rows={3} defaultValue={checklistNotes(lead.launchChecklist)} placeholder="Outstanding onboarding facts, content gaps, contract notes, launch blockers…" /></div>
       <button type="submit">Save operating state</button></form></section>
 
     <section className="admin-section admin-card"><h3>Lead brief / drafts / proposal artifacts</h3><p className="admin-muted">Generate proposal rationale and proposal draft artifacts for approval. This never sends an external email; SENT is only a manual marker after Jaimal approval and actual outreach.</p><form action="/admin/platform-leads/artifacts" method="post" className="admin-inline-form"><input type="hidden" name="action" value="generate-proposal" /><input type="hidden" name="leadId" value={lead.id} /><button type="submit">Generate proposal rationale + draft</button></form><form action="/admin/platform-leads/artifacts" method="post" className="admin-form-stack"><input type="hidden" name="leadId" value={lead.id} /><label>Type<select name="type">{ARTIFACT_TYPES.map((type) => <option key={type} value={type}>{type.replaceAll("_", " ")}</option>)}</select></label><label>Status<select name="status" defaultValue="NEEDS_APPROVAL">{ARTIFACT_STATUSES.map((status) => <option key={status} value={status}>{status.replaceAll("_", " ")}</option>)}</select></label><input name="title" required placeholder="Artifact title" /><textarea name="body" rows={6} required placeholder="Lead Brief, draft email, proposal rationale, proposal draft…" /><button type="submit">Save artifact</button></form>
