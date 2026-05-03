@@ -392,6 +392,55 @@ export async function createPlatformLeadProposalArtifacts(input: {
   return { created: true, artifacts: artifacts.slice(0, 2) };
 }
 
+export async function createPlatformLeadOnboardingArtifacts(input: {
+  leadId: string;
+  createdByEmail?: string | null;
+}) {
+  const prisma = await getPrismaClient();
+  const lead = await prisma.platformLead.findUnique({
+    where: { id: input.leadId },
+    include: {
+      artifacts: { orderBy: { createdAt: "desc" }, take: 30 },
+      previewBuilds: { orderBy: { updatedAt: "desc" }, take: 3 },
+      notes: { orderBy: { createdAt: "desc" }, take: 8 },
+    },
+  });
+  if (!lead) throw new Error("PlatformLead not found");
+
+  const activeOnboarding = lead.artifacts.find((artifact) => artifact.type === "ONBOARDING_EMAIL_DRAFT" && !["REJECTED", "SUPERSEDED"].includes(artifact.status));
+  if (activeOnboarding) return { created: false, artifacts: [], existingOnboardingId: activeOnboarding.id };
+
+  const property = lead.propertyName || lead.company || "the property";
+  const firstName = lead.fullName.split(" ")[0] || lead.fullName;
+  const preview = lead.previewBuilds[0];
+  const proposal = lead.artifacts.find((artifact) => artifact.type === "PROPOSAL_DRAFT" && ["APPROVED", "SENT"].includes(artifact.status));
+  const recentNotes = lead.notes.map((note) => `- ${note.createdAt.toISOString().slice(0, 10)} ${note.authorEmail || "Admin"}: ${note.body}`).join("\n") || "- No internal notes yet.";
+
+  const onboardingBrief = `Onboarding Brief\n\nLead: ${lead.fullName} <${lead.email}>${lead.phone ? ` / ${lead.phone}` : ""}\nProperty: ${property}${lead.propertyLocation ? ` in ${lead.propertyLocation}` : ""}\nContract status: ${lead.contractStatus.replaceAll("_", " ")}\nPreview Build: ${preview ? `https://directstay.app/p/${preview.slug} (${preview.status.replaceAll("_", " ")})` : "No Preview Build yet."}\nApproved proposal: ${proposal ? `${proposal.title} (${proposal.status})` : "No approved/sent proposal draft found; confirm before onboarding."}\n\nKnown source/listing:\n${lead.currentWebsite || "Not provided."}\n\nOwner-provided notes/message:\n${lead.message || "None yet."}\n\nRecent internal notes:\n${recentNotes}\n\nOnboarding collection priorities:\n- Casual owner brain dump: what makes the home special, guest profile, favorite details, house quirks, local recommendations.\n- Photos/video: best existing galleries, Dropbox/Google Drive/iCloud links, any owner-shot photos that feel authentic.\n- Operational truth: bedroom/bath layout, occupancy, amenities, rules, parking/access, check-in flow, pool/beach/HOA details.\n- Commercial truth: seasonality, minimum stays, taxes/fees, payment preferences, refund/cancellation policy, direct-booking constraints.\n- Launch blockers: missing contract details, unavailable dates, compliance/tax questions, domain/email ownership.\n\nLaunch gate reminder:\nDo not convert this into a live bookable site until the launch readiness checklist is complete and Jaimal gives final launch approval.`;
+
+  const onboardingEmailDraft = `Subject: Next step for ${property}: a quick owner brain dump\n\nHi ${firstName},\n\nGreat — the next step is to turn the preview/proposal direction into something that feels genuinely true to ${property}. No formal questionnaire needed. A casual brain dump is perfect.\n\nWhen you have a moment, send over whatever is easiest:\n\n- A link to your best current photo folder or listing gallery\n- What guests usually love most about the property\n- Any details that make the stay special, quirky, or memorable\n- Bedroom/bath layout, occupancy, house rules, and must-know amenities\n- Local recommendations you personally stand behind\n- Any operational details we should avoid guessing about\n\nMessy is fine. Bullet points, voice-note style notes, links, screenshots — all useful. I’ll turn it into a cleaner onboarding brief and we’ll refine from there before anything goes live.\n\nBest,\nJaimal\n\n[Draft only — requires Jaimal approval before sending.]`;
+
+  const artifacts = await prisma.$transaction([
+    prisma.platformLeadArtifact.create({
+      data: { platformLeadId: lead.id, type: "ONBOARDING_BRIEF", status: "NEEDS_APPROVAL", title: `Onboarding Brief — ${property}`, body: onboardingBrief, createdByEmail: input.createdByEmail ?? "bishop@directstay.internal" },
+    }),
+    prisma.platformLeadArtifact.create({
+      data: { platformLeadId: lead.id, type: "ONBOARDING_EMAIL_DRAFT", status: "NEEDS_APPROVAL", title: `Owner Brain Dump Request — ${property}`, body: onboardingEmailDraft, createdByEmail: input.createdByEmail ?? "bishop@directstay.internal" },
+    }),
+    prisma.platformLead.update({ where: { id: lead.id }, data: { nextAction: "Review onboarding brief and approve/edit owner brain-dump request before sending.", updatedAt: new Date() } }),
+  ]);
+
+  await recordAdminAuditEvent({
+    actorEmail: input.createdByEmail ?? "bishop@directstay.internal",
+    actorRole: "ADMIN",
+    action: "admin.platform_lead.onboarding_artifacts_generated",
+    entityType: "PlatformLead",
+    entityId: lead.id,
+    metadata: { onboardingBriefId: artifacts[0].id, onboardingEmailDraftId: artifacts[1].id, sourceProposalId: proposal?.id ?? null },
+  });
+  return { created: true, artifacts: artifacts.slice(0, 2) };
+}
+
 export async function updatePlatformLeadArtifactStatus(input: {
   artifactId: string;
   status: PlatformLeadArtifactStatus;

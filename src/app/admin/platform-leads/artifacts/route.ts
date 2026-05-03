@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import type { PlatformLeadArtifactStatus, PlatformLeadArtifactType } from "@prisma/client";
 import { getAdminSession } from "@/lib/admin/adminAuth";
 import { recordAdminAuditEvent } from "@/lib/admin/auditLog";
-import { createPlatformLeadArtifact, createPlatformLeadProposalArtifacts, updatePlatformLeadArtifactStatus } from "@/lib/platformLeads";
+import { createPlatformLeadArtifact, createPlatformLeadOnboardingArtifacts, createPlatformLeadProposalArtifacts, updatePlatformLeadArtifactStatus } from "@/lib/platformLeads";
 
 const TYPES = new Set<PlatformLeadArtifactType>(["LEAD_BRIEF", "FIRST_RESPONSE_DRAFT", "PROPOSAL_RATIONALE", "PROPOSAL_DRAFT", "ONBOARDING_BRIEF", "ONBOARDING_EMAIL_DRAFT"]);
 const STATUSES = new Set<PlatformLeadArtifactStatus>(["DRAFT", "NEEDS_APPROVAL", "APPROVED", "SENT", "REJECTED", "SUPERSEDED"]);
@@ -27,6 +27,12 @@ export async function POST(request: Request) {
   if (action === "generate-proposal") {
     const result = await createPlatformLeadProposalArtifacts({ leadId, createdByEmail: admin?.email });
     await recordAdminAuditEvent({ actor: admin, action: "admin.platform_lead.proposal_generation_requested", entityType: "PlatformLead", entityId: leadId, metadata: { created: result.created, artifactCount: result.artifacts.length, existingProposalId: result.existingProposalId ?? null } });
+    redirect(`/admin/platform-leads/detail?leadId=${leadId}`);
+  }
+
+  if (action === "generate-onboarding") {
+    const result = await createPlatformLeadOnboardingArtifacts({ leadId, createdByEmail: admin?.email });
+    await recordAdminAuditEvent({ actor: admin, action: "admin.platform_lead.onboarding_generation_requested", entityType: "PlatformLead", entityId: leadId, metadata: { created: result.created, artifactCount: result.artifacts.length, existingOnboardingId: result.existingOnboardingId ?? null } });
     redirect(`/admin/platform-leads/detail?leadId=${leadId}`);
   }
 
