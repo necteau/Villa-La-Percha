@@ -13,9 +13,43 @@ const CONTRACT_STATUSES: ContractExecutionStatus[] = ["NOT_STARTED", "DRAFTED", 
 
 function Field({ label, value }: { label: string; value?: string | number | null }) { return <p><span className="admin-muted">{label}:</span> {value || "—"}</p>; }
 function money(cents?: number | null) { return cents == null ? "" : String(cents); }
+function formatDateTime(value: Date) { return value.toISOString().slice(0, 16).replace("T", " "); }
 function assignmentLabel(lead: { assignedToUserId?: string | null }, admin: { id: string; email: string }) {
   if (!lead.assignedToUserId) return "Unassigned";
   return lead.assignedToUserId === admin.id ? `Assigned to me (${admin.email})` : `Assigned user ${lead.assignedToUserId}`;
+}
+
+type TimelineEvent = {
+  id: string;
+  at: Date;
+  title: string;
+  meta: string;
+  body?: string | null;
+  href?: string;
+};
+
+function buildTimeline(lead: NonNullable<Awaited<ReturnType<typeof getAdminPlatformLead>>>, admin: { id: string; email: string }): TimelineEvent[] {
+  const events: TimelineEvent[] = [
+    { id: `lead-${lead.id}`, at: lead.createdAt, title: "Lead created", meta: `${lead.source || "direct"} · ${lead.propertyName || lead.company || "Property unnamed"}`, body: lead.message || null },
+  ];
+
+  if (lead.firstRead) events.push({ id: `first-read-${lead.id}`, at: lead.updatedAt, title: "Bishop first read saved", meta: lead.nextAction ? `Next: ${lead.nextAction}` : "No next action saved", body: lead.firstRead });
+  if (lead.assignedToUserId) events.push({ id: `assignment-${lead.id}`, at: lead.updatedAt, title: "Assignment set", meta: assignmentLabel(lead, admin) });
+  if (lead.nextFollowUpAt) events.push({ id: `followup-${lead.id}`, at: lead.nextFollowUpAt, title: "Follow-up scheduled", meta: lead.nextAction || "No next action saved" });
+  if (lead.spamReviewedAt) events.push({ id: `spam-${lead.id}`, at: lead.spamReviewedAt, title: "Spam/suspicious review", meta: lead.status, body: lead.spamReason });
+  if (lead.contractSentAt) events.push({ id: `contract-sent-${lead.id}`, at: lead.contractSentAt, title: "Contract sent", meta: lead.contractStatus, href: lead.contractStorageUrl || undefined });
+  if (lead.contractSignedAt) events.push({ id: `contract-signed-${lead.id}`, at: lead.contractSignedAt, title: "Contract signed", meta: lead.contractStatus, href: lead.contractStorageUrl || undefined });
+
+  for (const job of lead.processingJobs) events.push({ id: `job-${job.id}`, at: job.processedAt || job.updatedAt, title: "Durable intake job", meta: `${job.kind} · ${job.status} · attempts ${job.attempts}`, body: job.lastError });
+  for (const artifact of lead.artifacts) {
+    events.push({ id: `artifact-${artifact.id}`, at: artifact.createdAt, title: artifact.type.replaceAll("_", " "), meta: `${artifact.status.replaceAll("_", " ")} · ${artifact.title}`, body: artifact.body });
+    if (artifact.approvedAt) events.push({ id: `artifact-approved-${artifact.id}`, at: artifact.approvedAt, title: "Artifact approved", meta: `${artifact.title}${artifact.approvedByEmail ? ` · ${artifact.approvedByEmail}` : ""}` });
+    if (artifact.sentAt) events.push({ id: `artifact-sent-${artifact.id}`, at: artifact.sentAt, title: "Artifact marked sent", meta: artifact.title });
+  }
+  for (const preview of lead.previewBuilds) events.push({ id: `preview-${preview.id}`, at: preview.updatedAt, title: "Preview Build", meta: `${preview.status.replaceAll("_", " ")} · /p/${preview.slug}`, href: `/p/${preview.slug}` });
+  for (const note of lead.notes) events.push({ id: `note-${note.id}`, at: note.createdAt, title: "Internal note", meta: note.authorEmail || "Admin", body: note.body });
+
+  return events.sort((a, b) => b.at.getTime() - a.at.getTime());
 }
 
 export default async function AdminPlatformLeadDetailPage({ searchParams }: { searchParams: Promise<{ leadId?: string }> }) {
@@ -26,6 +60,7 @@ export default async function AdminPlatformLeadDetailPage({ searchParams }: { se
   const lead = await getAdminPlatformLead(leadId);
   if (!lead) notFound();
   await recordAdminAuditEvent({ actor: admin, action: "admin.read.platform_lead", entityType: "PlatformLead", entityId: lead.id });
+  const timeline = buildTimeline(lead, admin);
 
   return <div>
     <header className="admin-page-head"><div><p className="admin-eyebrow">AI-led PlatformLead detail</p><h2>{lead.fullName}</h2><p>{lead.email} · created {lead.createdAt.toISOString().slice(0,10)}</p></div><span className="admin-chip">{lead.status}</span></header>
@@ -58,6 +93,6 @@ export default async function AdminPlatformLeadDetailPage({ searchParams }: { se
       <ul className="admin-list">{lead.previewBuilds.map((preview) => <li key={preview.id}><strong>{preview.propertyName}</strong> <span className="admin-chip">{preview.status.replaceAll("_", " ")}</span><br/><Link href={`/p/${preview.slug}`}>/p/{preview.slug}</Link><form action="/admin/platform-leads/previews" method="post" className="admin-inline-form"><input type="hidden" name="action" value="status" /><input type="hidden" name="leadId" value={lead.id} /><input type="hidden" name="previewBuildId" value={preview.id} /><select name="status" defaultValue={preview.status}>{PREVIEW_STATUSES.map((status) => <option key={status} value={status}>{status}</option>)}</select><button type="submit">Update</button></form></li>)}</ul></section>
 
     <section className="admin-section admin-card"><h3>Internal notes</h3><form action="/admin/platform-leads/notes" method="post" className="admin-form-stack"><input type="hidden" name="leadId" value={lead.id} /><label className="admin-muted" htmlFor="note-body">Add a private note</label><textarea id="note-body" name="body" rows={4} maxLength={4000} required placeholder="Call summary, qualification detail, next-step context…" /><button type="submit">Add note</button></form></section>
-    <section className="admin-section admin-card"><h3>Lead timeline</h3><ul className="admin-list"><li><strong>Lead created</strong><br /><span className="admin-muted">{lead.createdAt.toISOString().slice(0, 16).replace("T", " ")} UTC</span></li>{lead.processingJobs.map((job) => <li key={`job-${job.id}`}><strong>Durable intake job</strong><br/><span className="admin-muted">{job.status} · attempts {job.attempts} · {job.createdAt.toISOString().slice(0,16).replace("T", " ")} UTC</span></li>)}{lead.artifacts.map((artifact) => <li key={`artifact-${artifact.id}`}><strong>{artifact.type.replaceAll("_", " ")}</strong><br/><span className="admin-muted">{artifact.status} · {artifact.createdAt.toISOString().slice(0,16).replace("T", " ")} UTC</span></li>)}{lead.previewBuilds.map((preview) => <li key={`preview-${preview.id}`}><strong>Preview Build</strong><br/><span className="admin-muted">{preview.status} · {preview.slug}</span></li>)}{lead.notes.map((note) => <li key={note.id}><strong>Internal note</strong><br /><span className="admin-muted">{note.authorEmail || "Admin"} · {note.createdAt.toISOString().slice(0, 16).replace("T", " ")} UTC</span><p>{note.body}</p></li>)}</ul></section>
+    <section className="admin-section admin-card"><h3>Lead timeline</h3><p className="admin-muted">Reverse-chronological operating history for this PlatformLead: intake jobs, AI artifacts, notes, follow-ups, preview builds, approvals, and contract milestones.</p><ul className="admin-list">{timeline.map((event) => <li key={event.id}><strong>{event.title}</strong> <span className="admin-chip">{formatDateTime(event.at)} UTC</span><br /><span className="admin-muted">{event.href ? <Link href={event.href}>{event.meta}</Link> : event.meta}</span>{event.body ? <p style={{whiteSpace: "pre-wrap"}}>{event.body}</p> : null}</li>)}</ul></section>
   </div>;
 }
