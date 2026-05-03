@@ -462,7 +462,7 @@ export default function OwnerInquiriesPage() {
     if (options.mode === "revision") setPollingRevisionDraftId(draftId);
     if (options.mode === "upgrade") setPollingUpgradeDraftId(draftId);
     const startedAt = Date.now();
-    const timeoutMs = 90_000;
+    const timeoutMs = options.mode === "revision" ? 30_000 : 90_000;
 
     while (Date.now() - startedAt < timeoutMs) {
       await new Promise((resolve) => setTimeout(resolve, 4000));
@@ -487,7 +487,10 @@ export default function OwnerInquiriesPage() {
       }
     }
 
-    if (options.mode === "revision") setPollingRevisionDraftId(null);
+    if (options.mode === "revision") {
+      setPollingRevisionDraftId(null);
+      setSuccess("AI revision is still working. You can keep using the portal; refresh this thread shortly if it does not appear automatically.");
+    }
     if (options.mode === "upgrade") setPollingUpgradeDraftId(null);
   }, [loadInsights]);
 
@@ -546,7 +549,7 @@ export default function OwnerInquiriesPage() {
       });
       const data = await response.json();
       if (!response.ok || !data.ok) throw new Error(data.error || "Failed to request AI revision");
-      setSuccess("AI revision queued. The assistant will update this draft shortly.");
+      setSuccess("AI revision queued. Watching for the updated draft for up to 30 seconds.");
       void pollForDraftUpdate(selected.id, composer.id, composer.body, { mode: "revision", successMessage: "AI revision ready." });
       if (revisionIntent === "custom") setCustomRevision("");
     } catch (err) {
