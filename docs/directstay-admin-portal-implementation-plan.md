@@ -392,6 +392,7 @@ Turn qualified PlatformLeads into proposal-ready artifacts while preserving Jaim
 - Prevent duplicate active proposal drafts unless previous draft is rejected/superseded.
 - Audit proposal generation requests and generated artifacts.
 - Keep external sends manual; `SENT` remains a marker, not an email action.
+- Provide safe artifact review controls: approve, reject, supersede, and mark sent manually.
 
 ## Production State After Phase
 - Admin can create a reviewable proposal package for a lead.
@@ -405,10 +406,11 @@ Turn qualified PlatformLeads into proposal-ready artifacts while preserving Jaim
 - Generate proposal rationale + draft.
 - Confirm both artifacts appear as `NEEDS_APPROVAL`.
 - Confirm artifact/timeline text contains draft-only approval language.
+- Confirm review controls are visible and approval transition persists.
 - Confirm authenticated DirectStay QA still passes.
 
 ## Completion Notes
-In progress 2026-05-03. First proposal slice shipped locally and to production: detail page has a `Generate proposal rationale + draft` control; `/admin/platform-leads/artifacts` supports `generate-proposal`; `createPlatformLeadProposalArtifacts` derives a proposal rationale and email draft from lead context, pricing fields, Preview Build, and latest Lead Brief; both artifacts are stored as `NEEDS_APPROVAL`, duplicate active proposal drafts are avoided, proposal generation is audited, and no external send occurs. Local gates passed: `npm run lint` and `npm run build`. Deployed to production `directstay.app`; QA passed for generating proposal artifacts on a test PlatformLead with markers `Proposal Rationale`, `Proposal Draft`, `Draft only`, `requires Jaimal approval before sending`, and `NEEDS APPROVAL`; authenticated DirectStay QA passed 6/6.
+In progress 2026-05-03. First proposal slice shipped locally and to production: detail page has a `Generate proposal rationale + draft` control; `/admin/platform-leads/artifacts` supports `generate-proposal`; `createPlatformLeadProposalArtifacts` derives a proposal rationale and email draft from lead context, pricing fields, Preview Build, and latest Lead Brief; both artifacts are stored as `NEEDS_APPROVAL`, duplicate active proposal drafts are avoided, proposal generation is audited, and no external send occurs. Local gates passed: `npm run lint` and `npm run build`. Deployed to production `directstay.app`; QA passed for generating proposal artifacts on a test PlatformLead with markers `Proposal Rationale`, `Proposal Draft`, `Draft only`, `requires Jaimal approval before sending`, and `NEEDS APPROVAL`; authenticated DirectStay QA passed 6/6. Second proposal slice added explicit review guidance plus one-click `Approve`, `Reject`, `Supersede`, and `Mark sent manually` controls on each artifact, with advanced status override tucked behind a details disclosure. Local gates passed: `npm run lint` and `npm run build`. Deployed to production `directstay.app`; QA passed for review-control markers and approval transition persistence; authenticated DirectStay QA passed 6/6.
 
 ---
 
