@@ -393,11 +393,13 @@ Turn qualified PlatformLeads into proposal-ready artifacts while preserving Jaim
 - Audit proposal generation requests and generated artifacts.
 - Keep external sends manual; `SENT` remains a marker, not an email action.
 - Provide safe artifact review controls: approve, reject, supersede, and mark sent manually.
+- Add a conservative launch readiness gate before a PlatformLead can be treated as launch-ready.
 
 ## Production State After Phase
 - Admin can create a reviewable proposal package for a lead.
 - Jaimal can approve/edit/reject proposal artifacts before any owner-facing outreach.
 - No owner email is sent automatically.
+- Launch remains blocked until contract, onboarding, content, preview assumptions, inquiry/payment flows, and final Jaimal approval are checked.
 
 ## Agent Testing Steps
 - Run `npm run lint`.
@@ -407,10 +409,11 @@ Turn qualified PlatformLeads into proposal-ready artifacts while preserving Jaim
 - Confirm both artifacts appear as `NEEDS_APPROVAL`.
 - Confirm artifact/timeline text contains draft-only approval language.
 - Confirm review controls are visible and approval transition persists.
+- Confirm launch readiness checklist persists and flips from blocked to complete only when all launch checks are saved.
 - Confirm authenticated DirectStay QA still passes.
 
 ## Completion Notes
-In progress 2026-05-03. First proposal slice shipped locally and to production: detail page has a `Generate proposal rationale + draft` control; `/admin/platform-leads/artifacts` supports `generate-proposal`; `createPlatformLeadProposalArtifacts` derives a proposal rationale and email draft from lead context, pricing fields, Preview Build, and latest Lead Brief; both artifacts are stored as `NEEDS_APPROVAL`, duplicate active proposal drafts are avoided, proposal generation is audited, and no external send occurs. Local gates passed: `npm run lint` and `npm run build`. Deployed to production `directstay.app`; QA passed for generating proposal artifacts on a test PlatformLead with markers `Proposal Rationale`, `Proposal Draft`, `Draft only`, `requires Jaimal approval before sending`, and `NEEDS APPROVAL`; authenticated DirectStay QA passed 6/6. Second proposal slice added explicit review guidance plus one-click `Approve`, `Reject`, `Supersede`, and `Mark sent manually` controls on each artifact, with advanced status override tucked behind a details disclosure. Local gates passed: `npm run lint` and `npm run build`. Deployed to production `directstay.app`; QA passed for review-control markers and approval transition persistence; authenticated DirectStay QA passed 6/6.
+In progress 2026-05-03. First proposal slice shipped locally and to production: detail page has a `Generate proposal rationale + draft` control; `/admin/platform-leads/artifacts` supports `generate-proposal`; `createPlatformLeadProposalArtifacts` derives a proposal rationale and email draft from lead context, pricing fields, Preview Build, and latest Lead Brief; both artifacts are stored as `NEEDS_APPROVAL`, duplicate active proposal drafts are avoided, proposal generation is audited, and no external send occurs. Local gates passed: `npm run lint` and `npm run build`. Deployed to production `directstay.app`; QA passed for generating proposal artifacts on a test PlatformLead with markers `Proposal Rationale`, `Proposal Draft`, `Draft only`, `requires Jaimal approval before sending`, and `NEEDS APPROVAL`; authenticated DirectStay QA passed 6/6. Second proposal slice added explicit review guidance plus one-click `Approve`, `Reject`, `Supersede`, and `Mark sent manually` controls on each artifact, with advanced status override tucked behind a details disclosure. Local gates passed: `npm run lint` and `npm run build`. Deployed to production `directstay.app`; QA passed for review-control markers and approval transition persistence; authenticated DirectStay QA passed 6/6. Third proposal/launch slice added a conservative launch readiness gate to PlatformLead operating controls, persisted in `launchChecklist`: owner accepted proposal, contract executed, onboarding brief approved, owner content/photos received, preview assumptions resolved, inquiry flow approved, payment flow approved, final Jaimal launch approval, and launch/onboarding notes. Local gates passed: `npm run lint` and `npm run build`. Deployed to production `directstay.app`; QA passed for launch-gate persistence and blocked/complete markers; authenticated DirectStay QA passed 6/6.
 
 ---
 
