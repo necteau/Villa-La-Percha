@@ -1,8 +1,21 @@
 #!/usr/bin/env node
 
+import fs from "node:fs";
 import { PrismaClient, ExternalReservationSourceStatus } from "@prisma/client";
+import { Pool } from "pg";
+import { PrismaPg } from "@prisma/adapter-pg";
 
-const prisma = new PrismaClient();
+if (!process.env.DATABASE_URL && fs.existsSync(".env.local")) {
+  const match = fs.readFileSync(".env.local", "utf8").match(/^DATABASE_URL=(.*)$/m);
+  if (match?.[1]) process.env.DATABASE_URL = match[1].replace(/^['\"]|['\"]$/g, "");
+}
+
+if (!process.env.DATABASE_URL) {
+  throw new Error("DATABASE_URL is required for purge-expired-missing-external-reservations.mjs");
+}
+
+const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+const prisma = new PrismaClient({ adapter: new PrismaPg(pool) });
 const apply = process.argv.includes("--apply");
 const cutoff = new Date(Date.now() - 24 * 60 * 60 * 1000);
 
@@ -35,4 +48,5 @@ try {
   }
 } finally {
   await prisma.$disconnect();
+  await pool.end();
 }
