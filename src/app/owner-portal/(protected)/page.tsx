@@ -8,6 +8,7 @@ export default async function OwnerPortalDashboardPage() {
   const awaitingGuest = stats.inquiriesAwaitingGuest;
   const openInquiries = needsAttention + awaitingGuest;
   const responseSpeed = stats.avgFirstResponseHours !== null ? `${stats.avgFirstResponseHours.toFixed(1)}h` : "—";
+  const externalReviewItems = stats.externalReservationReviewItems;
 
   const priorityActions = [
     {
@@ -27,11 +28,13 @@ export default async function OwnerPortalDashboardPage() {
       tone: awaitingGuest > 0 ? "watch" : "calm",
     },
     {
-      title: "Manage upcoming stays",
-      body: `${stats.reservationsUpcoming} upcoming reservation${stats.reservationsUpcoming === 1 ? "" : "s"}. Confirm dates, revenue, and owner weeks from the reservation calendar.`,
+      title: externalReviewItems > 0 ? "Review external reservation matches" : "External reservation sync is clear",
+      body: externalReviewItems > 0
+        ? `${externalReviewItems} external reservation reconciliation item${externalReviewItems === 1 ? " needs" : "s need"} owner review.`
+        : "No external reservation conflicts, missing records, or match confirmations are waiting.",
       href: "/owner-portal/reservations",
-      cta: "Open reservations",
-      tone: "calm",
+      cta: externalReviewItems > 0 ? "Review matches" : "Open reservations",
+      tone: externalReviewItems > 0 ? "urgent" : "calm",
     },
   ];
 
@@ -40,6 +43,7 @@ export default async function OwnerPortalDashboardPage() {
     { label: "Awaiting guest", value: String(awaitingGuest), note: "Owner has replied" },
     { label: "Booked inquiries", value: String(stats.inquiriesBooked), note: `${stats.inquiryConversionRate !== null ? `${Math.round(stats.inquiryConversionRate * 100)}%` : "—"} conversion rate` },
     { label: "Closed inquiries", value: String(stats.inquiriesClosed), note: "Archived or no longer active" },
+    { label: "External review", value: String(externalReviewItems), note: "Reservation sync items" },
   ];
 
   const managementLinks = [
@@ -53,7 +57,7 @@ export default async function OwnerPortalDashboardPage() {
       title: "Reservations",
       href: "/owner-portal/reservations",
       body: "View and edit confirmed stays, dates, income, guest details, and owner weeks.",
-      stat: `${stats.reservationsUpcoming} upcoming · ${stats.reservationsTotal} total`,
+      stat: `${stats.reservationsUpcoming} upcoming · ${externalReviewItems} external review`,
     },
     {
       title: "Customers",

@@ -2,6 +2,9 @@ import { listReservations } from "@/lib/reservations";
 import { listPricingEntries } from "@/lib/pricingData";
 import { listInquiryThreads } from "@/lib/inquiries";
 import { listCustomers } from "@/lib/customers";
+import { canUseDatabaseSync } from "@/lib/fallbackOrchestrator";
+import { getPrismaClient } from "@/lib/db";
+import { listExternalReservationReviewItems } from "@/lib/externalReservationReconciliation";
 
 export interface OwnerPortalStats {
   reservationsTotal: number;
@@ -23,6 +26,7 @@ export interface OwnerPortalStats {
   avgFirstResponseHours: number | null;
   customersTotal: number;
   repeatGuests: number;
+  externalReservationReviewItems: number;
 }
 
 function todayYmd(): string {
@@ -34,12 +38,26 @@ function average(values: number[]): number | null {
   return values.reduce((sum, value) => sum + value, 0) / values.length;
 }
 
+async function countExternalReservationReviewItems(): Promise<number> {
+  if (!canUseDatabaseSync()) return 0;
+  try {
+    const prisma = await getPrismaClient();
+    const property = await prisma.property.findUnique({ where: { slug: "villa-la-percha" }, select: { id: true } });
+    if (!property) return 0;
+    const items = await listExternalReservationReviewItems(property.id);
+    return items.length;
+  } catch {
+    return 0;
+  }
+}
+
 export async function getOwnerPortalStats(): Promise<OwnerPortalStats> {
-  const [reservations, pricingEntries, inquiries, customers] = await Promise.all([
+  const [reservations, pricingEntries, inquiries, customers, externalReservationReviewItems] = await Promise.all([
     listReservations(),
     listPricingEntries(),
     listInquiryThreads(),
     listCustomers(),
+    countExternalReservationReviewItems(),
   ]);
 
   const today = todayYmd();
@@ -87,5 +105,6 @@ export async function getOwnerPortalStats(): Promise<OwnerPortalStats> {
     avgFirstResponseHours: average(firstResponseHours),
     customersTotal: customers.length,
     repeatGuests: customers.filter((customer) => customer.status === "repeat_guest" || customer.status === "vip").length,
+    externalReservationReviewItems,
   };
 }
