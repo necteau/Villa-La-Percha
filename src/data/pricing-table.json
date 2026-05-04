@@ -8,7 +8,37 @@
       "nightlyRate": 1500,
       "currency": "USD",
       "charges": [],
-      "notes": "Direct pricing. No fees, no platform markup, no surprise taxes."
+      "notes": "Fallback direct pricing outside specific seasonal entries. 2026 seasonal direct rates are captured in narrower override records: standard $1,600/night, summer peak $1,750/night, holiday peak $1,800/night."
+    },
+    {
+      "id": "direct-standard-2026",
+      "platform": "direct",
+      "startDate": "2026-01-01",
+      "endDate": "2027-01-01",
+      "nightlyRate": 1600,
+      "currency": "USD",
+      "charges": [],
+      "notes": "2026 standard direct rate. Rounded sales-friendly pricing targeting roughly a 20–25% book-direct discount versus sampled OTA totals."
+    },
+    {
+      "id": "direct-summer-peak-2026",
+      "platform": "direct",
+      "startDate": "2026-06-01",
+      "endDate": "2026-09-15",
+      "nightlyRate": 1750,
+      "currency": "USD",
+      "charges": [],
+      "notes": "2026 summer/late-summer peak direct rate. Based on sampled OTA peak totals around $15,740/week; $1,750/night gives a $12,250 7-night direct total, about 22% below OTA."
+    },
+    {
+      "id": "direct-holiday-peak-2026",
+      "platform": "direct",
+      "startDate": "2026-12-15",
+      "endDate": "2027-01-05",
+      "nightlyRate": 1800,
+      "currency": "USD",
+      "charges": [],
+      "notes": "2026 holiday peak direct rate for Christmas/New Year demand. $1,800/night gives a $12,600 7-night direct total, preserving roughly a 20% book-direct advantage against strongest observed OTA pricing."
     },
     {
       "id": "vrbo-baseline-2026-2028",
