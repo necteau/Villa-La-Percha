@@ -162,3 +162,22 @@ Exception:
 - Preserve the single manually-created DirectStay test reservation created by Jaimal.
 
 Before deletion, identify which reservation row is the manually-created DirectStay test reservation and exclude it from cleanup.
+
+## Implementation Notes
+
+Implemented foundation commits:
+
+- `df461da` — external reservation schema, migration, owner site setting, availability blocks, review API, cleanup script.
+- `178346d` — owner review workflow UI and actions for confirm match, ignore, and unlink.
+- `0022b06` — automatic conservative reconciliation/classification and richer review item context.
+- `7b4437b` — owner dashboard external-review count and priority action.
+- `404f8ca` — Prisma 7-compatible maintenance scripts with `.env.local` loading.
+
+Maintenance scripts:
+
+- Dry-run imported external cleanup: `node scripts/cleanup-imported-external-reservations.mjs`
+- Apply imported external cleanup after preserving Jaimal's DirectStay test row: `KEEP_DIRECTSTAY_RESERVATION_ID=<id> node scripts/cleanup-imported-external-reservations.mjs --apply`
+- Dry-run expired missing external cleanup: `node scripts/purge-expired-missing-external-reservations.mjs`
+- Apply expired missing external cleanup: `node scripts/purge-expired-missing-external-reservations.mjs --apply`
+
+The cleanup script currently targets old `Reservation` rows with `AIRBNB` or `VRBO` source. If another external import source is discovered in old data, add it explicitly before applying cleanup.
