@@ -863,34 +863,47 @@ export default function OwnerInquiriesPage() {
                     </div>
 
                     {paymentConfirmMode ? (
-                      <div className="mt-4 rounded-2xl border border-[#d8cebf] bg-white p-4">
-                        <p className="text-sm font-medium text-[#1b1a17]">
-                          {paymentConfirmMode === "deposit" ? "Confirm deposit received" : "Confirm payment in full"}
-                        </p>
-                        <p className="mt-2 text-xs leading-5 text-[#7b7468]">
-                          Expected {paymentConfirmMode === "deposit" ? "deposit" : "full payment"}: <span className="font-semibold text-[#1b1a17]">{formatMoney(paymentConfirmMode === "deposit" ? calculatedDepositAmount : calculatedReservationTotal)}</span>. Adjust the method or note if needed, then confirm.
-                        </p>
-                        <div className="mt-3 grid gap-3 sm:grid-cols-2">
-                          <label className="block text-sm text-[#5b554b]">
-                            <span className="text-xs uppercase tracking-[0.14em] text-[#7b7468]">Payment method</span>
-                            <input placeholder="Venmo, Zelle, wire…" value={paymentDraft.paymentMethod} onChange={(e) => setPaymentDraft((current) => ({ ...current, paymentMethod: e.target.value }))} className="mt-1 w-full rounded-xl border border-[#ddd4c7] px-3 py-2" />
-                          </label>
-                          <label className="block text-sm text-[#5b554b]">
-                            <span className="text-xs uppercase tracking-[0.14em] text-[#7b7468]">Amount to record</span>
-                            <input type="number" min={0} value={paymentConfirmMode === "deposit" ? (paymentDraft.amountReceived || String(calculatedDepositAmount || "")) : (paymentDraft.amountReceived || String(calculatedReservationTotal || ""))} onChange={(e) => setPaymentDraft((current) => ({ ...current, amountReceived: e.target.value }))} className="mt-1 w-full rounded-xl border border-[#ddd4c7] px-3 py-2" />
-                          </label>
-                          <label className="block text-sm text-[#5b554b] sm:col-span-2">
-                            <span className="text-xs uppercase tracking-[0.14em] text-[#7b7468]">Optional note</span>
-                            <textarea rows={2} value={paymentDraft.paymentNote} onChange={(e) => setPaymentDraft((current) => ({ ...current, paymentNote: e.target.value }))} className="mt-1 w-full rounded-xl border border-[#ddd4c7] px-3 py-2" />
-                          </label>
-                        </div>
-                        <div className="mt-4 flex flex-wrap gap-3">
-                          <button type="button" onClick={() => void confirmGuidedPayment()} disabled={savingId === selected.id} className="rounded-full bg-[#1e4536] px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-white disabled:opacity-60 sm:tracking-[0.16em]">
-                            {paymentConfirmMode === "deposit" ? "Confirm deposit" : "Confirm paid in full"}
-                          </button>
-                          <button type="button" onClick={() => setPaymentConfirmMode(null)} disabled={savingId === selected.id} className="rounded-full border border-[#d8cebf] bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-[#5b554b] disabled:opacity-60 sm:tracking-[0.16em]">
-                            Cancel
-                          </button>
+                      <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#181612]/55 px-4 py-6 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="payment-confirmation-title">
+                        <button type="button" aria-label="Close payment confirmation" onClick={() => setPaymentConfirmMode(null)} className="absolute inset-0 cursor-default" disabled={savingId === selected.id} />
+                        <div className="relative max-h-[88vh] w-full max-w-lg overflow-y-auto rounded-[2rem] border border-[#e8e1d6] bg-[#fffaf2] p-5 shadow-2xl sm:p-6">
+                          <div className="flex items-start justify-between gap-4">
+                            <div>
+                              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8b7355]">Payment confirmation</p>
+                              <h3 id="payment-confirmation-title" className="mt-2 text-2xl font-light text-[#181612]">
+                                {paymentConfirmMode === "deposit" ? "Confirm deposit received" : "Confirm paid in full"}
+                              </h3>
+                            </div>
+                            <button type="button" onClick={() => setPaymentConfirmMode(null)} disabled={savingId === selected.id} className="rounded-full border border-[#d8cebf] bg-white px-3 py-1.5 text-xs font-semibold text-[#5b554b] disabled:opacity-60">
+                              Close
+                            </button>
+                          </div>
+                          <div className="mt-4 rounded-2xl bg-white p-4 shadow-sm">
+                            <p className="text-xs uppercase tracking-[0.14em] text-[#7b7468]">Expected {paymentConfirmMode === "deposit" ? "deposit" : "full payment"}</p>
+                            <p className="mt-1 text-3xl font-light text-[#1e4536]">{formatMoney(paymentConfirmMode === "deposit" ? calculatedDepositAmount : calculatedReservationTotal)}</p>
+                            <p className="mt-2 text-sm leading-6 text-[#7b7468]">Adjust the method, amount, or note if needed, then confirm. This will update the inquiry and refresh assistant context.</p>
+                          </div>
+                          <div className="mt-4 grid gap-3">
+                            <label className="block text-sm text-[#5b554b]">
+                              <span className="text-xs uppercase tracking-[0.14em] text-[#7b7468]">Payment method</span>
+                              <input autoFocus placeholder="Venmo, Zelle, wire…" value={paymentDraft.paymentMethod} onChange={(e) => setPaymentDraft((current) => ({ ...current, paymentMethod: e.target.value }))} className="mt-1 w-full rounded-xl border border-[#ddd4c7] bg-white px-3 py-3 text-base" />
+                            </label>
+                            <label className="block text-sm text-[#5b554b]">
+                              <span className="text-xs uppercase tracking-[0.14em] text-[#7b7468]">Amount to record</span>
+                              <input type="number" min={0} value={paymentConfirmMode === "deposit" ? (paymentDraft.amountReceived || String(calculatedDepositAmount || "")) : (paymentDraft.amountReceived || String(calculatedReservationTotal || ""))} onChange={(e) => setPaymentDraft((current) => ({ ...current, amountReceived: e.target.value }))} className="mt-1 w-full rounded-xl border border-[#ddd4c7] bg-white px-3 py-3 text-base" />
+                            </label>
+                            <label className="block text-sm text-[#5b554b]">
+                              <span className="text-xs uppercase tracking-[0.14em] text-[#7b7468]">Optional note</span>
+                              <textarea rows={3} value={paymentDraft.paymentNote} onChange={(e) => setPaymentDraft((current) => ({ ...current, paymentNote: e.target.value }))} className="mt-1 w-full rounded-xl border border-[#ddd4c7] bg-white px-3 py-3 text-base" />
+                            </label>
+                          </div>
+                          <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                            <button type="button" onClick={() => void confirmGuidedPayment()} disabled={savingId === selected.id} className="rounded-full bg-[#1e4536] px-5 py-3 text-xs font-semibold uppercase tracking-[0.14em] text-white disabled:opacity-60">
+                              {paymentConfirmMode === "deposit" ? "Confirm deposit" : "Confirm paid in full"}
+                            </button>
+                            <button type="button" onClick={() => setPaymentConfirmMode(null)} disabled={savingId === selected.id} className="rounded-full border border-[#d8cebf] bg-white px-5 py-3 text-xs font-semibold uppercase tracking-[0.14em] text-[#5b554b] disabled:opacity-60">
+                              Cancel
+                            </button>
+                          </div>
                         </div>
                       </div>
                     ) : null}
