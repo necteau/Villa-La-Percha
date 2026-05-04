@@ -180,4 +180,11 @@ Maintenance scripts:
 - Dry-run expired missing external cleanup: `node scripts/purge-expired-missing-external-reservations.mjs`
 - Apply expired missing external cleanup: `node scripts/purge-expired-missing-external-reservations.mjs --apply`
 
-The cleanup script currently targets old `Reservation` rows with `AIRBNB` or `VRBO` source. If another external import source is discovered in old data, add it explicitly before applying cleanup.
+The cleanup script targets old imported `Reservation` rows by external source (`AIRBNB`/`VRBO`) and by known external/imported booking types (`Rental Guest`, `Airbnb`, `VRBO`, `External Booking`, `Direct Booking`, `Owner`). It is dry-run by default and should only be applied after the matching records have been imported into `ExternalReservation` and the manually-created DirectStay test reservation is confirmed outside the candidate list.
+
+2026-05-04 production cleanup result:
+
+- Imported all 9 records from `src/data/owner-portal-reservations.json` into `ExternalReservation` using `owner-portal-json` as source.
+- Deleted the 8 remaining old imported rows from `Reservation` after comparing IDs/dates/types.
+- Preserved the manually-created DirectStay test reservation `cmorg2rf8000104kzdgalp57q` (`Jaimal Fecteau`, 2026-05-16 → 2026-05-23).
+- Final production state: 9 active external reservations, 1 DirectStay reservation.

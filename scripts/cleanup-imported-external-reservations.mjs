@@ -21,7 +21,7 @@ const keepReservationId = process.env.KEEP_DIRECTSTAY_RESERVATION_ID;
 const apply = process.argv.includes("--apply");
 
 const externalSources = [ReservationSource.AIRBNB, ReservationSource.VRBO];
-const externalBookingTypes = (process.env.EXTERNAL_CLEANUP_BOOKING_TYPES || "Rental Guest,Airbnb,VRBO,External Booking")
+const externalBookingTypes = (process.env.EXTERNAL_CLEANUP_BOOKING_TYPES || "Rental Guest,Airbnb,VRBO,External Booking,Direct Booking,Owner")
   .split(",")
   .map((item) => item.trim())
   .filter(Boolean);
