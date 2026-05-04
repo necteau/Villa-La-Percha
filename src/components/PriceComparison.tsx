@@ -98,7 +98,7 @@ export default function DirectBookingCalculator({ checkIn = null, checkOut = nul
         </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className={`grid grid-cols-1 gap-4 ${embedded ? "2xl:grid-cols-3" : "md:grid-cols-3"}`}>
         {platforms.map((pricing) => {
           const isDirect = pricing.platform === "direct";
           const savings = pricing.total - direct.total;
@@ -107,7 +107,7 @@ export default function DirectBookingCalculator({ checkIn = null, checkOut = nul
           return (
             <div
               key={pricing.platform}
-              className={`rounded-3xl p-5 shadow-sm border ${
+              className={`min-w-0 rounded-3xl p-5 shadow-sm border ${
                 isDirect
                   ? "bg-gradient-to-br from-[#8B7355] to-[#A89279] text-white border-transparent"
                   : "bg-[#FAFAF8] border-[#E8E4DF] text-[#2C2C2C]"
@@ -121,20 +121,20 @@ export default function DirectBookingCalculator({ checkIn = null, checkOut = nul
               </p>
 
               <div className="space-y-2 text-sm">
-                <div className="flex justify-between gap-4">
-                  <span className={isDirect ? "text-white/75" : "text-[#6B6B6B]"}>Base stay</span>
-                  <span>{formatMoney(pricing.baseAmount)}</span>
+                <div className="flex items-start justify-between gap-3">
+                  <span className={`min-w-0 pr-2 ${isDirect ? "text-white/75" : "text-[#6B6B6B]"}`}>Base stay</span>
+                  <span className="shrink-0 text-right tabular-nums">{formatMoney(pricing.baseAmount)}</span>
                 </div>
                 {pricing.charges.map((charge) => (
-                  <div key={`${pricing.platform}-${charge.label}`} className="flex justify-between gap-4">
-                    <span className={isDirect ? "text-white/75" : "text-[#6B6B6B]"}>{charge.label}</span>
-                    <span>{formatMoney(charge.amount)}</span>
+                  <div key={`${pricing.platform}-${charge.label}`} className="flex items-start justify-between gap-3">
+                    <span className={`min-w-0 pr-2 ${isDirect ? "text-white/75" : "text-[#6B6B6B]"}`}>{charge.label}</span>
+                    <span className="shrink-0 text-right tabular-nums">{formatMoney(charge.amount)}</span>
                   </div>
                 ))}
                 <div className={`pt-3 mt-3 border-t ${isDirect ? "border-white/20" : "border-[#E8E4DF]"}`}>
-                  <div className="flex justify-between gap-4">
-                    <span className={`text-xs uppercase tracking-wider ${isDirect ? "text-white/80" : "text-[#6B6B6B]"}`}>Total</span>
-                    <span className="text-2xl font-light">{formatMoney(pricing.total)}</span>
+                  <div className="flex items-end justify-between gap-3">
+                    <span className={`min-w-0 text-xs uppercase tracking-wider ${isDirect ? "text-white/80" : "text-[#6B6B6B]"}`}>Total</span>
+                    <span className="shrink-0 text-right text-2xl font-light tabular-nums">{formatMoney(pricing.total)}</span>
                   </div>
                 </div>
               </div>
