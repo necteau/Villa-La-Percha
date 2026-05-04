@@ -166,6 +166,7 @@ export default function OwnerInquiriesPage() {
   const [paymentSettings, setPaymentSettings] = useState({ depositPercent: 0 });
   const [paymentConfirmMode, setPaymentConfirmMode] = useState<"deposit" | "full" | null>(null);
   const [paymentConfirmationNote, setPaymentConfirmationNote] = useState("");
+  const [paymentConfirmationAmount, setPaymentConfirmationAmount] = useState("");
   const [showManualPaymentEdit, setShowManualPaymentEdit] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -278,6 +279,7 @@ export default function OwnerInquiriesPage() {
     setShowReopenConfirm(false);
     setPaymentConfirmMode(null);
     setPaymentConfirmationNote("");
+    setPaymentConfirmationAmount("");
     setShowManualPaymentEdit(false);
     setCloseReason(closeReasons[0]);
     setBookingRevenue("");
@@ -440,6 +442,7 @@ export default function OwnerInquiriesPage() {
       }
       setPaymentConfirmMode(null);
       setPaymentConfirmationNote("");
+      setPaymentConfirmationAmount("");
       setSuccess("Payment state saved, assistant triage refreshed, and draft updated.");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to save payment state");
@@ -451,7 +454,7 @@ export default function OwnerInquiriesPage() {
   const confirmGuidedPayment = async () => {
     if (!paymentConfirmMode) return;
     const expectedAmount = paymentConfirmMode === "deposit" ? calculatedDepositAmount : calculatedReservationTotal;
-    const amount = cleanNumber(paymentDraft.amountReceived) || expectedAmount;
+    const amount = cleanNumber(paymentConfirmationAmount) || expectedAmount;
     await savePaymentState({
       quotedAmount: String(calculatedReservationTotal || cleanNumber(paymentDraft.quotedAmount)),
       depositAmount: String(calculatedDepositAmount || cleanNumber(paymentDraft.depositAmount)),
@@ -866,10 +869,10 @@ export default function OwnerInquiriesPage() {
                     ) : null}
 
                     <div className="mt-4 flex flex-wrap gap-3">
-                      <button type="button" onClick={() => { setPaymentConfirmationNote(""); setPaymentConfirmMode("deposit"); }} disabled={savingId === selected.id || isClosedInquiry || !calculatedDepositAmount} className="rounded-full bg-[#1e4536] px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-white disabled:opacity-60 sm:tracking-[0.16em]">
+                      <button type="button" onClick={() => { setPaymentConfirmationNote(""); setPaymentConfirmationAmount(String(calculatedDepositAmount || "")); setPaymentConfirmMode("deposit"); }} disabled={savingId === selected.id || isClosedInquiry || !calculatedDepositAmount} className="rounded-full bg-[#1e4536] px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-white disabled:opacity-60 sm:tracking-[0.16em]">
                         Mark deposit received
                       </button>
-                      <button type="button" onClick={() => { setPaymentConfirmationNote(""); setPaymentConfirmMode("full"); }} disabled={savingId === selected.id || isClosedInquiry || !calculatedReservationTotal} className="rounded-full bg-[#8b7355] px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-white disabled:opacity-60 sm:tracking-[0.16em]">
+                      <button type="button" onClick={() => { setPaymentConfirmationNote(""); setPaymentConfirmationAmount(String(calculatedReservationTotal || "")); setPaymentConfirmMode("full"); }} disabled={savingId === selected.id || isClosedInquiry || !calculatedReservationTotal} className="rounded-full bg-[#8b7355] px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-white disabled:opacity-60 sm:tracking-[0.16em]">
                         Mark paid in full
                       </button>
                       <button type="button" onClick={() => setShowManualPaymentEdit((current) => !current)} className="rounded-full border border-[#d8cebf] bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-[#5b554b] sm:tracking-[0.16em]">
@@ -903,7 +906,7 @@ export default function OwnerInquiriesPage() {
                             </label>
                             <label className="block text-sm text-[#5b554b]">
                               <span className="text-xs uppercase tracking-[0.14em] text-[#7b7468]">Amount to record</span>
-                              <input type="number" min={0} value={paymentConfirmMode === "deposit" ? (paymentDraft.amountReceived || String(calculatedDepositAmount || "")) : (paymentDraft.amountReceived || String(calculatedReservationTotal || ""))} onChange={(e) => setPaymentDraft((current) => ({ ...current, amountReceived: e.target.value }))} className="mt-1 w-full rounded-xl border border-[#ddd4c7] bg-white px-3 py-3 text-base" />
+                              <input type="number" min={0} value={paymentConfirmationAmount} onChange={(e) => setPaymentConfirmationAmount(e.target.value)} className="mt-1 w-full rounded-xl border border-[#ddd4c7] bg-white px-3 py-3 text-base" />
                             </label>
                             <label className="block text-sm text-[#5b554b]">
                               <span className="text-xs uppercase tracking-[0.14em] text-[#7b7468]">Optional note</span>
