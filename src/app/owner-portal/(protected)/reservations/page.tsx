@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import ReservationEditor, { type Reservation } from "@/components/owner-portal/ReservationEditor";
 import ReservationsCalendar from "@/components/owner-portal/ReservationsCalendar";
@@ -49,7 +49,7 @@ export default function OwnerReservationsPage() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  const loadReservations = async () => {
+  const loadReservations = useCallback(async () => {
     setLoading(true);
     setError("");
     try {
@@ -69,11 +69,11 @@ export default function OwnerReservationsPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [initialReservationId]);
 
   useEffect(() => {
     void loadReservations();
-  }, []);
+  }, [loadReservations]);
 
   const selected = useMemo(
     () => (selectedId ? reservations.find((r) => r.id === selectedId) || null : null),
