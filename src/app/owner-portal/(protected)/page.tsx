@@ -15,14 +15,14 @@ export default async function OwnerPortalDashboardPage() {
       body: needsAttention > 0
         ? `${needsAttention} inquiry${needsAttention === 1 ? " needs" : " inquiries need"} an owner response. Start here first.`
         : "Your active inbox is clear. New guest replies will appear here automatically.",
-      href: "/owner-portal/inquiries",
+      href: "/owner-portal/inquiries?status=needs_reply",
       cta: needsAttention > 0 ? "Review needs reply" : "Open inquiries",
       tone: needsAttention > 0 ? "urgent" : "calm",
     },
     {
       title: "Track awaiting guests",
       body: `${awaitingGuest} conversation${awaitingGuest === 1 ? " is" : "s are"} waiting on the guest. Check elapsed sent time and follow up when needed.`,
-      href: "/owner-portal/inquiries",
+      href: "/owner-portal/inquiries?status=awaiting_guest",
       cta: "View awaiting guest",
       tone: awaitingGuest > 0 ? "watch" : "calm",
     },

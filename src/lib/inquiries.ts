@@ -747,8 +747,10 @@ export async function appendInquiryMessage(input: InquiryMessageInput): Promise<
     const state = await readFallbackThreadState();
     const deduped = base.emailMessageId ? state.messages.filter((m) => m.emailMessageId !== base.emailMessageId) : state.messages;
     await writeFallbackThreadState({ ...state, messages: [...deduped, base] });
-    if (input.direction === "inbound") await updateInquiryStatus(input.inquiryId, "needs_reply");
-    if (input.direction === "outbound") await updateInquiryStatus(input.inquiryId, "awaiting_guest");
+    if (input.authorType !== "system") {
+      if (input.direction === "inbound") await updateInquiryStatus(input.inquiryId, "needs_reply");
+      if (input.direction === "outbound") await updateInquiryStatus(input.inquiryId, "awaiting_guest");
+    }
     return base;
   }
 
@@ -766,10 +768,12 @@ export async function appendInquiryMessage(input: InquiryMessageInput): Promise<
     },
   });
 
-  await prisma.inquiry.update({
-    where: { id: input.inquiryId },
-    data: { status: toDbStatus(input.direction === "inbound" ? "needs_reply" : "awaiting_guest") },
-  });
+  if (input.authorType !== "system") {
+    await prisma.inquiry.update({
+      where: { id: input.inquiryId },
+      data: { status: toDbStatus(input.direction === "inbound" ? "needs_reply" : "awaiting_guest") },
+    });
+  }
 
   return mapDbMessage(created);
 }

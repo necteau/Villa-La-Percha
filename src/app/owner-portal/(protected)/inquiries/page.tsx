@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import type { InquiryCopilotInsights } from "@/lib/inquiryCopilot";
 import type { InquiryDraftRecord, InquiryRecord, InquiryThreadRecord } from "@/lib/inquiries";
 import { buildInquiryEmailSubject } from "@/lib/inquirySubject";
@@ -140,9 +141,12 @@ function composeFromDraft(draft?: InquiryDraftRecord | null, inquiry?: InquiryTh
 }
 
 export default function OwnerInquiriesPage() {
+  const searchParams = useSearchParams();
+  const initialStatus = searchParams.get("status");
+  const initialQueueStatus = queueStatusOptions.some((option) => option.value === initialStatus) ? initialStatus as InquiryRecord["status"] | "all" : "needs_reply";
   const [inquiries, setInquiries] = useState<InquiryThreadRecord[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [queueStatusFilter, setQueueStatusFilter] = useState<InquiryRecord["status"] | "all">("needs_reply");
+  const [queueStatusFilter, setQueueStatusFilter] = useState<InquiryRecord["status"] | "all">(initialQueueStatus);
   const [composer, setComposer] = useState<DraftComposer | null>(null);
   const [lastSavedBody, setLastSavedBody] = useState("");
   const [insightsById, setInsightsById] = useState<Record<string, InquiryCopilotInsights>>({});
@@ -865,7 +869,7 @@ export default function OwnerInquiriesPage() {
                     {paymentConfirmMode ? (
                       <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#181612]/55 px-4 py-6 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="payment-confirmation-title">
                         <button type="button" aria-label="Close payment confirmation" onClick={() => setPaymentConfirmMode(null)} className="absolute inset-0 cursor-default" disabled={savingId === selected.id} />
-                        <div className="relative max-h-[88vh] w-full max-w-lg overflow-y-auto rounded-[2rem] border border-[#e8e1d6] bg-[#fffaf2] p-5 shadow-2xl sm:p-6">
+                        <div className="relative max-h-[82vh] w-full max-w-lg overflow-y-auto rounded-[2rem] border border-[#e8e1d6] bg-[#fffaf2] p-5 pt-8 shadow-2xl sm:p-6">
                           <div className="flex items-start justify-between gap-4">
                             <div>
                               <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8b7355]">Payment confirmation</p>
@@ -873,7 +877,7 @@ export default function OwnerInquiriesPage() {
                                 {paymentConfirmMode === "deposit" ? "Confirm deposit received" : "Confirm paid in full"}
                               </h3>
                             </div>
-                            <button type="button" onClick={() => setPaymentConfirmMode(null)} disabled={savingId === selected.id} className="rounded-full border border-[#d8cebf] bg-white px-3 py-1.5 text-xs font-semibold text-[#5b554b] disabled:opacity-60">
+                            <button type="button" onClick={() => setPaymentConfirmMode(null)} disabled={savingId === selected.id} className="shrink-0 rounded-full border border-[#d8cebf] bg-white px-3 py-1.5 text-xs font-semibold text-[#5b554b] disabled:opacity-60">
                               Close
                             </button>
                           </div>
