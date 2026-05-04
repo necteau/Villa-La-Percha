@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { requireOwnerPortalSession } from "@/lib/ownerPortalApi";
+import { requireOwnerPortalSession, requireOwnerPortalWriteAccess } from "@/lib/ownerPortalApi";
 import { updatePricingEntry } from "@/lib/pricingData";
 
 interface Context {
@@ -9,6 +9,8 @@ interface Context {
 async function handleUpdate(req: Request, context: Context) {
   const unauthorized = await requireOwnerPortalSession();
   if (unauthorized) return unauthorized;
+  const writeBlocked = await requireOwnerPortalWriteAccess();
+  if (writeBlocked) return writeBlocked;
 
   try {
     const { id } = await context.params;

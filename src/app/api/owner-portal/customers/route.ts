@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getCustomerById, listCustomers, updateCustomer } from "@/lib/customers";
-import { requireOwnerPortalSession } from "@/lib/ownerPortalApi";
+import { requireOwnerPortalSession, requireOwnerPortalWriteAccess } from "@/lib/ownerPortalApi";
 
 export async function GET() {
   const unauthorized = await requireOwnerPortalSession();
@@ -19,6 +19,9 @@ export async function POST(req: Request) {
     const action = String(body?.action || "");
 
     if (action === "update") {
+      const writeBlocked = await requireOwnerPortalWriteAccess();
+      if (writeBlocked) return writeBlocked;
+
       const id = String(body?.id || "");
       if (!id) {
         return NextResponse.json({ ok: false, error: "Missing customer id" }, { status: 400 });

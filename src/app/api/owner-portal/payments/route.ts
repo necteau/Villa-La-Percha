@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { requireOwnerPortalSession } from "@/lib/ownerPortalApi";
+import { requireOwnerPortalSession, requireOwnerPortalWriteAccess } from "@/lib/ownerPortalApi";
 import { getPaymentSettings, updatePaymentSettings } from "@/lib/ownerPortalSettings";
 
 export async function GET() {
@@ -13,6 +13,8 @@ export async function GET() {
 export async function POST(req: Request) {
   const unauthorized = await requireOwnerPortalSession();
   if (unauthorized) return unauthorized;
+  const writeBlocked = await requireOwnerPortalWriteAccess();
+  if (writeBlocked) return writeBlocked;
 
   try {
     const body = await req.json();

@@ -482,7 +482,7 @@ Let admin view the owner portal in a scoped owner context safely.
 - Preview deploy verified.
 
 ## Completion Notes
-In progress 2026-05-04. First safe slice adds admin owner-context start and exit routes, a signed HTTP-only owner-context cookie, a `View owner workspace` form on admin owner detail, an owner portal admin-mode banner with exit button, audit events for context start/end, and a safer admin scope rule so admin users without selected owner context do not accidentally default into all-owner portal data. Local gates passed: `npm run lint` and `npm run build`. Follow-up needed: complete read-only write blocking across owner-portal API routes and authenticated QA for context switching/data isolation.
+In progress 2026-05-04. First safe slice adds admin owner-context start and exit routes, a signed HTTP-only owner-context cookie, a `View owner workspace` form on admin owner detail, an owner portal admin-mode banner with exit button, audit events for context start/end, and a safer admin scope rule so admin users without selected owner context do not accidentally default into all-owner portal data. Local gates passed: `npm run lint` and `npm run build`. Follow-up slice added owner-portal API write blocking for ADMIN users so owner-context mode stays read-only across customer updates, inquiry actions, payment settings, reservations, pricing, and sites; read endpoints remain available. Local gates passed: `npm run lint` and `npm run build`. Follow-up needed: authenticated QA for context switching/data isolation and admin write-block behavior.
 
 ---
 
