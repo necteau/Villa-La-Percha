@@ -129,9 +129,16 @@ export async function POST(req: Request) {
     if (action === "payment") {
       const id = String(body?.id || "");
       if (!id) return NextResponse.json({ ok: false, error: "Missing inquiry id" }, { status: 400 });
+      const previousThread = await getInquiryThreadById(id);
+      const previousReceived = Number(previousThread?.amountReceived || 0);
+      const nextStatus = body?.paymentStatus || "unpaid";
+      const nextReceived = Number(body?.amountReceived || 0);
+      const paymentReceivedNow = nextStatus === "paid_in_full" && previousReceived > 0
+        ? Math.max(0, nextReceived - previousReceived)
+        : nextReceived;
       const inquiry = await updateInquiryPayment(id, {
         quotedAmount: body?.quotedAmount,
-        paymentStatus: body?.paymentStatus || "unpaid",
+        paymentStatus: nextStatus,
         depositAmount: body?.depositAmount,
         amountReceived: body?.amountReceived,
         paymentMethod: body?.paymentMethod ? String(body.paymentMethod) : undefined,
@@ -145,7 +152,9 @@ export async function POST(req: Request) {
         direction: "outbound",
         authorType: "system",
         subject: "Payment updated",
-        body: `Payment status updated: ${inquiry.paymentStatus.replaceAll("_", " ")}. Amount received: ${inquiry.amountReceived ? `$${inquiry.amountReceived.toLocaleString()}` : "not recorded"}. Method: ${inquiry.paymentMethod || "not recorded"}.${inquiry.paymentNote ? ` Note: ${inquiry.paymentNote}` : ""}`,
+        body: inquiry.paymentStatus === "paid_in_full" && previousReceived > 0
+          ? `Payment status updated: paid in full. Previous received: $${previousReceived.toLocaleString()}. Final payment received: $${paymentReceivedNow.toLocaleString()}. Total received: ${inquiry.amountReceived ? `$${inquiry.amountReceived.toLocaleString()}` : "not recorded"}. Method: ${inquiry.paymentMethod || "not recorded"}.${inquiry.paymentNote ? ` Note: ${inquiry.paymentNote}` : ""}`
+          : `Payment status updated: ${inquiry.paymentStatus.replaceAll("_", " ")}. Amount received: ${inquiry.amountReceived ? `$${inquiry.amountReceived.toLocaleString()}` : "not recorded"}. Method: ${inquiry.paymentMethod || "not recorded"}.${inquiry.paymentNote ? ` Note: ${inquiry.paymentNote}` : ""}`,
         sentAt: new Date().toISOString(),
       });
 

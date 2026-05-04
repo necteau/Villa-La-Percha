@@ -168,6 +168,7 @@ export default function OwnerInquiriesPage() {
   const [paymentConfirmationNote, setPaymentConfirmationNote] = useState("");
   const [paymentConfirmationAmount, setPaymentConfirmationAmount] = useState("");
   const [showManualPaymentEdit, setShowManualPaymentEdit] = useState(false);
+  const [showPostPaymentBookingPrompt, setShowPostPaymentBookingPrompt] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
@@ -281,6 +282,7 @@ export default function OwnerInquiriesPage() {
     setPaymentConfirmationNote("");
     setPaymentConfirmationAmount("");
     setShowManualPaymentEdit(false);
+    setShowPostPaymentBookingPrompt(false);
     setCloseReason(closeReasons[0]);
     setBookingRevenue("");
     setPaymentDraft({
@@ -324,14 +326,14 @@ export default function OwnerInquiriesPage() {
     }
   };
 
-  const confirmBooking = async () => {
+  const confirmBooking = async (incomeOverride?: number) => {
     if (!selected) return;
     if (selected.status === "closed") return;
     if (!selected.checkIn || !selected.checkOut) {
       setError("Confirm dates before creating a reservation.");
       return;
     }
-    const income = Number(bookingRevenue || estimatedRevenueFromInsights(selectedInsights));
+    const income = Number(incomeOverride || bookingRevenue || estimatedRevenueFromInsights(selectedInsights));
     if (!Number.isFinite(income) || income <= 0) {
       setError("Confirm the estimated revenue before creating a reservation.");
       return;
@@ -443,6 +445,7 @@ export default function OwnerInquiriesPage() {
       setPaymentConfirmMode(null);
       setPaymentConfirmationNote("");
       setPaymentConfirmationAmount("");
+      setShowPostPaymentBookingPrompt(nextDraft.paymentStatus === "paid_in_full" && selected.status !== "booked");
       setSuccess("Payment state saved, assistant triage refreshed, and draft updated.");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to save payment state");
@@ -453,12 +456,14 @@ export default function OwnerInquiriesPage() {
 
   const confirmGuidedPayment = async () => {
     if (!paymentConfirmMode) return;
-    const expectedAmount = paymentConfirmMode === "deposit" ? calculatedDepositAmount : calculatedReservationTotal;
-    const amount = cleanNumber(paymentConfirmationAmount) || expectedAmount;
+    const priorReceived = cleanNumber(selected?.amountReceived);
+    const expectedAmount = paymentConfirmMode === "deposit" ? calculatedDepositAmount : Math.max(0, calculatedReservationTotal - priorReceived);
+    const amountReceivedNow = cleanNumber(paymentConfirmationAmount) || expectedAmount;
+    const totalReceived = paymentConfirmMode === "deposit" ? amountReceivedNow : Math.min(calculatedReservationTotal, priorReceived + amountReceivedNow);
     await savePaymentState({
       quotedAmount: String(calculatedReservationTotal || cleanNumber(paymentDraft.quotedAmount)),
       depositAmount: String(calculatedDepositAmount || cleanNumber(paymentDraft.depositAmount)),
-      amountReceived: String(amount),
+      amountReceived: String(totalReceived),
       paymentStatus: paymentConfirmMode === "deposit" ? "deposit_received" : "paid_in_full",
       paymentNote: paymentConfirmationNote,
     });
@@ -872,7 +877,7 @@ export default function OwnerInquiriesPage() {
                       <button type="button" onClick={() => { setPaymentConfirmationNote(""); setPaymentConfirmationAmount(String(calculatedDepositAmount || "")); setPaymentConfirmMode("deposit"); }} disabled={savingId === selected.id || isClosedInquiry || !calculatedDepositAmount} className="rounded-full bg-[#1e4536] px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-white disabled:opacity-60 sm:tracking-[0.16em]">
                         Mark deposit received
                       </button>
-                      <button type="button" onClick={() => { setPaymentConfirmationNote(""); setPaymentConfirmationAmount(String(calculatedReservationTotal || "")); setPaymentConfirmMode("full"); }} disabled={savingId === selected.id || isClosedInquiry || !calculatedReservationTotal} className="rounded-full bg-[#8b7355] px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-white disabled:opacity-60 sm:tracking-[0.16em]">
+                      <button type="button" onClick={() => { setPaymentConfirmationNote(""); setPaymentConfirmationAmount(String(Math.max(0, calculatedReservationTotal - calculatedReceived) || calculatedReservationTotal || "")); setPaymentConfirmMode("full"); }} disabled={savingId === selected.id || isClosedInquiry || !calculatedReservationTotal} className="rounded-full bg-[#8b7355] px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-white disabled:opacity-60 sm:tracking-[0.16em]">
                         Mark paid in full
                       </button>
                       <button type="button" onClick={() => setShowManualPaymentEdit((current) => !current)} className="rounded-full border border-[#d8cebf] bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-[#5b554b] sm:tracking-[0.16em]">
@@ -896,8 +901,8 @@ export default function OwnerInquiriesPage() {
                             </button>
                           </div>
                           <div className="mt-4 rounded-2xl bg-white p-4 shadow-sm">
-                            <p className="text-xs uppercase tracking-[0.14em] text-[#7b7468]">Expected {paymentConfirmMode === "deposit" ? "deposit" : "full payment"}</p>
-                            <p className="mt-1 text-3xl font-light text-[#1e4536]">{formatMoney(paymentConfirmMode === "deposit" ? calculatedDepositAmount : calculatedReservationTotal)}</p>
+                            <p className="text-xs uppercase tracking-[0.14em] text-[#7b7468]">Expected {paymentConfirmMode === "deposit" ? "deposit" : "final payment"}</p>
+                            <p className="mt-1 text-3xl font-light text-[#1e4536]">{formatMoney(paymentConfirmMode === "deposit" ? calculatedDepositAmount : Math.max(0, calculatedReservationTotal - calculatedReceived) || calculatedReservationTotal)}</p>
                           </div>
                           <div className="mt-4 grid gap-3">
                             <label className="block text-sm text-[#5b554b]">
@@ -1020,6 +1025,33 @@ export default function OwnerInquiriesPage() {
                           <button type="button" onClick={() => setShowReopenConfirm(false)} disabled={savingId === selected.id} className="rounded-full border border-[#d8cebf] bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-[#5b554b] disabled:opacity-60 sm:tracking-[0.16em]">
                             Cancel
                           </button>
+                        </div>
+                      </div>
+                    ) : null}
+
+                    {showPostPaymentBookingPrompt && selected.status !== "booked" && !isClosedInquiry ? (
+                      <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#181612]/55 px-4 py-6 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="confirm-booking-after-payment-title">
+                        <button type="button" aria-label="Close booking confirmation prompt" onClick={() => setShowPostPaymentBookingPrompt(false)} className="absolute inset-0 cursor-default" disabled={savingId === selected.id} />
+                        <div className="relative w-full max-w-lg rounded-[2rem] border border-[#e8e1d6] bg-[#fffaf2] p-5 pt-8 shadow-2xl sm:p-6">
+                          <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8b7355]">Payment complete</p>
+                          <h3 id="confirm-booking-after-payment-title" className="mt-2 text-2xl font-light text-[#181612]">Confirm this booking?</h3>
+                          <p className="mt-3 text-sm leading-6 text-[#5b554b]">
+                            This will create the reservation record, copy the guest/date/payment details, mark the inquiry as booked, and move it out of the active reply queue. The payment confirmation draft will remain available for owner review before sending.
+                          </p>
+                          <div className="mt-4 rounded-2xl bg-white p-4 text-sm text-[#5b554b] shadow-sm">
+                            <p><span className="font-semibold text-[#181612]">Guest:</span> {selected.fullName}</p>
+                            <p><span className="font-semibold text-[#181612]">Dates:</span> {selected.checkIn || "Missing"} → {selected.checkOut || "Missing"}</p>
+                            <p><span className="font-semibold text-[#181612]">Reservation total:</span> {formatMoney(calculatedReservationTotal)}</p>
+                            <p><span className="font-semibold text-[#181612]">Payment status:</span> Paid in full</p>
+                          </div>
+                          <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                            <button type="button" onClick={() => { setBookingRevenue(String(calculatedReservationTotal || "")); setShowPostPaymentBookingPrompt(false); void confirmBooking(calculatedReservationTotal); }} disabled={savingId === selected.id} className="rounded-full bg-[#1e4536] px-5 py-3 text-xs font-semibold uppercase tracking-[0.14em] text-white disabled:opacity-60">
+                              Create reservation
+                            </button>
+                            <button type="button" onClick={() => setShowPostPaymentBookingPrompt(false)} disabled={savingId === selected.id} className="rounded-full border border-[#d8cebf] bg-white px-5 py-3 text-xs font-semibold uppercase tracking-[0.14em] text-[#5b554b] disabled:opacity-60">
+                              Not yet
+                            </button>
+                          </div>
                         </div>
                       </div>
                     ) : null}
