@@ -41,20 +41,23 @@ export async function GET() {
   }
 
   const paymentSettings = await getPaymentSettings();
-  const inquiriesWithPaymentDefaults = inquiries.map((inquiry) => {
-    if (inquiry.quotedAmount && inquiry.depositAmount) return inquiry;
+  const inquiriesWithPricingContext = inquiries.map((inquiry) => {
     const pricing = inquiry.checkIn && inquiry.checkOut ? getStayPricing("direct", inquiry.checkIn, inquiry.checkOut) : null;
-    if (!pricing?.total) return inquiry;
-    const calculatedDeposit = paymentSettings.depositPercent > 0
-      ? Math.round(pricing.total * paymentSettings.depositPercent) / 100
-      : null;
-    return {
-      ...inquiry,
-      quotedAmount: inquiry.quotedAmount ?? pricing.total,
-      depositAmount: inquiry.depositAmount ?? calculatedDeposit,
-    };
+    const currentQuotedAmount = pricing?.total ?? undefined;
+    const currentDepositAmount = currentQuotedAmount && paymentSettings.depositPercent > 0
+      ? Math.round(currentQuotedAmount * paymentSettings.depositPercent) / 100
+      : undefined;
+    const quotedAmount = inquiry.quotedAmount;
+    const hasStoredQuote = typeof quotedAmount === "number" && quotedAmount > 0;
+    const hasCurrentQuote = typeof currentQuotedAmount === "number" && currentQuotedAmount > 0;
+    const pricingSnapshotNotice = hasStoredQuote && hasCurrentQuote && Math.abs(quotedAmount - currentQuotedAmount) >= 1
+      ? `Current pricing for these dates is now $${currentQuotedAmount.toLocaleString(undefined, { maximumFractionDigits: 0 })}. This inquiry was quoted at $${quotedAmount.toLocaleString(undefined, { maximumFractionDigits: 0 })} when submitted.`
+      : !hasStoredQuote && hasCurrentQuote
+        ? `This older inquiry does not have a stored quote snapshot. Current pricing for these dates is $${currentQuotedAmount.toLocaleString(undefined, { maximumFractionDigits: 0 })}.`
+        : undefined;
+    return { ...inquiry, currentQuotedAmount, currentDepositAmount, pricingSnapshotNotice };
   });
-  return NextResponse.json({ ok: true, inquiries: inquiriesWithPaymentDefaults, paymentSettings });
+  return NextResponse.json({ ok: true, inquiries: inquiriesWithPricingContext, paymentSettings });
 }
 
 export async function POST(req: Request) {

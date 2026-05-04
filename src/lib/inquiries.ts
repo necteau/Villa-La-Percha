@@ -9,6 +9,8 @@ import {
 import { findOrCreateCustomerLink } from "@/lib/customers";
 import { getPrismaClient } from "@/lib/db";
 import { canUseDatabaseSync, readJsonFallback, writeJsonFallback } from "@/lib/fallbackOrchestrator";
+import { getPaymentSettings } from "@/lib/ownerPortalSettings";
+import { getStayPricing } from "@/lib/pricing";
 
 export interface InquiryRecord {
   id: string;
@@ -27,6 +29,9 @@ export interface InquiryRecord {
   paymentMethod?: string;
   paymentConfirmedAt?: string;
   paymentNote?: string;
+  currentQuotedAmount?: number;
+  currentDepositAmount?: number;
+  pricingSnapshotNotice?: string;
   createdAt: string;
 }
 
@@ -128,6 +133,15 @@ function canUseDatabase(): boolean {
 }
 
 const DEFAULT_INQUIRIES: InquiryRecord[] = [];
+
+async function buildInquiryPaymentSnapshot(checkIn?: string, checkOut?: string): Promise<Pick<InquiryRecord, "quotedAmount" | "depositAmount">> {
+  if (!checkIn || !checkOut) return {};
+  const pricing = getStayPricing("direct", checkIn, checkOut);
+  if (!pricing?.total) return {};
+  const settings = await getPaymentSettings().catch(() => ({ depositPercent: 30 }));
+  const depositAmount = settings.depositPercent > 0 ? Math.round(pricing.total * settings.depositPercent) / 100 : undefined;
+  return { quotedAmount: pricing.total, depositAmount };
+}
 const DEFAULT_THREAD_STATE: FallbackThreadState = { messages: [], drafts: [] };
 
 function toDbPaymentStatus(value: InquiryRecord["paymentStatus"]): BookingPaymentStatus {
@@ -831,6 +845,7 @@ export async function markDraftSent(id: string): Promise<InquiryDraftRecord | nu
 }
 
 export async function createInquiry(input: InquiryInput): Promise<InquiryRecord> {
+  const paymentSnapshot = await buildInquiryPaymentSnapshot(input.checkIn, input.checkOut);
   const base: InquiryRecord = {
     id: String(Date.now()),
     customerId: undefined,
@@ -841,6 +856,8 @@ export async function createInquiry(input: InquiryInput): Promise<InquiryRecord>
     checkOut: input.checkOut,
     message: input.message,
     status: "needs_reply",
+    quotedAmount: paymentSnapshot.quotedAmount,
+    depositAmount: paymentSnapshot.depositAmount,
     paymentStatus: "unpaid",
     createdAt: new Date().toISOString(),
   };
@@ -882,6 +899,8 @@ export async function createInquiry(input: InquiryInput): Promise<InquiryRecord>
         checkIn: input.checkIn ? new Date(input.checkIn) : null,
         checkOut: input.checkOut ? new Date(input.checkOut) : null,
         message: input.message,
+        quotedAmount: paymentSnapshot.quotedAmount ?? null,
+        depositAmount: paymentSnapshot.depositAmount ?? null,
       },
     });
     if (input.message) {

@@ -240,7 +240,8 @@ export default function OwnerInquiriesPage() {
   }, [filteredQueueInquiries, inquiries.length, selectedId]);
 
   const selectedInsights = selectedId ? insightsById[selectedId] : undefined;
-  const calculatedReservationTotal = cleanNumber(paymentDraft.quotedAmount || selected?.quotedAmount || estimatedRevenueFromInsights(selectedInsights));
+  const calculatedReservationTotal = cleanNumber(paymentDraft.quotedAmount || selected?.quotedAmount || 0);
+  const currentReservationTotal = cleanNumber(selected?.currentQuotedAmount || estimatedRevenueFromInsights(selectedInsights));
   const calculatedDepositAmount = cleanNumber(paymentDraft.depositAmount || selected?.depositAmount || (calculatedReservationTotal && paymentSettings.depositPercent ? calculatedReservationTotal * (paymentSettings.depositPercent / 100) : 0));
   const calculatedReceived = cleanNumber(paymentDraft.amountReceived || selected?.amountReceived);
   const calculatedBalance = Math.max(0, calculatedReservationTotal - calculatedReceived);
@@ -809,7 +810,7 @@ export default function OwnerInquiriesPage() {
                       <div>
                         <p className="text-xs font-medium uppercase tracking-[0.18em] text-[#7b7468]">Payment confirmation</p>
                         <p className="mt-2 text-sm leading-6 text-[#5b554b]">
-                          Confirm what was received. The booking total and deposit are calculated from the inquiry dates and owner payment setup, with manual override tucked away for edge cases.
+                          Confirm what was received. The booking total uses the quote captured when the inquiry was submitted; current pricing changes are shown as context, not silently applied.
                         </p>
                       </div>
                       <span className={`rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] ${badgeClass(selected.paymentStatus)}`}>
@@ -837,9 +838,15 @@ export default function OwnerInquiriesPage() {
                       </div>
                     </div>
 
+                    {selected.pricingSnapshotNotice ? (
+                      <div className="mt-4 rounded-2xl border border-[#ead8b8] bg-white p-4 text-sm leading-6 text-[#7b7468]">
+                        {selected.pricingSnapshotNotice}
+                      </div>
+                    ) : null}
+
                     {!calculatedReservationTotal ? (
                       <div className="mt-4 rounded-2xl border border-[#ead8b8] bg-white p-4 text-sm leading-6 text-[#7b7468]">
-                        Add or confirm inquiry dates to calculate the booking total and deposit automatically.
+                        {currentReservationTotal ? `No original quote snapshot is stored for this older inquiry. Current pricing is ${formatMoney(currentReservationTotal)}; use manual edit if you want to set the original quote.` : "Add or confirm inquiry dates to calculate payment amounts."}
                       </div>
                     ) : null}
 
