@@ -2,8 +2,12 @@ import { NextResponse } from "next/server";
 import { getPrismaClient } from "@/lib/db";
 import { canUseDatabaseSync } from "@/lib/fallbackOrchestrator";
 import { listExternalReservationReviewItems } from "@/lib/externalReservationReconciliation";
+import { requireOwnerPortalSession } from "@/lib/ownerPortalApi";
 
 export async function GET() {
+  const unauthorized = await requireOwnerPortalSession();
+  if (unauthorized) return unauthorized;
+
   if (!canUseDatabaseSync()) {
     return NextResponse.json({ ok: true, reviewItems: [] });
   }

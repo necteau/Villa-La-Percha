@@ -1,7 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { confirmExternalReservationMatch, ignoreExternalReservationReviewItem, unlinkExternalReservationMatch } from "@/lib/externalReservationReconciliation";
+import { requireOwnerPortalSession, requireOwnerPortalWriteAccess } from "@/lib/ownerPortalApi";
 
 export async function POST(request: NextRequest, context: { params: Promise<{ id: string }> }) {
+  const unauthorized = await requireOwnerPortalSession();
+  if (unauthorized) return unauthorized;
+  const writeBlocked = await requireOwnerPortalWriteAccess();
+  if (writeBlocked) return writeBlocked;
+
   const { id } = await context.params;
 
   try {
