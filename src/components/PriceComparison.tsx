@@ -120,21 +120,21 @@ export default function DirectBookingCalculator({ checkIn = null, checkOut = nul
                 {formatMoney(pricing.nightlyRate)} / night
               </p>
 
-              <div className="space-y-2 text-sm">
-                <div className="flex items-start justify-between gap-3">
-                  <span className={`min-w-0 pr-2 ${isDirect ? "text-white/75" : "text-[#6B6B6B]"}`}>Base stay</span>
-                  <span className="shrink-0 text-right tabular-nums">{formatMoney(pricing.baseAmount)}</span>
+              <div className="space-y-3 text-sm">
+                <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-x-4 gap-y-1">
+                  <span className={`min-w-0 leading-5 ${isDirect ? "text-white/75" : "text-[#6B6B6B]"}`}>Base stay</span>
+                  <span className="whitespace-nowrap text-right font-medium tabular-nums">{formatMoney(pricing.baseAmount)}</span>
                 </div>
                 {pricing.charges.map((charge) => (
-                  <div key={`${pricing.platform}-${charge.label}`} className="flex items-start justify-between gap-3">
-                    <span className={`min-w-0 pr-2 ${isDirect ? "text-white/75" : "text-[#6B6B6B]"}`}>{charge.label}</span>
-                    <span className="shrink-0 text-right tabular-nums">{formatMoney(charge.amount)}</span>
+                  <div key={`${pricing.platform}-${charge.label}`} className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-x-4 gap-y-1">
+                    <span className={`min-w-0 break-words leading-5 ${isDirect ? "text-white/75" : "text-[#6B6B6B]"}`}>{charge.label}</span>
+                    <span className="whitespace-nowrap text-right font-medium tabular-nums">{formatMoney(charge.amount)}</span>
                   </div>
                 ))}
                 <div className={`pt-3 mt-3 border-t ${isDirect ? "border-white/20" : "border-[#E8E4DF]"}`}>
-                  <div className="flex items-end justify-between gap-3">
-                    <span className={`min-w-0 text-xs uppercase tracking-wider ${isDirect ? "text-white/80" : "text-[#6B6B6B]"}`}>Total</span>
-                    <span className="shrink-0 text-right text-2xl font-light tabular-nums">{formatMoney(pricing.total)}</span>
+                  <div className="grid grid-cols-1 gap-2 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end sm:gap-4">
+                    <span className={`text-xs uppercase tracking-wider ${isDirect ? "text-white/80" : "text-[#6B6B6B]"}`}>Total</span>
+                    <span className="whitespace-nowrap text-left text-3xl font-light leading-none tabular-nums sm:text-right">{formatMoney(pricing.total)}</span>
                   </div>
                 </div>
               </div>
