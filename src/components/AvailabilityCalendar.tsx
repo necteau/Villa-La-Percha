@@ -358,6 +358,7 @@ export default function AvailabilityCalendar({
               const bg = bgColor(day);
               const grad = gradientStyle(day);
               const clickable = phase === "selectingCheckOut" ? canBeCheckOut(day) : canBeCheckIn(day);
+              const isReservationBoundary = day.isCurrentMonth && (day.isCheckInDate || day.isCheckOutDate);
 
               return (
                 <div
@@ -371,7 +372,7 @@ export default function AvailabilityCalendar({
                     backgroundImage: grad?.gradient,
                     color: nightColor(day),
                     cursor: clickable ? "pointer" : "default",
-                    opacity: (!day.isCurrentMonth || day.isPast || (!clickable && !day.isBooked)) ? 0.3 : 1,
+                    opacity: (!day.isCurrentMonth || day.isPast || (!clickable && !day.isBooked && !isReservationBoundary)) ? 0.3 : 1,
                     border: todayIs(day.date) && !grad?.solidBg && bg === "transparent" ? "1px solid #8B7355" : "none",
                   }}
                 >
