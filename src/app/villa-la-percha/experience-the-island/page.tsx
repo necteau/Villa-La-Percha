@@ -22,7 +22,7 @@ export default function ExperiencePage() {
               Discover
             </p>
             <h1 className="mb-6 font-display text-4xl font-light leading-tight text-white md:text-7xl">
-              Experience the<br />Island
+              Experience the <br />Island
             </h1>
             <p className="mx-auto max-w-lg text-sm font-medium leading-relaxed text-white md:text-lg">
               Stay near Taylor Bay and Sapodilla Bay, then use this guide to plan the beaches,
