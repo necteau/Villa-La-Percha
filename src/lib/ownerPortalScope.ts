@@ -1,5 +1,6 @@
 import { getPrismaClient } from "@/lib/db";
 import { getOwnerSessionUser } from "@/lib/ownerAuth";
+import { getSelectedAdminOwnerContext } from "@/lib/admin/ownerContext";
 
 const FALLBACK_PROPERTY_SLUG = "villa-la-percha";
 
@@ -35,7 +36,8 @@ export async function getOwnerPortalScope(): Promise<OwnerPortalScope> {
     });
 
     if (user?.role === "ADMIN") {
-      return { isAdmin: true, ownerIds: null };
+      const adminContext = await getSelectedAdminOwnerContext().catch(() => null);
+      return { isAdmin: false, ownerIds: adminContext ? [adminContext.ownerId] : [] };
     }
 
     const ownerIds = Array.from(

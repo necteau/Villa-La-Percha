@@ -29,7 +29,7 @@ This is the durable working plan for the DirectStay Admin Portal and PlatformLea
 | 2 | Audit Log Foundation | Agent complete | 2026-05-02 | `4f2762a`, `3ee71cc` / production `directstay.app` | AuditLog model/migration, audit helper, admin read logging, denied-role logging, and `/admin/activity` deployed. Preview QA unblocked with Vercel automation bypass + Preview owner allowlist fix; production authenticated QA passed 6/6. |
 | 3 | PlatformLead Public Intake | Agent complete | 2026-05-02 | `0b38935`, `9584edc`, `fd22f5c` / production `directstay.app` | PlatformLead model/migration, public owner funnel, form/API, thank-you redirect, validation/spam basics, and admin list/detail deployed. Preview and production owner-intake QA passed; production authenticated QA passed 6/6 and PlatformLead DB records verified. |
 | 4 | PlatformLead Triage Tools | Agent complete | 2026-05-03 | `bcf22be`, `e10b8bc`, `55243f3`, `3b49965`, `a7249a0`, `f565d00` / production `directstay.app` | PlatformLead detail, status/ops/notes, assignment, follow-up/source fields, queue views/counts, list-level owner-ops/artifact/preview visibility, reverse-chronological timeline, durable jobs, AI artifacts, approvals, notes, preview builds, contract milestones, and audit events are deployed. Production QA passed, including PlatformLead AI ops, queue markers across all views, and authenticated DirectStay QA 6/6. |
-| 5 | Admin Owner Context, Read-Only Owner Workspace | Not started | — | — | — |
+| 5 | Admin Owner Context, Read-Only Owner Workspace | In progress | — | pending | First safe slice added admin owner-context start/exit routes, signed HTTP-only context cookie, owner detail workspace entry point, scoped owner-portal banner, audit events, and no-context admin scope guard. Local lint/build passed. |
 | 6 | Controlled Admin Writes | Not started | — | — | — |
 | 7 | PlatformLead Conversion | Partially prepared | — | `26327bd`, `c306a91` / production `directstay.app` | Proposal/onboarding artifacts and launch readiness gate are live. Actual conversion into Owner/Property records remains intentionally not automated; final launch/tenant creation still requires explicit approval and later implementation. |
 | 8 | Onboarding Invite / Approved Communications | Not started | — | — | — |
@@ -482,7 +482,7 @@ Let admin view the owner portal in a scoped owner context safely.
 - Preview deploy verified.
 
 ## Completion Notes
-_Not started._
+In progress 2026-05-04. First safe slice adds admin owner-context start and exit routes, a signed HTTP-only owner-context cookie, a `View owner workspace` form on admin owner detail, an owner portal admin-mode banner with exit button, audit events for context start/end, and a safer admin scope rule so admin users without selected owner context do not accidentally default into all-owner portal data. Local gates passed: `npm run lint` and `npm run build`. Follow-up needed: complete read-only write blocking across owner-portal API routes and authenticated QA for context switching/data isolation.
 
 ---
 
