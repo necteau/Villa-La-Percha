@@ -173,6 +173,7 @@ export default function OwnerInquiriesPage() {
     const response = await fetch(apiUrl("/api/owner-portal/inquiries"), { cache: "no-store", credentials: "same-origin" });
     const data = await response.json();
     if (!response.ok || !data.ok) throw new Error(data.error || "Failed to load inquiries");
+    setPaymentSettings({ depositPercent: Number(data.paymentSettings?.depositPercent || 0) });
     setInquiries(data.inquiries);
     setSelectedId((current) => current || data.inquiries.find((inquiry: InquiryThreadRecord) => inquiry.status === "needs_reply")?.id || data.inquiries[0]?.id || null);
   }, []);
@@ -421,15 +422,22 @@ export default function OwnerInquiriesPage() {
       const data = await response.json();
       if (!response.ok || !data.ok) throw new Error(data.error || "Failed to save payment state");
       setPaymentDraft(nextDraft);
-      await reloadInquiries();
-      setInsightsById((current) => {
-        const next = { ...current };
-        delete next[selected.id];
-        return next;
-      });
-      await loadInsights(selected.id, true);
+      if (data.inquiry) {
+        setInquiries((current) => current.map((inquiry) => inquiry.id === selected.id ? data.inquiry : inquiry));
+      } else {
+        await reloadInquiries();
+      }
+      if (data.insights) {
+        setInsightsById((current) => ({ ...current, [selected.id]: data.insights }));
+      } else {
+        await loadInsights(selected.id, true);
+      }
+      if (data.draft) {
+        setComposer(composeFromDraft(data.draft, data.inquiry || selected));
+        setLastSavedBody(data.draft.body || "");
+      }
       setPaymentConfirmMode(null);
-      setSuccess("Payment state saved and assistant context refreshed.");
+      setSuccess("Payment state saved, assistant triage refreshed, and draft updated.");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to save payment state");
     } finally {

@@ -169,7 +169,10 @@ export async function POST(req: Request) {
         }
       }
 
-      return NextResponse.json({ ok: true, inquiry, draft: refreshedDraft });
+      const refreshedThread = await getInquiryThreadById(id);
+      const refreshedInsights = refreshedThread ? await getInquiryCopilotInsights(refreshedThread) : null;
+
+      return NextResponse.json({ ok: true, inquiry: refreshedThread || inquiry, draft: refreshedDraft, insights: refreshedInsights });
     }
 
     if (action === "payment_defaults") {
