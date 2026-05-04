@@ -101,6 +101,17 @@ function estimatedRevenueFromInsights(insights?: InquiryCopilotInsights): number
   return Number.isFinite(parsed) ? parsed : 0;
 }
 
+function formatMoney(value?: number | string | null): string {
+  const parsed = Number(value || 0);
+  if (!Number.isFinite(parsed) || parsed <= 0) return "—";
+  return `$${parsed.toLocaleString(undefined, { maximumFractionDigits: 0 })}`;
+}
+
+function cleanNumber(value?: number | string | null): number {
+  const parsed = Number(value || 0);
+  return Number.isFinite(parsed) && parsed > 0 ? Math.round(parsed * 100) / 100 : 0;
+}
+
 function badgeClass(value: string) {
   if (value === "sent" || value === "booked" || value === "hot" || value === "high") return "bg-[#eef6f1] text-[#1e4536]";
   if (value === "awaiting_guest" || value === "warm" || value === "medium") return "bg-[#f6f2ea] text-[#8b7355]";
@@ -148,6 +159,9 @@ export default function OwnerInquiriesPage() {
   const [closeReason, setCloseReason] = useState(closeReasons[0]);
   const [showReopenConfirm, setShowReopenConfirm] = useState(false);
   const [paymentDraft, setPaymentDraft] = useState({ quotedAmount: "", depositAmount: "", amountReceived: "", paymentMethod: "", paymentNote: "", paymentStatus: "unpaid" as InquiryRecord["paymentStatus"] });
+  const [paymentSettings, setPaymentSettings] = useState({ depositPercent: 0 });
+  const [paymentConfirmMode, setPaymentConfirmMode] = useState<"deposit" | "full" | null>(null);
+  const [showManualPaymentEdit, setShowManualPaymentEdit] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
@@ -190,6 +204,7 @@ export default function OwnerInquiriesPage() {
         const data = await response.json();
         if (!response.ok || !data.ok) throw new Error(data.error || "Failed to load inquiries");
         if (!cancelled) {
+          setPaymentSettings({ depositPercent: Number(data.paymentSettings?.depositPercent || 0) });
           setInquiries(data.inquiries);
           setSelectedId((current) => current || data.inquiries.find((inquiry: InquiryThreadRecord) => inquiry.status === "needs_reply")?.id || data.inquiries[0]?.id || null);
         }
@@ -225,6 +240,10 @@ export default function OwnerInquiriesPage() {
   }, [filteredQueueInquiries, inquiries.length, selectedId]);
 
   const selectedInsights = selectedId ? insightsById[selectedId] : undefined;
+  const calculatedReservationTotal = cleanNumber(paymentDraft.quotedAmount || selected?.quotedAmount || estimatedRevenueFromInsights(selectedInsights));
+  const calculatedDepositAmount = cleanNumber(paymentDraft.depositAmount || selected?.depositAmount || (calculatedReservationTotal && paymentSettings.depositPercent ? calculatedReservationTotal * (paymentSettings.depositPercent / 100) : 0));
+  const calculatedReceived = cleanNumber(paymentDraft.amountReceived || selected?.amountReceived);
+  const calculatedBalance = Math.max(0, calculatedReservationTotal - calculatedReceived);
   const openDrafts = useMemo(
     () => selected?.drafts.filter((draft) => draft.createdByType !== "system" && draft.status !== "sent") || [],
     [selected]
@@ -250,6 +269,8 @@ export default function OwnerInquiriesPage() {
     setShowConfirmBooking(false);
     setShowCloseInquiry(false);
     setShowReopenConfirm(false);
+    setPaymentConfirmMode(null);
+    setShowManualPaymentEdit(false);
     setCloseReason(closeReasons[0]);
     setBookingRevenue("");
     setPaymentDraft({
@@ -379,8 +400,9 @@ export default function OwnerInquiriesPage() {
     }
   };
 
-  const savePaymentState = async () => {
+  const savePaymentState = async (override?: Partial<typeof paymentDraft>) => {
     if (!selected) return;
+    const nextDraft = { ...paymentDraft, ...override };
     setSavingId(selected.id);
     setError("");
     setSuccess("");
@@ -389,10 +411,11 @@ export default function OwnerInquiriesPage() {
         method: "POST",
         credentials: "same-origin",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "payment", id: selected.id, ...paymentDraft }),
+        body: JSON.stringify({ action: "payment", id: selected.id, ...nextDraft }),
       });
       const data = await response.json();
       if (!response.ok || !data.ok) throw new Error(data.error || "Failed to save payment state");
+      setPaymentDraft(nextDraft);
       await reloadInquiries();
       setInsightsById((current) => {
         const next = { ...current };
@@ -400,12 +423,26 @@ export default function OwnerInquiriesPage() {
         return next;
       });
       await loadInsights(selected.id, true);
+      setPaymentConfirmMode(null);
       setSuccess("Payment state saved and assistant context refreshed.");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to save payment state");
     } finally {
       setSavingId(null);
     }
+  };
+
+  const confirmGuidedPayment = async () => {
+    if (!paymentConfirmMode) return;
+    const expectedAmount = paymentConfirmMode === "deposit" ? calculatedDepositAmount : calculatedReservationTotal;
+    const amount = cleanNumber(paymentDraft.amountReceived) || expectedAmount;
+    await savePaymentState({
+      quotedAmount: String(calculatedReservationTotal || cleanNumber(paymentDraft.quotedAmount)),
+      depositAmount: String(calculatedDepositAmount || cleanNumber(paymentDraft.depositAmount)),
+      amountReceived: String(amount),
+      paymentStatus: paymentConfirmMode === "deposit" ? "deposit_received" : "paid_in_full",
+      paymentNote: paymentDraft.paymentNote || (paymentConfirmMode === "deposit" ? "Deposit confirmed received." : "Payment confirmed received in full."),
+    });
   };
 
   const saveDraft = async (status: InquiryDraftRecord["status"]) => {
@@ -770,46 +807,123 @@ export default function OwnerInquiriesPage() {
                   <div className="rounded-2xl border border-[#e8e1d6] bg-[#faf8f3] p-4">
                     <div className="flex flex-wrap items-start justify-between gap-3">
                       <div>
-                        <p className="text-xs font-medium uppercase tracking-[0.18em] text-[#7b7468]">Payment state</p>
+                        <p className="text-xs font-medium uppercase tracking-[0.18em] text-[#7b7468]">Payment confirmation</p>
                         <p className="mt-2 text-sm leading-6 text-[#5b554b]">
-                          Record deposits or full payments here so drafts treat payment confirmation as a fact, not conversational folklore.
+                          Confirm what was received. The booking total and deposit are calculated from the inquiry dates and owner payment setup, with manual override tucked away for edge cases.
                         </p>
                       </div>
                       <span className={`rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] ${badgeClass(selected.paymentStatus)}`}>
                         {selected.paymentStatus.replaceAll("_", " ")}
                       </span>
                     </div>
-                    <div className="mt-4 grid gap-3 text-sm text-[#5b554b] sm:grid-cols-2">
-                      <label className="block">
-                        <span className="text-xs uppercase tracking-[0.14em] text-[#7b7468]">Reservation total</span>
-                        <input type="number" min={0} value={paymentDraft.quotedAmount} onChange={(e) => setPaymentDraft((current) => ({ ...current, quotedAmount: e.target.value }))} className="mt-1 w-full rounded-xl border border-[#ddd4c7] px-3 py-2" />
-                      </label>
-                      <label className="block">
-                        <span className="text-xs uppercase tracking-[0.14em] text-[#7b7468]">Payment status</span>
-                        <select value={paymentDraft.paymentStatus} onChange={(e) => setPaymentDraft((current) => ({ ...current, paymentStatus: e.target.value as InquiryRecord["paymentStatus"] }))} className="mt-1 w-full rounded-xl border border-[#ddd4c7] px-3 py-2">
-                          {paymentStatusOptions.map((option) => (<option key={option.value} value={option.value}>{option.label}</option>))}
-                        </select>
-                      </label>
-                      <label className="block">
-                        <span className="text-xs uppercase tracking-[0.14em] text-[#7b7468]">Deposit amount</span>
-                        <input type="number" min={0} value={paymentDraft.depositAmount} onChange={(e) => setPaymentDraft((current) => ({ ...current, depositAmount: e.target.value }))} className="mt-1 w-full rounded-xl border border-[#ddd4c7] px-3 py-2" />
-                      </label>
-                      <label className="block">
-                        <span className="text-xs uppercase tracking-[0.14em] text-[#7b7468]">Amount received</span>
-                        <input type="number" min={0} value={paymentDraft.amountReceived} onChange={(e) => setPaymentDraft((current) => ({ ...current, amountReceived: e.target.value }))} className="mt-1 w-full rounded-xl border border-[#ddd4c7] px-3 py-2" />
-                      </label>
-                      <label className="block">
-                        <span className="text-xs uppercase tracking-[0.14em] text-[#7b7468]">Payment method</span>
-                        <input placeholder="Venmo, Zelle, wire…" value={paymentDraft.paymentMethod} onChange={(e) => setPaymentDraft((current) => ({ ...current, paymentMethod: e.target.value }))} className="mt-1 w-full rounded-xl border border-[#ddd4c7] px-3 py-2" />
-                      </label>
-                      <label className="block sm:col-span-2">
-                        <span className="text-xs uppercase tracking-[0.14em] text-[#7b7468]">Confirmation note</span>
-                        <textarea rows={3} value={paymentDraft.paymentNote} onChange={(e) => setPaymentDraft((current) => ({ ...current, paymentNote: e.target.value }))} placeholder="Example: Venmo payment confirmed in full from sunrise.co account." className="mt-1 w-full rounded-xl border border-[#ddd4c7] px-3 py-2" />
-                      </label>
+
+                    <div className="mt-4 grid gap-3 sm:grid-cols-4">
+                      <div className="rounded-2xl bg-white p-3 shadow-sm">
+                        <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#7b7468]">Booking total</p>
+                        <p className="mt-1 text-xl font-light text-[#181612]">{formatMoney(calculatedReservationTotal)}</p>
+                      </div>
+                      <div className="rounded-2xl bg-white p-3 shadow-sm">
+                        <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#7b7468]">Deposit due</p>
+                        <p className="mt-1 text-xl font-light text-[#181612]">{formatMoney(calculatedDepositAmount)}</p>
+                        {paymentSettings.depositPercent > 0 ? <p className="mt-1 text-[11px] text-[#7b7468]">{paymentSettings.depositPercent}% deposit</p> : null}
+                      </div>
+                      <div className="rounded-2xl bg-white p-3 shadow-sm">
+                        <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#7b7468]">Received so far</p>
+                        <p className="mt-1 text-xl font-light text-[#181612]">{formatMoney(calculatedReceived)}</p>
+                      </div>
+                      <div className="rounded-2xl bg-white p-3 shadow-sm">
+                        <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#7b7468]">Balance due</p>
+                        <p className="mt-1 text-xl font-light text-[#181612]">{formatMoney(calculatedBalance)}</p>
+                      </div>
                     </div>
-                    <button type="button" onClick={() => void savePaymentState()} disabled={savingId === selected.id || isClosedInquiry} className="mt-4 rounded-full bg-[#1e4536] px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-white disabled:opacity-60 sm:tracking-[0.16em]">
-                      Save payment state
-                    </button>
+
+                    {!calculatedReservationTotal ? (
+                      <div className="mt-4 rounded-2xl border border-[#ead8b8] bg-white p-4 text-sm leading-6 text-[#7b7468]">
+                        Add or confirm inquiry dates to calculate the booking total and deposit automatically.
+                      </div>
+                    ) : null}
+
+                    <div className="mt-4 flex flex-wrap gap-3">
+                      <button type="button" onClick={() => setPaymentConfirmMode("deposit")} disabled={savingId === selected.id || isClosedInquiry || !calculatedDepositAmount} className="rounded-full bg-[#1e4536] px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-white disabled:opacity-60 sm:tracking-[0.16em]">
+                        Mark deposit received
+                      </button>
+                      <button type="button" onClick={() => setPaymentConfirmMode("full")} disabled={savingId === selected.id || isClosedInquiry || !calculatedReservationTotal} className="rounded-full bg-[#8b7355] px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-white disabled:opacity-60 sm:tracking-[0.16em]">
+                        Mark paid in full
+                      </button>
+                      <button type="button" onClick={() => setShowManualPaymentEdit((current) => !current)} className="rounded-full border border-[#d8cebf] bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-[#5b554b] sm:tracking-[0.16em]">
+                        {showManualPaymentEdit ? "Hide manual edit" : "Edit payment details"}
+                      </button>
+                    </div>
+
+                    {paymentConfirmMode ? (
+                      <div className="mt-4 rounded-2xl border border-[#d8cebf] bg-white p-4">
+                        <p className="text-sm font-medium text-[#1b1a17]">
+                          {paymentConfirmMode === "deposit" ? "Confirm deposit received" : "Confirm payment in full"}
+                        </p>
+                        <p className="mt-2 text-xs leading-5 text-[#7b7468]">
+                          Expected {paymentConfirmMode === "deposit" ? "deposit" : "full payment"}: <span className="font-semibold text-[#1b1a17]">{formatMoney(paymentConfirmMode === "deposit" ? calculatedDepositAmount : calculatedReservationTotal)}</span>. Adjust the method or note if needed, then confirm.
+                        </p>
+                        <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                          <label className="block text-sm text-[#5b554b]">
+                            <span className="text-xs uppercase tracking-[0.14em] text-[#7b7468]">Payment method</span>
+                            <input placeholder="Venmo, Zelle, wire…" value={paymentDraft.paymentMethod} onChange={(e) => setPaymentDraft((current) => ({ ...current, paymentMethod: e.target.value }))} className="mt-1 w-full rounded-xl border border-[#ddd4c7] px-3 py-2" />
+                          </label>
+                          <label className="block text-sm text-[#5b554b]">
+                            <span className="text-xs uppercase tracking-[0.14em] text-[#7b7468]">Amount to record</span>
+                            <input type="number" min={0} value={paymentConfirmMode === "deposit" ? (paymentDraft.amountReceived || String(calculatedDepositAmount || "")) : (paymentDraft.amountReceived || String(calculatedReservationTotal || ""))} onChange={(e) => setPaymentDraft((current) => ({ ...current, amountReceived: e.target.value }))} className="mt-1 w-full rounded-xl border border-[#ddd4c7] px-3 py-2" />
+                          </label>
+                          <label className="block text-sm text-[#5b554b] sm:col-span-2">
+                            <span className="text-xs uppercase tracking-[0.14em] text-[#7b7468]">Optional note</span>
+                            <textarea rows={2} value={paymentDraft.paymentNote} onChange={(e) => setPaymentDraft((current) => ({ ...current, paymentNote: e.target.value }))} className="mt-1 w-full rounded-xl border border-[#ddd4c7] px-3 py-2" />
+                          </label>
+                        </div>
+                        <div className="mt-4 flex flex-wrap gap-3">
+                          <button type="button" onClick={() => void confirmGuidedPayment()} disabled={savingId === selected.id} className="rounded-full bg-[#1e4536] px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-white disabled:opacity-60 sm:tracking-[0.16em]">
+                            {paymentConfirmMode === "deposit" ? "Confirm deposit" : "Confirm paid in full"}
+                          </button>
+                          <button type="button" onClick={() => setPaymentConfirmMode(null)} disabled={savingId === selected.id} className="rounded-full border border-[#d8cebf] bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-[#5b554b] disabled:opacity-60 sm:tracking-[0.16em]">
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
+                    ) : null}
+
+                    {showManualPaymentEdit ? (
+                      <div className="mt-4 rounded-2xl border border-[#e8e1d6] bg-white p-4">
+                        <p className="text-sm font-medium text-[#1b1a17]">Manual payment details</p>
+                        <div className="mt-3 grid gap-3 text-sm text-[#5b554b] sm:grid-cols-2">
+                          <label className="block">
+                            <span className="text-xs uppercase tracking-[0.14em] text-[#7b7468]">Reservation total</span>
+                            <input type="number" min={0} value={paymentDraft.quotedAmount} onChange={(e) => setPaymentDraft((current) => ({ ...current, quotedAmount: e.target.value }))} className="mt-1 w-full rounded-xl border border-[#ddd4c7] px-3 py-2" />
+                          </label>
+                          <label className="block">
+                            <span className="text-xs uppercase tracking-[0.14em] text-[#7b7468]">Payment status</span>
+                            <select value={paymentDraft.paymentStatus} onChange={(e) => setPaymentDraft((current) => ({ ...current, paymentStatus: e.target.value as InquiryRecord["paymentStatus"] }))} className="mt-1 w-full rounded-xl border border-[#ddd4c7] px-3 py-2">
+                              {paymentStatusOptions.map((option) => (<option key={option.value} value={option.value}>{option.label}</option>))}
+                            </select>
+                          </label>
+                          <label className="block">
+                            <span className="text-xs uppercase tracking-[0.14em] text-[#7b7468]">Deposit amount</span>
+                            <input type="number" min={0} value={paymentDraft.depositAmount} onChange={(e) => setPaymentDraft((current) => ({ ...current, depositAmount: e.target.value }))} className="mt-1 w-full rounded-xl border border-[#ddd4c7] px-3 py-2" />
+                          </label>
+                          <label className="block">
+                            <span className="text-xs uppercase tracking-[0.14em] text-[#7b7468]">Amount received</span>
+                            <input type="number" min={0} value={paymentDraft.amountReceived} onChange={(e) => setPaymentDraft((current) => ({ ...current, amountReceived: e.target.value }))} className="mt-1 w-full rounded-xl border border-[#ddd4c7] px-3 py-2" />
+                          </label>
+                          <label className="block">
+                            <span className="text-xs uppercase tracking-[0.14em] text-[#7b7468]">Payment method</span>
+                            <input placeholder="Venmo, Zelle, wire…" value={paymentDraft.paymentMethod} onChange={(e) => setPaymentDraft((current) => ({ ...current, paymentMethod: e.target.value }))} className="mt-1 w-full rounded-xl border border-[#ddd4c7] px-3 py-2" />
+                          </label>
+                          <label className="block sm:col-span-2">
+                            <span className="text-xs uppercase tracking-[0.14em] text-[#7b7468]">Confirmation note</span>
+                            <textarea rows={3} value={paymentDraft.paymentNote} onChange={(e) => setPaymentDraft((current) => ({ ...current, paymentNote: e.target.value }))} className="mt-1 w-full rounded-xl border border-[#ddd4c7] px-3 py-2" />
+                          </label>
+                        </div>
+                        <button type="button" onClick={() => void savePaymentState()} disabled={savingId === selected.id || isClosedInquiry} className="mt-4 rounded-full bg-[#1e4536] px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-white disabled:opacity-60 sm:tracking-[0.16em]">
+                          Save manual details
+                        </button>
+                      </div>
+                    ) : null}
                   </div>
 
                   <div className="rounded-2xl border border-[#e8e1d6] bg-[#faf8f3] p-4">

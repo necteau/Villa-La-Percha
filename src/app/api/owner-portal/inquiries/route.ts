@@ -3,6 +3,8 @@ import { requireOwnerPortalSession } from "@/lib/ownerPortalApi";
 import { appendInquiryMessage, getInquiryThreadById, listInquiryThreads, runInquiryInboundAutomation, saveInquiryDraft, updateInquiryPayment, updateInquiryStatus, type InquiryThreadRecord } from "@/lib/inquiries";
 import { sendApprovedInquiryDraft } from "@/lib/inquiryEmail";
 import { getInquiryCopilotInsights } from "@/lib/inquiryCopilot";
+import { getPaymentSettings } from "@/lib/ownerPortalSettings";
+import { getStayPricing } from "@/lib/pricing";
 import { createAiRevisionJob, type AiRevisionIntent } from "@/lib/aiDraftJobs";
 import { trackInquiryConverted } from "@/lib/analytics";
 
@@ -38,7 +40,21 @@ export async function GET() {
     inquiries = await listInquiryThreads();
   }
 
-  return NextResponse.json({ ok: true, inquiries });
+  const paymentSettings = await getPaymentSettings();
+  const inquiriesWithPaymentDefaults = inquiries.map((inquiry) => {
+    if (inquiry.quotedAmount && inquiry.depositAmount) return inquiry;
+    const pricing = inquiry.checkIn && inquiry.checkOut ? getStayPricing("direct", inquiry.checkIn, inquiry.checkOut) : null;
+    if (!pricing?.total) return inquiry;
+    const calculatedDeposit = paymentSettings.depositPercent > 0
+      ? Math.round(pricing.total * paymentSettings.depositPercent) / 100
+      : null;
+    return {
+      ...inquiry,
+      quotedAmount: inquiry.quotedAmount ?? pricing.total,
+      depositAmount: inquiry.depositAmount ?? calculatedDeposit,
+    };
+  });
+  return NextResponse.json({ ok: true, inquiries: inquiriesWithPaymentDefaults, paymentSettings });
 }
 
 export async function POST(req: Request) {
@@ -131,6 +147,19 @@ export async function POST(req: Request) {
       });
 
       return NextResponse.json({ ok: true, inquiry });
+    }
+
+    if (action === "payment_defaults") {
+      const inquiryId = String(body?.inquiryId || "");
+      const inquiry = await getInquiryThreadById(inquiryId);
+      if (!inquiry) return NextResponse.json({ ok: false, error: "Inquiry not found" }, { status: 404 });
+      const pricing = inquiry.checkIn && inquiry.checkOut ? getStayPricing("direct", inquiry.checkIn, inquiry.checkOut) : null;
+      const paymentSettings = await getPaymentSettings();
+      const reservationTotal = pricing?.total ?? null;
+      const depositAmount = reservationTotal && paymentSettings.depositPercent > 0
+        ? Math.round(reservationTotal * paymentSettings.depositPercent) / 100
+        : null;
+      return NextResponse.json({ ok: true, defaults: { reservationTotal, depositAmount, depositPercent: paymentSettings.depositPercent } });
     }
 
     if (action === "draft") {
