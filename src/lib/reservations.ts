@@ -1,5 +1,5 @@
 import path from "path";
-import { ReservationSource, ReservationStatus } from "@prisma/client";
+import { BookingPaymentStatus, ReservationSource, ReservationStatus } from "@prisma/client";
 import { findOrCreateCustomerLink } from "@/lib/customers";
 import { getPrismaClient } from "@/lib/db";
 import { canUseDatabaseSync, readJsonFallback, writeJsonFallback } from "@/lib/fallbackOrchestrator";
@@ -19,6 +19,12 @@ export interface ReservationRecord {
   nights: number;
   income: number;
   currency: string;
+  paymentStatus: "unpaid" | "deposit_requested" | "deposit_received" | "paid_in_full" | "partially_refunded" | "refunded";
+  depositAmount?: number;
+  amountReceived?: number;
+  paymentMethod?: string;
+  paymentConfirmedAt?: string;
+  paymentNote?: string;
   isOwnerWeek: boolean;
 }
 
@@ -34,6 +40,12 @@ export interface ReservationInput {
   checkOut: string;
   income: number;
   currency: string;
+  paymentStatus?: ReservationRecord["paymentStatus"];
+  depositAmount?: number;
+  amountReceived?: number;
+  paymentMethod?: string;
+  paymentConfirmedAt?: string;
+  paymentNote?: string;
   isOwnerWeek: boolean;
 }
 
@@ -89,6 +101,30 @@ function fromDbStatus(value: ReservationStatus): ReservationRecord["status"] {
   }
 }
 
+function toDbPaymentStatus(value?: ReservationRecord["paymentStatus"]): BookingPaymentStatus {
+  switch (value) {
+    case "deposit_requested": return BookingPaymentStatus.DEPOSIT_REQUESTED;
+    case "deposit_received": return BookingPaymentStatus.DEPOSIT_RECEIVED;
+    case "paid_in_full": return BookingPaymentStatus.PAID_IN_FULL;
+    case "partially_refunded": return BookingPaymentStatus.PARTIALLY_REFUNDED;
+    case "refunded": return BookingPaymentStatus.REFUNDED;
+    case "unpaid":
+    default: return BookingPaymentStatus.UNPAID;
+  }
+}
+
+function fromDbPaymentStatus(value?: BookingPaymentStatus | null): ReservationRecord["paymentStatus"] {
+  switch (value) {
+    case BookingPaymentStatus.DEPOSIT_REQUESTED: return "deposit_requested";
+    case BookingPaymentStatus.DEPOSIT_RECEIVED: return "deposit_received";
+    case BookingPaymentStatus.PAID_IN_FULL: return "paid_in_full";
+    case BookingPaymentStatus.PARTIALLY_REFUNDED: return "partially_refunded";
+    case BookingPaymentStatus.REFUNDED: return "refunded";
+    case BookingPaymentStatus.UNPAID:
+    default: return "unpaid";
+  }
+}
+
 function toDbSource(type: string, isOwnerWeek: boolean): ReservationSource {
   if (isOwnerWeek || type.toLowerCase() === "owner") return ReservationSource.OWNER;
   if (type.toLowerCase().includes("airbnb")) return ReservationSource.AIRBNB;
@@ -111,6 +147,12 @@ function mapDbReservation(record: {
   nights: number;
   totalAmount: { toString(): string } | number | null;
   currency: string;
+  paymentStatus?: BookingPaymentStatus | null;
+  depositAmount?: { toString(): string } | number | null;
+  amountReceived?: { toString(): string } | number | null;
+  paymentMethod?: string | null;
+  paymentConfirmedAt?: Date | null;
+  paymentNote?: string | null;
   isOwnerWeek: boolean;
 }, unit = DEFAULT_PROPERTY.name): ReservationRecord {
   return {
@@ -128,6 +170,12 @@ function mapDbReservation(record: {
     nights: record.nights,
     income: record.totalAmount ? Number(record.totalAmount) : 0,
     currency: record.currency,
+    paymentStatus: fromDbPaymentStatus(record.paymentStatus),
+    depositAmount: record.depositAmount ? Number(record.depositAmount) : undefined,
+    amountReceived: record.amountReceived ? Number(record.amountReceived) : undefined,
+    paymentMethod: record.paymentMethod ?? undefined,
+    paymentConfirmedAt: record.paymentConfirmedAt?.toISOString(),
+    paymentNote: record.paymentNote ?? undefined,
     isOwnerWeek: record.isOwnerWeek,
   };
 }
@@ -198,6 +246,12 @@ export async function listReservations(): Promise<ReservationRecord[]> {
           nights: nightsBetween(item.checkIn, item.checkOut),
           totalAmount: item.income,
           currency: item.currency,
+          paymentStatus: toDbPaymentStatus(item.paymentStatus),
+          depositAmount: item.depositAmount ?? null,
+          amountReceived: item.amountReceived ?? null,
+          paymentMethod: item.paymentMethod ?? null,
+          paymentConfirmedAt: item.paymentConfirmedAt ? new Date(item.paymentConfirmedAt) : null,
+          paymentNote: item.paymentNote ?? null,
           isOwnerWeek: item.isOwnerWeek,
         })),
         skipDuplicates: true,
@@ -229,6 +283,12 @@ export async function createReservation(input: ReservationInput): Promise<Reserv
     nights: nightsBetween(input.checkIn, input.checkOut),
     income: input.isOwnerWeek ? 0 : input.income,
     currency: input.currency,
+    paymentStatus: input.paymentStatus || "unpaid",
+    depositAmount: input.depositAmount,
+    amountReceived: input.amountReceived,
+    paymentMethod: input.paymentMethod,
+    paymentConfirmedAt: input.paymentConfirmedAt,
+    paymentNote: input.paymentNote,
     isOwnerWeek: input.isOwnerWeek,
   };
 
@@ -265,6 +325,12 @@ export async function createReservation(input: ReservationInput): Promise<Reserv
         nights: record.nights,
         totalAmount: record.income,
         currency: record.currency,
+        paymentStatus: toDbPaymentStatus(record.paymentStatus),
+        depositAmount: record.depositAmount ?? null,
+        amountReceived: record.amountReceived ?? null,
+        paymentMethod: record.paymentMethod ?? null,
+        paymentConfirmedAt: record.paymentConfirmedAt ? new Date(record.paymentConfirmedAt) : null,
+        paymentNote: record.paymentNote ?? null,
         isOwnerWeek: record.isOwnerWeek,
       },
     });
@@ -291,6 +357,12 @@ export async function updateReservation(id: string, input: Partial<ReservationIn
       checkOut: nextCheckOut,
       isOwnerWeek: nextIsOwnerWeek,
       income: nextIsOwnerWeek ? 0 : (input.income ?? existing.income),
+      paymentStatus: input.paymentStatus ?? existing.paymentStatus ?? "unpaid",
+      depositAmount: input.depositAmount ?? existing.depositAmount,
+      amountReceived: input.amountReceived ?? existing.amountReceived,
+      paymentMethod: input.paymentMethod ?? existing.paymentMethod,
+      paymentConfirmedAt: input.paymentConfirmedAt ?? existing.paymentConfirmedAt,
+      paymentNote: input.paymentNote ?? existing.paymentNote,
       nights: nightsBetween(nextCheckIn, nextCheckOut),
     } as ReservationRecord;
   };
@@ -334,6 +406,12 @@ export async function updateReservation(id: string, input: Partial<ReservationIn
         nights: patched.nights,
         totalAmount: patched.income,
         currency: patched.currency,
+        paymentStatus: toDbPaymentStatus(patched.paymentStatus),
+        depositAmount: patched.depositAmount ?? null,
+        amountReceived: patched.amountReceived ?? null,
+        paymentMethod: patched.paymentMethod ?? null,
+        paymentConfirmedAt: patched.paymentConfirmedAt ? new Date(patched.paymentConfirmedAt) : null,
+        paymentNote: patched.paymentNote ?? null,
         isOwnerWeek: patched.isOwnerWeek,
       },
     });

@@ -19,8 +19,23 @@ export interface Reservation {
   nights: number;
   income: number;
   currency: string;
+  paymentStatus: "unpaid" | "deposit_requested" | "deposit_received" | "paid_in_full" | "partially_refunded" | "refunded";
+  depositAmount?: number;
+  amountReceived?: number;
+  paymentMethod?: string;
+  paymentConfirmedAt?: string;
+  paymentNote?: string;
   isOwnerWeek: boolean;
 }
+
+const paymentStatusOptions: Array<{ value: Reservation["paymentStatus"]; label: string }> = [
+  { value: "unpaid", label: "Unpaid" },
+  { value: "deposit_requested", label: "Deposit requested" },
+  { value: "deposit_received", label: "Deposit received" },
+  { value: "paid_in_full", label: "Paid in full" },
+  { value: "partially_refunded", label: "Partially refunded" },
+  { value: "refunded", label: "Refunded" },
+];
 
 interface Props {
   reservation: Reservation | null;
@@ -192,6 +207,52 @@ export default function ReservationEditor({ reservation, onSave, onDelete, savin
             onChange={(e) => setDraft((current) => (current ? { ...current, income: Number(e.target.value || 0) } : current))}
             className="w-full rounded-xl border border-[#ddd4c7] px-4 py-3 text-sm"
             disabled={draft.isOwnerWeek}
+          />
+        </div>
+        <div>
+          <label className="mb-1 block text-xs uppercase tracking-[0.18em] text-[#7b7468]">Payment status</label>
+          <select
+            value={draft.paymentStatus || "unpaid"}
+            onChange={(e) => setDraft((current) => (current ? { ...current, paymentStatus: e.target.value as Reservation["paymentStatus"] } : current))}
+            className="w-full rounded-xl border border-[#ddd4c7] px-4 py-3 text-sm"
+          >
+            {paymentStatusOptions.map((option) => (<option key={option.value} value={option.value}>{option.label}</option>))}
+          </select>
+        </div>
+        <div>
+          <label className="mb-1 block text-xs uppercase tracking-[0.18em] text-[#7b7468]">Amount received</label>
+          <input
+            type="number"
+            value={draft.amountReceived || ""}
+            onChange={(e) => setDraft((current) => (current ? { ...current, amountReceived: Number(e.target.value || 0) || undefined } : current))}
+            className="w-full rounded-xl border border-[#ddd4c7] px-4 py-3 text-sm"
+          />
+        </div>
+        <div>
+          <label className="mb-1 block text-xs uppercase tracking-[0.18em] text-[#7b7468]">Deposit amount</label>
+          <input
+            type="number"
+            value={draft.depositAmount || ""}
+            onChange={(e) => setDraft((current) => (current ? { ...current, depositAmount: Number(e.target.value || 0) || undefined } : current))}
+            className="w-full rounded-xl border border-[#ddd4c7] px-4 py-3 text-sm"
+          />
+        </div>
+        <div>
+          <label className="mb-1 block text-xs uppercase tracking-[0.18em] text-[#7b7468]">Payment method</label>
+          <input
+            value={draft.paymentMethod || ""}
+            onChange={(e) => setDraft((current) => (current ? { ...current, paymentMethod: e.target.value || undefined } : current))}
+            placeholder="Venmo, Zelle, wire…"
+            className="w-full rounded-xl border border-[#ddd4c7] px-4 py-3 text-sm"
+          />
+        </div>
+        <div className="md:col-span-2">
+          <label className="mb-1 block text-xs uppercase tracking-[0.18em] text-[#7b7468]">Payment note</label>
+          <textarea
+            rows={3}
+            value={draft.paymentNote || ""}
+            onChange={(e) => setDraft((current) => (current ? { ...current, paymentNote: e.target.value || undefined } : current))}
+            className="w-full rounded-xl border border-[#ddd4c7] px-4 py-3 text-sm"
           />
         </div>
         <div>

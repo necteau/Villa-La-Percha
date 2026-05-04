@@ -64,6 +64,15 @@ enum PaymentMethodType {
   CASH_APP
 }
 
+enum BookingPaymentStatus {
+  UNPAID
+  DEPOSIT_REQUESTED
+  DEPOSIT_RECEIVED
+  PAID_IN_FULL
+  PARTIALLY_REFUNDED
+  REFUNDED
+}
+
 enum InquiryStatus {
   NEEDS_REPLY
   AWAITING_GUEST
@@ -420,6 +429,12 @@ model Reservation {
   nights            Int
   totalAmount       Decimal?            @db.Decimal(10, 2)
   currency          String              @default("USD")
+  paymentStatus     BookingPaymentStatus @default(UNPAID)
+  depositAmount     Decimal?            @db.Decimal(10, 2)
+  amountReceived    Decimal?            @db.Decimal(10, 2)
+  paymentMethod     String?
+  paymentConfirmedAt DateTime?
+  paymentNote       String?
   isOwnerWeek       Boolean             @default(false)
   notes             String?
   createdAt         DateTime            @default(now())
@@ -498,6 +513,13 @@ model Inquiry {
   checkOut     DateTime?
   message      String?
   status       InquiryStatus @default(NEEDS_REPLY)
+  quotedAmount Decimal?      @db.Decimal(10, 2)
+  paymentStatus BookingPaymentStatus @default(UNPAID)
+  depositAmount Decimal?     @db.Decimal(10, 2)
+  amountReceived Decimal?    @db.Decimal(10, 2)
+  paymentMethod String?
+  paymentConfirmedAt DateTime?
+  paymentNote   String?
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
   property     Property      @relation(fields: [propertyId], references: [id], onDelete: Cascade)

@@ -29,6 +29,15 @@ const queueStatusOptions: Array<{ value: InquiryRecord["status"] | "all"; label:
   { value: "all", label: "All statuses" },
 ];
 
+const paymentStatusOptions: Array<{ value: InquiryRecord["paymentStatus"]; label: string }> = [
+  { value: "unpaid", label: "Unpaid" },
+  { value: "deposit_requested", label: "Deposit requested" },
+  { value: "deposit_received", label: "Deposit received" },
+  { value: "paid_in_full", label: "Paid in full" },
+  { value: "partially_refunded", label: "Partially refunded" },
+  { value: "refunded", label: "Refunded" },
+];
+
 function formatDate(value: string): string {
   return new Date(value).toLocaleString(undefined, {
     month: "short",
@@ -138,6 +147,7 @@ export default function OwnerInquiriesPage() {
   const [showCloseInquiry, setShowCloseInquiry] = useState(false);
   const [closeReason, setCloseReason] = useState(closeReasons[0]);
   const [showReopenConfirm, setShowReopenConfirm] = useState(false);
+  const [paymentDraft, setPaymentDraft] = useState({ quotedAmount: "", depositAmount: "", amountReceived: "", paymentMethod: "", paymentNote: "", paymentStatus: "unpaid" as InquiryRecord["paymentStatus"] });
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
@@ -242,6 +252,14 @@ export default function OwnerInquiriesPage() {
     setShowReopenConfirm(false);
     setCloseReason(closeReasons[0]);
     setBookingRevenue("");
+    setPaymentDraft({
+      quotedAmount: selected?.quotedAmount ? String(selected.quotedAmount) : "",
+      depositAmount: selected?.depositAmount ? String(selected.depositAmount) : "",
+      amountReceived: selected?.amountReceived ? String(selected.amountReceived) : "",
+      paymentMethod: selected?.paymentMethod || "",
+      paymentNote: selected?.paymentNote || "",
+      paymentStatus: selected?.paymentStatus || "unpaid",
+    });
     setSuccess("");
     setError("");
     if (!shouldLoadAssistantInsights) {
@@ -308,6 +326,12 @@ export default function OwnerInquiriesPage() {
           checkOut: selected.checkOut,
           income,
           currency: "USD",
+          paymentStatus: selected.paymentStatus,
+          depositAmount: selected.depositAmount,
+          amountReceived: selected.amountReceived,
+          paymentMethod: selected.paymentMethod,
+          paymentConfirmedAt: selected.paymentConfirmedAt,
+          paymentNote: selected.paymentNote,
           isOwnerWeek: false,
         }),
       });
@@ -350,6 +374,35 @@ export default function OwnerInquiriesPage() {
       setSuccess("Inquiry reopened.");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to reopen inquiry");
+    } finally {
+      setSavingId(null);
+    }
+  };
+
+  const savePaymentState = async () => {
+    if (!selected) return;
+    setSavingId(selected.id);
+    setError("");
+    setSuccess("");
+    try {
+      const response = await fetch(apiUrl("/api/owner-portal/inquiries"), {
+        method: "POST",
+        credentials: "same-origin",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "payment", id: selected.id, ...paymentDraft }),
+      });
+      const data = await response.json();
+      if (!response.ok || !data.ok) throw new Error(data.error || "Failed to save payment state");
+      await reloadInquiries();
+      setInsightsById((current) => {
+        const next = { ...current };
+        delete next[selected.id];
+        return next;
+      });
+      await loadInsights(selected.id, true);
+      setSuccess("Payment state saved and assistant context refreshed.");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to save payment state");
     } finally {
       setSavingId(null);
     }
@@ -713,6 +766,51 @@ export default function OwnerInquiriesPage() {
                       {loadingInsightId === selected.id ? "Assistant is reviewing this inquiry…" : "Assistant insights will appear here once loaded."}
                     </div>
                   )}
+
+                  <div className="rounded-2xl border border-[#e8e1d6] bg-[#faf8f3] p-4">
+                    <div className="flex flex-wrap items-start justify-between gap-3">
+                      <div>
+                        <p className="text-xs font-medium uppercase tracking-[0.18em] text-[#7b7468]">Payment state</p>
+                        <p className="mt-2 text-sm leading-6 text-[#5b554b]">
+                          Record deposits or full payments here so drafts treat payment confirmation as a fact, not conversational folklore.
+                        </p>
+                      </div>
+                      <span className={`rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] ${badgeClass(selected.paymentStatus)}`}>
+                        {selected.paymentStatus.replaceAll("_", " ")}
+                      </span>
+                    </div>
+                    <div className="mt-4 grid gap-3 text-sm text-[#5b554b] sm:grid-cols-2">
+                      <label className="block">
+                        <span className="text-xs uppercase tracking-[0.14em] text-[#7b7468]">Reservation total</span>
+                        <input type="number" min={0} value={paymentDraft.quotedAmount} onChange={(e) => setPaymentDraft((current) => ({ ...current, quotedAmount: e.target.value }))} className="mt-1 w-full rounded-xl border border-[#ddd4c7] px-3 py-2" />
+                      </label>
+                      <label className="block">
+                        <span className="text-xs uppercase tracking-[0.14em] text-[#7b7468]">Payment status</span>
+                        <select value={paymentDraft.paymentStatus} onChange={(e) => setPaymentDraft((current) => ({ ...current, paymentStatus: e.target.value as InquiryRecord["paymentStatus"] }))} className="mt-1 w-full rounded-xl border border-[#ddd4c7] px-3 py-2">
+                          {paymentStatusOptions.map((option) => (<option key={option.value} value={option.value}>{option.label}</option>))}
+                        </select>
+                      </label>
+                      <label className="block">
+                        <span className="text-xs uppercase tracking-[0.14em] text-[#7b7468]">Deposit amount</span>
+                        <input type="number" min={0} value={paymentDraft.depositAmount} onChange={(e) => setPaymentDraft((current) => ({ ...current, depositAmount: e.target.value }))} className="mt-1 w-full rounded-xl border border-[#ddd4c7] px-3 py-2" />
+                      </label>
+                      <label className="block">
+                        <span className="text-xs uppercase tracking-[0.14em] text-[#7b7468]">Amount received</span>
+                        <input type="number" min={0} value={paymentDraft.amountReceived} onChange={(e) => setPaymentDraft((current) => ({ ...current, amountReceived: e.target.value }))} className="mt-1 w-full rounded-xl border border-[#ddd4c7] px-3 py-2" />
+                      </label>
+                      <label className="block">
+                        <span className="text-xs uppercase tracking-[0.14em] text-[#7b7468]">Payment method</span>
+                        <input placeholder="Venmo, Zelle, wire…" value={paymentDraft.paymentMethod} onChange={(e) => setPaymentDraft((current) => ({ ...current, paymentMethod: e.target.value }))} className="mt-1 w-full rounded-xl border border-[#ddd4c7] px-3 py-2" />
+                      </label>
+                      <label className="block sm:col-span-2">
+                        <span className="text-xs uppercase tracking-[0.14em] text-[#7b7468]">Confirmation note</span>
+                        <textarea rows={3} value={paymentDraft.paymentNote} onChange={(e) => setPaymentDraft((current) => ({ ...current, paymentNote: e.target.value }))} placeholder="Example: Venmo payment confirmed in full from sunrise.co account." className="mt-1 w-full rounded-xl border border-[#ddd4c7] px-3 py-2" />
+                      </label>
+                    </div>
+                    <button type="button" onClick={() => void savePaymentState()} disabled={savingId === selected.id || isClosedInquiry} className="mt-4 rounded-full bg-[#1e4536] px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-white disabled:opacity-60 sm:tracking-[0.16em]">
+                      Save payment state
+                    </button>
+                  </div>
 
                   <div className="rounded-2xl border border-[#e8e1d6] bg-[#faf8f3] p-4">
                     <p className="text-xs font-medium uppercase tracking-[0.18em] text-[#7b7468]">Inquiry actions</p>

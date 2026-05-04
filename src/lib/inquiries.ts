@@ -1,5 +1,6 @@
 import path from "path";
 import {
+  BookingPaymentStatus,
   InquiryDraftStatus,
   InquiryMessageAuthorType,
   InquiryMessageDirection,
@@ -19,6 +20,13 @@ export interface InquiryRecord {
   checkOut?: string;
   message?: string;
   status: "needs_reply" | "awaiting_guest" | "booked" | "closed";
+  quotedAmount?: number;
+  paymentStatus: "unpaid" | "deposit_requested" | "deposit_received" | "paid_in_full" | "partially_refunded" | "refunded";
+  depositAmount?: number;
+  amountReceived?: number;
+  paymentMethod?: string;
+  paymentConfirmedAt?: string;
+  paymentNote?: string;
   createdAt: string;
 }
 
@@ -96,6 +104,16 @@ interface InquiryEnrichmentPatch {
   notes?: string;
 }
 
+export interface InquiryPaymentInput {
+  quotedAmount?: number;
+  paymentStatus: InquiryRecord["paymentStatus"];
+  depositAmount?: number;
+  amountReceived?: number;
+  paymentMethod?: string;
+  paymentNote?: string;
+  paymentConfirmedAt?: string;
+}
+
 const FALLBACK_PATH = path.join(process.cwd(), "src/data/inquiries.json");
 const THREAD_STATE_PATH = path.join(process.cwd(), "src/data/inquiry-thread-state.json");
 const PROPERTY_SLUG = "villa-la-percha";
@@ -111,6 +129,30 @@ function canUseDatabase(): boolean {
 
 const DEFAULT_INQUIRIES: InquiryRecord[] = [];
 const DEFAULT_THREAD_STATE: FallbackThreadState = { messages: [], drafts: [] };
+
+function toDbPaymentStatus(value: InquiryRecord["paymentStatus"]): BookingPaymentStatus {
+  switch (value) {
+    case "deposit_requested": return BookingPaymentStatus.DEPOSIT_REQUESTED;
+    case "deposit_received": return BookingPaymentStatus.DEPOSIT_RECEIVED;
+    case "paid_in_full": return BookingPaymentStatus.PAID_IN_FULL;
+    case "partially_refunded": return BookingPaymentStatus.PARTIALLY_REFUNDED;
+    case "refunded": return BookingPaymentStatus.REFUNDED;
+    case "unpaid":
+    default: return BookingPaymentStatus.UNPAID;
+  }
+}
+
+function fromDbPaymentStatus(value?: BookingPaymentStatus | null): InquiryRecord["paymentStatus"] {
+  switch (value) {
+    case BookingPaymentStatus.DEPOSIT_REQUESTED: return "deposit_requested";
+    case BookingPaymentStatus.DEPOSIT_RECEIVED: return "deposit_received";
+    case BookingPaymentStatus.PAID_IN_FULL: return "paid_in_full";
+    case BookingPaymentStatus.PARTIALLY_REFUNDED: return "partially_refunded";
+    case BookingPaymentStatus.REFUNDED: return "refunded";
+    case BookingPaymentStatus.UNPAID:
+    default: return "unpaid";
+  }
+}
 
 async function readFallback(): Promise<InquiryRecord[]> {
   return readJsonFallback(FALLBACK_PATH, DEFAULT_INQUIRIES);
@@ -430,6 +472,13 @@ function mapDbInquiry(record: {
   checkOut: Date | null;
   message: string | null;
   status: InquiryStatus;
+  quotedAmount?: { toString(): string } | number | null;
+  paymentStatus?: BookingPaymentStatus | null;
+  depositAmount?: { toString(): string } | number | null;
+  amountReceived?: { toString(): string } | number | null;
+  paymentMethod?: string | null;
+  paymentConfirmedAt?: Date | null;
+  paymentNote?: string | null;
   createdAt: Date;
 }): InquiryRecord {
   return {
@@ -442,6 +491,13 @@ function mapDbInquiry(record: {
     checkOut: record.checkOut?.toISOString().slice(0, 10),
     message: record.message ?? undefined,
     status: fromDbStatus(record.status),
+    quotedAmount: record.quotedAmount ? Number(record.quotedAmount) : undefined,
+    paymentStatus: fromDbPaymentStatus(record.paymentStatus),
+    depositAmount: record.depositAmount ? Number(record.depositAmount) : undefined,
+    amountReceived: record.amountReceived ? Number(record.amountReceived) : undefined,
+    paymentMethod: record.paymentMethod ?? undefined,
+    paymentConfirmedAt: record.paymentConfirmedAt?.toISOString(),
+    paymentNote: record.paymentNote ?? undefined,
     createdAt: record.createdAt.toISOString(),
   };
 }
@@ -605,6 +661,60 @@ export async function updateInquiryStatus(id: string, status: InquiryRecord["sta
   }
 }
 
+function cleanMoney(value: unknown): number | undefined {
+  const parsed = Number(value ?? 0);
+  return Number.isFinite(parsed) && parsed > 0 ? Math.round(parsed * 100) / 100 : undefined;
+}
+
+export async function updateInquiryPayment(id: string, input: InquiryPaymentInput): Promise<InquiryRecord | null> {
+  const confirmedAt = ["deposit_received", "paid_in_full", "partially_refunded", "refunded"].includes(input.paymentStatus)
+    ? input.paymentConfirmedAt || new Date().toISOString()
+    : input.paymentConfirmedAt;
+
+  const patch = {
+    quotedAmount: cleanMoney(input.quotedAmount),
+    paymentStatus: input.paymentStatus,
+    depositAmount: cleanMoney(input.depositAmount),
+    amountReceived: cleanMoney(input.amountReceived),
+    paymentMethod: input.paymentMethod?.trim() || undefined,
+    paymentConfirmedAt: confirmedAt,
+    paymentNote: input.paymentNote?.trim() || undefined,
+  };
+
+  if (!canUseDatabase()) {
+    const current = await readFallback();
+    const existing = current.find((inquiry) => inquiry.id === id);
+    if (!existing) return null;
+    const updated = { ...existing, ...patch };
+    await writeFallback(current.map((inquiry) => (inquiry.id === id ? updated : inquiry)));
+    return updated;
+  }
+
+  try {
+    const prisma = await getPrismaClient();
+    const updated = await prisma.inquiry.update({
+      where: { id },
+      data: {
+        quotedAmount: patch.quotedAmount ?? null,
+        paymentStatus: toDbPaymentStatus(patch.paymentStatus),
+        depositAmount: patch.depositAmount ?? null,
+        amountReceived: patch.amountReceived ?? null,
+        paymentMethod: patch.paymentMethod ?? null,
+        paymentConfirmedAt: patch.paymentConfirmedAt ? new Date(patch.paymentConfirmedAt) : null,
+        paymentNote: patch.paymentNote ?? null,
+      },
+    });
+    return mapDbInquiry(updated);
+  } catch {
+    const current = await readFallback();
+    const existing = current.find((inquiry) => inquiry.id === id);
+    if (!existing) return null;
+    const updated = { ...existing, ...patch };
+    await writeFallback(current.map((inquiry) => (inquiry.id === id ? updated : inquiry)));
+    return updated;
+  }
+}
+
 export async function appendInquiryMessage(input: InquiryMessageInput): Promise<InquiryMessageRecord> {
   const base: InquiryMessageRecord = {
     id: `msg-${Date.now()}`,
@@ -731,6 +841,7 @@ export async function createInquiry(input: InquiryInput): Promise<InquiryRecord>
     checkOut: input.checkOut,
     message: input.message,
     status: "needs_reply",
+    paymentStatus: "unpaid",
     createdAt: new Date().toISOString(),
   };
 

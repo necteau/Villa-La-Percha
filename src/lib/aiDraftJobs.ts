@@ -58,6 +58,13 @@ interface AiDraftContext {
     checkOut?: string;
     message?: string;
     status: string;
+    quotedAmount?: number;
+    paymentStatus: string;
+    depositAmount?: number;
+    amountReceived?: number;
+    paymentMethod?: string;
+    paymentConfirmedAt?: string;
+    paymentNote?: string;
     createdAt: string;
   };
   threadMessages: Array<{
@@ -274,6 +281,13 @@ async function buildAiDraftContext(inquiry: InquiryThreadRecord): Promise<AiDraf
       checkOut: inquiry.checkOut,
       message: inquiry.message,
       status: inquiry.status,
+      quotedAmount: inquiry.quotedAmount,
+      paymentStatus: inquiry.paymentStatus,
+      depositAmount: inquiry.depositAmount,
+      amountReceived: inquiry.amountReceived,
+      paymentMethod: inquiry.paymentMethod,
+      paymentConfirmedAt: inquiry.paymentConfirmedAt,
+      paymentNote: inquiry.paymentNote,
       createdAt: inquiry.createdAt,
     },
     threadMessages: inquiry.messages.map((message) => ({

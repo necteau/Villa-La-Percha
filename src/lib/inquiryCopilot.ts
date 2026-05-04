@@ -107,6 +107,37 @@ function joinPaymentMethods(methods: ReturnType<typeof enabledPaymentMethods>): 
   return `${methods.slice(0, -1).join(", ")}, or ${methods[methods.length - 1]}`;
 }
 
+function formatMoney(value?: number): string | null {
+  if (!value || !Number.isFinite(value)) return null;
+  return `$${value.toLocaleString(undefined, { maximumFractionDigits: 0 })}`;
+}
+
+function paymentStatusLabel(value: InquiryThreadRecord["paymentStatus"]): string {
+  return value.replaceAll("_", " ");
+}
+
+function paymentSummaryLines(inquiry: InquiryThreadRecord): string[] {
+  const total = formatMoney(inquiry.quotedAmount);
+  const received = formatMoney(inquiry.amountReceived);
+  const balance = inquiry.quotedAmount && inquiry.amountReceived !== undefined
+    ? formatMoney(Math.max(0, inquiry.quotedAmount - inquiry.amountReceived))
+    : null;
+  return [
+    total ? `Reservation total: ${total}` : null,
+    received ? `Payment received: ${received}` : null,
+    balance ? `Balance due: ${balance}` : null,
+    `Payment status: ${paymentStatusLabel(inquiry.paymentStatus)}`,
+    inquiry.paymentMethod ? `Payment method: ${inquiry.paymentMethod}` : null,
+  ].filter((line): line is string => Boolean(line));
+}
+
+function appendPaymentSummary(body: string, inquiry: InquiryThreadRecord): string {
+  if (!["deposit_received", "paid_in_full", "partially_refunded", "refunded"].includes(inquiry.paymentStatus)) return body;
+  const lines = paymentSummaryLines(inquiry);
+  if (lines.length === 0) return body;
+  return `${body}\n\nReservation/payment summary:\n${lines.join("\n")}`;
+}
+
 function enabledPaymentMethods(paymentMethods: { stripe: boolean; zelle: boolean; venmo: boolean; cashApp: boolean }) {
   const labels: string[] = [];
   if (paymentMethods.stripe) labels.push("Stripe");
@@ -235,6 +266,11 @@ export async function getInquiryCopilotInsights(inquiry: InquiryThreadRecord): P
   const depositLine = paymentSettings.depositPercent > 0
     ? `A ${paymentSettings.depositPercent}% deposit is standard to secure a booking, with the balance due ${paymentSettings.finalDueDays} days before arrival.`
     : null;
+  const confirmedPaymentLine = inquiry.paymentStatus === "paid_in_full"
+    ? `Payment is already confirmed in full${inquiry.amountReceived ? ` (${formatMoney(inquiry.amountReceived)})` : ""}${inquiry.paymentMethod ? ` via ${inquiry.paymentMethod}` : ""}; do not request or imply any additional payment is needed.`
+    : inquiry.paymentStatus === "deposit_received"
+      ? `The deposit has been received${inquiry.amountReceived ? ` (${formatMoney(inquiry.amountReceived)})` : ""}; acknowledge that and only mention any remaining balance if appropriate.`
+      : null;
 
   const minimumStayLine = `The property currently runs with a ${siteSettings.minStayNights}-night minimum stay.`;
   const pricingLine = directNightlyRate
@@ -262,6 +298,7 @@ export async function getInquiryCopilotInsights(inquiry: InquiryThreadRecord): P
     availabilityLine,
     minimumStayLine,
     pricingLine,
+    confirmedPaymentLine,
     depositLine ? `${depositLine} ` : "",
     paymentLine,
     textLower.includes("airbnb") || textLower.includes("vrbo")
@@ -287,6 +324,7 @@ export async function getInquiryCopilotInsights(inquiry: InquiryThreadRecord): P
     availabilityLine,
     minimumStayLine,
     pricingLine,
+    confirmedPaymentLine,
     depositLine ? `${depositLine}` : null,
     paymentLine,
     "If you would like to move forward, the next step is to confirm the guest details and secure the dates with the standard deposit.",
@@ -375,56 +413,56 @@ export async function getInquiryCopilotInsights(inquiry: InquiryThreadRecord): P
       label: "Draft reply",
       description: "Balanced response using current dates, pricing, and booking context.",
       subject: buildInquiryEmailSubject(inquiry),
-      body: baseReplyBody,
+      body: appendPaymentSummary(baseReplyBody, inquiry),
     },
     {
       key: "warm",
       label: "Make it warmer",
       description: "Softer, more hospitality-forward tone.",
       subject: buildInquiryEmailSubject(inquiry),
-      body: warmerBody,
+      body: appendPaymentSummary(warmerBody, inquiry),
     },
     {
       key: "firm",
       label: "Make it firmer",
       description: "More decisive tone with clearer booking next steps.",
       subject: buildInquiryEmailSubject(inquiry),
-      body: firmerBody,
+      body: appendPaymentSummary(firmerBody, inquiry),
     },
     {
       key: "concise",
       label: "Make it shorter",
       description: "Tighter version for quick replies from mobile.",
       subject: buildInquiryEmailSubject(inquiry),
-      body: conciseBody,
+      body: appendPaymentSummary(conciseBody, inquiry),
     },
     {
       key: "pricing",
       label: "Answer pricing objection",
       description: "Handles rate sensitivity without sounding defensive.",
       subject: buildInquiryEmailSubject(inquiry),
-      body: pricingObjectionBody,
+      body: appendPaymentSummary(pricingObjectionBody, inquiry),
     },
     {
       key: "missing_details",
       label: "Ask for missing details",
       description: "Collects dates, phone, or trip details before quoting too specifically.",
       subject: buildInquiryEmailSubject(inquiry),
-      body: missingDetailsBody,
+      body: appendPaymentSummary(missingDetailsBody, inquiry),
     },
     {
       key: "availability",
       label: "Mention availability naturally",
       description: "Centers the reply around dates and next-step clarity.",
       subject: buildInquiryEmailSubject(inquiry),
-      body: availabilityBody,
+      body: appendPaymentSummary(availabilityBody, inquiry),
     },
     {
       key: "follow_up",
       label: "Generate follow-up",
       description: "Gentle nudge if the guest has gone quiet.",
       subject: `Following up: ${buildInquiryEmailSubject(inquiry)}`,
-      body: followUpBody,
+      body: appendPaymentSummary(followUpBody, inquiry),
     },
   ];
 
@@ -438,6 +476,10 @@ export async function getInquiryCopilotInsights(inquiry: InquiryThreadRecord): P
     requestedNights && directNightlyRate ? { label: "Estimated revenue", value: `$${(requestedNights * directNightlyRate).toLocaleString()}` } : null,
     { label: "Payment options", value: paymentMethods.length > 0 ? joinPaymentMethods(paymentMethods) : "Not configured" },
     paymentSettings.depositPercent > 0 ? { label: "Deposit", value: `${paymentSettings.depositPercent}%` } : null,
+    { label: "Payment status", value: paymentStatusLabel(inquiry.paymentStatus) },
+    inquiry.quotedAmount ? { label: "Reservation total", value: formatMoney(inquiry.quotedAmount) || "Recorded" } : null,
+    inquiry.amountReceived ? { label: "Payment received", value: formatMoney(inquiry.amountReceived) || "Recorded" } : null,
+    inquiry.paymentMethod ? { label: "Payment method", value: inquiry.paymentMethod } : null,
     { label: "Minimum stay", value: `${siteSettings.minStayNights} nights` },
   ].filter(Boolean) as Array<{ label: string; value: string }>;
 
