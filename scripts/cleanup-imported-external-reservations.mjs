@@ -21,11 +21,18 @@ const keepReservationId = process.env.KEEP_DIRECTSTAY_RESERVATION_ID;
 const apply = process.argv.includes("--apply");
 
 const externalSources = [ReservationSource.AIRBNB, ReservationSource.VRBO];
+const externalBookingTypes = (process.env.EXTERNAL_CLEANUP_BOOKING_TYPES || "Rental Guest,Airbnb,VRBO,External Booking")
+  .split(",")
+  .map((item) => item.trim())
+  .filter(Boolean);
 
 try {
   const candidates = await prisma.reservation.findMany({
     where: {
-      source: { in: externalSources },
+      OR: [
+        { source: { in: externalSources } },
+        { bookingType: { in: externalBookingTypes } },
+      ],
       ...(keepReservationId ? { id: { not: keepReservationId } } : {}),
     },
     select: {
@@ -42,12 +49,18 @@ try {
   console.log(JSON.stringify({
     mode: apply ? "apply" : "dry-run",
     keepReservationId: keepReservationId || null,
+    externalBookingTypes,
     deleteCount: candidates.length,
     candidates,
   }, null, 2));
 
   if (apply && candidates.length > 0) {
-    await prisma.reservation.deleteMany({ where: { id: { in: candidates.map((item) => item.id) } } });
+    const ids = candidates.map((item) => item.id);
+    await prisma.externalReservation.updateMany({
+      where: { reservationId: { in: ids } },
+      data: { reservationId: null, matchStatus: "NOT_MATCHED", confirmedAt: null, confirmedByUserId: null },
+    });
+    await prisma.reservation.deleteMany({ where: { id: { in: ids } } });
     console.log(`Deleted ${candidates.length} imported external reservation row(s) from Reservation.`);
   } else if (!apply) {
     console.log("Dry run only. Re-run with --apply after confirming the manually-created DirectStay test reservation is not in the candidate list.");
