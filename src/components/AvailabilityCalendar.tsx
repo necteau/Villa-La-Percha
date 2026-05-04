@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import availabilityFallback from "@/data/availability.json";
 
 const today = new Date();
@@ -88,16 +88,16 @@ export default function AvailabilityCalendar({
   }, []);
 
 
-  const getNights = (a: string, b: string): number =>
-    Math.round((new Date(b).getTime() - new Date(a).getTime()) / (1000 * 60 * 60 * 24));
+  const getNights = useCallback((a: string, b: string): number =>
+    Math.round((new Date(b).getTime() - new Date(a).getTime()) / (1000 * 60 * 60 * 24)), []);
 
-  const addDays = (dateStr: string, daysToAdd: number): string => {
+  const addDays = useCallback((dateStr: string, daysToAdd: number): string => {
     const date = new Date(`${dateStr}T00:00:00`);
     date.setDate(date.getDate() + daysToAdd);
     return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
-  };
+  }, []);
 
-  const hasDirectPricingForStay = (startDate: string, endDate: string): boolean => {
+  const hasDirectPricingForStay = useCallback((startDate: string, endDate: string): boolean => {
     const nights = getNights(startDate, endDate);
     return directPricingRanges.some((range) => {
       if (range.startDate > startDate) return false;
@@ -105,10 +105,10 @@ export default function AvailabilityCalendar({
       if (range.minimumStayNights && nights < range.minimumStayNights) return false;
       return true;
     });
-  };
+  }, [directPricingRanges, getNights]);
 
-  const hasBookedNightBefore = (startDate: string, endDate: string): boolean =>
-    reservationsData.some((res) => startDate < res.checkOut && endDate > res.checkIn);
+  const hasBookedNightBefore = useCallback((startDate: string, endDate: string): boolean =>
+    reservationsData.some((res) => startDate < res.checkOut && endDate > res.checkIn), [reservationsData]);
 
   const days = useMemo(() => {
     const nextDays: DayInfo[] = [];
@@ -160,7 +160,7 @@ export default function AvailabilityCalendar({
     }
 
     return nextDays;
-  }, [directPricingRanges, reservationsData, viewMonth, viewYear]);
+  }, [addDays, hasBookedNightBefore, hasDirectPricingForStay, reservationsData, viewMonth, viewYear]);
 
   const isSelectable = (day: DayInfo): boolean => {
     if (day.isPast || !day.dateStr) return false;
