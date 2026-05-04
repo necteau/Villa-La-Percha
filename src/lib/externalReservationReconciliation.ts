@@ -29,6 +29,11 @@ export interface ExternalReviewItem {
   reservationId?: string;
   externalReservationId?: string;
   reason: string;
+  guestName?: string;
+  checkIn?: string;
+  checkOut?: string;
+  source?: string;
+  externalSourceId?: string;
 }
 
 function toSourceStatus(value?: ExternalReservationImport["sourceStatus"]): ExternalReservationSourceStatus {
@@ -51,6 +56,10 @@ function overlaps(aStart: Date, aEnd: Date, bStart: Date, bEnd: Date): boolean {
 
 function sameDay(a: Date, b: Date): boolean {
   return a.toISOString().slice(0, 10) === b.toISOString().slice(0, 10);
+}
+
+function dateOnly(value: Date): string {
+  return value.toISOString().slice(0, 10);
 }
 
 function hasDataMismatch(external: { guestName: string | null; guestEmail: string | null; checkIn: Date; checkOut: Date }, reservation: { guestName: string | null; guestEmail: string | null; checkIn: Date; checkOut: Date }): boolean {
@@ -104,6 +113,84 @@ export async function upsertExternalReservations(imports: ExternalReservationImp
       missingSince: null,
     },
   })));
+}
+
+export async function runExternalReservationSync(imports: ExternalReservationImport[], syncedAt = new Date()) {
+  const grouped = new Map<string, { propertyId: string; source: string; externalIds: string[] }>();
+  for (const item of imports) {
+    const key = `${item.propertyId}:${item.source}`;
+    const group = grouped.get(key) ?? { propertyId: item.propertyId, source: item.source, externalIds: [] };
+    group.externalIds.push(item.externalReservationId);
+    grouped.set(key, group);
+  }
+
+  const upserted = await upsertExternalReservations(imports, syncedAt);
+  const missingResults = [];
+  const reconcileResults = [];
+
+  for (const group of grouped.values()) {
+    missingResults.push(await markMissingExternalReservations(group.propertyId, group.externalIds, group.source, syncedAt));
+    reconcileResults.push(await reconcileExternalReservationMatches(group.propertyId));
+  }
+
+  const purgeResult = await purgeExpiredMissingExternalReservations(syncedAt);
+
+  return {
+    upserted: upserted.length,
+    markedMissing: missingResults.reduce((sum, result) => sum + result.count, 0),
+    reconciled: reconcileResults.reduce((sum, result) => sum + result.updated, 0),
+    purgedMissing: purgeResult.count,
+  };
+}
+
+export async function reconcileExternalReservationMatches(propertyId: string) {
+  const prisma = await getPrismaClient();
+  const [externalReservations, directReservations] = await Promise.all([
+    prisma.externalReservation.findMany({
+      where: {
+        propertyId,
+        sourceStatus: ExternalReservationSourceStatus.ACTIVE,
+        matchStatus: { notIn: [ExternalReservationMatchStatus.MATCHED, ExternalReservationMatchStatus.IGNORED] },
+      },
+      orderBy: { checkIn: "asc" },
+    }),
+    prisma.reservation.findMany({
+      where: { propertyId, status: { not: ReservationStatus.CANCELLED } },
+      orderBy: { checkIn: "asc" },
+    }),
+  ]);
+
+  const updates = [];
+
+  for (const external of externalReservations) {
+    const candidates = directReservations.filter((reservation) => overlaps(external.checkIn, external.checkOut, reservation.checkIn, reservation.checkOut));
+    if (candidates.length === 0) {
+      if (external.matchStatus !== ExternalReservationMatchStatus.NOT_MATCHED || external.reservationId) {
+        updates.push(prisma.externalReservation.update({ where: { id: external.id }, data: { matchStatus: ExternalReservationMatchStatus.NOT_MATCHED, reservationId: null } }));
+      }
+      continue;
+    }
+
+    if (candidates.length === 1) {
+      updates.push(prisma.externalReservation.update({
+        where: { id: external.id },
+        data: {
+          reservationId: candidates[0].id,
+          matchStatus: hasDataMismatch(external, candidates[0]) ? ExternalReservationMatchStatus.PENDING_MATCH : ExternalReservationMatchStatus.MATCHED,
+          confirmedAt: hasDataMismatch(external, candidates[0]) ? null : external.confirmedAt,
+        },
+      }));
+      continue;
+    }
+
+    updates.push(prisma.externalReservation.update({
+      where: { id: external.id },
+      data: { matchStatus: ExternalReservationMatchStatus.CONFLICT, reservationId: null, confirmedAt: null, confirmedByUserId: null },
+    }));
+  }
+
+  await Promise.all(updates);
+  return { checked: externalReservations.length, updated: updates.length };
 }
 
 export async function markMissingExternalReservations(propertyId: string, seenExternalIds: string[], source: string, syncedAt = new Date()) {
@@ -212,27 +299,32 @@ export async function listExternalReservationReviewItems(propertyId: string, asO
         reason: external.reservationId
           ? "Linked external reservation disappeared from the latest integration run."
           : "External reservation disappeared from the latest integration run; it no longer blocks availability and will be removed after one day if it does not reappear.",
+        guestName: external.guestName ?? undefined,
+        checkIn: dateOnly(external.checkIn),
+        checkOut: dateOnly(external.checkOut),
+        source: external.source,
+        externalSourceId: external.externalReservationId,
       });
       continue;
     }
 
     if (external.matchStatus === ExternalReservationMatchStatus.PENDING_MATCH) {
-      items.push({ category: "pendingMatches", externalReservationId: external.id, reservationId: external.reservationId ?? undefined, reason: "Candidate match needs owner confirmation." });
+      items.push({ category: "pendingMatches", externalReservationId: external.id, reservationId: external.reservationId ?? undefined, reason: "Candidate match needs owner confirmation.", guestName: external.guestName ?? undefined, checkIn: dateOnly(external.checkIn), checkOut: dateOnly(external.checkOut), source: external.source, externalSourceId: external.externalReservationId });
       continue;
     }
 
     if (external.matchStatus === ExternalReservationMatchStatus.CONFLICT) {
-      items.push({ category: "conflicts", externalReservationId: external.id, reservationId: external.reservationId ?? undefined, reason: "External reservation conflicts with DirectStay availability." });
+      items.push({ category: "conflicts", externalReservationId: external.id, reservationId: external.reservationId ?? undefined, reason: "External reservation conflicts with DirectStay availability.", guestName: external.guestName ?? undefined, checkIn: dateOnly(external.checkIn), checkOut: dateOnly(external.checkOut), source: external.source, externalSourceId: external.externalReservationId });
       continue;
     }
 
     if (external.matchStatus === ExternalReservationMatchStatus.MATCHED && external.reservation && !external.confirmedAt && hasDataMismatch(external, external.reservation)) {
-      items.push({ category: "dataMismatches", externalReservationId: external.id, reservationId: external.reservationId ?? undefined, reason: "Matched reservation has date, guest, or email differences until owner confirms the match." });
+      items.push({ category: "dataMismatches", externalReservationId: external.id, reservationId: external.reservationId ?? undefined, reason: "Matched reservation has date, guest, or email differences until owner confirms the match.", guestName: external.guestName ?? undefined, checkIn: dateOnly(external.checkIn), checkOut: dateOnly(external.checkOut), source: external.source, externalSourceId: external.externalReservationId });
     }
   }
 
   for (const reservation of directReservations) {
-    items.push({ category: "agedUnmatchedDirectStay", reservationId: reservation.id, reason: `DirectStay reservation has not matched an external reservation after ${delayDays} days.` });
+    items.push({ category: "agedUnmatchedDirectStay", reservationId: reservation.id, reason: `DirectStay reservation has not matched an external reservation after ${delayDays} days.`, guestName: reservation.guestName ?? undefined, checkIn: dateOnly(reservation.checkIn), checkOut: dateOnly(reservation.checkOut), source: "DirectStay" });
   }
 
   return items;

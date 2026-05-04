@@ -15,6 +15,11 @@ interface ExternalReviewItem {
   reservationId?: string;
   externalReservationId?: string;
   reason: string;
+  guestName?: string;
+  checkIn?: string;
+  checkOut?: string;
+  source?: string;
+  externalSourceId?: string;
 }
 
 const reviewLabels: Record<ExternalReviewItem["category"], string> = {
@@ -285,6 +290,11 @@ export default function OwnerReservationsPage() {
                   {reviewGroups[category].map((item) => (
                     <div key={`${item.category}-${item.externalReservationId || item.reservationId}`} className="rounded-xl bg-white p-4 text-sm text-[#5b554b]">
                       <p>{item.reason}</p>
+                      <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-[#7b7468]">
+                        {item.guestName ? <span>{item.guestName}</span> : null}
+                        {item.checkIn && item.checkOut ? <span>{item.checkIn} → {item.checkOut}</span> : null}
+                        {item.source ? <span>{item.source}{item.externalSourceId ? ` #${item.externalSourceId}` : ""}</span> : null}
+                      </div>
                       <div className="mt-3 flex flex-wrap gap-2">
                         {item.reservationId ? (
                           <button type="button" onClick={() => setSelectedId(item.reservationId || null)} className="rounded-full border border-[#ddd4c7] px-3 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-[#5b554b]">
