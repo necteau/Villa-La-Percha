@@ -123,15 +123,56 @@ export async function markMissingExternalReservations(propertyId: string, seenEx
   });
 }
 
-export async function confirmExternalReservationMatch(externalReservationId: string, reservationId: string, confirmedByUserId?: string) {
+export async function confirmExternalReservationMatch(externalReservationId: string, reservationId?: string, confirmedByUserId?: string) {
+  const prisma = await getPrismaClient();
+  const external = await prisma.externalReservation.findUnique({ where: { id: externalReservationId }, select: { reservationId: true } });
+  const targetReservationId = reservationId ?? external?.reservationId;
+  if (!targetReservationId) throw new Error("A DirectStay reservation is required to confirm this match.");
+
+  return prisma.externalReservation.update({
+    where: { id: externalReservationId },
+    data: {
+      reservationId: targetReservationId,
+      matchStatus: ExternalReservationMatchStatus.MATCHED,
+      confirmedAt: new Date(),
+      confirmedByUserId: confirmedByUserId ?? null,
+    },
+  });
+}
+
+export async function ignoreExternalReservationReviewItem(externalReservationId: string, ignoredByUserId?: string) {
   const prisma = await getPrismaClient();
   return prisma.externalReservation.update({
     where: { id: externalReservationId },
     data: {
-      reservationId,
-      matchStatus: ExternalReservationMatchStatus.MATCHED,
-      confirmedAt: new Date(),
-      confirmedByUserId: confirmedByUserId ?? null,
+      matchStatus: ExternalReservationMatchStatus.IGNORED,
+      ignoredAt: new Date(),
+      ignoredByUserId: ignoredByUserId ?? null,
+    },
+  });
+}
+
+export async function unlinkExternalReservationMatch(externalReservationId: string) {
+  const prisma = await getPrismaClient();
+  return prisma.externalReservation.update({
+    where: { id: externalReservationId },
+    data: {
+      reservationId: null,
+      matchStatus: ExternalReservationMatchStatus.NOT_MATCHED,
+      confirmedAt: null,
+      confirmedByUserId: null,
+    },
+  });
+}
+
+export async function purgeExpiredMissingExternalReservations(asOf = new Date()) {
+  const prisma = await getPrismaClient();
+  const cutoff = new Date(asOf.getTime() - 24 * 60 * 60 * 1000);
+  return prisma.externalReservation.deleteMany({
+    where: {
+      sourceStatus: ExternalReservationSourceStatus.MISSING,
+      reservationId: null,
+      missingSince: { lt: cutoff },
     },
   });
 }

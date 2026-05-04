@@ -10,6 +10,21 @@ function apiUrl(path: string): string {
   return new URL(path, window.location.origin).toString();
 }
 
+interface ExternalReviewItem {
+  category: "pendingMatches" | "conflicts" | "dataMismatches" | "agedUnmatchedDirectStay" | "missingExternalReservations";
+  reservationId?: string;
+  externalReservationId?: string;
+  reason: string;
+}
+
+const reviewLabels: Record<ExternalReviewItem["category"], string> = {
+  pendingMatches: "Pending matches",
+  conflicts: "Conflicts",
+  dataMismatches: "Matched with data differences",
+  agedUnmatchedDirectStay: "Unmatched DirectStay reservations",
+  missingExternalReservations: "Missing external reservations",
+};
+
 const today = new Date();
 
 function ymd(date: Date): string {
@@ -24,6 +39,7 @@ export default function OwnerReservationsPage() {
   const [viewYear, setViewYear] = useState(today.getFullYear());
   const [viewMonth, setViewMonth] = useState(today.getMonth());
   const [loading, setLoading] = useState(true);
+  const [reviewItems, setReviewItems] = useState<ExternalReviewItem[]>([]);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -32,10 +48,16 @@ export default function OwnerReservationsPage() {
     setLoading(true);
     setError("");
     try {
-      const response = await fetch(apiUrl("/api/owner-portal/reservations"), { cache: "no-store", credentials: "same-origin" });
-      const data = await response.json();
-      if (!response.ok || !data.ok) throw new Error(data.error || "Failed to load reservations");
+      const [reservationResponse, reviewResponse] = await Promise.all([
+        fetch(apiUrl("/api/owner-portal/reservations"), { cache: "no-store", credentials: "same-origin" }),
+        fetch(apiUrl("/api/owner-portal/external-reservations/review"), { cache: "no-store", credentials: "same-origin" }),
+      ]);
+      const data = await reservationResponse.json();
+      const reviewData = await reviewResponse.json();
+      if (!reservationResponse.ok || !data.ok) throw new Error(data.error || "Failed to load reservations");
+      if (!reviewResponse.ok || !reviewData.ok) throw new Error(reviewData.error || "Failed to load external reservation review items");
       setReservations(data.reservations);
+      setReviewItems(reviewData.reviewItems || []);
       setSelectedId((current: string | null) => current || (initialReservationId && data.reservations.some((reservation: Reservation) => reservation.id === initialReservationId) ? initialReservationId : data.reservations[0]?.id || null));
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to load reservations");
@@ -52,6 +74,43 @@ export default function OwnerReservationsPage() {
     () => (selectedId ? reservations.find((r) => r.id === selectedId) || null : null),
     [reservations, selectedId]
   );
+
+  const reviewGroups = useMemo(() => {
+    return reviewItems.reduce<Record<ExternalReviewItem["category"], ExternalReviewItem[]>>((groups, item) => {
+      groups[item.category].push(item);
+      return groups;
+    }, {
+      pendingMatches: [],
+      conflicts: [],
+      dataMismatches: [],
+      agedUnmatchedDirectStay: [],
+      missingExternalReservations: [],
+    });
+  }, [reviewItems]);
+
+  const reviewCount = reviewItems.length;
+
+  const externalReservationAction = async (externalReservationId: string, action: "confirm-match" | "ignore" | "unlink", reservationId?: string) => {
+    setSaving(true);
+    setError("");
+    setSuccess("");
+    try {
+      const response = await fetch(apiUrl(`/api/owner-portal/external-reservations/${encodeURIComponent(externalReservationId)}`), {
+        method: "POST",
+        credentials: "same-origin",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action, reservationId }),
+      });
+      const data = await response.json();
+      if (!response.ok || !data.ok) throw new Error(data.error || "Failed to update external reservation");
+      setSuccess(action === "confirm-match" ? "Match confirmed." : action === "unlink" ? "Match unlinked." : "Review item ignored.");
+      await loadReservations();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to update external reservation");
+    } finally {
+      setSaving(false);
+    }
+  };
 
   const saveSelected = async (draft: Reservation) => {
     if (!selectedId) return;
@@ -205,6 +264,57 @@ export default function OwnerReservationsPage() {
         {success ? <p className="mt-4 text-sm text-[#1e4536]">{success}</p> : null}
         {saving ? <p className="mt-4 text-sm text-[#7b7468]">Saving changes…</p> : null}
       </div>
+
+      {reviewCount > 0 ? (
+        <article className="rounded-[32px] border border-[#e8e1d6] bg-white p-6 shadow-[0_12px_40px_rgba(0,0,0,0.04)] md:p-8">
+          <div className="flex flex-wrap items-start justify-between gap-4">
+            <div>
+              <p className="text-xs font-medium uppercase tracking-[0.24em] text-[#b46b37]">External reservations need review</p>
+              <h2 className="mt-2 font-display text-3xl text-[#181612]">{reviewCount} reconciliation item{reviewCount === 1 ? "" : "s"}</h2>
+              <p className="mt-2 max-w-3xl text-sm leading-6 text-[#5b554b]">
+                Review candidate matches, conflicts, data differences, and missing external reservations. Missing unlinked external reservations no longer block availability and are removed after one day if they do not reappear.
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-6 grid gap-4 lg:grid-cols-2">
+            {(Object.keys(reviewGroups) as ExternalReviewItem["category"][]).filter((category) => reviewGroups[category].length > 0).map((category) => (
+              <div key={category} className="rounded-2xl border border-[#eadfce] bg-[#fbf8f1] p-4">
+                <h3 className="text-sm font-semibold uppercase tracking-[0.16em] text-[#1e4536]">{reviewLabels[category]}</h3>
+                <div className="mt-3 space-y-3">
+                  {reviewGroups[category].map((item) => (
+                    <div key={`${item.category}-${item.externalReservationId || item.reservationId}`} className="rounded-xl bg-white p-4 text-sm text-[#5b554b]">
+                      <p>{item.reason}</p>
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        {item.reservationId ? (
+                          <button type="button" onClick={() => setSelectedId(item.reservationId || null)} className="rounded-full border border-[#ddd4c7] px-3 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-[#5b554b]">
+                            View DirectStay
+                          </button>
+                        ) : null}
+                        {item.externalReservationId && item.reservationId ? (
+                          <button type="button" onClick={() => externalReservationAction(item.externalReservationId!, "confirm-match", item.reservationId)} disabled={saving} className="rounded-full bg-[#1e4536] px-3 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-white disabled:opacity-60">
+                            Confirm match
+                          </button>
+                        ) : null}
+                        {item.externalReservationId ? (
+                          <button type="button" onClick={() => externalReservationAction(item.externalReservationId!, "ignore")} disabled={saving} className="rounded-full border border-[#ddd4c7] px-3 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-[#5b554b] disabled:opacity-60">
+                            Ignore
+                          </button>
+                        ) : null}
+                        {item.externalReservationId && item.reservationId ? (
+                          <button type="button" onClick={() => externalReservationAction(item.externalReservationId!, "unlink")} disabled={saving} className="rounded-full border border-[#d9a08a] px-3 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-[#9f3d22] disabled:opacity-60">
+                            Unlink
+                          </button>
+                        ) : null}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </article>
+      ) : null}
 
       {loading ? (
         <div className="rounded-[32px] border border-[#e8e1d6] bg-white p-8 text-sm text-[#5b554b] shadow-[0_12px_40px_rgba(0,0,0,0.04)]">
