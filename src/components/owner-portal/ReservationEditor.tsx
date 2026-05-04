@@ -7,6 +7,7 @@ export type ReservationStatus = "Confirmed" | "Checked In" | "Cancelled" | "Tent
 export interface Reservation {
   id: string;
   customerId?: string;
+  sourceInquiryId?: string;
   status: ReservationStatus;
   type: string;
   unit: string;
@@ -79,6 +80,11 @@ export default function ReservationEditor({ reservation, onSave, onDelete, savin
           <p className="mt-2 text-sm text-[#7b7468]">
             ID {draft.id} · {computedNights} nights
           </p>
+          {draft.sourceInquiryId ? (
+            <a href={`/owner-portal/inquiries?id=${encodeURIComponent(draft.sourceInquiryId)}`} className="mt-3 inline-flex rounded-full bg-[#1e4536] px-4 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-white">
+              View source inquiry
+            </a>
+          ) : null}
         </div>
         <button
           type="button"

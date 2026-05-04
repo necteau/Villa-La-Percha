@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import ReservationEditor, { type Reservation } from "@/components/owner-portal/ReservationEditor";
 import ReservationsCalendar from "@/components/owner-portal/ReservationsCalendar";
 
@@ -16,6 +17,8 @@ function ymd(date: Date): string {
 }
 
 export default function OwnerReservationsPage() {
+  const searchParams = useSearchParams();
+  const initialReservationId = searchParams.get("id");
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [viewYear, setViewYear] = useState(today.getFullYear());
@@ -33,7 +36,7 @@ export default function OwnerReservationsPage() {
       const data = await response.json();
       if (!response.ok || !data.ok) throw new Error(data.error || "Failed to load reservations");
       setReservations(data.reservations);
-      setSelectedId((current: string | null) => current || data.reservations[0]?.id || null);
+      setSelectedId((current: string | null) => current || (initialReservationId && data.reservations.some((reservation: Reservation) => reservation.id === initialReservationId) ? initialReservationId : data.reservations[0]?.id || null));
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to load reservations");
     } finally {

@@ -441,8 +441,11 @@ model Reservation {
   updatedAt         DateTime            @updatedAt
   property          Property            @relation(fields: [propertyId], references: [id], onDelete: Cascade)
   customer          Customer?           @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  sourceInquiryId   String?
+  sourceInquiry     Inquiry?            @relation("InquiryReservation", fields: [sourceInquiryId], references: [id], onDelete: SetNull)
 
   @@index([propertyId, checkIn, checkOut])
+  @@index([sourceInquiryId])
   @@index([customerId])
 }
 
@@ -526,6 +529,7 @@ model Inquiry {
   customer     Customer?     @relation(fields: [customerId], references: [id], onDelete: SetNull)
   messages     InquiryMessage[]
   drafts       InquiryReplyDraft[]
+  reservations Reservation[] @relation("InquiryReservation")
 
   @@index([propertyId, status, createdAt])
   @@index([customerId])

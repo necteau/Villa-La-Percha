@@ -29,6 +29,7 @@ export interface InquiryRecord {
   paymentMethod?: string;
   paymentConfirmedAt?: string;
   paymentNote?: string;
+  reservations?: Array<{ id: string; status: string; checkIn: string; checkOut: string }>;
   currentQuotedAmount?: number;
   currentDepositAmount?: number;
   pricingSnapshotNotice?: string;
@@ -493,6 +494,7 @@ function mapDbInquiry(record: {
   paymentMethod?: string | null;
   paymentConfirmedAt?: Date | null;
   paymentNote?: string | null;
+  reservations?: Array<{ id: string; status: import("@prisma/client").ReservationStatus; checkIn: Date; checkOut: Date }>;
   createdAt: Date;
 }): InquiryRecord {
   return {
@@ -512,6 +514,12 @@ function mapDbInquiry(record: {
     paymentMethod: record.paymentMethod ?? undefined,
     paymentConfirmedAt: record.paymentConfirmedAt?.toISOString(),
     paymentNote: record.paymentNote ?? undefined,
+    reservations: record.reservations?.map((reservation) => ({
+      id: reservation.id,
+      status: reservation.status.toLowerCase(),
+      checkIn: reservation.checkIn.toISOString().slice(0, 10),
+      checkOut: reservation.checkOut.toISOString().slice(0, 10),
+    })),
     createdAt: record.createdAt.toISOString(),
   };
 }
@@ -628,6 +636,7 @@ export async function listInquiryThreads(): Promise<InquiryThreadRecord[]> {
       include: {
         messages: { orderBy: { createdAt: "asc" } },
         drafts: { orderBy: { updatedAt: "desc" } },
+        reservations: { orderBy: { createdAt: "desc" } },
       },
       orderBy: { createdAt: "desc" },
     });

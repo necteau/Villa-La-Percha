@@ -142,6 +142,7 @@ function composeFromDraft(draft?: InquiryDraftRecord | null, inquiry?: InquiryTh
 
 export default function OwnerInquiriesPage() {
   const searchParams = useSearchParams();
+  const initialInquiryId = searchParams.get("id");
   const initialStatus = searchParams.get("status");
   const initialQueueStatus = queueStatusOptions.some((option) => option.value === initialStatus) ? initialStatus as InquiryRecord["status"] | "all" : "needs_reply";
   const [inquiries, setInquiries] = useState<InquiryThreadRecord[]>([]);
@@ -240,12 +241,19 @@ export default function OwnerInquiriesPage() {
 
   useEffect(() => {
     if (inquiries.length === 0) return;
+    const initialInquiry = initialInquiryId ? inquiries.find((inquiry) => inquiry.id === initialInquiryId) : null;
+    if (initialInquiry && selectedId !== initialInquiry.id) {
+      setQueueStatusFilter("all");
+      setSelectedId(initialInquiry.id);
+      setLoadingInsightId(null);
+      return;
+    }
     const currentMatchesFilter = selectedId ? filteredQueueInquiries.some((inquiry) => inquiry.id === selectedId) : false;
     if (!currentMatchesFilter) {
       setSelectedId(filteredQueueInquiries[0]?.id || null);
       setLoadingInsightId(null);
     }
-  }, [filteredQueueInquiries, inquiries.length, selectedId]);
+  }, [filteredQueueInquiries, initialInquiryId, inquiries, selectedId]);
 
   const selectedInsights = selectedId ? insightsById[selectedId] : undefined;
   const calculatedReservationTotal = cleanNumber(paymentDraft.quotedAmount || selected?.quotedAmount || 0);
@@ -260,7 +268,9 @@ export default function OwnerInquiriesPage() {
     [selected]
   );
   const selectedDraft = composer?.id ? openDrafts.find((draft) => draft.id === composer.id) : undefined;
-  const isClosedInquiry = selected?.status === "closed";
+  const isBookedInquiry = selected?.status === "booked";
+  const isClosedInquiry = selected?.status === "closed" || isBookedInquiry;
+  const linkedReservation = selected?.reservations?.[0];
   const shouldLoadAssistantInsights = selected?.status === "needs_reply" || selected?.status === "awaiting_guest";
   const isAiWorkingOnDraft = Boolean(composer?.id && (pollingRevisionDraftId === composer.id || pollingUpgradeDraftId === composer.id));
   const canReviseCurrentDraft = composer?.status === "draft" && !isAiWorkingOnDraft && !isClosedInquiry;
@@ -367,6 +377,7 @@ export default function OwnerInquiriesPage() {
           paymentMethod: selected.paymentMethod,
           paymentConfirmedAt: selected.paymentConfirmedAt,
           paymentNote: selected.paymentNote,
+          sourceInquiryId: selected.id,
           isOwnerWeek: false,
         }),
       });
@@ -977,11 +988,24 @@ export default function OwnerInquiriesPage() {
                     <p className="text-xs font-medium uppercase tracking-[0.18em] text-[#7b7468]">Inquiry actions</p>
                     {isClosedInquiry ? (
                       <p className="mt-2 text-sm leading-6 text-[#5b554b]">
-                        This inquiry is closed. Reopen it before confirming bookings, drafting replies, sending messages, or using AI revisions.
+                        {isBookedInquiry ? "This inquiry is booked. Manage the confirmed stay from its reservation record." : "This inquiry is closed. Reopen it before confirming bookings, drafting replies, sending messages, or using AI revisions."}
                       </p>
                     ) : null}
+                    {isBookedInquiry && linkedReservation ? (
+                      <a href={`/owner-portal/reservations?id=${encodeURIComponent(linkedReservation.id)}`} className="mt-3 inline-flex rounded-full bg-[#1e4536] px-4 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-white">
+                        View reservation
+                      </a>
+                    ) : null}
                     <div className="mt-4 flex flex-wrap gap-3">
-                      {isClosedInquiry ? (
+                      {isBookedInquiry ? (
+                        <button
+                          type="button"
+                          disabled
+                          className="rounded-full border border-[#d8cebf] bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-[#5b554b] opacity-60 sm:tracking-[0.16em]"
+                        >
+                          Booked
+                        </button>
+                      ) : isClosedInquiry ? (
                         <button
                           type="button"
                           onClick={() => setShowReopenConfirm(true)}

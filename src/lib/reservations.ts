@@ -7,6 +7,7 @@ import { canUseDatabaseSync, readJsonFallback, writeJsonFallback } from "@/lib/f
 export interface ReservationRecord {
   id: string;
   customerId?: string;
+  sourceInquiryId?: string;
   status: "Confirmed" | "Checked In" | "Cancelled" | "Tentative";
   type: string;
   unit: string;
@@ -46,6 +47,7 @@ export interface ReservationInput {
   paymentMethod?: string;
   paymentConfirmedAt?: string;
   paymentNote?: string;
+  sourceInquiryId?: string;
   isOwnerWeek: boolean;
 }
 
@@ -153,11 +155,13 @@ function mapDbReservation(record: {
   paymentMethod?: string | null;
   paymentConfirmedAt?: Date | null;
   paymentNote?: string | null;
+  sourceInquiryId?: string | null;
   isOwnerWeek: boolean;
 }, unit = DEFAULT_PROPERTY.name): ReservationRecord {
   return {
     id: record.id,
     customerId: record.customerId ?? undefined,
+    sourceInquiryId: record.sourceInquiryId ?? undefined,
     status: fromDbStatus(record.status),
     type: record.bookingType || (record.isOwnerWeek ? "Owner" : "Manual"),
     unit,
@@ -289,6 +293,7 @@ export async function createReservation(input: ReservationInput): Promise<Reserv
     paymentMethod: input.paymentMethod,
     paymentConfirmedAt: input.paymentConfirmedAt,
     paymentNote: input.paymentNote,
+    sourceInquiryId: input.sourceInquiryId,
     isOwnerWeek: input.isOwnerWeek,
   };
 
@@ -331,6 +336,7 @@ export async function createReservation(input: ReservationInput): Promise<Reserv
         paymentMethod: record.paymentMethod ?? null,
         paymentConfirmedAt: record.paymentConfirmedAt ? new Date(record.paymentConfirmedAt) : null,
         paymentNote: record.paymentNote ?? null,
+        sourceInquiryId: record.sourceInquiryId ?? null,
         isOwnerWeek: record.isOwnerWeek,
       },
     });
@@ -412,6 +418,7 @@ export async function updateReservation(id: string, input: Partial<ReservationIn
         paymentMethod: patched.paymentMethod ?? null,
         paymentConfirmedAt: patched.paymentConfirmedAt ? new Date(patched.paymentConfirmedAt) : null,
         paymentNote: patched.paymentNote ?? null,
+        sourceInquiryId: patched.sourceInquiryId ?? null,
         isOwnerWeek: patched.isOwnerWeek,
       },
     });
