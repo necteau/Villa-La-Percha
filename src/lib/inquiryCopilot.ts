@@ -371,6 +371,33 @@ export async function getInquiryCopilotInsights(inquiry: InquiryThreadRecord): P
     "Villa La Percha",
   ].join("\n");
 
+  const paymentConfirmationBody = inquiry.paymentStatus === "paid_in_full"
+    ? [
+        buildGreeting(inquiry.fullName),
+        "",
+        `Thank you - we've received your payment in full${inquiry.amountReceived ? ` (${formatMoney(inquiry.amountReceived)})` : ""}${inquiry.paymentMethod ? ` via ${inquiry.paymentMethod}` : ""}.`,
+        inquiry.checkIn && inquiry.checkOut ? `You're all set for your Villa La Percha stay from ${formatDate(inquiry.checkIn)} to ${formatDate(inquiry.checkOut)}.` : "You're all set for your Villa La Percha stay.",
+        "",
+        "I'll keep the booking details organized from here and follow up with any arrival or stay information as we get closer.",
+        "",
+        "Best,",
+        "Villa La Percha",
+      ].join("\n")
+    : inquiry.paymentStatus === "deposit_received"
+      ? [
+          buildGreeting(inquiry.fullName),
+          "",
+          `Thank you - we've received your deposit${inquiry.amountReceived ? ` (${formatMoney(inquiry.amountReceived)})` : ""}${inquiry.paymentMethod ? ` via ${inquiry.paymentMethod}` : ""}.`,
+          inquiry.checkIn && inquiry.checkOut ? `That secures your Villa La Percha dates from ${formatDate(inquiry.checkIn)} to ${formatDate(inquiry.checkOut)}.` : "That secures your Villa La Percha dates.",
+          inquiry.quotedAmount && inquiry.amountReceived !== undefined ? `The remaining balance is ${formatMoney(Math.max(0, inquiry.quotedAmount - inquiry.amountReceived))}.` : null,
+          "",
+          `We'll keep everything organized and follow up with the next stay details as we get closer.`,
+          "",
+          "Best,",
+          "Villa La Percha",
+        ].filter((line): line is string => line !== null).join("\n")
+      : null;
+
   const availabilityBody = [
     buildGreeting(inquiry.fullName),
     "",
@@ -408,6 +435,13 @@ export async function getInquiryCopilotInsights(inquiry: InquiryThreadRecord): P
   ].filter((line): line is string => line !== null).join("\n");
 
   const draftOptions: InquiryCopilotDraftOption[] = [
+    ...(paymentConfirmationBody ? [{
+      key: "payment",
+      label: inquiry.paymentStatus === "paid_in_full" ? "Confirm paid in full" : "Confirm deposit received",
+      description: "Immediate guest follow-up after owner confirms payment.",
+      subject: `Payment received: ${buildInquiryEmailSubject(inquiry)}`,
+      body: paymentConfirmationBody,
+    }] : []),
     {
       key: "base",
       label: "Draft reply",

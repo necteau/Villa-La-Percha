@@ -149,7 +149,27 @@ export async function POST(req: Request) {
         sentAt: new Date().toISOString(),
       });
 
-      return NextResponse.json({ ok: true, inquiry });
+      let refreshedDraft = null;
+      if (["deposit_received", "paid_in_full"].includes(inquiry.paymentStatus)) {
+        const thread = await getInquiryThreadById(id);
+        if (thread) {
+          const insights = await getInquiryCopilotInsights(thread);
+          const paymentDraft = insights.draftOptions.find((option) => option.key === "payment") || insights.draftOptions[0];
+          const openDraft = [...thread.drafts]
+            .filter((draft) => draft.createdByType !== "system" && draft.status === "draft")
+            .sort((a, b) => Date.parse(b.updatedAt) - Date.parse(a.updatedAt))[0];
+          refreshedDraft = await saveInquiryDraft({
+            id: openDraft?.id,
+            inquiryId: id,
+            subject: paymentDraft.subject,
+            body: paymentDraft.body,
+            status: "draft",
+            createdByType: "assistant",
+          });
+        }
+      }
+
+      return NextResponse.json({ ok: true, inquiry, draft: refreshedDraft });
     }
 
     if (action === "payment_defaults") {
