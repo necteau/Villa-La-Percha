@@ -45,6 +45,132 @@
         }
       ],
       "notes": "Airbnb nightly rate per owner-provided checkout screenshot 2026-04-25. $1,844/night all-in, tax 11.77% on base. Total for May 16-23 (7 nights): $14,427 (vs direct $10,500 — saving $3,927)."
+    },
+    {
+      "id": "airbnb-sample-2026-05-16-2026-05-23",
+      "platform": "airbnb",
+      "startDate": "2026-05-16",
+      "endDate": "2026-05-23",
+      "nightlyRate": 1844,
+      "currency": "USD",
+      "minimumStayNights": 7,
+      "charges": [
+        {
+          "label": "Occupancy taxes",
+          "category": "tax",
+          "type": "fixed",
+          "value": 1518.96
+        }
+      ],
+      "notes": "Observed Airbnb checkout sample 2026-05-04: 7 nights x $1,844.00 = $12,908.00; taxes $1,518.96; total $14,426.96."
+    },
+    {
+      "id": "airbnb-sample-2026-06-20-2026-06-27",
+      "platform": "airbnb",
+      "startDate": "2026-06-20",
+      "endDate": "2026-06-27",
+      "nightlyRate": 2011.4285714286,
+      "currency": "USD",
+      "minimumStayNights": 7,
+      "charges": [
+        {
+          "label": "Occupancy taxes",
+          "category": "tax",
+          "type": "fixed",
+          "value": 1659.6
+        }
+      ],
+      "notes": "Observed Airbnb checkout sample 2026-05-04: 7 nights x $2,011.43 = $14,080.00; taxes $1,659.60; total $15,739.60."
+    },
+    {
+      "id": "airbnb-sample-2026-09-05-2026-09-12",
+      "platform": "airbnb",
+      "startDate": "2026-09-05",
+      "endDate": "2026-09-12",
+      "nightlyRate": 2011.4285714286,
+      "currency": "USD",
+      "minimumStayNights": 7,
+      "charges": [
+        {
+          "label": "Occupancy taxes",
+          "category": "tax",
+          "type": "fixed",
+          "value": 1659.6
+        }
+      ],
+      "notes": "Observed Airbnb checkout sample 2026-05-04: 7 nights x $2,011.43 = $14,080.00; taxes $1,659.60; total $15,739.60."
+    },
+    {
+      "id": "airbnb-sample-2026-11-21-2026-11-28",
+      "platform": "airbnb",
+      "startDate": "2026-11-21",
+      "endDate": "2026-11-28",
+      "nightlyRate": 1853.2857142857,
+      "currency": "USD",
+      "minimumStayNights": 7,
+      "charges": [
+        {
+          "label": "Occupancy taxes",
+          "category": "tax",
+          "type": "fixed",
+          "value": 1526.76
+        }
+      ],
+      "notes": "Observed Airbnb checkout sample 2026-05-04: 7 nights x $1,853.29 = $12,973.00; taxes $1,526.76; total $14,499.76."
+    },
+    {
+      "id": "vrbo-sample-2026-05-16-2026-05-23",
+      "platform": "vrbo",
+      "startDate": "2026-05-16",
+      "endDate": "2026-05-23",
+      "nightlyRate": 1882.8142857143,
+      "currency": "USD",
+      "minimumStayNights": 7,
+      "charges": [
+        {
+          "label": "Tax",
+          "category": "tax",
+          "type": "fixed",
+          "value": 1302
+        }
+      ],
+      "notes": "Observed VRBO checkout model 2026-05-04: displayed total before taxes $13,179.70 ($1,882.81 x 7 nights, including rent/host/service fees); tax $1,302.00; total $14,481.70."
+    },
+    {
+      "id": "vrbo-sample-2026-06-20-2026-06-27",
+      "platform": "vrbo",
+      "startDate": "2026-06-20",
+      "endDate": "2026-06-27",
+      "nightlyRate": 2020.9042857143,
+      "currency": "USD",
+      "minimumStayNights": 7,
+      "charges": [
+        {
+          "label": "Tax",
+          "category": "tax",
+          "type": "fixed",
+          "value": 1423.8
+        }
+      ],
+      "notes": "Observed VRBO checkout model 2026-05-04: displayed total before taxes $14,146.33 ($2,020.90 x 7 nights, including rent/host/service fees); tax $1,423.80; total $15,570.13."
+    },
+    {
+      "id": "vrbo-sample-2026-11-21-2026-11-28",
+      "platform": "vrbo",
+      "startDate": "2026-11-21",
+      "endDate": "2026-11-28",
+      "nightlyRate": 1819.0128571429,
+      "currency": "USD",
+      "minimumStayNights": 7,
+      "charges": [
+        {
+          "label": "Tax",
+          "category": "tax",
+          "type": "fixed",
+          "value": 1308.84
+        }
+      ],
+      "notes": "Observed VRBO checkout sample 2026-05-04: displayed total before taxes $12,733.09 ($1,819.01 x 7 nights); tax $1,308.84; total $14,041.93. Later same-day retry was rate-limited, so this remains pending recheck after cooldown."
     }
   ]
 }
