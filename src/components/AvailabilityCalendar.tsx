@@ -14,12 +14,19 @@ interface DayInfo {
   isCheckInDate: boolean;
   isCheckOutDate: boolean;
   isMinStayInvalid: boolean;
+  hasDirectPricingForMinimumStay: boolean;
   dateStr: string;
 }
 
 type Reservation = {
   checkIn: string;
   checkOut: string;
+};
+
+type DirectPricingRange = {
+  startDate: string;
+  endDate: string;
+  minimumStayNights?: number | null;
 };
 
 const MIN_STAY = 5;
@@ -54,6 +61,7 @@ export default function AvailabilityCalendar({
   const [hoveredDate, setHoveredDate] = useState<string | null>(null);
   const [showHint, setShowHint] = useState(false);
   const [reservationsData, setReservationsData] = useState<Reservation[]>(availabilityFallback as Reservation[]);
+  const [directPricingRanges, setDirectPricingRanges] = useState<DirectPricingRange[]>([]);
 
   useEffect(() => {
     let cancelled = false;
@@ -65,6 +73,7 @@ export default function AvailabilityCalendar({
         if (!cancelled && res.ok && data.ok) {
           const records = (data.reservations || []) as Reservation[];
           setReservationsData(records);
+          setDirectPricingRanges((data.directPricing || []) as DirectPricingRange[]);
         }
       } catch {
         // keep fallback data
@@ -77,6 +86,29 @@ export default function AvailabilityCalendar({
       cancelled = true;
     };
   }, []);
+
+
+  const getNights = (a: string, b: string): number =>
+    Math.round((new Date(b).getTime() - new Date(a).getTime()) / (1000 * 60 * 60 * 24));
+
+  const addDays = (dateStr: string, daysToAdd: number): string => {
+    const date = new Date(`${dateStr}T00:00:00`);
+    date.setDate(date.getDate() + daysToAdd);
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+  };
+
+  const hasDirectPricingForStay = (startDate: string, endDate: string): boolean => {
+    const nights = getNights(startDate, endDate);
+    return directPricingRanges.some((range) => {
+      if (range.startDate > startDate) return false;
+      if (range.endDate < endDate) return false;
+      if (range.minimumStayNights && nights < range.minimumStayNights) return false;
+      return true;
+    });
+  };
+
+  const hasBookedNightBefore = (startDate: string, endDate: string): boolean =>
+    reservationsData.some((res) => startDate < res.checkOut && endDate > res.checkIn);
 
   const days = useMemo(() => {
     const nextDays: DayInfo[] = [];
@@ -94,6 +126,7 @@ export default function AvailabilityCalendar({
         isCheckInDate: false,
         isCheckOutDate: false,
         isMinStayInvalid: false,
+        hasDirectPricingForMinimumStay: false,
         dateStr: "",
       });
     }
@@ -109,17 +142,9 @@ export default function AvailabilityCalendar({
       const isCheckInDate = reservationsData.some((res) => res.checkIn === dateStr);
       const isCheckOutDate = reservationsData.some((res) => res.checkOut === dateStr);
 
-      let isMinStayInvalid = false;
-      if (!isPast) {
-        for (let n = 1; n <= 4; n++) {
-          const futureDate = new Date(viewYear, viewMonth, d + n);
-          const futureStr = `${futureDate.getFullYear()}-${String(futureDate.getMonth() + 1).padStart(2, "0")}-${String(futureDate.getDate()).padStart(2, "0")}`;
-          if (reservationsData.some((res) => futureStr >= res.checkIn && futureStr < res.checkOut)) {
-            isMinStayInvalid = true;
-            break;
-          }
-        }
-      }
+      const minimumStayCheckOut = addDays(dateStr, MIN_STAY);
+      const hasDirectPricingForMinimumStay = !isPast && hasDirectPricingForStay(dateStr, minimumStayCheckOut);
+      const isMinStayInvalid = !isPast && hasBookedNightBefore(dateStr, minimumStayCheckOut);
 
       nextDays.push({
         date: d,
@@ -129,32 +154,32 @@ export default function AvailabilityCalendar({
         isCheckInDate,
         isCheckOutDate,
         isMinStayInvalid,
+        hasDirectPricingForMinimumStay,
         dateStr,
       });
     }
 
     return nextDays;
-  }, [reservationsData, viewMonth, viewYear]);
-
-  const getNights = (a: string, b: string): number =>
-    Math.round((new Date(b).getTime() - new Date(a).getTime()) / (1000 * 60 * 60 * 24));
+  }, [directPricingRanges, reservationsData, viewMonth, viewYear]);
 
   const isSelectable = (day: DayInfo): boolean => {
-    if (day.isPast) return false;
-    if (day.isBooked && !day.isCheckInDate && !day.isCheckOutDate) return false;
-    if (day.isCheckInDate || day.isCheckOutDate) return true;
+    if (day.isPast || !day.dateStr) return false;
+    if (!day.hasDirectPricingForMinimumStay) return false;
+    if (day.isCheckInDate) return false;
+    if (day.isBooked && !day.isCheckOutDate) return false;
     if (day.isMinStayInvalid) return false;
     return true;
   };
 
-  const canBeCheckIn = (day: DayInfo): boolean => isSelectable(day) && !day.isCheckInDate;
+  const canBeCheckIn = (day: DayInfo): boolean => isSelectable(day);
 
   const canBeCheckOut = (day: DayInfo): boolean => {
-    if (day.isPast) return false;
-    if (day.isCheckOutDate) return false;
+    if (day.isPast || !day.dateStr) return false;
     if (phase === "selectingCheckOut" && checkIn) {
       const nights = getNights(checkIn, day.dateStr);
       if (nights < MIN_STAY) return false;
+      if (!hasDirectPricingForStay(checkIn, day.dateStr)) return false;
+      if (hasBookedNightBefore(checkIn, day.dateStr)) return false;
 
       if (day.dateStr >= todayStr) {
         const nextBooked = reservationsData
@@ -346,7 +371,7 @@ export default function AvailabilityCalendar({
                     backgroundImage: grad?.gradient,
                     color: nightColor(day),
                     cursor: clickable ? "pointer" : "default",
-                    opacity: (!day.isCurrentMonth || day.isPast) ? 0.3 : 1,
+                    opacity: (!day.isCurrentMonth || day.isPast || (!clickable && !day.isBooked)) ? 0.3 : 1,
                     border: todayIs(day.date) && !grad?.solidBg && bg === "transparent" ? "1px solid #8B7355" : "none",
                   }}
                 >

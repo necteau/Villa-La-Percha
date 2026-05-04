@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { createInquiry } from "@/lib/inquiries";
 import { trackInquirySubmit } from "@/lib/analytics";
+import { getStayNights, getStayPricing } from "@/lib/pricing";
+import { listReservations } from "@/lib/reservations";
 
 const apiKey = process.env.RESEND_API_KEY;
 const resend = apiKey ? new Resend(apiKey) : null;
@@ -9,6 +11,7 @@ const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const DATE_REGEX = /^\d{4}-\d{2}-\d{2}$/;
 const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
 const RATE_LIMIT_MAX = 5;
+const MIN_STAY_NIGHTS = 5;
 const requestLog = new Map<string, number[]>();
 
 function getFromAddress(): string {
@@ -35,6 +38,13 @@ function escapeHtml(value: string) {
 function isValidDateRange(checkIn: string, checkOut: string) {
   if (!DATE_REGEX.test(checkIn) || !DATE_REGEX.test(checkOut)) return false;
   return checkOut > checkIn;
+}
+
+function overlapsBookedNight(checkIn: string, checkOut: string, reservations: Awaited<ReturnType<typeof listReservations>>): boolean {
+  return reservations.some((reservation) => {
+    if (reservation.status === "Cancelled") return false;
+    return checkIn < reservation.checkOut && checkOut > reservation.checkIn;
+  });
 }
 
 function getClientIp(req: Request) {
@@ -80,6 +90,19 @@ export async function POST(req: Request) {
 
     if (!isValidDateRange(safeCheckIn, safeCheckOut)) {
       return NextResponse.json({ error: "Please enter valid travel dates" }, { status: 400 });
+    }
+
+    if (getStayNights(safeCheckIn, safeCheckOut) < MIN_STAY_NIGHTS) {
+      return NextResponse.json({ error: `Please select at least ${MIN_STAY_NIGHTS} nights` }, { status: 400 });
+    }
+
+    if (!getStayPricing("direct", safeCheckIn, safeCheckOut)) {
+      return NextResponse.json({ error: "Those dates are not open for direct booking yet" }, { status: 400 });
+    }
+
+    const reservations = await listReservations();
+    if (overlapsBookedNight(safeCheckIn, safeCheckOut, reservations)) {
+      return NextResponse.json({ error: "Those dates overlap an existing reservation" }, { status: 400 });
     }
 
     if (safeName.length > 120 || safeComments.length > 4000) {
