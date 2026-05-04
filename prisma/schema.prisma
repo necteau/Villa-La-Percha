@@ -35,6 +35,20 @@ enum ReservationSource {
   OWNER
 }
 
+enum ExternalReservationSourceStatus {
+  ACTIVE
+  CANCELLED
+  MISSING
+}
+
+enum ExternalReservationMatchStatus {
+  NOT_MATCHED
+  PENDING_MATCH
+  MATCHED
+  CONFLICT
+  IGNORED
+}
+
 enum PricingPlatform {
   DIRECT
   AIRBNB
@@ -356,12 +370,14 @@ model Property {
   minimumStayNights         Int?
   checkInTime               String?
   checkOutTime              String?
+  externalMatchReviewDelayDays Int              @default(3)
   inquiryEnabled            Boolean            @default(true)
   createdAt                 DateTime           @default(now())
   updatedAt                 DateTime           @updatedAt
   owner                     Owner              @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   content                   PropertyContent?
   reservations              Reservation[]
+  externalReservations      ExternalReservation[]
   pricingRules              PricingRule[]
   paymentMethods            PaymentMethod[]
   paymentSettings           PaymentSetting?
@@ -443,10 +459,47 @@ model Reservation {
   customer          Customer?           @relation(fields: [customerId], references: [id], onDelete: SetNull)
   sourceInquiryId   String?
   sourceInquiry     Inquiry?            @relation("InquiryReservation", fields: [sourceInquiryId], references: [id], onDelete: SetNull)
+  externalMatches   ExternalReservation[]
 
   @@index([propertyId, checkIn, checkOut])
   @@index([sourceInquiryId])
   @@index([customerId])
+}
+
+model ExternalReservation {
+  id                    String                          @id @default(cuid())
+  ownerId               String
+  propertyId            String
+  source                String
+  externalReservationId String
+  sourceStatus          ExternalReservationSourceStatus @default(ACTIVE)
+  matchStatus           ExternalReservationMatchStatus  @default(NOT_MATCHED)
+  reservationId         String?
+  guestName             String?
+  guestEmail            String?
+  guestPhone            String?
+  checkIn               DateTime
+  checkOut              DateTime
+  totalAmount           Decimal?                        @db.Decimal(10, 2)
+  currency              String                          @default("USD")
+  rawPayload            Json?
+  lastSeenAt            DateTime                        @default(now())
+  lastSyncedAt          DateTime                        @default(now())
+  missingSince          DateTime?
+  confirmedAt           DateTime?
+  confirmedByUserId     String?
+  ignoredAt             DateTime?
+  ignoredByUserId       String?
+  createdAt             DateTime                        @default(now())
+  updatedAt             DateTime                        @updatedAt
+  property              Property                        @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  reservation           Reservation?                    @relation(fields: [reservationId], references: [id], onDelete: SetNull)
+
+  @@unique([ownerId, propertyId, source, externalReservationId])
+  @@index([propertyId, checkIn, checkOut])
+  @@index([propertyId, sourceStatus, matchStatus])
+  @@index([reservationId])
+  @@index([lastSeenAt])
 }
 
 model PricingRule {

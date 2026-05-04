@@ -12,6 +12,7 @@ interface SiteConfig {
   name: string;
   domain: string;
   minStayNights: number;
+  externalMatchReviewDelayDays: number;
   inquiryEnabled: boolean;
   paymentMethods: { stripe: boolean; zelle: boolean; venmo: boolean; cashApp: boolean };
   aiReplyInstructions: string;
@@ -22,6 +23,7 @@ interface SiteDraft {
   name: string;
   domain: string;
   minStayNights: string;
+  externalMatchReviewDelayDays: string;
   inquiryEnabled: boolean;
   paymentMethods: { stripe: boolean; zelle: boolean; venmo: boolean; cashApp: boolean };
   aiReplyInstructions: string;
@@ -31,6 +33,7 @@ function toDraft(site: SiteConfig): SiteDraft {
   return {
     ...site,
     minStayNights: String(site.minStayNights),
+    externalMatchReviewDelayDays: String(site.externalMatchReviewDelayDays),
   };
 }
 
@@ -84,6 +87,7 @@ export default function OwnerSitesPage() {
         name: draft.name,
         domain: draft.domain,
         minStayNights: Number(draft.minStayNights || 1),
+        externalMatchReviewDelayDays: Number(draft.externalMatchReviewDelayDays || 3),
         inquiryEnabled: draft.inquiryEnabled,
         paymentMethods: draft.paymentMethods,
         aiReplyInstructions: draft.aiReplyInstructions,
@@ -159,6 +163,19 @@ export default function OwnerSitesPage() {
                 onChange={(e) => setDraft((current) => (current ? { ...current, minStayNights: e.target.value } : current))}
                 className="w-full rounded-xl border border-[#ddd4c7] px-4 py-3 text-sm"
               />
+            </div>
+
+            <div>
+              <label className="mb-1 block text-xs uppercase tracking-[0.18em] text-[#7b7468]">External reservation match review delay</label>
+              <input
+                type="number"
+                min={1}
+                max={30}
+                value={draft.externalMatchReviewDelayDays}
+                onChange={(e) => setDraft((current) => (current ? { ...current, externalMatchReviewDelayDays: e.target.value } : current))}
+                className="w-full rounded-xl border border-[#ddd4c7] px-4 py-3 text-sm"
+              />
+              <p className="mt-2 text-xs leading-5 text-[#7b7468]">DirectStay reservations without an external match after this many days appear for owner review. Default is 3 days.</p>
             </div>
 
             <div>

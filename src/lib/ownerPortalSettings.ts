@@ -8,6 +8,7 @@ export interface SiteSettingsRecord {
   name: string;
   domain: string;
   minStayNights: number;
+  externalMatchReviewDelayDays: number;
   inquiryEnabled: boolean;
   paymentMethods: { stripe: boolean; zelle: boolean; venmo: boolean; cashApp: boolean };
   aiReplyInstructions: string;
@@ -79,6 +80,7 @@ export async function getSiteSettings(): Promise<SiteSettingsRecord> {
     name: property.name,
     domain: property.publicDomain || `directstay.app/${property.slug}`,
     minStayNights: property.minimumStayNights || 1,
+    externalMatchReviewDelayDays: property.externalMatchReviewDelayDays || 3,
     inquiryEnabled: property.inquiryEnabled,
     paymentMethods,
     aiReplyInstructions: property.aiReplyInstructions || "",
@@ -96,6 +98,7 @@ export async function updateSiteSettings(input: SiteSettingsRecord): Promise<Sit
       name: input.name,
       publicDomain: input.domain,
       minimumStayNights: input.minStayNights,
+      externalMatchReviewDelayDays: Math.max(1, Math.min(30, Number(input.externalMatchReviewDelayDays || 3))),
       inquiryEnabled: input.inquiryEnabled,
       aiReplyInstructions: String(input.aiReplyInstructions || "").trim().slice(0, 4000),
     },
