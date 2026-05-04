@@ -253,6 +253,8 @@ export default function OwnerInquiriesPage() {
   const calculatedDepositAmount = cleanNumber(paymentDraft.depositAmount || selected?.depositAmount || (calculatedReservationTotal && paymentSettings.depositPercent ? calculatedReservationTotal * (paymentSettings.depositPercent / 100) : 0));
   const calculatedReceived = cleanNumber(paymentDraft.amountReceived || selected?.amountReceived);
   const calculatedBalance = Math.max(0, calculatedReservationTotal - calculatedReceived);
+  const hasDepositReceived = ["deposit_received", "paid_in_full", "partially_refunded", "refunded"].includes(selected?.paymentStatus || "") || calculatedReceived >= calculatedDepositAmount && calculatedDepositAmount > 0;
+  const isPaymentComplete = ["paid_in_full", "partially_refunded", "refunded"].includes(selected?.paymentStatus || "") || (calculatedReservationTotal > 0 && calculatedReceived >= calculatedReservationTotal);
   const openDrafts = useMemo(
     () => selected?.drafts.filter((draft) => draft.createdByType !== "system" && draft.status !== "sent") || [],
     [selected]
@@ -874,12 +876,15 @@ export default function OwnerInquiriesPage() {
                     ) : null}
 
                     <div className="mt-4 flex flex-wrap gap-3">
-                      <button type="button" onClick={() => { setPaymentConfirmationNote(""); setPaymentConfirmationAmount(String(calculatedDepositAmount || "")); setPaymentConfirmMode("deposit"); }} disabled={savingId === selected.id || isClosedInquiry || !calculatedDepositAmount} className="rounded-full bg-[#1e4536] px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-white disabled:opacity-60 sm:tracking-[0.16em]">
+                      <button type="button" onClick={() => { setPaymentConfirmationNote(""); setPaymentConfirmationAmount(String(calculatedDepositAmount || "")); setPaymentConfirmMode("deposit"); }} disabled={savingId === selected.id || isClosedInquiry || !calculatedDepositAmount || hasDepositReceived} className="rounded-full bg-[#1e4536] px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-white disabled:opacity-60 sm:tracking-[0.16em]">
                         Mark deposit received
                       </button>
-                      <button type="button" onClick={() => { setPaymentConfirmationNote(""); setPaymentConfirmationAmount(String(Math.max(0, calculatedReservationTotal - calculatedReceived) || calculatedReservationTotal || "")); setPaymentConfirmMode("full"); }} disabled={savingId === selected.id || isClosedInquiry || !calculatedReservationTotal} className="rounded-full bg-[#8b7355] px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-white disabled:opacity-60 sm:tracking-[0.16em]">
+                      <button type="button" onClick={() => { setPaymentConfirmationNote(""); setPaymentConfirmationAmount(String(Math.max(0, calculatedReservationTotal - calculatedReceived) || calculatedReservationTotal || "")); setPaymentConfirmMode("full"); }} disabled={savingId === selected.id || isClosedInquiry || !calculatedReservationTotal || isPaymentComplete} className="rounded-full bg-[#8b7355] px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-white disabled:opacity-60 sm:tracking-[0.16em]">
                         Mark paid in full
                       </button>
+                      {(hasDepositReceived || isPaymentComplete) ? (
+                        <p className="basis-full text-xs leading-5 text-[#7b7468]">Payment milestones already recorded. Use edit payment details for corrections.</p>
+                      ) : null}
                       <button type="button" onClick={() => setShowManualPaymentEdit((current) => !current)} className="rounded-full border border-[#d8cebf] bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-[#5b554b] sm:tracking-[0.16em]">
                         {showManualPaymentEdit ? "Hide manual edit" : "Edit payment details"}
                       </button>
