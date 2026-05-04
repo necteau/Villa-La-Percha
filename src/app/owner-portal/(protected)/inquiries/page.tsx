@@ -884,7 +884,6 @@ export default function OwnerInquiriesPage() {
                           <div className="mt-4 rounded-2xl bg-white p-4 shadow-sm">
                             <p className="text-xs uppercase tracking-[0.14em] text-[#7b7468]">Expected {paymentConfirmMode === "deposit" ? "deposit" : "full payment"}</p>
                             <p className="mt-1 text-3xl font-light text-[#1e4536]">{formatMoney(paymentConfirmMode === "deposit" ? calculatedDepositAmount : calculatedReservationTotal)}</p>
-                            <p className="mt-2 text-sm leading-6 text-[#7b7468]">Adjust the method, amount, or note if needed, then confirm. This will update the inquiry and refresh assistant context.</p>
                           </div>
                           <div className="mt-4 grid gap-3">
                             <label className="block text-sm text-[#5b554b]">
