@@ -142,6 +142,7 @@ enum PlatformLeadArtifactType {
   PROPOSAL_DRAFT
   ONBOARDING_BRIEF
   ONBOARDING_EMAIL_DRAFT
+  OWNER_PLATFORM_AGREEMENT
 }
 
 enum PlatformLeadArtifactStatus {

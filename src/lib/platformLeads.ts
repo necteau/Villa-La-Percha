@@ -441,6 +441,53 @@ export async function createPlatformLeadOnboardingArtifacts(input: {
   return { created: true, artifacts: artifacts.slice(0, 2) };
 }
 
+export async function createPlatformLeadOwnerAgreementArtifact(input: {
+  leadId: string;
+  createdByEmail?: string | null;
+}) {
+  const prisma = await getPrismaClient();
+  const lead = await prisma.platformLead.findUnique({
+    where: { id: input.leadId },
+    include: {
+      artifacts: { orderBy: { createdAt: "desc" }, take: 30 },
+      previewBuilds: { orderBy: { updatedAt: "desc" }, take: 3 },
+      notes: { orderBy: { createdAt: "desc" }, take: 8 },
+    },
+  });
+  if (!lead) throw new Error("PlatformLead not found");
+
+  const activeAgreement = lead.artifacts.find((artifact) => artifact.type === "OWNER_PLATFORM_AGREEMENT" && !["REJECTED", "SUPERSEDED"].includes(artifact.status));
+  if (activeAgreement) return { created: false, artifacts: [], existingAgreementId: activeAgreement.id };
+
+  const property = lead.propertyName || lead.company || "the property";
+  const preview = lead.previewBuilds[0];
+  const proposal = lead.artifacts.find((artifact) => artifact.type === "PROPOSAL_DRAFT" && ["APPROVED", "SENT"].includes(artifact.status));
+  const setupFee = formatPricingDollars(lead.pricingSetupFeeCents);
+  const monthlyFee = formatPricingDollars(lead.pricingMonthlyFeeCents);
+  const commission = formatBps(lead.pricingCommissionBps);
+  const processing = formatBps(lead.pricingPaymentProcessingBps);
+  const recentNotes = lead.notes.map((note) => `- ${note.createdAt.toISOString().slice(0, 10)} ${note.authorEmail || "Admin"}: ${note.body}`).join("\n") || "- No internal notes yet.";
+
+  const body = `DirectStay Owner / Platform Agreement Draft\n\nDraft only for Jaimal/counsel review. Not legal advice. Do not send, present as final, or enable signature flow until explicitly approved.\n\nLead / Owner\n- Owner contact: ${lead.fullName} <${lead.email}>${lead.phone ? ` / ${lead.phone}` : ""}\n- Property: ${property}${lead.propertyLocation ? ` in ${lead.propertyLocation}` : ""}\n- Source/listing: ${lead.currentWebsite || "Not provided"}\n- Preview Build: ${preview ? `https://directstay.app/p/${preview.slug} (${preview.status.replaceAll("_", " ")})` : "No Preview Build recorded"}\n- Proposal artifact: ${proposal ? `${proposal.title} (${proposal.status})` : "No approved/sent proposal draft found; review commercial acceptance before sending an agreement."}\n\nBusiness Terms To Confirm\n- Setup/build fee: ${setupFee}\n- Monthly platform/support fee: ${monthlyFee}\n- Direct booking commission: ${commission}\n- Payment processing pass-through: ${processing}\n${lead.pricingNotes ? `- Pricing notes: ${lead.pricingNotes}\n` : ""}\n\nOperating Sequence\n1. Capture owner acceptance evidence in a private note before relying on this draft.\n2. Review legal entity, address, governing law, venue, service scope, payment/tax responsibilities, and signature method.\n3. Jaimal/counsel must approve the owner-facing version before manual send.\n4. Mark contract status SENT only after manual send; SIGNED only after owner signature; COUNTERSIGNED only after DirectStay execution.\n5. Launch remains blocked until contractExecuted and all other launch checklist gates are true.\n\nAgreement Body Starter\nUse villa-la-percha/docs/directstay-owner-platform-agreement-draft.md as the canonical base text. Merge the confirmed business terms above into the final statement of work or commercial terms section.\n\nRecent Internal Notes\n${recentNotes}`;
+
+  const artifacts = await prisma.$transaction([
+    prisma.platformLeadArtifact.create({
+      data: { platformLeadId: lead.id, type: "OWNER_PLATFORM_AGREEMENT", status: "NEEDS_APPROVAL", title: `Owner Platform Agreement Draft — ${property}`, body, createdByEmail: input.createdByEmail ?? "bishop@directstay.internal" },
+    }),
+    prisma.platformLead.update({ where: { id: lead.id }, data: { contractStatus: lead.contractStatus === "NOT_STARTED" ? "DRAFTED" : lead.contractStatus, nextAction: "Review owner/platform agreement draft with Jaimal/counsel before any manual send or signature flow.", updatedAt: new Date() } }),
+  ]);
+
+  await recordAdminAuditEvent({
+    actorEmail: input.createdByEmail ?? "bishop@directstay.internal",
+    actorRole: "ADMIN",
+    action: "admin.platform_lead.owner_agreement_artifact_generated",
+    entityType: "PlatformLead",
+    entityId: lead.id,
+    metadata: { agreementArtifactId: artifacts[0].id, sourceProposalId: proposal?.id ?? null },
+  });
+  return { created: true, artifacts: artifacts.slice(0, 1) };
+}
+
 export async function updatePlatformLeadArtifactStatus(input: {
   artifactId: string;
   status: PlatformLeadArtifactStatus;
