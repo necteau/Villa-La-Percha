@@ -8,8 +8,17 @@ const monthNames = [
   "July","August","September","October","November","December",
 ];
 
+export interface ExternalCalendarBlock {
+  id: string;
+  source: string;
+  checkIn: string;
+  checkOut: string;
+  sourceStatus: "ACTIVE" | "CANCELLED" | "MISSING";
+}
+
 interface Props {
   reservations: Reservation[];
+  externalBlocks?: ExternalCalendarBlock[];
   selectedId: string | null;
   onSelect: (id: string) => void;
   viewYear: number;
@@ -24,6 +33,7 @@ type DayCell = {
   isCurrentMonth: boolean;
   isPast: boolean;
   reservationIds: string[];
+  externalBlockIds: string[];
 };
 
 function ymd(date: Date): string {
@@ -32,6 +42,7 @@ function ymd(date: Date): string {
 
 export default function ReservationsCalendar({
   reservations,
+  externalBlocks = [],
   selectedId,
   onSelect,
   viewYear,
@@ -55,6 +66,7 @@ export default function ReservationsCalendar({
         isCurrentMonth: false,
         isPast: true,
         reservationIds: [],
+        externalBlockIds: [],
       });
     }
 
@@ -65,6 +77,9 @@ export default function ReservationsCalendar({
       const reservationIds = reservations
         .filter((r) => dateStr >= r.checkIn && dateStr < r.checkOut)
         .map((r) => r.id);
+      const externalBlockIds = externalBlocks
+        .filter((block) => block.sourceStatus === "ACTIVE" && dateStr >= block.checkIn && dateStr < block.checkOut)
+        .map((block) => block.id);
 
       cells.push({
         date: d,
@@ -72,11 +87,12 @@ export default function ReservationsCalendar({
         isCurrentMonth: true,
         isPast: dateStr < todayStr,
         reservationIds,
+        externalBlockIds,
       });
     }
 
     return cells;
-  }, [reservations, todayStr, viewMonth, viewYear]);
+  }, [externalBlocks, reservations, todayStr, viewMonth, viewYear]);
 
   const selectedReservation = selectedId
     ? reservations.find((r) => r.id === selectedId) || null
@@ -125,6 +141,7 @@ export default function ReservationsCalendar({
         ))}
         {days.map((day, idx) => {
           const hasReservations = day.reservationIds.length > 0;
+          const hasExternalBlocks = day.externalBlockIds.length > 0;
           const daySelected = selectedId ? day.reservationIds.includes(selectedId) : false;
           const canSelect = hasReservations;
 
@@ -145,7 +162,9 @@ export default function ReservationsCalendar({
                     ? "bg-[#1e4536] text-white"
                     : hasReservations
                       ? "bg-[#f3ede3] text-[#1b1a17] hover:bg-[#eadfce]"
-                      : day.isPast
+                      : hasExternalBlocks
+                        ? "border border-[#c9a96d] bg-[#fff5df] text-[#6f5428]"
+                        : day.isPast
                         ? "bg-white text-[#7b7468]/35"
                         : "bg-white text-[#1b1a17] border border-[#efe7dc]"
               }`}
@@ -154,6 +173,8 @@ export default function ReservationsCalendar({
               {day.date}
               {hasReservations ? (
                 <span className={`absolute bottom-1.5 left-1/2 h-1.5 w-1.5 -translate-x-1/2 rounded-full ${daySelected ? "bg-white/80" : "bg-[#8B7355]"}`} />
+              ) : hasExternalBlocks ? (
+                <span className="absolute bottom-1.5 left-1/2 h-1.5 w-4 -translate-x-1/2 rounded-full bg-[#c9a96d]" />
               ) : null}
             </button>
           );
@@ -161,7 +182,9 @@ export default function ReservationsCalendar({
       </div>
 
       <div className="mt-6 text-xs text-[#7b7468]">
-        Tip: if a day has multiple overlapping reservations (rare), we select the first one.
+        <span className="mr-4 inline-flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-[#8B7355]" /> DirectStay/owner reservation</span>
+        <span className="inline-flex items-center gap-2"><span className="h-2 w-5 rounded-full bg-[#c9a96d]" /> External block</span>
+        <span className="mt-2 block">Tip: if a day has multiple overlapping DirectStay reservations (rare), we select the first one.</span>
       </div>
     </div>
   );

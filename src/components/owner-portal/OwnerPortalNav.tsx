@@ -4,6 +4,7 @@ import { getOwnerPortalStats } from "@/lib/ownerPortalDashboard";
 const primaryNavItems = [
   { label: "Dashboard", href: "/owner-portal" },
   { label: "Reservations", href: "/owner-portal/reservations" },
+  { label: "External", href: "/owner-portal/external-reservations" },
   { label: "Inquiries", href: "/owner-portal/inquiries" },
   { label: "Customers", href: "/owner-portal/customers" },
 ];

@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import ReservationEditor, { type Reservation } from "@/components/owner-portal/ReservationEditor";
-import ReservationsCalendar from "@/components/owner-portal/ReservationsCalendar";
+import ReservationsCalendar, { type ExternalCalendarBlock } from "@/components/owner-portal/ReservationsCalendar";
 
 function apiUrl(path: string): string {
   if (typeof window === "undefined") return path;
@@ -45,6 +45,7 @@ export default function OwnerReservationsPage() {
   const [viewMonth, setViewMonth] = useState(today.getMonth());
   const [loading, setLoading] = useState(true);
   const [reviewItems, setReviewItems] = useState<ExternalReviewItem[]>([]);
+  const [externalBlocks, setExternalBlocks] = useState<ExternalCalendarBlock[]>([]);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -53,16 +54,20 @@ export default function OwnerReservationsPage() {
     setLoading(true);
     setError("");
     try {
-      const [reservationResponse, reviewResponse] = await Promise.all([
+      const [reservationResponse, reviewResponse, externalResponse] = await Promise.all([
         fetch(apiUrl("/api/owner-portal/reservations"), { cache: "no-store", credentials: "same-origin" }),
         fetch(apiUrl("/api/owner-portal/external-reservations/review"), { cache: "no-store", credentials: "same-origin" }),
+        fetch(apiUrl("/api/owner-portal/external-reservations/manual"), { cache: "no-store", credentials: "same-origin" }),
       ]);
       const data = await reservationResponse.json();
       const reviewData = await reviewResponse.json();
+      const externalData = await externalResponse.json();
       if (!reservationResponse.ok || !data.ok) throw new Error(data.error || "Failed to load reservations");
       if (!reviewResponse.ok || !reviewData.ok) throw new Error(reviewData.error || "Failed to load external reservation review items");
+      if (!externalResponse.ok || !externalData.ok) throw new Error(externalData.error || "Failed to load external reservation blocks");
       setReservations(data.reservations);
       setReviewItems(reviewData.reviewItems || []);
+      setExternalBlocks(externalData.externalReservations || []);
       setSelectedId((current: string | null) => current || (initialReservationId && data.reservations.some((reservation: Reservation) => reservation.id === initialReservationId) ? initialReservationId : data.reservations[0]?.id || null));
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to load reservations");
@@ -250,8 +255,7 @@ export default function OwnerReservationsPage() {
             <p className="text-xs font-medium uppercase tracking-[0.24em] text-[#7b7468]">Reservations</p>
             <h1 className="mt-3 font-display text-5xl leading-tight text-[#181612]">Calendar + reservation editor</h1>
             <p className="mt-4 max-w-3xl text-base leading-7 text-[#5b554b]">
-              Click a reservation on the calendar to edit details. Add, edit, and delete reservations manually.
-              This screen now uses a real API/data layer and is ready to move fully onto Postgres.
+              Click a DirectStay reservation on the calendar to edit details. External Airbnb/VRBO/owner-use blocks are shown in gold and managed from the External Reservations section.
             </p>
           </div>
 
@@ -334,6 +338,7 @@ export default function OwnerReservationsPage() {
         <div className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
           <ReservationsCalendar
             reservations={reservations}
+            externalBlocks={externalBlocks}
             selectedId={selectedId}
             onSelect={setSelectedId}
             viewYear={viewYear}
