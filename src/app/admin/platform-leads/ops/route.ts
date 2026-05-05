@@ -18,6 +18,15 @@ export async function POST(request: Request) {
   const contractStatus = String(form.get("contractStatus") || "") as ContractExecutionStatus;
   const followUpRaw = String(form.get("nextFollowUpAt") || "");
   const assignment = String(form.get("assignment") || "");
+  const validContractStatus = CONTRACTS.has(contractStatus) ? contractStatus : undefined;
+  const contractExecutedRequested = checked(form, "launch_contractExecuted");
+  const contractExecuted = validContractStatus === "COUNTERSIGNED" && contractExecutedRequested;
+  const rawLaunchNotes = String(form.get("launch_notes") || "").trim();
+  const contractGateNote = contractExecutedRequested && validContractStatus !== "COUNTERSIGNED"
+    ? "Contract executed was not saved because contract status must be COUNTERSIGNED first."
+    : "";
+  const launchNotes = [rawLaunchNotes, contractGateNote].filter(Boolean).join("\n").slice(0, 2000) || null;
+
   await updatePlatformLeadOps({
     leadId,
     ...(STATUSES.has(status) ? { status } : {}),
@@ -32,18 +41,18 @@ export async function POST(request: Request) {
     pricingCommissionBps: optionalInt(form.get("pricingCommissionBps")),
     pricingPaymentProcessingBps: optionalInt(form.get("pricingPaymentProcessingBps")),
     pricingNotes: String(form.get("pricingNotes") || ""),
-    ...(CONTRACTS.has(contractStatus) ? { contractStatus } : {}),
+    ...(validContractStatus ? { contractStatus: validContractStatus } : {}),
     contractStorageUrl: String(form.get("contractStorageUrl") || ""),
     launchChecklist: {
       ownerAcceptedProposal: checked(form, "launch_ownerAcceptedProposal"),
-      contractExecuted: checked(form, "launch_contractExecuted"),
+      contractExecuted,
       onboardingBriefApproved: checked(form, "launch_onboardingBriefApproved"),
       ownerContentReceived: checked(form, "launch_ownerContentReceived"),
       previewAssumptionsResolved: checked(form, "launch_previewAssumptionsResolved"),
       inquiryFlowApproved: checked(form, "launch_inquiryFlowApproved"),
       paymentFlowApproved: checked(form, "launch_paymentFlowApproved"),
       finalLaunchApprovedByJaimal: checked(form, "launch_finalLaunchApprovedByJaimal"),
-      notes: String(form.get("launch_notes") || "").trim().slice(0, 2000) || null,
+      notes: launchNotes,
       updatedAt: new Date().toISOString(),
       updatedBy: admin.email,
     },
