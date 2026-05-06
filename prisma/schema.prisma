@@ -113,6 +113,26 @@ enum InquiryDraftStatus {
   SENT
 }
 
+enum ContractTemplateType {
+  GUEST_RENTAL_AGREEMENT
+  OWNER_PLATFORM_AGREEMENT
+}
+
+enum ContractTemplateStatus {
+  DRAFT
+  APPROVED
+  ARCHIVED
+}
+
+enum GuestContractExecutionStatus {
+  DRAFT
+  SENT
+  VIEWED
+  ACCEPTED
+  VOIDED
+  SUPERSEDED
+}
+
 enum CustomerStatus {
   LEAD
   ACTIVE
@@ -190,6 +210,7 @@ model User {
   memberships    OwnerMember[]
   auditLogs      AuditLog[]
   platformLeadNotes PlatformLeadNote[]
+  approvedContractTemplates ContractTemplate[]
 }
 
 model AuditLog {
@@ -383,6 +404,8 @@ model Property {
   paymentMethods            PaymentMethod[]
   paymentSettings           PaymentSetting?
   inquiries                 Inquiry[]
+  contractTemplates         ContractTemplate[]
+  contractExecutions        ContractExecution[]
   primaryCustomers          Customer[]           @relation("CustomerPrimaryProperty")
 }
 
@@ -408,6 +431,7 @@ model Customer {
   primaryProperty        Property?      @relation("CustomerPrimaryProperty", fields: [primaryPropertyId], references: [id], onDelete: SetNull)
   inquiries              Inquiry[]
   reservations           Reservation[]
+  contractExecutions     ContractExecution[]
 
   @@unique([ownerId, email])
   @@index([ownerId, createdAt])
@@ -461,6 +485,7 @@ model Reservation {
   sourceInquiryId   String?
   sourceInquiry     Inquiry?            @relation("InquiryReservation", fields: [sourceInquiryId], references: [id], onDelete: SetNull)
   externalMatches   ExternalReservation[]
+  contractExecutions ContractExecution[]
 
   @@index([propertyId, checkIn, checkOut])
   @@index([sourceInquiryId])
@@ -584,6 +609,7 @@ model Inquiry {
   messages     InquiryMessage[]
   drafts       InquiryReplyDraft[]
   reservations Reservation[] @relation("InquiryReservation")
+  contractExecutions ContractExecution[]
 
   @@index([propertyId, status, createdAt])
   @@index([customerId])
@@ -619,4 +645,65 @@ model InquiryReplyDraft {
   inquiry         Inquiry           @relation(fields: [inquiryId], references: [id], onDelete: Cascade)
 
   @@index([inquiryId, status, updatedAt])
+}
+
+model ContractTemplate {
+  id                 String                 @id @default(cuid())
+  propertyId         String?
+  type               ContractTemplateType
+  status             ContractTemplateStatus @default(DRAFT)
+  name               String
+  version            String
+  title              String
+  bodyMarkdown       String
+  bodyHash           String
+  pdfStorageUrl      String?
+  reviewNotes        String?
+  approvedAt         DateTime?
+  approvedByUserId   String?
+  createdAt          DateTime               @default(now())
+  updatedAt          DateTime               @updatedAt
+  property           Property?              @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  approvedByUser     User?                  @relation(fields: [approvedByUserId], references: [id], onDelete: SetNull)
+  executions         ContractExecution[]
+
+  @@unique([type, version, propertyId])
+  @@index([propertyId, type, status])
+  @@index([type, status, createdAt])
+}
+
+model ContractExecution {
+  id                String                  @id @default(cuid())
+  templateId        String
+  propertyId        String
+  inquiryId         String?
+  reservationId     String?
+  customerId        String?
+  status            GuestContractExecutionStatus @default(DRAFT)
+  signerName        String?
+  signerEmail       String?
+  sentAt            DateTime?
+  viewedAt          DateTime?
+  acceptedAt        DateTime?
+  voidedAt          DateTime?
+  supersededAt      DateTime?
+  finalPdfUrl       String?
+  acceptedBodyHash  String?
+  acceptanceIp      String?
+  acceptanceUserAgent String?
+  acceptanceMetadata Json?
+  notes             String?
+  createdAt         DateTime                @default(now())
+  updatedAt         DateTime                @updatedAt
+  template          ContractTemplate        @relation(fields: [templateId], references: [id], onDelete: Restrict)
+  property          Property                @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  inquiry           Inquiry?                @relation(fields: [inquiryId], references: [id], onDelete: SetNull)
+  reservation       Reservation?            @relation(fields: [reservationId], references: [id], onDelete: SetNull)
+  customer          Customer?               @relation(fields: [customerId], references: [id], onDelete: SetNull)
+
+  @@index([propertyId, status, createdAt])
+  @@index([inquiryId, status])
+  @@index([reservationId, status])
+  @@index([customerId, status])
+  @@index([templateId, status])
 }
