@@ -79,6 +79,25 @@ function messageMeta(message: InquiryThreadRecord["messages"][number]) {
   return formatDate(message.createdAt);
 }
 
+function primaryContract(inquiry?: InquiryThreadRecord | null) {
+  const contracts = inquiry?.contracts || [];
+  return contracts.find((contract) => contract.status === "accepted")
+    || contracts.find((contract) => contract.status === "viewed")
+    || contracts.find((contract) => contract.status === "sent")
+    || contracts[0];
+}
+
+function contractLabel(inquiry?: InquiryThreadRecord | null): string {
+  const contract = primaryContract(inquiry);
+  if (!contract) return "Contract not sent";
+  if (contract.status === "accepted") return "Contract accepted";
+  if (contract.status === "viewed") return "Contract viewed, not accepted";
+  if (contract.status === "sent") return "Contract sent, not accepted";
+  if (contract.status === "voided") return "Contract voided";
+  if (contract.status === "superseded") return "Contract superseded";
+  return "Contract pending";
+}
+
 function messagePreview(message: InquiryThreadRecord["messages"][number]): string {
   const compact = message.body
     .split(/\r?\n/)
@@ -271,6 +290,8 @@ export default function OwnerInquiriesPage() {
   const isBookedInquiry = selected?.status === "booked";
   const isClosedInquiry = selected?.status === "closed" || isBookedInquiry;
   const linkedReservation = selected?.reservations?.[0];
+  const selectedContract = primaryContract(selected);
+  const hasAcceptedContract = selectedContract?.status === "accepted";
   const shouldLoadAssistantInsights = selected?.status === "needs_reply" || selected?.status === "awaiting_guest";
   const isAiWorkingOnDraft = Boolean(composer?.id && (pollingRevisionDraftId === composer.id || pollingUpgradeDraftId === composer.id));
   const canReviseCurrentDraft = composer?.status === "draft" && !isAiWorkingOnDraft && !isClosedInquiry;
@@ -1101,6 +1122,15 @@ export default function OwnerInquiriesPage() {
                           <p className="mt-3 text-sm leading-6 text-[#5b554b]">
                             This creates a confirmed direct reservation, copies guest/date/payment details, marks the inquiry booked, and moves it out of the active reply queue.
                           </p>
+                          <div className={`mt-4 rounded-2xl border p-4 text-sm leading-6 ${hasAcceptedContract ? "border-[#b9d8c5] bg-[#eef8f1] text-[#1e4536]" : "border-[#e1b972] bg-[#fff7df] text-[#6f4c00]"}`}>
+                            <p className="text-[10px] font-semibold uppercase tracking-[0.18em]">Contract status</p>
+                            <p className="mt-1 font-semibold">{contractLabel(selected)}</p>
+                            {hasAcceptedContract ? (
+                              <p className="mt-1">This inquiry has an accepted contract. The reservation will stay linked to the same contract record.</p>
+                            ) : (
+                              <p className="mt-1">You can still create the reservation and lock the dates, but this booking will remain contract-pending until the guest accepts the rental agreement.</p>
+                            )}
+                          </div>
                           <div className="mt-4 grid gap-3 text-sm text-[#5b554b] sm:grid-cols-2">
                             <label className="block">
                               <span className="text-xs uppercase tracking-[0.14em] text-[#7b7468]">Guest</span>
@@ -1129,7 +1159,7 @@ export default function OwnerInquiriesPage() {
                           </div>
                           <div className="mt-5 grid gap-3 sm:grid-cols-2">
                             <button type="button" onClick={() => void confirmBooking()} disabled={savingId === selected.id} className="rounded-full bg-[#1e4536] px-5 py-3 text-xs font-semibold uppercase tracking-[0.14em] text-white disabled:opacity-60">
-                              Create reservation
+                              {hasAcceptedContract ? "Create reservation" : "Override and create reservation"}
                             </button>
                             <button type="button" onClick={() => setShowConfirmBooking(false)} disabled={savingId === selected.id} className="rounded-full border border-[#d8cebf] bg-white px-5 py-3 text-xs font-semibold uppercase tracking-[0.14em] text-[#5b554b] disabled:opacity-60">
                               Cancel
