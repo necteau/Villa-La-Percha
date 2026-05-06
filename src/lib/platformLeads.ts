@@ -494,6 +494,15 @@ export async function updatePlatformLeadArtifactStatus(input: {
   approvedByEmail?: string | null;
 }) {
   const prisma = await getPrismaClient();
+  const artifact = await prisma.platformLeadArtifact.findUnique({
+    where: { id: input.artifactId },
+    select: { id: true, status: true, type: true },
+  });
+  if (!artifact) throw new Error("PlatformLeadArtifact not found");
+  if (artifact.type === "OWNER_PLATFORM_AGREEMENT" && input.status === "SENT" && artifact.status !== "APPROVED") {
+    throw new Error("Owner platform agreement drafts must be approved before they can be marked sent manually.");
+  }
+
   return prisma.platformLeadArtifact.update({
     where: { id: input.artifactId },
     data: {
