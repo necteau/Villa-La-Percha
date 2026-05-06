@@ -61,7 +61,7 @@ function spawnWorker(kind) {
 }
 
 const server = createServer(async (req, res) => {
-  if (req.method === "GET" && req.url === "/healthz") {
+  if (req.method === "GET" && (req.url === "/healthz" || req.url === "/health")) {
     return send(res, 200, { ok: true, service: "directstay-wake-doorbell" });
   }
 
