@@ -138,6 +138,37 @@ function appendPaymentSummary(body: string, inquiry: InquiryThreadRecord): strin
   return `${body}\n\nReservation/payment summary:\n${lines.join("\n")}`;
 }
 
+function primaryGuestContract(inquiry: InquiryThreadRecord) {
+  const contracts = inquiry.contracts || [];
+  return contracts.find((contract) => contract.status === "accepted")
+    || contracts.find((contract) => contract.status === "viewed")
+    || contracts.find((contract) => contract.status === "sent")
+    || contracts[0];
+}
+
+function appendContractContext(body: string, inquiry: InquiryThreadRecord): string {
+  const contract = primaryGuestContract(inquiry);
+  const isBooked = inquiry.status === "booked" || Boolean(inquiry.reservations?.length);
+
+  if (contract?.status === "accepted") {
+    return `${body}\n\nAgreement status:\nRental agreement received${contract.acceptedAt ? ` on ${formatDate(contract.acceptedAt.slice(0, 10)) || contract.acceptedAt.slice(0, 10)}` : ""}. Thank you — we have it attached to your booking record.`;
+  }
+
+  if (contract?.status === "sent" || contract?.status === "viewed") {
+    return `${body}\n\nAgreement reminder:\nWhen you have a moment, please review and accept the Villa La Percha rental agreement using the secure DirectStay link we sent. That keeps the booking record complete and confirms the house rules, cancellation terms, and security-hold details.`;
+  }
+
+  if (isBooked) {
+    return `${body}\n\nAgreement next step:\nWe still need the Villa La Percha rental agreement reviewed and accepted to complete the booking file. We can send the secure DirectStay review link as the next step.`;
+  }
+
+  return `${body}\n\nBooking next step:\nIf you would like to move forward, we can send a secure DirectStay review link with the Villa La Percha rental agreement so the key terms and booking details are easy to confirm in one place.`;
+}
+
+function appendBookingContext(body: string, inquiry: InquiryThreadRecord): string {
+  return appendContractContext(appendPaymentSummary(body, inquiry), inquiry);
+}
+
 function enabledPaymentMethods(paymentMethods: { stripe: boolean; zelle: boolean; venmo: boolean; cashApp: boolean }) {
   const labels: string[] = [];
   if (paymentMethods.stripe) labels.push("Stripe");
@@ -447,56 +478,56 @@ export async function getInquiryCopilotInsights(inquiry: InquiryThreadRecord): P
       label: "Draft reply",
       description: "Balanced response using current dates, pricing, and booking context.",
       subject: buildInquiryEmailSubject(inquiry),
-      body: appendPaymentSummary(baseReplyBody, inquiry),
+      body: appendBookingContext(baseReplyBody, inquiry),
     },
     {
       key: "warm",
       label: "Make it warmer",
       description: "Softer, more hospitality-forward tone.",
       subject: buildInquiryEmailSubject(inquiry),
-      body: appendPaymentSummary(warmerBody, inquiry),
+      body: appendBookingContext(warmerBody, inquiry),
     },
     {
       key: "firm",
       label: "Make it firmer",
       description: "More decisive tone with clearer booking next steps.",
       subject: buildInquiryEmailSubject(inquiry),
-      body: appendPaymentSummary(firmerBody, inquiry),
+      body: appendBookingContext(firmerBody, inquiry),
     },
     {
       key: "concise",
       label: "Make it shorter",
       description: "Tighter version for quick replies from mobile.",
       subject: buildInquiryEmailSubject(inquiry),
-      body: appendPaymentSummary(conciseBody, inquiry),
+      body: appendBookingContext(conciseBody, inquiry),
     },
     {
       key: "pricing",
       label: "Answer pricing objection",
       description: "Handles rate sensitivity without sounding defensive.",
       subject: buildInquiryEmailSubject(inquiry),
-      body: appendPaymentSummary(pricingObjectionBody, inquiry),
+      body: appendBookingContext(pricingObjectionBody, inquiry),
     },
     {
       key: "missing_details",
       label: "Ask for missing details",
       description: "Collects dates, phone, or trip details before quoting too specifically.",
       subject: buildInquiryEmailSubject(inquiry),
-      body: appendPaymentSummary(missingDetailsBody, inquiry),
+      body: appendBookingContext(missingDetailsBody, inquiry),
     },
     {
       key: "availability",
       label: "Mention availability naturally",
       description: "Centers the reply around dates and next-step clarity.",
       subject: buildInquiryEmailSubject(inquiry),
-      body: appendPaymentSummary(availabilityBody, inquiry),
+      body: appendBookingContext(availabilityBody, inquiry),
     },
     {
       key: "follow_up",
       label: "Generate follow-up",
       description: "Gentle nudge if the guest has gone quiet.",
       subject: `Following up: ${buildInquiryEmailSubject(inquiry)}`,
-      body: appendPaymentSummary(followUpBody, inquiry),
+      body: appendBookingContext(followUpBody, inquiry),
     },
   ];
 
