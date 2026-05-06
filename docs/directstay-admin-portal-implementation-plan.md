@@ -1,6 +1,6 @@
 # DirectStay Admin Portal Implementation Plan
 
-_Last updated: 2026-04-29_
+_Last updated: 2026-05-06_
 
 This is the durable working plan for the DirectStay Admin Portal and PlatformLead implementation. If sessions reset or memory is lost, start here.
 
@@ -29,12 +29,13 @@ This is the durable working plan for the DirectStay Admin Portal and PlatformLea
 | 2 | Audit Log Foundation | Agent complete | 2026-05-02 | `4f2762a`, `3ee71cc` / production `directstay.app` | AuditLog model/migration, audit helper, admin read logging, denied-role logging, and `/admin/activity` deployed. Preview QA unblocked with Vercel automation bypass + Preview owner allowlist fix; production authenticated QA passed 6/6. |
 | 3 | PlatformLead Public Intake | Agent complete | 2026-05-02 | `0b38935`, `9584edc`, `fd22f5c` / production `directstay.app` | PlatformLead model/migration, public owner funnel, form/API, thank-you redirect, validation/spam basics, and admin list/detail deployed. Preview and production owner-intake QA passed; production authenticated QA passed 6/6 and PlatformLead DB records verified. |
 | 4 | PlatformLead Triage Tools | Agent complete | 2026-05-03 | `bcf22be`, `e10b8bc`, `55243f3`, `3b49965`, `a7249a0`, `f565d00` / production `directstay.app` | PlatformLead detail, status/ops/notes, assignment, follow-up/source fields, queue views/counts, list-level owner-ops/artifact/preview visibility, reverse-chronological timeline, durable jobs, AI artifacts, approvals, notes, preview builds, contract milestones, and audit events are deployed. Production QA passed, including PlatformLead AI ops, queue markers across all views, and authenticated DirectStay QA 6/6. |
-| 5 | Admin Owner Context, Read-Only Owner Workspace | In progress | — | pending | First safe slice added admin owner-context start/exit routes, signed HTTP-only context cookie, owner detail workspace entry point, scoped owner-portal banner, audit events, and no-context admin scope guard. Local lint/build passed. |
-| 6 | Controlled Admin Writes | Not started | — | — | — |
-| 7 | PlatformLead Conversion | Partially prepared | — | `26327bd`, `c306a91` / production `directstay.app` | Proposal/onboarding artifacts and launch readiness gate are live. Actual conversion into Owner/Property records remains intentionally not automated; final launch/tenant creation still requires explicit approval and later implementation. |
-| 8 | Onboarding Invite / Approved Communications | Not started | — | — | — |
-| 9 | Admin Settings, Split by Risk | Not started | — | — | — |
-| 10 | Operational Polish | Not started | — | — | — |
+| 5 | PlatformLead Proposal Automation | Agent complete | 2026-05-06 | `964739d`, `5fd07b3`, `26327bd`, `798835d`, `c306a91`, `19a1fdb`, `ce9ca4b`, `69c8c03`, `3ba1f82`, `bc84889` / production `directstay.app` | Proposal, launch-readiness, onboarding, contract-context, and launch-approval gates are live. All owner-facing sends remain draft/manual approval only. |
+| 6 | Admin Owner Context, Read-Only Owner Workspace | In progress | — | `1c3250b`, `1c0dea1` / pending production QA | Owner-context start/exit, signed HTTP-only context cookie, owner detail workspace entry, scoped owner-portal banner, audit events, no-context admin scope guard, and admin owner-portal write blocking are implemented. Follow-up needed: authenticated QA for context switching/data isolation and write-block behavior. |
+| 7 | Controlled Admin Writes | Not started | — | — | — |
+| 8 | PlatformLead Conversion | Partially prepared | — | `26327bd`, `c306a91` / production `directstay.app` | Proposal/onboarding artifacts and launch readiness gate are live. Actual conversion into Owner/Property records remains intentionally not automated; final launch/tenant creation still requires explicit approval and later implementation. |
+| 9 | Onboarding Invite / Approved Communications | Not started | — | — | — |
+| 10 | Admin Settings, Split by Risk | Not started | — | — | — |
+| 11 | Operational Polish | Not started | — | — | — |
 
 Status values: `Not started`, `In progress`, `Agent complete`, `Jaimal accepted`, `Blocked`, `Needs revision`.
 
@@ -488,7 +489,7 @@ In progress 2026-05-04. First safe slice adds admin owner-context start and exit
 
 ---
 
-# Phase 6 — Controlled Admin Writes
+# Phase 7 — Controlled Admin Writes
 
 ## Goal
 Add safe write operations one category at a time.
@@ -547,7 +548,7 @@ _Not started._
 
 ---
 
-# Phase 7 — PlatformLead Conversion
+# Phase 8 — PlatformLead Conversion
 
 ## Goal
 Convert a qualified PlatformLead into real owner/property setup.
@@ -615,7 +616,7 @@ _Not started._
 
 ---
 
-# Phase 8 — Onboarding Invite / Approved Communications
+# Phase 9 — Onboarding Invite / Approved Communications
 
 ## Goal
 Add controlled external communication.
@@ -666,7 +667,7 @@ _Not started._
 
 ---
 
-# Phase 9 — Admin Settings, Split by Risk
+# Phase 10 — Admin Settings, Split by Risk
 
 ## Goal
 Add settings without creating a chaos drawer.
@@ -724,7 +725,7 @@ _Not started._
 
 ---
 
-# Phase 10 — Operational Polish
+# Phase 11 — Operational Polish
 
 ## Goal
 Make the admin portal feel like a real operating system.
