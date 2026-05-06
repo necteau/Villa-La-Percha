@@ -122,8 +122,8 @@ export default async function AdminPlatformLeadDetailPage({ searchParams }: { se
       <div className="admin-card"><h4>Launch readiness gate</h4><p className="admin-muted">Keep this conservative. A Preview Build is not launch-ready until every operational, contract, content, inquiry, payment, and final Jaimal approval box is checked.</p><p className="admin-muted">Contract executed can only be saved after contract status is COUNTERSIGNED; SIGNED means owner signature only and is still launch-blocked.</p><span className={launchReady(lead.launchChecklist) ? "admin-chip" : "admin-chip admin-chip-warn"}>{launchReady(lead.launchChecklist) ? "Launch gate complete" : "Launch blocked"}</span><div className="admin-detail-grid" style={{ marginTop: 12 }}>{LAUNCH_CHECKS.map(([key, label]) => {
         const checkKey = key.replace("launch_", "");
         const isContractExecuted = key === "launch_contractExecuted";
-        const disabled = isContractExecuted && !contractExecutedGateOpen(lead.contractStatus);
-        return <label key={key}><input type="checkbox" name={key} defaultChecked={checklistValue(lead.launchChecklist, checkKey) && !disabled} disabled={disabled} /> {label}{disabled ? <span className="admin-muted"> — requires COUNTERSIGNED</span> : null}</label>;
+        const contractGateClosed = isContractExecuted && !contractExecutedGateOpen(lead.contractStatus);
+        return <label key={key}><input type="checkbox" name={key} defaultChecked={checklistValue(lead.launchChecklist, checkKey) && !contractGateClosed} /> {label}{contractGateClosed ? <span className="admin-muted"> — save only allowed with COUNTERSIGNED</span> : null}</label>;
       })}</div><label className="admin-muted" htmlFor="launch_notes">Launch/onboarding notes</label><textarea id="launch_notes" name="launch_notes" rows={3} defaultValue={checklistNotes(lead.launchChecklist)} placeholder="Outstanding onboarding facts, content gaps, contract notes, launch blockers…" /></div>
       <button type="submit">Save operating state</button></form></section>
 
