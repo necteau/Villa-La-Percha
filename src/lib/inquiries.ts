@@ -9,6 +9,7 @@ import {
 import { findOrCreateCustomerLink } from "@/lib/customers";
 import { getPrismaClient } from "@/lib/db";
 import { canUseDatabaseSync, readJsonFallback, writeJsonFallback } from "@/lib/fallbackOrchestrator";
+import { summarizeContractExecution, type ContractSummary } from "@/lib/contracts";
 import { getPaymentSettings } from "@/lib/ownerPortalSettings";
 import { getStayPricing } from "@/lib/pricing";
 
@@ -30,6 +31,7 @@ export interface InquiryRecord {
   paymentConfirmedAt?: string;
   paymentNote?: string;
   reservations?: Array<{ id: string; status: string; checkIn: string; checkOut: string }>;
+  contracts?: ContractSummary[];
   currentQuotedAmount?: number;
   currentDepositAmount?: number;
   pricingSnapshotNotice?: string;
@@ -495,6 +497,7 @@ function mapDbInquiry(record: {
   paymentConfirmedAt?: Date | null;
   paymentNote?: string | null;
   reservations?: Array<{ id: string; status: import("@prisma/client").ReservationStatus; checkIn: Date; checkOut: Date }>;
+  contractExecutions?: Parameters<typeof summarizeContractExecution>[0][];
   createdAt: Date;
 }): InquiryRecord {
   return {
@@ -520,6 +523,7 @@ function mapDbInquiry(record: {
       checkIn: reservation.checkIn.toISOString().slice(0, 10),
       checkOut: reservation.checkOut.toISOString().slice(0, 10),
     })),
+    contracts: record.contractExecutions?.map(summarizeContractExecution),
     createdAt: record.createdAt.toISOString(),
   };
 }
@@ -637,6 +641,7 @@ export async function listInquiryThreads(): Promise<InquiryThreadRecord[]> {
         messages: { orderBy: { createdAt: "asc" } },
         drafts: { orderBy: { updatedAt: "desc" } },
         reservations: { orderBy: { createdAt: "desc" } },
+        contractExecutions: { include: { template: true }, orderBy: { updatedAt: "desc" } },
       },
       orderBy: { createdAt: "desc" },
     });

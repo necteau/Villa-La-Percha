@@ -1,6 +1,7 @@
 import path from "path";
 import { BookingPaymentStatus, ReservationSource, ReservationStatus } from "@prisma/client";
 import { findOrCreateCustomerLink } from "@/lib/customers";
+import { summarizeContractExecution, type ContractSummary } from "@/lib/contracts";
 import { getPrismaClient } from "@/lib/db";
 import { canUseDatabaseSync, readJsonFallback, writeJsonFallback } from "@/lib/fallbackOrchestrator";
 
@@ -26,6 +27,7 @@ export interface ReservationRecord {
   paymentMethod?: string;
   paymentConfirmedAt?: string;
   paymentNote?: string;
+  contracts?: ContractSummary[];
   isOwnerWeek: boolean;
 }
 
@@ -156,6 +158,7 @@ function mapDbReservation(record: {
   paymentConfirmedAt?: Date | null;
   paymentNote?: string | null;
   sourceInquiryId?: string | null;
+  contractExecutions?: Parameters<typeof summarizeContractExecution>[0][];
   isOwnerWeek: boolean;
 }, unit = DEFAULT_PROPERTY.name): ReservationRecord {
   return {
@@ -180,6 +183,7 @@ function mapDbReservation(record: {
     paymentMethod: record.paymentMethod ?? undefined,
     paymentConfirmedAt: record.paymentConfirmedAt?.toISOString(),
     paymentNote: record.paymentNote ?? undefined,
+    contracts: record.contractExecutions?.map(summarizeContractExecution),
     isOwnerWeek: record.isOwnerWeek,
   };
 }
@@ -229,6 +233,7 @@ export async function listReservations(): Promise<ReservationRecord[]> {
     const property = await ensureDefaultProperty();
     const records = await prisma.reservation.findMany({
       where: { propertyId: property.id },
+      include: { contractExecutions: { include: { template: true }, orderBy: { updatedAt: "desc" } } },
       orderBy: { checkIn: "asc" },
     });
 
@@ -261,7 +266,11 @@ export async function listReservations(): Promise<ReservationRecord[]> {
         skipDuplicates: true,
       });
 
-      const seeded = await prisma.reservation.findMany({ where: { propertyId: property.id }, orderBy: { checkIn: "asc" } });
+      const seeded = await prisma.reservation.findMany({
+        where: { propertyId: property.id },
+        include: { contractExecutions: { include: { template: true }, orderBy: { updatedAt: "desc" } } },
+        orderBy: { checkIn: "asc" },
+      });
       return seeded.map((record) => mapDbReservation(record, property.name));
     }
 
@@ -294,6 +303,7 @@ export async function createReservation(input: ReservationInput): Promise<Reserv
     paymentConfirmedAt: input.paymentConfirmedAt,
     paymentNote: input.paymentNote,
     sourceInquiryId: input.sourceInquiryId,
+    contracts: undefined,
     isOwnerWeek: input.isOwnerWeek,
   };
 
@@ -339,7 +349,20 @@ export async function createReservation(input: ReservationInput): Promise<Reserv
         sourceInquiryId: record.sourceInquiryId ?? null,
         isOwnerWeek: record.isOwnerWeek,
       },
+      include: { contractExecutions: { include: { template: true }, orderBy: { updatedAt: "desc" } } },
     });
+
+    if (record.sourceInquiryId) {
+      await prisma.contractExecution.updateMany({
+        where: { inquiryId: record.sourceInquiryId, reservationId: null },
+        data: { reservationId: created.id, customerId: customerLink.customerId },
+      });
+      const linked = await prisma.reservation.findUnique({
+        where: { id: created.id },
+        include: { contractExecutions: { include: { template: true }, orderBy: { updatedAt: "desc" } } },
+      });
+      if (linked) return mapDbReservation(linked, property.name);
+    }
     return mapDbReservation(created, property.name);
   } catch {
     const current = await readFallbackReservations();
@@ -421,6 +444,7 @@ export async function updateReservation(id: string, input: Partial<ReservationIn
         sourceInquiryId: patched.sourceInquiryId ?? null,
         isOwnerWeek: patched.isOwnerWeek,
       },
+      include: { contractExecutions: { include: { template: true }, orderBy: { updatedAt: "desc" } } },
     });
     return mapDbReservation(updated, property.name);
   } catch {
