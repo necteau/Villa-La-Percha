@@ -21,11 +21,25 @@ export async function POST(request: Request) {
   const validContractStatus = CONTRACTS.has(contractStatus) ? contractStatus : undefined;
   const contractExecutedRequested = checked(form, "launch_contractExecuted");
   const contractExecuted = validContractStatus === "COUNTERSIGNED" && contractExecutedRequested;
+  const operationalLaunchChecks = {
+    ownerAcceptedProposal: checked(form, "launch_ownerAcceptedProposal"),
+    contractExecuted,
+    onboardingBriefApproved: checked(form, "launch_onboardingBriefApproved"),
+    ownerContentReceived: checked(form, "launch_ownerContentReceived"),
+    previewAssumptionsResolved: checked(form, "launch_previewAssumptionsResolved"),
+    inquiryFlowApproved: checked(form, "launch_inquiryFlowApproved"),
+    paymentFlowApproved: checked(form, "launch_paymentFlowApproved"),
+  };
+  const finalLaunchRequested = checked(form, "launch_finalLaunchApprovedByJaimal");
+  const finalLaunchApprovedByJaimal = finalLaunchRequested && Object.values(operationalLaunchChecks).every(Boolean);
   const rawLaunchNotes = String(form.get("launch_notes") || "").trim();
   const contractGateNote = contractExecutedRequested && validContractStatus !== "COUNTERSIGNED"
     ? "Contract executed was not saved because contract status must be COUNTERSIGNED first."
     : "";
-  const launchNotes = [rawLaunchNotes, contractGateNote].filter(Boolean).join("\n").slice(0, 2000) || null;
+  const finalGateNote = finalLaunchRequested && !finalLaunchApprovedByJaimal
+    ? "Final Jaimal launch approval was not saved because every operational launch gate must be complete first."
+    : "";
+  const launchNotes = [rawLaunchNotes, contractGateNote, finalGateNote].filter(Boolean).join("\n").slice(0, 2000) || null;
 
   await updatePlatformLeadOps({
     leadId,
@@ -44,14 +58,8 @@ export async function POST(request: Request) {
     ...(validContractStatus ? { contractStatus: validContractStatus } : {}),
     contractStorageUrl: String(form.get("contractStorageUrl") || ""),
     launchChecklist: {
-      ownerAcceptedProposal: checked(form, "launch_ownerAcceptedProposal"),
-      contractExecuted,
-      onboardingBriefApproved: checked(form, "launch_onboardingBriefApproved"),
-      ownerContentReceived: checked(form, "launch_ownerContentReceived"),
-      previewAssumptionsResolved: checked(form, "launch_previewAssumptionsResolved"),
-      inquiryFlowApproved: checked(form, "launch_inquiryFlowApproved"),
-      paymentFlowApproved: checked(form, "launch_paymentFlowApproved"),
-      finalLaunchApprovedByJaimal: checked(form, "launch_finalLaunchApprovedByJaimal"),
+      ...operationalLaunchChecks,
+      finalLaunchApprovedByJaimal,
       notes: launchNotes,
       updatedAt: new Date().toISOString(),
       updatedBy: admin.email,
