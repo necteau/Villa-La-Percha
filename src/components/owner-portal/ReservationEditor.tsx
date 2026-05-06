@@ -4,6 +4,18 @@ import { useEffect, useMemo, useState } from "react";
 
 export type ReservationStatus = "Confirmed" | "Checked In" | "Cancelled" | "Tentative";
 
+export interface ReservationContractSummary {
+  id: string;
+  status: "not_sent" | "sent" | "viewed" | "accepted" | "voided" | "superseded";
+  templateName?: string;
+  templateVersion?: string;
+  signerName?: string;
+  signerEmail?: string;
+  sentAt?: string;
+  viewedAt?: string;
+  acceptedAt?: string;
+}
+
 export interface Reservation {
   id: string;
   customerId?: string;
@@ -26,6 +38,7 @@ export interface Reservation {
   paymentMethod?: string;
   paymentConfirmedAt?: string;
   paymentNote?: string;
+  contracts?: ReservationContractSummary[];
   isOwnerWeek: boolean;
 }
 
@@ -49,6 +62,32 @@ function getNights(a: string, b: string): number {
   return Math.max(0, Math.round((new Date(b).getTime() - new Date(a).getTime()) / (1000 * 60 * 60 * 24)));
 }
 
+function primaryContract(contracts?: ReservationContractSummary[]) {
+  if (!contracts?.length) return undefined;
+  return contracts.find((contract) => contract.status === "accepted")
+    ?? contracts.find((contract) => contract.status === "viewed")
+    ?? contracts.find((contract) => contract.status === "sent")
+    ?? contracts[0];
+}
+
+function contractStatusCopy(contract?: ReservationContractSummary) {
+  switch (contract?.status) {
+    case "accepted":
+      return { label: "Contract accepted", detail: contract.acceptedAt ? `Accepted ${new Date(contract.acceptedAt).toLocaleString()}` : "Rental agreement accepted and attached to this booking.", tone: "success" as const };
+    case "viewed":
+      return { label: "Contract viewed, not accepted", detail: "Guest has opened the rental agreement but has not accepted it yet.", tone: "warning" as const };
+    case "sent":
+      return { label: "Contract sent, not accepted", detail: "Rental agreement was sent but is still waiting on guest acceptance.", tone: "warning" as const };
+    case "voided":
+      return { label: "Contract voided", detail: "This agreement was voided. Send or attach a new agreement before treating the booking file as complete.", tone: "danger" as const };
+    case "superseded":
+      return { label: "Contract superseded", detail: "This agreement was replaced by a newer agreement. Check the latest contract record before relying on it.", tone: "neutral" as const };
+    case "not_sent":
+    default:
+      return { label: "Contract pending", detail: "No accepted rental agreement is attached yet. The reservation can stay booked, but the booking file is incomplete until the guest accepts the agreement.", tone: "warning" as const };
+  }
+}
+
 export default function ReservationEditor({ reservation, onSave, onDelete, saving = false }: Props) {
   const [draft, setDraft] = useState<Reservation | null>(reservation);
 
@@ -62,6 +101,15 @@ export default function ReservationEditor({ reservation, onSave, onDelete, savin
   }, [draft]);
 
   const hasChanges = !!draft && !!reservation && JSON.stringify(draft) !== JSON.stringify(reservation);
+  const contract = primaryContract(draft?.contracts);
+  const contractCopy = contractStatusCopy(contract);
+  const contractToneClass = contractCopy.tone === "success"
+    ? "border-[#b9d8c5] bg-[#eef8f1] text-[#1e4536]"
+    : contractCopy.tone === "danger"
+      ? "border-[#e2b8b8] bg-[#fff1f1] text-[#9a2f2f]"
+      : contractCopy.tone === "neutral"
+        ? "border-[#d8cebf] bg-[#f7f3eb] text-[#5b554b]"
+        : "border-[#e1b972] bg-[#fff7df] text-[#6f4c00]";
 
   if (!draft) {
     return (
@@ -93,6 +141,17 @@ export default function ReservationEditor({ reservation, onSave, onDelete, savin
         >
           Delete
         </button>
+      </div>
+
+      <div className={`mt-6 rounded-2xl border p-4 text-sm leading-6 ${contractToneClass}`}>
+        <p className="text-[10px] font-semibold uppercase tracking-[0.18em]">Guest rental agreement</p>
+        <p className="mt-1 font-semibold">{contractCopy.label}</p>
+        <p className="mt-1">{contractCopy.detail}</p>
+        {contract ? (
+          <p className="mt-2 text-xs opacity-80">
+            {contract.templateName || "Guest rental agreement"}{contract.templateVersion ? ` · v${contract.templateVersion}` : ""}{contract.signerEmail ? ` · ${contract.signerEmail}` : ""}
+          </p>
+        ) : null}
       </div>
 
       <div className="mt-6 grid gap-5 md:grid-cols-2">
