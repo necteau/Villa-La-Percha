@@ -8,6 +8,7 @@ import Amenities from "@/components/Amenities";
 import Gallery from "@/components/Gallery";
 import DockFishing from "@/components/DockFishing";
 import OwnersNote from "@/components/OwnersNote";
+import GuestReviews from "@/components/GuestReviews";
 import Location from "@/components/Location";
 import ExperiencePreview from "@/components/ExperiencePreview";
 import AvailabilityCalendar from "@/components/AvailabilityCalendar";
@@ -28,6 +29,7 @@ export default function PropertySiteHome() {
       <Gallery />
       <DockFishing />
       <OwnersNote />
+      <GuestReviews />
       <Location />
       <ExperiencePreview />
 
