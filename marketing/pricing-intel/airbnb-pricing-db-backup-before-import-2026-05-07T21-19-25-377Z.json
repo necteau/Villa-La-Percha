@@ -1,0 +1,146 @@
+[
+  {
+    "id": "airbnb-current-spring-2026",
+    "propertyId": "cmof400cf0000wfspgmhy7ao6",
+    "platform": "AIRBNB",
+    "startDate": "2026-05-07T00:00:00.000Z",
+    "endDate": "2026-06-01T00:00:00.000Z",
+    "nightlyRate": "1844",
+    "minimumStayNights": null,
+    "notes": "Airbnb checkout-derived spring rate. May 16-23 sample: 7 nights x $1,844.00 = $12,908.00; taxes $1,518.96; total $14,426.96. Effective tax is ~11.77% of displayed subtotal.",
+    "createdAt": "2026-05-07T21:10:46.077Z",
+    "updatedAt": "2026-05-07T21:10:46.077Z",
+    "charges": [
+      {
+        "id": "cmovzdbve0000ldq5h4upalci",
+        "pricingRuleId": "airbnb-current-spring-2026",
+        "label": "Airbnb taxes",
+        "category": "TAX",
+        "chargeType": "PERCENT",
+        "value": "0.1177",
+        "basis": "BASE",
+        "perNight": false
+      }
+    ]
+  },
+  {
+    "id": "airbnb-summer-peak-2026",
+    "propertyId": "cmof400cf0000wfspgmhy7ao6",
+    "platform": "AIRBNB",
+    "startDate": "2026-06-01T00:00:00.000Z",
+    "endDate": "2026-09-12T00:00:00.000Z",
+    "nightlyRate": "2011.43",
+    "minimumStayNights": null,
+    "notes": "Airbnb checkout-derived summer peak rate. Jun 20-27, Aug 15-22, and Sep 5-12 samples all showed 7 nights x $2,011.43 = $14,080.00; taxes $1,659.60; total $15,739.60.",
+    "createdAt": "2026-05-07T21:10:46.160Z",
+    "updatedAt": "2026-05-07T21:10:46.160Z",
+    "charges": [
+      {
+        "id": "cmovzdbxn0001ldq5iu13hgmn",
+        "pricingRuleId": "airbnb-summer-peak-2026",
+        "label": "Airbnb taxes",
+        "category": "TAX",
+        "chargeType": "PERCENT",
+        "value": "0.1177",
+        "basis": "BASE",
+        "perNight": false
+      }
+    ]
+  },
+  {
+    "id": "airbnb-fall-shoulder-2026",
+    "propertyId": "cmof400cf0000wfspgmhy7ao6",
+    "platform": "AIRBNB",
+    "startDate": "2026-09-12T00:00:00.000Z",
+    "endDate": "2026-11-21T00:00:00.000Z",
+    "nightlyRate": "1844",
+    "minimumStayNights": null,
+    "notes": "Airbnb checkout-derived fall shoulder rate. Sep 19-26 and Oct 24-31 samples both showed 7 nights x $1,844.00 = $12,908.00; taxes $1,518.96; total $14,426.96.",
+    "createdAt": "2026-05-07T21:10:46.242Z",
+    "updatedAt": "2026-05-07T21:10:46.242Z",
+    "charges": [
+      {
+        "id": "cmovzdbzv0002ldq59d7l90bs",
+        "pricingRuleId": "airbnb-fall-shoulder-2026",
+        "label": "Airbnb taxes",
+        "category": "TAX",
+        "chargeType": "PERCENT",
+        "value": "0.1177",
+        "basis": "BASE",
+        "perNight": false
+      }
+    ]
+  },
+  {
+    "id": "airbnb-thanksgiving-2026",
+    "propertyId": "cmof400cf0000wfspgmhy7ao6",
+    "platform": "AIRBNB",
+    "startDate": "2026-11-21T00:00:00.000Z",
+    "endDate": "2026-11-28T00:00:00.000Z",
+    "nightlyRate": "1847.86",
+    "minimumStayNights": null,
+    "notes": "Airbnb checkout-derived Thanksgiving week rate. Nov 21-28 sample: 7 nights x $1,847.86 = $12,935.00; taxes $1,522.20; total $14,457.20.",
+    "createdAt": "2026-05-07T21:10:46.321Z",
+    "updatedAt": "2026-05-07T21:10:46.321Z",
+    "charges": [
+      {
+        "id": "cmovzdc240003ldq514grcrui",
+        "pricingRuleId": "airbnb-thanksgiving-2026",
+        "label": "Airbnb taxes",
+        "category": "TAX",
+        "chargeType": "PERCENT",
+        "value": "0.1177",
+        "basis": "BASE",
+        "perNight": false
+      }
+    ]
+  },
+  {
+    "id": "airbnb-early-december-2026",
+    "propertyId": "cmof400cf0000wfspgmhy7ao6",
+    "platform": "AIRBNB",
+    "startDate": "2026-11-28T00:00:00.000Z",
+    "endDate": "2026-12-19T00:00:00.000Z",
+    "nightlyRate": "1844",
+    "minimumStayNights": null,
+    "notes": "Airbnb checkout-derived early December rate. Dec 5-12 and Dec 12-19 samples both matched $1,844.00/night, $12,908.00 subtotal, $1,518.96 taxes, $14,426.96 total.",
+    "createdAt": "2026-05-07T21:10:46.403Z",
+    "updatedAt": "2026-05-07T21:10:46.403Z",
+    "charges": [
+      {
+        "id": "cmovzdc4e0004ldq51npgiec0",
+        "pricingRuleId": "airbnb-early-december-2026",
+        "label": "Airbnb taxes",
+        "category": "TAX",
+        "chargeType": "PERCENT",
+        "value": "0.1177",
+        "basis": "BASE",
+        "perNight": false
+      }
+    ]
+  },
+  {
+    "id": "airbnb-christmas-2026",
+    "propertyId": "cmof400cf0000wfspgmhy7ao6",
+    "platform": "AIRBNB",
+    "startDate": "2026-12-19T00:00:00.000Z",
+    "endDate": "2026-12-26T00:00:00.000Z",
+    "nightlyRate": "3466.57",
+    "minimumStayNights": null,
+    "notes": "Airbnb checkout-derived Christmas week rate. Dec 19-26 sample: 7 nights x $3,466.57 = $24,266.00; taxes $2,881.92; total $27,147.92.",
+    "createdAt": "2026-05-07T21:10:46.486Z",
+    "updatedAt": "2026-05-07T21:10:46.486Z",
+    "charges": [
+      {
+        "id": "cmovzdc6p0005ldq5tbjmhpg2",
+        "pricingRuleId": "airbnb-christmas-2026",
+        "label": "Airbnb taxes",
+        "category": "TAX",
+        "chargeType": "PERCENT",
+        "value": "0.1177",
+        "basis": "BASE",
+        "perNight": false
+      }
+    ]
+  }
+]

@@ -1,5 +1,5 @@
 import path from "path";
-import { calculateStayPricing, getStayNights, type CalculatedStayPricing } from "@/lib/pricing";
+import { calculateStayPricingFromEntries, findPricingEntries, getStayNights, type CalculatedStayPricing } from "@/lib/pricing";
 import { getPrismaClient } from "@/lib/db";
 import { canUseDatabaseSync, readJsonFallback, writeJsonFallback } from "@/lib/fallbackOrchestrator";
 import type { PricingChargeBasis, PricingEntry, PricingTable, PricingTaxSettings } from "@/data/pricingTable";
@@ -147,17 +147,9 @@ export async function getCalculatedStayPricing(
   if (nights <= 0) return null;
 
   const [entries, taxSettings] = await Promise.all([listPricingEntries(), getPricingTaxSettings()]);
-  const matches = entries
-    .filter((entry) => {
-      if (entry.platform !== platform) return false;
-      if (entry.startDate && checkIn < entry.startDate) return false;
-      if (entry.endDate && checkIn > entry.endDate) return false;
-      if (entry.minimumStayNights && nights < entry.minimumStayNights) return false;
-      return true;
-    })
-    .sort((a, b) => (b.startDate || "").localeCompare(a.startDate || ""));
+  const matches = findPricingEntries(platform, checkIn, checkOut, entries);
 
-  return matches[0] ? calculateStayPricing(matches[0], checkIn, checkOut, taxSettings) : null;
+  return matches.length ? calculateStayPricingFromEntries(matches, checkIn, checkOut, taxSettings) : null;
 }
 
 export async function updatePricingEntry(id: string, patch: Partial<PricingEntry>): Promise<PricingEntry | null> {

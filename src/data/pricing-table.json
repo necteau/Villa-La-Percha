@@ -328,7 +328,7 @@
       "id": "airbnb-christmas-2026",
       "platform": "airbnb",
       "startDate": "2026-12-19",
-      "endDate": "2026-12-26",
+      "endDate": "2027-01-01",
       "nightlyRate": 3466.57,
       "currency": "USD",
       "charges": [
@@ -340,7 +340,7 @@
           "basis": "base"
         }
       ],
-      "notes": "Airbnb checkout-derived Christmas week rate. Dec 19-26 sample: 7 nights x $3,466.57 = $24,266.00; taxes $2,881.92; total $27,147.92."
+      "notes": "Airbnb checkout-derived Christmas week rate. Dec 19-26 sample: 7 nights x $3,466.57 = $24,266.00; taxes $2,881.92; total $27,147.92. Extended through Dec 31 for year-end comparison coverage using the observed Christmas-week Airbnb checkout rate."
     },
     {
       "id": "direct-standard-2026",
