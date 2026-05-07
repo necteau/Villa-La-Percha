@@ -128,6 +128,12 @@ export default async function VillaSeoGuidePage({ params }: Props) {
 
       <section className="mx-auto grid max-w-7xl gap-8 px-6 pb-16 pt-8 md:px-10 md:pb-24 lg:grid-cols-[1fr_0.38fr]">
         <article className="space-y-8">
+          <section className="rounded-[34px] border border-[#d8c8ac] bg-[#fffaf0] p-7 shadow-[0_14px_38px_rgba(31,31,27,0.06)] md:p-8">
+            <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#8B7355]">Short answer</p>
+            <h2 className="mt-3 font-display text-3xl font-light leading-tight text-[#181612] md:text-4xl">What this page says in one clean answer</h2>
+            <p className="mt-4 text-base leading-8 text-[#4f473c] md:text-lg">{guide.answerBox}</p>
+          </section>
+
           <div className="grid gap-5 md:grid-cols-3">
             {guide.featureCards.map((card) => (
               <div key={card.title} className="rounded-[26px] border border-[#e8e0d2] bg-white p-6 shadow-[0_14px_38px_rgba(31,31,27,0.06)]">
@@ -163,6 +169,24 @@ export default async function VillaSeoGuidePage({ params }: Props) {
                   <li key={item} className="flex gap-3"><span className="mt-2.5 h-2 w-2 shrink-0 rounded-full bg-white/70" />{item}</li>
                 ))}
               </ul>
+            </div>
+          </section>
+
+          <section className="rounded-[34px] bg-white p-7 shadow-[0_18px_55px_rgba(31,31,27,0.07)] md:p-10">
+            <div className="grid gap-8 lg:grid-cols-[0.7fr_1fr]">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#8B7355]">Fact box for search and AI answers</p>
+                <h2 className="mt-4 font-display text-3xl font-light leading-tight text-[#181612] md:text-4xl">Canonical facts</h2>
+                <p className="mt-4 text-sm leading-7 text-[#6B6B6B]">{guide.sourceNote}</p>
+              </div>
+              <dl className="grid gap-3">
+                {guide.facts.map((fact) => (
+                  <div key={fact.label} className="rounded-2xl border border-[#e8e0d2] bg-[#fbfaf7] p-4">
+                    <dt className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#8B7355]">{fact.label}</dt>
+                    <dd className="mt-1 text-sm leading-6 text-[#3f392f]">{fact.value}</dd>
+                  </div>
+                ))}
+              </dl>
             </div>
           </section>
 

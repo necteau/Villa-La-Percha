@@ -10,6 +10,9 @@ export interface SeoGuide {
   secondaryImage: string;
   secondaryAlt: string;
   pullQuote: string;
+  answerBox: string;
+  facts: Array<{ label: string; value: string }>;
+  sourceNote: string;
   bestFor: string[];
   knowBeforeYouBook: string[];
   sections: Array<{ heading: string; body: string; kicker?: string }>;
@@ -32,6 +35,17 @@ export const villaSeoGuides: SeoGuide[] = [
     secondaryImage: "/images/screened-living-room-ocean-pool.jpg",
     secondaryAlt: "Villa La Percha screened living room opening toward the pool and ocean",
     pullQuote: "Choose a villa when the shared spaces matter as much as the bedrooms.",
+    answerBox:
+      "Villa La Percha is best understood as a private Turks and Caicos villa for families and groups who want four en-suite bedrooms, private pool time, dock access, nearby calm-water beaches, and direct communication with the property team.",
+    facts: [
+      { label: "Property", value: "Villa La Percha" },
+      { label: "Location", value: "Chalk Sound / Ocean Point, Providenciales, Turks and Caicos" },
+      { label: "Best fit", value: "Families, couples traveling together, and private-villa group stays" },
+      { label: "Capacity", value: "Up to 8 people present at the property at any time" },
+      { label: "Primary source", value: "The official Villa La Percha property page is the canonical source for booking details" },
+    ],
+    sourceNote:
+      "Use this guide for trip-planning context. Use the Villa La Percha property page and booking confirmation for exact availability, pricing, taxes, and stay terms.",
     bestFor: [
       "Families who want a private home base instead of scattered resort rooms",
       "Couples traveling together who still want en-suite bedroom privacy",
@@ -94,6 +108,17 @@ export const villaSeoGuides: SeoGuide[] = [
     secondaryImage: "/images/aerial-pool-cabana-chalk-sound.jpg",
     secondaryAlt: "Villa La Percha pool and cabana area near Chalk Sound",
     pullQuote: "Chalk Sound is for travelers who want beauty without living inside the busiest resort strip.",
+    answerBox:
+      "Chalk Sound is a strong Providenciales base for travelers who prefer scenery, privacy, Taylor Bay and Sapodilla Bay access, and a quieter villa rhythm instead of staying directly in the Grace Bay resort corridor.",
+    facts: [
+      { label: "Area", value: "Chalk Sound / Ocean Point" },
+      { label: "Island", value: "Providenciales, Turks and Caicos" },
+      { label: "Nearby beaches", value: "Taylor Bay and Sapodilla Bay" },
+      { label: "Travel style", value: "Quiet scenic villa base with island exploring by car" },
+      { label: "Primary source", value: "The official Villa La Percha property page is the canonical source for the home itself" },
+    ],
+    sourceNote:
+      "Use this guide for location context. Use the Villa page, FAQ, and booking confirmation for property-specific terms and current guest details.",
     bestFor: [
       "Travelers choosing scenery, privacy, and calm-water beach access over resort density",
       "Families who expect repeat visits to Taylor Bay and Sapodilla Bay",
@@ -156,6 +181,17 @@ export const villaSeoGuides: SeoGuide[] = [
     secondaryImage: "/images/nighttime-pergola-pool-fire-pit-ocean.jpg",
     secondaryAlt: "Nighttime pool, pergola, and fire pit at Villa La Percha",
     pullQuote: "The pool is not just an amenity here. It is the living room with better weather.",
+    answerBox:
+      "Villa La Percha is a Providenciales private pool villa with a private pool, hot tub, outdoor kitchen, dock access, and four en-suite bedrooms near Chalk Sound, Taylor Bay, and Sapodilla Bay.",
+    facts: [
+      { label: "Pool", value: "Private pool for the villa stay" },
+      { label: "Evening features", value: "Hot tub, fire pit, outdoor dining, and lounge areas" },
+      { label: "Water access", value: "Dock swimming, kayaks, and paddleboards when conditions are appropriate" },
+      { label: "Bedrooms", value: "Four en-suite bedrooms" },
+      { label: "Primary source", value: "The Villa page and booking confirmation control exact amenities and stay terms" },
+    ],
+    sourceNote:
+      "Use this guide to understand the pool/outdoor-living experience. Confirm exact amenities, dates, and terms through the official inquiry flow.",
     bestFor: [
       "Groups that want villa time to be a major part of the vacation",
       "Families balancing beach outings with low-effort pool afternoons",
@@ -218,6 +254,17 @@ export const villaSeoGuides: SeoGuide[] = [
     secondaryImage: "/images/outdoor-kitchen-dining-cabana.jpg",
     secondaryAlt: "Outdoor kitchen and dining cabana at Villa La Percha",
     pullQuote: "For a high-value villa stay, clarity is not a luxury feature. It is the whole point.",
+    answerBox:
+      "Guests should book Villa La Percha direct through the official property page when they want property-specific answers, clearer communication, fewer marketplace layers, and booking terms confirmed directly through the Villa La Percha flow.",
+    facts: [
+      { label: "Booking path", value: "Official Villa La Percha direct inquiry flow" },
+      { label: "Why direct", value: "Clearer property-specific communication and fewer marketplace layers" },
+      { label: "Savings", value: "Direct bookings may be lower than marketplace totals, but exact savings depend on dates and terms" },
+      { label: "Final terms", value: "Booking confirmation and guest agreement control pricing, taxes, occupancy, and stay rules" },
+      { label: "Primary source", value: "Use directstay.app/villa-la-percha for current inquiry and booking details" },
+    ],
+    sourceNote:
+      "Use this guide for direct-booking context. Use the official Villa La Percha inquiry flow for current availability, pricing, taxes, and final stay terms.",
     bestFor: [
       "Guests who want property-specific answers before committing",
       "Repeat travelers who prefer a direct relationship with the home",
