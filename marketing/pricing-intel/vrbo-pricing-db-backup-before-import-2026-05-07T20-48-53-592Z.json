@@ -1,0 +1,122 @@
+[
+  {
+    "id": "vrbo-baseline-2026-2028",
+    "propertyId": "cmof400cf0000wfspgmhy7ao6",
+    "platform": "VRBO",
+    "startDate": "2026-04-25T00:00:00.000Z",
+    "endDate": "2028-01-01T00:00:00.000Z",
+    "nightlyRate": "1792.1",
+    "minimumStayNights": null,
+    "notes": "VRBO fees rolled into nightly rate per owner direction on 2026-04-25. Exact checkout screenshot: $1,792.10/night all-in, tax 10.38% on base. Total for May 16-23 (7 nights): $13,847 (vs direct $10,500 — saving $3,347).",
+    "createdAt": "2026-04-26T01:48:18.000Z",
+    "updatedAt": "2026-04-26T01:48:18.000Z",
+    "charges": [
+      {
+        "id": "cmof400kt0001wfsp5c063gpj",
+        "pricingRuleId": "vrbo-baseline-2026-2028",
+        "label": "Occupancy taxes",
+        "category": "TAX",
+        "chargeType": "PERCENT",
+        "value": "0.1038",
+        "basis": "BASE",
+        "perNight": false
+      }
+    ]
+  },
+  {
+    "id": "vrbo-sample-2026-05-16-2026-05-23",
+    "propertyId": "cmof400cf0000wfspgmhy7ao6",
+    "platform": "VRBO",
+    "startDate": "2026-05-16T00:00:00.000Z",
+    "endDate": "2026-05-23T00:00:00.000Z",
+    "nightlyRate": "1882.81",
+    "minimumStayNights": 7,
+    "notes": "Observed VRBO checkout model 2026-05-04: displayed total before taxes $13,179.70 ($1,882.81 x 7 nights, including rent/host/service fees); tax $1,302.00; total $14,481.70.",
+    "createdAt": "2026-05-04T18:15:51.711Z",
+    "updatedAt": "2026-05-04T18:15:51.711Z",
+    "charges": [
+      {
+        "id": "cmorisud60004slq58nkx5tbw",
+        "pricingRuleId": "vrbo-sample-2026-05-16-2026-05-23",
+        "label": "Tax",
+        "category": "TAX",
+        "chargeType": "FIXED",
+        "value": "1302",
+        "basis": "BASE",
+        "perNight": false
+      }
+    ]
+  },
+  {
+    "id": "vrbo-sample-2026-06-20-2026-06-27",
+    "propertyId": "cmof400cf0000wfspgmhy7ao6",
+    "platform": "VRBO",
+    "startDate": "2026-06-20T00:00:00.000Z",
+    "endDate": "2026-06-27T00:00:00.000Z",
+    "nightlyRate": "2020.9",
+    "minimumStayNights": 7,
+    "notes": "Observed VRBO checkout model 2026-05-04: displayed total before taxes $14,146.33 ($2,020.90 x 7 nights, including rent/host/service fees); tax $1,423.80; total $15,570.13.",
+    "createdAt": "2026-05-04T18:15:51.902Z",
+    "updatedAt": "2026-05-04T18:15:51.902Z",
+    "charges": [
+      {
+        "id": "cmorisuih0005slq5ftd8tc3a",
+        "pricingRuleId": "vrbo-sample-2026-06-20-2026-06-27",
+        "label": "Tax",
+        "category": "TAX",
+        "chargeType": "FIXED",
+        "value": "1423.8",
+        "basis": "BASE",
+        "perNight": false
+      }
+    ]
+  },
+  {
+    "id": "vrbo-sample-2026-07-04-2026-07-10",
+    "propertyId": "cmof400cf0000wfspgmhy7ao6",
+    "platform": "VRBO",
+    "startDate": "2026-07-04T00:00:00.000Z",
+    "endDate": "2026-07-10T00:00:00.000Z",
+    "nightlyRate": "2034.52",
+    "minimumStayNights": 5,
+    "notes": "Observed VRBO owner screenshot 2026-05-06: 6 nights x $2,034.52 = $12,207.14; tax $1,220.40; total $13,427.54. Browser automation remains rate-limited by VRBO bot checks.",
+    "createdAt": "2026-05-07T03:41:42.393Z",
+    "updatedAt": "2026-05-07T03:41:42.393Z",
+    "charges": [
+      {
+        "id": "vrbo-sample-2026-07-04-2026-07-10-tax",
+        "pricingRuleId": "vrbo-sample-2026-07-04-2026-07-10",
+        "label": "Tax",
+        "category": "TAX",
+        "chargeType": "FIXED",
+        "value": "1220.42",
+        "basis": "BASE",
+        "perNight": false
+      }
+    ]
+  },
+  {
+    "id": "vrbo-sample-2026-11-21-2026-11-28",
+    "propertyId": "cmof400cf0000wfspgmhy7ao6",
+    "platform": "VRBO",
+    "startDate": "2026-11-21T00:00:00.000Z",
+    "endDate": "2026-11-28T00:00:00.000Z",
+    "nightlyRate": "1819.01",
+    "minimumStayNights": 7,
+    "notes": "Observed VRBO checkout sample 2026-05-04: displayed total before taxes $12,733.09 ($1,819.01 x 7 nights); tax $1,308.84; total $14,041.93. Later same-day retry was rate-limited, so this remains pending recheck after cooldown.",
+    "createdAt": "2026-05-04T18:15:52.093Z",
+    "updatedAt": "2026-05-04T18:15:52.093Z",
+    "charges": [
+      {
+        "id": "cmorisunu0006slq58ibbzckz",
+        "pricingRuleId": "vrbo-sample-2026-11-21-2026-11-28",
+        "label": "Tax",
+        "category": "TAX",
+        "chargeType": "FIXED",
+        "value": "1308.84",
+        "basis": "BASE",
+        "perNight": false
+      }
+    ]
+  }
+]

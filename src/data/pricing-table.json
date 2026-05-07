@@ -8,7 +8,7 @@
       "nightlyRate": 1600,
       "currency": "USD",
       "charges": [],
-      "notes": "2026 standard direct rate. Rounded sales-friendly pricing targeting roughly a 20\u201325% book-direct discount versus sampled OTA totals. Direct rate is tax-inclusive for Villa La Percha; no separate guest tax line is added on DirectStay."
+      "notes": "2026 standard direct rate. Rounded sales-friendly pricing targeting roughly a 20–25% book-direct discount versus sampled OTA totals. Direct rate is tax-inclusive for Villa La Percha; no separate guest tax line is added on DirectStay."
     },
     {
       "id": "direct-summer-peak-2026",
@@ -31,24 +31,6 @@
       "notes": "2026 holiday peak direct rate for Christmas/New Year demand. $1,800/night gives a $12,600 7-night direct total, preserving roughly a 20% book-direct advantage against strongest observed OTA pricing. Direct rate is tax-inclusive for Villa La Percha; no separate guest tax line is added on DirectStay."
     },
     {
-      "id": "vrbo-baseline-2026-2028",
-      "platform": "vrbo",
-      "startDate": "2026-04-25",
-      "endDate": "2028-01-01",
-      "nightlyRate": 1792.1,
-      "currency": "USD",
-      "charges": [
-        {
-          "label": "Occupancy taxes",
-          "category": "tax",
-          "type": "percent",
-          "value": 0.1038,
-          "basis": "base"
-        }
-      ],
-      "notes": "VRBO fees rolled into nightly rate per owner direction on 2026-04-25. Exact checkout screenshot: $1,792.10/night all-in, tax 10.38% on base. Total for May 16-23 (7 nights): $13,847 (vs direct $10,500 \u2014 saving $3,347)."
-    },
-    {
       "id": "airbnb-baseline-2026-2028",
       "platform": "airbnb",
       "startDate": "2026-04-25",
@@ -64,7 +46,7 @@
           "basis": "base"
         }
       ],
-      "notes": "Airbnb nightly rate per owner-provided checkout screenshot 2026-04-25. $1,844/night all-in, tax 11.77% on base. Total for May 16-23 (7 nights): $14,427 (vs direct $10,500 \u2014 saving $3,927)."
+      "notes": "Airbnb nightly rate per owner-provided checkout screenshot 2026-04-25. $1,844/night all-in, tax 11.77% on base. Total for May 16-23 (7 nights): $14,427 (vs direct $10,500 — saving $3,927)."
     },
     {
       "id": "airbnb-sample-2026-05-16-2026-05-23",
@@ -139,60 +121,6 @@
       "notes": "Observed Airbnb checkout sample 2026-05-04: 7 nights x $1,853.29 = $12,973.00; taxes $1,526.76; total $14,499.76."
     },
     {
-      "id": "vrbo-sample-2026-05-16-2026-05-23",
-      "platform": "vrbo",
-      "startDate": "2026-05-16",
-      "endDate": "2026-05-23",
-      "nightlyRate": 1882.8142857143,
-      "currency": "USD",
-      "minimumStayNights": 7,
-      "charges": [
-        {
-          "label": "Tax",
-          "category": "tax",
-          "type": "fixed",
-          "value": 1302
-        }
-      ],
-      "notes": "Observed VRBO checkout model 2026-05-04: displayed total before taxes $13,179.70 ($1,882.81 x 7 nights, including rent/host/service fees); tax $1,302.00; total $14,481.70."
-    },
-    {
-      "id": "vrbo-sample-2026-06-20-2026-06-27",
-      "platform": "vrbo",
-      "startDate": "2026-06-20",
-      "endDate": "2026-06-27",
-      "nightlyRate": 2020.9042857143,
-      "currency": "USD",
-      "minimumStayNights": 7,
-      "charges": [
-        {
-          "label": "Tax",
-          "category": "tax",
-          "type": "fixed",
-          "value": 1423.8
-        }
-      ],
-      "notes": "Observed VRBO checkout model 2026-05-04: displayed total before taxes $14,146.33 ($2,020.90 x 7 nights, including rent/host/service fees); tax $1,423.80; total $15,570.13."
-    },
-    {
-      "id": "vrbo-sample-2026-11-21-2026-11-28",
-      "platform": "vrbo",
-      "startDate": "2026-11-21",
-      "endDate": "2026-11-28",
-      "nightlyRate": 1819.0128571429,
-      "currency": "USD",
-      "minimumStayNights": 7,
-      "charges": [
-        {
-          "label": "Tax",
-          "category": "tax",
-          "type": "fixed",
-          "value": 1308.84
-        }
-      ],
-      "notes": "Observed VRBO checkout sample 2026-05-04: displayed total before taxes $12,733.09 ($1,819.01 x 7 nights); tax $1,308.84; total $14,041.93. Later same-day retry was rate-limited, so this remains pending recheck after cooldown."
-    },
-    {
       "id": "airbnb-sample-2026-07-04-2026-07-10",
       "platform": "airbnb",
       "startDate": "2026-07-04",
@@ -212,23 +140,238 @@
       "notes": "Observed Airbnb Chrome checkout 2026-05-06 / owner screenshot: 6 nights x $2,020.33 = $12,122.00; taxes $1,424.64; total $13,546.64."
     },
     {
-      "id": "vrbo-sample-2026-07-04-2026-07-10",
+      "id": "vrbo-current-spring-2026",
       "platform": "vrbo",
-      "startDate": "2026-07-04",
-      "endDate": "2026-07-10",
-      "nightlyRate": 2034.52,
+      "startDate": "2026-05-07",
+      "endDate": "2026-06-01",
+      "nightlyRate": 1900,
       "currency": "USD",
-      "minimumStayNights": 5,
       "charges": [
         {
-          "label": "Tax",
+          "label": "Occupancy taxes",
           "category": "tax",
-          "type": "fixed",
-          "value": 1220.42,
+          "type": "percent",
+          "value": 0.1038,
           "basis": "base"
         }
       ],
-      "notes": "Observed VRBO owner screenshot 2026-05-06: 6 nights x $2,034.52 = $12,207.14; tax $1,220.40; total $13,427.54. Browser automation remains rate-limited by VRBO bot checks."
+      "notes": "VRBO calendar-derived current spring rate. Observed May 16-21 at $1,877-$1,897; blocked/blank May dates filled from nearest visible prices and rounded to a clean website record."
+    },
+    {
+      "id": "vrbo-early-summer-2026",
+      "platform": "vrbo",
+      "startDate": "2026-06-01",
+      "endDate": "2026-07-06",
+      "nightlyRate": 2025,
+      "currency": "USD",
+      "charges": [
+        {
+          "label": "Occupancy taxes",
+          "category": "tax",
+          "type": "percent",
+          "value": 0.1038,
+          "basis": "base"
+        }
+      ],
+      "notes": "VRBO calendar-derived early summer rate. June observed mostly $1,990-$2,031 and July 1-5 around $2,039-$2,042; rounded to one clean summer record."
+    },
+    {
+      "id": "vrbo-mid-summer-blocked-2026",
+      "platform": "vrbo",
+      "startDate": "2026-07-06",
+      "endDate": "2026-08-08",
+      "nightlyRate": 2025,
+      "currency": "USD",
+      "charges": [
+        {
+          "label": "Occupancy taxes",
+          "category": "tax",
+          "type": "percent",
+          "value": 0.1038,
+          "basis": "base"
+        }
+      ],
+      "notes": "VRBO calendar-derived mid-summer carry-forward rate. July 6-Aug 7 was blank/blocked in visible calendar; nearest visible prices on both sides were about $2,033-$2,042."
+    },
+    {
+      "id": "vrbo-late-summer-2026",
+      "platform": "vrbo",
+      "startDate": "2026-08-08",
+      "endDate": "2026-09-08",
+      "nightlyRate": 2000,
+      "currency": "USD",
+      "charges": [
+        {
+          "label": "Occupancy taxes",
+          "category": "tax",
+          "type": "percent",
+          "value": 0.1038,
+          "basis": "base"
+        }
+      ],
+      "notes": "VRBO calendar-derived late summer rate. August/early September observed around $1,966 weekdays and $2,029-$2,033 weekends; smoothed to $2,000."
+    },
+    {
+      "id": "vrbo-september-stepdown-2026",
+      "platform": "vrbo",
+      "startDate": "2026-09-08",
+      "endDate": "2026-09-16",
+      "nightlyRate": 1900,
+      "currency": "USD",
+      "charges": [
+        {
+          "label": "Occupancy taxes",
+          "category": "tax",
+          "type": "percent",
+          "value": 0.1038,
+          "basis": "base"
+        }
+      ],
+      "notes": "VRBO calendar-derived September stepdown rate. Observed prices decline from about $1,947 to $1,819; smoothed to a short shoulder step."
+    },
+    {
+      "id": "vrbo-fall-shoulder-2026",
+      "platform": "vrbo",
+      "startDate": "2026-09-16",
+      "endDate": "2026-10-27",
+      "nightlyRate": 1825,
+      "currency": "USD",
+      "charges": [
+        {
+          "label": "Occupancy taxes",
+          "category": "tax",
+          "type": "percent",
+          "value": 0.1038,
+          "basis": "base"
+        }
+      ],
+      "notes": "VRBO calendar-derived fall shoulder rate. Observed fall dates cluster around $1,804-$1,858; rounded to $1,825."
+    },
+    {
+      "id": "vrbo-late-october-early-november-gap-2026",
+      "platform": "vrbo",
+      "startDate": "2026-10-27",
+      "endDate": "2026-11-14",
+      "nightlyRate": 1825,
+      "currency": "USD",
+      "charges": [
+        {
+          "label": "Occupancy taxes",
+          "category": "tax",
+          "type": "percent",
+          "value": 0.1038,
+          "basis": "base"
+        }
+      ],
+      "notes": "VRBO calendar-derived blocked-gap rate. Oct 27-Nov 13 was blank/blocked and bracketed by observed fall prices around $1,802-$1,864, so the fall shoulder rate is carried forward."
+    },
+    {
+      "id": "vrbo-thanksgiving-early-december-2026",
+      "platform": "vrbo",
+      "startDate": "2026-11-14",
+      "endDate": "2026-12-15",
+      "nightlyRate": 1850,
+      "currency": "USD",
+      "charges": [
+        {
+          "label": "Occupancy taxes",
+          "category": "tax",
+          "type": "percent",
+          "value": 0.1038,
+          "basis": "base"
+        }
+      ],
+      "notes": "VRBO calendar-derived Thanksgiving/early December rate. Observed Nov 14-Dec 14 mostly $1,802-$1,864; rounded to $1,850."
+    },
+    {
+      "id": "vrbo-holiday-ramp-1-2026",
+      "platform": "vrbo",
+      "startDate": "2026-12-15",
+      "endDate": "2026-12-16",
+      "nightlyRate": 2175,
+      "currency": "USD",
+      "charges": [
+        {
+          "label": "Occupancy taxes",
+          "category": "tax",
+          "type": "percent",
+          "value": 0.1038,
+          "basis": "base"
+        }
+      ],
+      "notes": "VRBO observed Dec 15 at $2,179; rounded to $2,175."
+    },
+    {
+      "id": "vrbo-holiday-ramp-2-2026",
+      "platform": "vrbo",
+      "startDate": "2026-12-16",
+      "endDate": "2026-12-17",
+      "nightlyRate": 2500,
+      "currency": "USD",
+      "charges": [
+        {
+          "label": "Occupancy taxes",
+          "category": "tax",
+          "type": "percent",
+          "value": 0.1038,
+          "basis": "base"
+        }
+      ],
+      "notes": "VRBO observed Dec 16 at $2,510; rounded to $2,500."
+    },
+    {
+      "id": "vrbo-holiday-ramp-3-2026",
+      "platform": "vrbo",
+      "startDate": "2026-12-17",
+      "endDate": "2026-12-18",
+      "nightlyRate": 2800,
+      "currency": "USD",
+      "charges": [
+        {
+          "label": "Occupancy taxes",
+          "category": "tax",
+          "type": "percent",
+          "value": 0.1038,
+          "basis": "base"
+        }
+      ],
+      "notes": "VRBO observed Dec 17 at $2,788; rounded to $2,800."
+    },
+    {
+      "id": "vrbo-holiday-ramp-4-2026",
+      "platform": "vrbo",
+      "startDate": "2026-12-18",
+      "endDate": "2026-12-19",
+      "nightlyRate": 3075,
+      "currency": "USD",
+      "charges": [
+        {
+          "label": "Occupancy taxes",
+          "category": "tax",
+          "type": "percent",
+          "value": 0.1038,
+          "basis": "base"
+        }
+      ],
+      "notes": "VRBO observed Dec 18 at $3,081; rounded to $3,075."
+    },
+    {
+      "id": "vrbo-christmas-new-year-2026",
+      "platform": "vrbo",
+      "startDate": "2026-12-19",
+      "endDate": "2027-01-01",
+      "nightlyRate": 3400,
+      "currency": "USD",
+      "charges": [
+        {
+          "label": "Occupancy taxes",
+          "category": "tax",
+          "type": "percent",
+          "value": 0.1038,
+          "basis": "base"
+        }
+      ],
+      "notes": "VRBO calendar-derived Christmas/New Year rate. Observed Dec 19-20 at $3,357-$3,410; Dec 21-31 blank/blocked, so year-end is carried at $3,400."
     }
   ],
   "taxSettings": {
