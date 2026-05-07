@@ -1,0 +1,146 @@
+[
+  {
+    "id": "airbnb-baseline-2026-2028",
+    "propertyId": "cmof400cf0000wfspgmhy7ao6",
+    "platform": "AIRBNB",
+    "startDate": "2026-04-25T00:00:00.000Z",
+    "endDate": "2028-01-01T00:00:00.000Z",
+    "nightlyRate": "1844",
+    "minimumStayNights": null,
+    "notes": "Airbnb nightly rate per owner-provided checkout screenshot 2026-04-25. $1,844/night all-in, tax 11.77% on base. Total for May 16-23 (7 nights): $14,427 (vs direct $10,500 — saving $3,927).",
+    "createdAt": "2026-04-26T01:48:18.085Z",
+    "updatedAt": "2026-04-26T01:48:18.085Z",
+    "charges": [
+      {
+        "id": "cmof400n40002wfspvnog0i9c",
+        "pricingRuleId": "airbnb-baseline-2026-2028",
+        "label": "Occupancy taxes",
+        "category": "TAX",
+        "chargeType": "PERCENT",
+        "value": "0.1177",
+        "basis": "BASE",
+        "perNight": false
+      }
+    ]
+  },
+  {
+    "id": "airbnb-sample-2026-05-16-2026-05-23",
+    "propertyId": "cmof400cf0000wfspgmhy7ao6",
+    "platform": "AIRBNB",
+    "startDate": "2026-05-16T00:00:00.000Z",
+    "endDate": "2026-05-23T00:00:00.000Z",
+    "nightlyRate": "1844",
+    "minimumStayNights": 7,
+    "notes": "Observed Airbnb checkout sample 2026-05-04: 7 nights x $1,844.00 = $12,908.00; taxes $1,518.96; total $14,426.96.",
+    "createdAt": "2026-05-04T18:15:50.923Z",
+    "updatedAt": "2026-05-04T18:15:50.923Z",
+    "charges": [
+      {
+        "id": "cmoristri0000slq5drpxlxzi",
+        "pricingRuleId": "airbnb-sample-2026-05-16-2026-05-23",
+        "label": "Occupancy taxes",
+        "category": "TAX",
+        "chargeType": "FIXED",
+        "value": "1518.96",
+        "basis": "BASE",
+        "perNight": false
+      }
+    ]
+  },
+  {
+    "id": "airbnb-sample-2026-06-20-2026-06-27",
+    "propertyId": "cmof400cf0000wfspgmhy7ao6",
+    "platform": "AIRBNB",
+    "startDate": "2026-06-20T00:00:00.000Z",
+    "endDate": "2026-06-27T00:00:00.000Z",
+    "nightlyRate": "2011.43",
+    "minimumStayNights": 7,
+    "notes": "Observed Airbnb checkout sample 2026-05-04: 7 nights x $2,011.43 = $14,080.00; taxes $1,659.60; total $15,739.60.",
+    "createdAt": "2026-05-04T18:15:51.126Z",
+    "updatedAt": "2026-05-04T18:15:51.126Z",
+    "charges": [
+      {
+        "id": "cmoristwz0001slq5umfl0sxk",
+        "pricingRuleId": "airbnb-sample-2026-06-20-2026-06-27",
+        "label": "Occupancy taxes",
+        "category": "TAX",
+        "chargeType": "FIXED",
+        "value": "1659.6",
+        "basis": "BASE",
+        "perNight": false
+      }
+    ]
+  },
+  {
+    "id": "airbnb-sample-2026-07-04-2026-07-10",
+    "propertyId": "cmof400cf0000wfspgmhy7ao6",
+    "platform": "AIRBNB",
+    "startDate": "2026-07-04T00:00:00.000Z",
+    "endDate": "2026-07-10T00:00:00.000Z",
+    "nightlyRate": "2020.33",
+    "minimumStayNights": 5,
+    "notes": "Observed Airbnb Chrome checkout 2026-05-06 / owner screenshot: 6 nights x $2,020.33 = $12,122.00; taxes $1,424.64; total $13,546.64.",
+    "createdAt": "2026-05-07T03:40:46.415Z",
+    "updatedAt": "2026-05-07T03:41:42.300Z",
+    "charges": [
+      {
+        "id": "airbnb-sample-2026-07-04-2026-07-10-tax",
+        "pricingRuleId": "airbnb-sample-2026-07-04-2026-07-10",
+        "label": "Taxes",
+        "category": "TAX",
+        "chargeType": "FIXED",
+        "value": "1424.66",
+        "basis": "BASE",
+        "perNight": false
+      }
+    ]
+  },
+  {
+    "id": "airbnb-sample-2026-09-05-2026-09-12",
+    "propertyId": "cmof400cf0000wfspgmhy7ao6",
+    "platform": "AIRBNB",
+    "startDate": "2026-09-05T00:00:00.000Z",
+    "endDate": "2026-09-12T00:00:00.000Z",
+    "nightlyRate": "2011.43",
+    "minimumStayNights": 7,
+    "notes": "Observed Airbnb checkout sample 2026-05-04: 7 nights x $2,011.43 = $14,080.00; taxes $1,659.60; total $15,739.60.",
+    "createdAt": "2026-05-04T18:15:51.318Z",
+    "updatedAt": "2026-05-04T18:15:51.318Z",
+    "charges": [
+      {
+        "id": "cmorisu2a0002slq525qym5j6",
+        "pricingRuleId": "airbnb-sample-2026-09-05-2026-09-12",
+        "label": "Occupancy taxes",
+        "category": "TAX",
+        "chargeType": "FIXED",
+        "value": "1659.6",
+        "basis": "BASE",
+        "perNight": false
+      }
+    ]
+  },
+  {
+    "id": "airbnb-sample-2026-11-21-2026-11-28",
+    "propertyId": "cmof400cf0000wfspgmhy7ao6",
+    "platform": "AIRBNB",
+    "startDate": "2026-11-21T00:00:00.000Z",
+    "endDate": "2026-11-28T00:00:00.000Z",
+    "nightlyRate": "1853.29",
+    "minimumStayNights": 7,
+    "notes": "Observed Airbnb checkout sample 2026-05-04: 7 nights x $1,853.29 = $12,973.00; taxes $1,526.76; total $14,499.76.",
+    "createdAt": "2026-05-04T18:15:51.512Z",
+    "updatedAt": "2026-05-04T18:15:51.512Z",
+    "charges": [
+      {
+        "id": "cmorisu7o0003slq51py938wt",
+        "pricingRuleId": "airbnb-sample-2026-11-21-2026-11-28",
+        "label": "Occupancy taxes",
+        "category": "TAX",
+        "chargeType": "FIXED",
+        "value": "1526.76",
+        "basis": "BASE",
+        "perNight": false
+      }
+    ]
+  }
+]

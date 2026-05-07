@@ -31,115 +31,6 @@
       "notes": "2026 holiday peak direct rate for Christmas/New Year demand. $1,800/night gives a $12,600 7-night direct total, preserving roughly a 20% book-direct advantage against strongest observed OTA pricing. Direct rate is tax-inclusive for Villa La Percha; no separate guest tax line is added on DirectStay."
     },
     {
-      "id": "airbnb-baseline-2026-2028",
-      "platform": "airbnb",
-      "startDate": "2026-04-25",
-      "endDate": "2028-01-01",
-      "nightlyRate": 1844,
-      "currency": "USD",
-      "charges": [
-        {
-          "label": "Occupancy taxes",
-          "category": "tax",
-          "type": "percent",
-          "value": 0.1177,
-          "basis": "base"
-        }
-      ],
-      "notes": "Airbnb nightly rate per owner-provided checkout screenshot 2026-04-25. $1,844/night all-in, tax 11.77% on base. Total for May 16-23 (7 nights): $14,427 (vs direct $10,500 — saving $3,927)."
-    },
-    {
-      "id": "airbnb-sample-2026-05-16-2026-05-23",
-      "platform": "airbnb",
-      "startDate": "2026-05-16",
-      "endDate": "2026-05-23",
-      "nightlyRate": 1844,
-      "currency": "USD",
-      "minimumStayNights": 7,
-      "charges": [
-        {
-          "label": "Occupancy taxes",
-          "category": "tax",
-          "type": "fixed",
-          "value": 1518.96
-        }
-      ],
-      "notes": "Observed Airbnb checkout sample 2026-05-04: 7 nights x $1,844.00 = $12,908.00; taxes $1,518.96; total $14,426.96."
-    },
-    {
-      "id": "airbnb-sample-2026-06-20-2026-06-27",
-      "platform": "airbnb",
-      "startDate": "2026-06-20",
-      "endDate": "2026-06-27",
-      "nightlyRate": 2011.4285714286,
-      "currency": "USD",
-      "minimumStayNights": 7,
-      "charges": [
-        {
-          "label": "Occupancy taxes",
-          "category": "tax",
-          "type": "fixed",
-          "value": 1659.6
-        }
-      ],
-      "notes": "Observed Airbnb checkout sample 2026-05-04: 7 nights x $2,011.43 = $14,080.00; taxes $1,659.60; total $15,739.60."
-    },
-    {
-      "id": "airbnb-sample-2026-09-05-2026-09-12",
-      "platform": "airbnb",
-      "startDate": "2026-09-05",
-      "endDate": "2026-09-12",
-      "nightlyRate": 2011.4285714286,
-      "currency": "USD",
-      "minimumStayNights": 7,
-      "charges": [
-        {
-          "label": "Occupancy taxes",
-          "category": "tax",
-          "type": "fixed",
-          "value": 1659.6
-        }
-      ],
-      "notes": "Observed Airbnb checkout sample 2026-05-04: 7 nights x $2,011.43 = $14,080.00; taxes $1,659.60; total $15,739.60."
-    },
-    {
-      "id": "airbnb-sample-2026-11-21-2026-11-28",
-      "platform": "airbnb",
-      "startDate": "2026-11-21",
-      "endDate": "2026-11-28",
-      "nightlyRate": 1853.2857142857,
-      "currency": "USD",
-      "minimumStayNights": 7,
-      "charges": [
-        {
-          "label": "Occupancy taxes",
-          "category": "tax",
-          "type": "fixed",
-          "value": 1526.76
-        }
-      ],
-      "notes": "Observed Airbnb checkout sample 2026-05-04: 7 nights x $1,853.29 = $12,973.00; taxes $1,526.76; total $14,499.76."
-    },
-    {
-      "id": "airbnb-sample-2026-07-04-2026-07-10",
-      "platform": "airbnb",
-      "startDate": "2026-07-04",
-      "endDate": "2026-07-10",
-      "nightlyRate": 2020.33,
-      "currency": "USD",
-      "minimumStayNights": 5,
-      "charges": [
-        {
-          "label": "Taxes",
-          "category": "tax",
-          "type": "fixed",
-          "value": 1424.66,
-          "basis": "base"
-        }
-      ],
-      "notes": "Observed Airbnb Chrome checkout 2026-05-06 / owner screenshot: 6 nights x $2,020.33 = $12,122.00; taxes $1,424.64; total $13,546.64."
-    },
-    {
       "id": "vrbo-current-spring-2026",
       "platform": "vrbo",
       "startDate": "2026-05-07",
@@ -372,6 +263,114 @@
         }
       ],
       "notes": "VRBO calendar-derived Christmas/New Year rate. Observed Dec 19-20 at $3,357-$3,410; Dec 21-31 blank/blocked, so year-end is carried at $3,400. Effective checkout tax model: Christmas week sample tax $2,482.08 on $23,555.73 displayed subtotal is ~10.54%."
+    },
+    {
+      "id": "airbnb-current-spring-2026",
+      "platform": "airbnb",
+      "startDate": "2026-05-07",
+      "endDate": "2026-06-01",
+      "nightlyRate": 1844,
+      "currency": "USD",
+      "charges": [
+        {
+          "label": "Airbnb taxes",
+          "category": "tax",
+          "type": "percent",
+          "value": 0.1177,
+          "basis": "base"
+        }
+      ],
+      "notes": "Airbnb checkout-derived spring rate. May 16-23 sample: 7 nights x $1,844.00 = $12,908.00; taxes $1,518.96; total $14,426.96. Effective tax is ~11.77% of displayed subtotal."
+    },
+    {
+      "id": "airbnb-summer-peak-2026",
+      "platform": "airbnb",
+      "startDate": "2026-06-01",
+      "endDate": "2026-09-12",
+      "nightlyRate": 2011.43,
+      "currency": "USD",
+      "charges": [
+        {
+          "label": "Airbnb taxes",
+          "category": "tax",
+          "type": "percent",
+          "value": 0.1177,
+          "basis": "base"
+        }
+      ],
+      "notes": "Airbnb checkout-derived summer peak rate. Jun 20-27, Aug 15-22, and Sep 5-12 samples all showed 7 nights x $2,011.43 = $14,080.00; taxes $1,659.60; total $15,739.60."
+    },
+    {
+      "id": "airbnb-fall-shoulder-2026",
+      "platform": "airbnb",
+      "startDate": "2026-09-12",
+      "endDate": "2026-11-21",
+      "nightlyRate": 1844,
+      "currency": "USD",
+      "charges": [
+        {
+          "label": "Airbnb taxes",
+          "category": "tax",
+          "type": "percent",
+          "value": 0.1177,
+          "basis": "base"
+        }
+      ],
+      "notes": "Airbnb checkout-derived fall shoulder rate. Sep 19-26 and Oct 24-31 samples both showed 7 nights x $1,844.00 = $12,908.00; taxes $1,518.96; total $14,426.96."
+    },
+    {
+      "id": "airbnb-thanksgiving-2026",
+      "platform": "airbnb",
+      "startDate": "2026-11-21",
+      "endDate": "2026-11-28",
+      "nightlyRate": 1847.86,
+      "currency": "USD",
+      "charges": [
+        {
+          "label": "Airbnb taxes",
+          "category": "tax",
+          "type": "percent",
+          "value": 0.1177,
+          "basis": "base"
+        }
+      ],
+      "notes": "Airbnb checkout-derived Thanksgiving week rate. Nov 21-28 sample: 7 nights x $1,847.86 = $12,935.00; taxes $1,522.20; total $14,457.20."
+    },
+    {
+      "id": "airbnb-early-december-2026",
+      "platform": "airbnb",
+      "startDate": "2026-11-28",
+      "endDate": "2026-12-19",
+      "nightlyRate": 1844,
+      "currency": "USD",
+      "charges": [
+        {
+          "label": "Airbnb taxes",
+          "category": "tax",
+          "type": "percent",
+          "value": 0.1177,
+          "basis": "base"
+        }
+      ],
+      "notes": "Airbnb checkout-derived early December rate. Dec 5-12 and Dec 12-19 samples both matched $1,844.00/night, $12,908.00 subtotal, $1,518.96 taxes, $14,426.96 total."
+    },
+    {
+      "id": "airbnb-christmas-2026",
+      "platform": "airbnb",
+      "startDate": "2026-12-19",
+      "endDate": "2026-12-26",
+      "nightlyRate": 3466.57,
+      "currency": "USD",
+      "charges": [
+        {
+          "label": "Airbnb taxes",
+          "category": "tax",
+          "type": "percent",
+          "value": 0.1177,
+          "basis": "base"
+        }
+      ],
+      "notes": "Airbnb checkout-derived Christmas week rate. Dec 19-26 sample: 7 nights x $3,466.57 = $24,266.00; taxes $2,881.92; total $27,147.92."
     }
   ],
   "taxSettings": {
