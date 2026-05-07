@@ -43,6 +43,31 @@ export const faqs: FAQItem[] = [
     answer:
       "The biggest difference is privacy and usable group space. Instead of scattered hotel rooms, you get a full villa with indoor-outdoor living, a private pool and hot tub, dock access, fishing, paddling, and the freedom to settle in for the week.",
   },
+  {
+    question: "Is Villa La Percha near Taylor Bay?",
+    answer:
+      "Yes. Villa La Percha is in the Chalk Sound/Ocean Point area, very close to Taylor Bay. Taylor Bay is known for calm, shallow water that works especially well for families, floating, and sunset beach time.",
+  },
+  {
+    question: "Is Villa La Percha near Sapodilla Bay?",
+    answer:
+      "Yes. Sapodilla Bay is also close to the villa. It is usually livelier than Taylor Bay and can be a good choice when guests want shallow water, beach energy, and nearby vendors.",
+  },
+  {
+    question: "Can you swim from the dock?",
+    answer:
+      "The villa has dock access with stairs into the water, and guests often enjoy swimming and fishing from the dock when conditions are appropriate. Guests should always use normal care and supervision around docks, pools, and open water.",
+  },
+  {
+    question: "Is Villa La Percha in Chalk Sound?",
+    answer:
+      "Villa La Percha is in the Chalk Sound/Ocean Point area of Providenciales, close to the turquoise Chalk Sound landscape as well as Taylor Bay and Sapodilla Bay.",
+  },
+  {
+    question: "Is booking direct cheaper than Airbnb or VRBO?",
+    answer:
+      "It can be. Direct bookings are typically about 15–30% lower than Airbnb or VRBO total pricing for the same stay once platform fees and other add-ons are included, but exact pricing depends on dates and booking terms.",
+  },
 ];
 
 export function getFaqJsonLd() {
