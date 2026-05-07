@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-07T21:28:07.232Z",
+  "generatedAt": "2026-05-07T21:32:04.337Z",
   "rows": [
     {
       "checkIn": "2026-05-07",
@@ -8931,44 +8931,32 @@
       "checkOut": "2026-12-16",
       "nights": 7,
       "direct": {
-        "entry": "direct-shoulder-2026+direct-holiday-ramp-2026",
-        "base": 11800,
+        "entry": "direct-shoulder-2026",
+        "base": 11200,
         "tax": 0,
         "fee": 0,
-        "total": 11800,
+        "total": 11200,
         "segments": [
           {
             "id": "direct-shoulder-2026",
             "start": "2026-12-09",
-            "end": "2026-12-15",
-            "rate": 1600
-          },
-          {
-            "id": "direct-holiday-ramp-2026",
-            "start": "2026-12-15",
             "end": "2026-12-16",
-            "rate": 2200
+            "rate": 1600
           }
         ]
       },
       "directExpected": {
-        "entry": "direct-shoulder-2026+direct-holiday-ramp-2026",
-        "base": 11800,
+        "entry": "direct-shoulder-2026",
+        "base": 11200,
         "tax": 0,
         "fee": 0,
-        "total": 11800,
+        "total": 11200,
         "segments": [
           {
             "id": "direct-shoulder-2026",
             "start": "2026-12-09",
-            "end": "2026-12-15",
-            "rate": 1600
-          },
-          {
-            "id": "direct-holiday-ramp-2026",
-            "start": "2026-12-15",
             "end": "2026-12-16",
-            "rate": 2200
+            "rate": 1600
           }
         ]
       },
@@ -9045,7 +9033,7 @@
         ]
       },
       "cheapestOtaExpected": 14427.27,
-      "savingsVsCheapestExpected": 18.2,
+      "savingsVsCheapestExpected": 22.4,
       "currentMissing": [],
       "currentDiffs": []
     },
@@ -9054,44 +9042,32 @@
       "checkOut": "2026-12-17",
       "nights": 7,
       "direct": {
-        "entry": "direct-shoulder-2026+direct-holiday-ramp-2026",
-        "base": 12400,
+        "entry": "direct-shoulder-2026",
+        "base": 11200,
         "tax": 0,
         "fee": 0,
-        "total": 12400,
+        "total": 11200,
         "segments": [
           {
             "id": "direct-shoulder-2026",
             "start": "2026-12-10",
-            "end": "2026-12-15",
-            "rate": 1600
-          },
-          {
-            "id": "direct-holiday-ramp-2026",
-            "start": "2026-12-15",
             "end": "2026-12-17",
-            "rate": 2200
+            "rate": 1600
           }
         ]
       },
       "directExpected": {
-        "entry": "direct-shoulder-2026+direct-holiday-ramp-2026",
-        "base": 12400,
+        "entry": "direct-shoulder-2026",
+        "base": 11200,
         "tax": 0,
         "fee": 0,
-        "total": 12400,
+        "total": 11200,
         "segments": [
           {
             "id": "direct-shoulder-2026",
             "start": "2026-12-10",
-            "end": "2026-12-15",
-            "rate": 1600
-          },
-          {
-            "id": "direct-holiday-ramp-2026",
-            "start": "2026-12-15",
             "end": "2026-12-17",
-            "rate": 2200
+            "rate": 1600
           }
         ]
       },
@@ -9180,7 +9156,7 @@
         ]
       },
       "cheapestOtaExpected": 14427.27,
-      "savingsVsCheapestExpected": 14.1,
+      "savingsVsCheapestExpected": 22.4,
       "currentMissing": [],
       "currentDiffs": []
     },
@@ -9189,44 +9165,32 @@
       "checkOut": "2026-12-18",
       "nights": 7,
       "direct": {
-        "entry": "direct-shoulder-2026+direct-holiday-ramp-2026",
-        "base": 13000,
+        "entry": "direct-shoulder-2026",
+        "base": 11200,
         "tax": 0,
         "fee": 0,
-        "total": 13000,
+        "total": 11200,
         "segments": [
           {
             "id": "direct-shoulder-2026",
             "start": "2026-12-11",
-            "end": "2026-12-15",
-            "rate": 1600
-          },
-          {
-            "id": "direct-holiday-ramp-2026",
-            "start": "2026-12-15",
             "end": "2026-12-18",
-            "rate": 2200
+            "rate": 1600
           }
         ]
       },
       "directExpected": {
-        "entry": "direct-shoulder-2026+direct-holiday-ramp-2026",
-        "base": 13000,
+        "entry": "direct-shoulder-2026",
+        "base": 11200,
         "tax": 0,
         "fee": 0,
-        "total": 13000,
+        "total": 11200,
         "segments": [
           {
             "id": "direct-shoulder-2026",
             "start": "2026-12-11",
-            "end": "2026-12-15",
-            "rate": 1600
-          },
-          {
-            "id": "direct-holiday-ramp-2026",
-            "start": "2026-12-15",
             "end": "2026-12-18",
-            "rate": 2200
+            "rate": 1600
           }
         ]
       },
@@ -9327,7 +9291,7 @@
         ]
       },
       "cheapestOtaExpected": 14427.27,
-      "savingsVsCheapestExpected": 9.9,
+      "savingsVsCheapestExpected": 22.4,
       "currentMissing": [],
       "currentDiffs": []
     },
@@ -9336,44 +9300,32 @@
       "checkOut": "2026-12-19",
       "nights": 7,
       "direct": {
-        "entry": "direct-shoulder-2026+direct-holiday-ramp-2026",
-        "base": 13600,
+        "entry": "direct-shoulder-2026",
+        "base": 11200,
         "tax": 0,
         "fee": 0,
-        "total": 13600,
+        "total": 11200,
         "segments": [
           {
             "id": "direct-shoulder-2026",
             "start": "2026-12-12",
-            "end": "2026-12-15",
-            "rate": 1600
-          },
-          {
-            "id": "direct-holiday-ramp-2026",
-            "start": "2026-12-15",
             "end": "2026-12-19",
-            "rate": 2200
+            "rate": 1600
           }
         ]
       },
       "directExpected": {
-        "entry": "direct-shoulder-2026+direct-holiday-ramp-2026",
-        "base": 13600,
+        "entry": "direct-shoulder-2026",
+        "base": 11200,
         "tax": 0,
         "fee": 0,
-        "total": 13600,
+        "total": 11200,
         "segments": [
           {
             "id": "direct-shoulder-2026",
             "start": "2026-12-12",
-            "end": "2026-12-15",
-            "rate": 1600
-          },
-          {
-            "id": "direct-holiday-ramp-2026",
-            "start": "2026-12-15",
             "end": "2026-12-19",
-            "rate": 2200
+            "rate": 1600
           }
         ]
       },
@@ -9486,7 +9438,7 @@
         ]
       },
       "cheapestOtaExpected": 14427.27,
-      "savingsVsCheapestExpected": 5.7,
+      "savingsVsCheapestExpected": 22.4,
       "currentMissing": [],
       "currentDiffs": []
     },
@@ -9495,23 +9447,17 @@
       "checkOut": "2026-12-20",
       "nights": 7,
       "direct": {
-        "entry": "direct-shoulder-2026+direct-holiday-ramp-2026+direct-christmas-new-year-2026",
-        "base": 14500,
+        "entry": "direct-shoulder-2026+direct-christmas-new-year-2026",
+        "base": 12100,
         "tax": 0,
         "fee": 0,
-        "total": 14500,
+        "total": 12100,
         "segments": [
           {
             "id": "direct-shoulder-2026",
             "start": "2026-12-13",
-            "end": "2026-12-15",
-            "rate": 1600
-          },
-          {
-            "id": "direct-holiday-ramp-2026",
-            "start": "2026-12-15",
             "end": "2026-12-19",
-            "rate": 2200
+            "rate": 1600
           },
           {
             "id": "direct-christmas-new-year-2026",
@@ -9522,23 +9468,17 @@
         ]
       },
       "directExpected": {
-        "entry": "direct-shoulder-2026+direct-holiday-ramp-2026+direct-christmas-new-year-2026",
-        "base": 14500,
+        "entry": "direct-shoulder-2026+direct-christmas-new-year-2026",
+        "base": 12100,
         "tax": 0,
         "fee": 0,
-        "total": 14500,
+        "total": 12100,
         "segments": [
           {
             "id": "direct-shoulder-2026",
             "start": "2026-12-13",
-            "end": "2026-12-15",
-            "rate": 1600
-          },
-          {
-            "id": "direct-holiday-ramp-2026",
-            "start": "2026-12-15",
             "end": "2026-12-19",
-            "rate": 2200
+            "rate": 1600
           },
           {
             "id": "direct-christmas-new-year-2026",
@@ -9681,7 +9621,7 @@
         ]
       },
       "cheapestOtaExpected": 16240.82,
-      "savingsVsCheapestExpected": 10.7,
+      "savingsVsCheapestExpected": 25.5,
       "currentMissing": [],
       "currentDiffs": []
     },
@@ -9690,23 +9630,17 @@
       "checkOut": "2026-12-21",
       "nights": 7,
       "direct": {
-        "entry": "direct-shoulder-2026+direct-holiday-ramp-2026+direct-christmas-new-year-2026",
-        "base": 15400,
+        "entry": "direct-shoulder-2026+direct-christmas-new-year-2026",
+        "base": 13000,
         "tax": 0,
         "fee": 0,
-        "total": 15400,
+        "total": 13000,
         "segments": [
           {
             "id": "direct-shoulder-2026",
             "start": "2026-12-14",
-            "end": "2026-12-15",
-            "rate": 1600
-          },
-          {
-            "id": "direct-holiday-ramp-2026",
-            "start": "2026-12-15",
             "end": "2026-12-19",
-            "rate": 2200
+            "rate": 1600
           },
           {
             "id": "direct-christmas-new-year-2026",
@@ -9717,23 +9651,17 @@
         ]
       },
       "directExpected": {
-        "entry": "direct-shoulder-2026+direct-holiday-ramp-2026+direct-christmas-new-year-2026",
-        "base": 15400,
+        "entry": "direct-shoulder-2026+direct-christmas-new-year-2026",
+        "base": 13000,
         "tax": 0,
         "fee": 0,
-        "total": 15400,
+        "total": 13000,
         "segments": [
           {
             "id": "direct-shoulder-2026",
             "start": "2026-12-14",
-            "end": "2026-12-15",
-            "rate": 1600
-          },
-          {
-            "id": "direct-holiday-ramp-2026",
-            "start": "2026-12-15",
             "end": "2026-12-19",
-            "rate": 2200
+            "rate": 1600
           },
           {
             "id": "direct-christmas-new-year-2026",
@@ -9876,7 +9804,7 @@
         ]
       },
       "cheapestOtaExpected": 18054.36,
-      "savingsVsCheapestExpected": 14.7,
+      "savingsVsCheapestExpected": 28,
       "currentMissing": [],
       "currentDiffs": []
     },
@@ -9885,17 +9813,17 @@
       "checkOut": "2026-12-22",
       "nights": 7,
       "direct": {
-        "entry": "direct-holiday-ramp-2026+direct-christmas-new-year-2026",
-        "base": 16300,
+        "entry": "direct-shoulder-2026+direct-christmas-new-year-2026",
+        "base": 13900,
         "tax": 0,
         "fee": 0,
-        "total": 16300,
+        "total": 13900,
         "segments": [
           {
-            "id": "direct-holiday-ramp-2026",
+            "id": "direct-shoulder-2026",
             "start": "2026-12-15",
             "end": "2026-12-19",
-            "rate": 2200
+            "rate": 1600
           },
           {
             "id": "direct-christmas-new-year-2026",
@@ -9906,17 +9834,17 @@
         ]
       },
       "directExpected": {
-        "entry": "direct-holiday-ramp-2026+direct-christmas-new-year-2026",
-        "base": 16300,
+        "entry": "direct-shoulder-2026+direct-christmas-new-year-2026",
+        "base": 13900,
         "tax": 0,
         "fee": 0,
-        "total": 16300,
+        "total": 13900,
         "segments": [
           {
-            "id": "direct-holiday-ramp-2026",
+            "id": "direct-shoulder-2026",
             "start": "2026-12-15",
             "end": "2026-12-19",
-            "rate": 2200
+            "rate": 1600
           },
           {
             "id": "direct-christmas-new-year-2026",
@@ -10047,7 +9975,7 @@
         ]
       },
       "cheapestOtaExpected": 19867.92,
-      "savingsVsCheapestExpected": 18,
+      "savingsVsCheapestExpected": 30,
       "currentMissing": [],
       "currentDiffs": []
     },
@@ -10056,17 +9984,17 @@
       "checkOut": "2026-12-23",
       "nights": 7,
       "direct": {
-        "entry": "direct-holiday-ramp-2026+direct-christmas-new-year-2026",
-        "base": 16600,
+        "entry": "direct-shoulder-2026+direct-christmas-new-year-2026",
+        "base": 14800,
         "tax": 0,
         "fee": 0,
-        "total": 16600,
+        "total": 14800,
         "segments": [
           {
-            "id": "direct-holiday-ramp-2026",
+            "id": "direct-shoulder-2026",
             "start": "2026-12-16",
             "end": "2026-12-19",
-            "rate": 2200
+            "rate": 1600
           },
           {
             "id": "direct-christmas-new-year-2026",
@@ -10077,17 +10005,17 @@
         ]
       },
       "directExpected": {
-        "entry": "direct-holiday-ramp-2026+direct-christmas-new-year-2026",
-        "base": 16600,
+        "entry": "direct-shoulder-2026+direct-christmas-new-year-2026",
+        "base": 14800,
         "tax": 0,
         "fee": 0,
-        "total": 16600,
+        "total": 14800,
         "segments": [
           {
-            "id": "direct-holiday-ramp-2026",
+            "id": "direct-shoulder-2026",
             "start": "2026-12-16",
             "end": "2026-12-19",
-            "rate": 2200
+            "rate": 1600
           },
           {
             "id": "direct-christmas-new-year-2026",
@@ -10206,7 +10134,7 @@
         ]
       },
       "cheapestOtaExpected": 21681.46,
-      "savingsVsCheapestExpected": 23.4,
+      "savingsVsCheapestExpected": 31.7,
       "currentMissing": [],
       "currentDiffs": []
     },
@@ -10215,17 +10143,17 @@
       "checkOut": "2026-12-24",
       "nights": 7,
       "direct": {
-        "entry": "direct-holiday-ramp-2026+direct-christmas-new-year-2026",
-        "base": 16900,
+        "entry": "direct-shoulder-2026+direct-christmas-new-year-2026",
+        "base": 15700,
         "tax": 0,
         "fee": 0,
-        "total": 16900,
+        "total": 15700,
         "segments": [
           {
-            "id": "direct-holiday-ramp-2026",
+            "id": "direct-shoulder-2026",
             "start": "2026-12-17",
             "end": "2026-12-19",
-            "rate": 2200
+            "rate": 1600
           },
           {
             "id": "direct-christmas-new-year-2026",
@@ -10236,17 +10164,17 @@
         ]
       },
       "directExpected": {
-        "entry": "direct-holiday-ramp-2026+direct-christmas-new-year-2026",
-        "base": 16900,
+        "entry": "direct-shoulder-2026+direct-christmas-new-year-2026",
+        "base": 15700,
         "tax": 0,
         "fee": 0,
-        "total": 16900,
+        "total": 15700,
         "segments": [
           {
-            "id": "direct-holiday-ramp-2026",
+            "id": "direct-shoulder-2026",
             "start": "2026-12-17",
             "end": "2026-12-19",
-            "rate": 2200
+            "rate": 1600
           },
           {
             "id": "direct-christmas-new-year-2026",
@@ -10353,7 +10281,7 @@
         ]
       },
       "cheapestOtaExpected": 23495.01,
-      "savingsVsCheapestExpected": 28.1,
+      "savingsVsCheapestExpected": 33.2,
       "currentMissing": [],
       "currentDiffs": []
     },
@@ -10362,17 +10290,17 @@
       "checkOut": "2026-12-25",
       "nights": 7,
       "direct": {
-        "entry": "direct-holiday-ramp-2026+direct-christmas-new-year-2026",
-        "base": 17200,
+        "entry": "direct-shoulder-2026+direct-christmas-new-year-2026",
+        "base": 16600,
         "tax": 0,
         "fee": 0,
-        "total": 17200,
+        "total": 16600,
         "segments": [
           {
-            "id": "direct-holiday-ramp-2026",
+            "id": "direct-shoulder-2026",
             "start": "2026-12-18",
             "end": "2026-12-19",
-            "rate": 2200
+            "rate": 1600
           },
           {
             "id": "direct-christmas-new-year-2026",
@@ -10383,17 +10311,17 @@
         ]
       },
       "directExpected": {
-        "entry": "direct-holiday-ramp-2026+direct-christmas-new-year-2026",
-        "base": 17200,
+        "entry": "direct-shoulder-2026+direct-christmas-new-year-2026",
+        "base": 16600,
         "tax": 0,
         "fee": 0,
-        "total": 17200,
+        "total": 16600,
         "segments": [
           {
-            "id": "direct-holiday-ramp-2026",
+            "id": "direct-shoulder-2026",
             "start": "2026-12-18",
             "end": "2026-12-19",
-            "rate": 2200
+            "rate": 1600
           },
           {
             "id": "direct-christmas-new-year-2026",
@@ -10488,7 +10416,7 @@
         ]
       },
       "cheapestOtaExpected": 25308.55,
-      "savingsVsCheapestExpected": 32,
+      "savingsVsCheapestExpected": 34.4,
       "currentMissing": [],
       "currentDiffs": []
     },
@@ -11189,50 +11117,26 @@
   "issues": [
     {
       "type": "savings-outside-15-30",
-      "checkIn": "2026-12-10",
-      "checkOut": "2026-12-17",
-      "savings": 14.1,
-      "direct": 12400,
-      "cheapestOta": 14427.27
+      "checkIn": "2026-12-16",
+      "checkOut": "2026-12-23",
+      "savings": 31.7,
+      "direct": 14800,
+      "cheapestOta": 21681.46
     },
     {
       "type": "savings-outside-15-30",
-      "checkIn": "2026-12-11",
-      "checkOut": "2026-12-18",
-      "savings": 9.9,
-      "direct": 13000,
-      "cheapestOta": 14427.27
-    },
-    {
-      "type": "savings-outside-15-30",
-      "checkIn": "2026-12-12",
-      "checkOut": "2026-12-19",
-      "savings": 5.7,
-      "direct": 13600,
-      "cheapestOta": 14427.27
-    },
-    {
-      "type": "savings-outside-15-30",
-      "checkIn": "2026-12-13",
-      "checkOut": "2026-12-20",
-      "savings": 10.7,
-      "direct": 14500,
-      "cheapestOta": 16240.82
-    },
-    {
-      "type": "savings-outside-15-30",
-      "checkIn": "2026-12-14",
-      "checkOut": "2026-12-21",
-      "savings": 14.7,
-      "direct": 15400,
-      "cheapestOta": 18054.36
+      "checkIn": "2026-12-17",
+      "checkOut": "2026-12-24",
+      "savings": 33.2,
+      "direct": 15700,
+      "cheapestOta": 23495.01
     },
     {
       "type": "savings-outside-15-30",
       "checkIn": "2026-12-18",
       "checkOut": "2026-12-25",
-      "savings": 32,
-      "direct": 17200,
+      "savings": 34.4,
+      "direct": 16600,
       "cheapestOta": 25308.55
     },
     {

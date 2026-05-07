@@ -24,21 +24,11 @@
       "id": "direct-shoulder-2026",
       "platform": "direct",
       "startDate": "2026-09-08",
-      "endDate": "2026-12-15",
+      "endDate": "2026-12-19",
       "nightlyRate": 1600,
       "currency": "USD",
       "charges": [],
-      "notes": "2026 shoulder-season direct rate. Added after updated Airbnb/VRBO pricing showed the prior $1,750 direct rate was only about a 15–16% savings in early/mid September. Tax-inclusive; no separate guest tax line is added on DirectStay."
-    },
-    {
-      "id": "direct-holiday-ramp-2026",
-      "platform": "direct",
-      "startDate": "2026-12-15",
-      "endDate": "2026-12-19",
-      "nightlyRate": 2200,
-      "currency": "USD",
-      "charges": [],
-      "notes": "2026 holiday ramp direct rate per Jaimal direction on 2026-05-07. More generous than OTA pricing but avoids leaving too much value on the table during the Dec 15–18 holiday ramp. Tax-inclusive; no separate guest tax line is added on DirectStay."
+      "notes": "2026 shoulder-season direct rate through Dec 18. Holiday premium starts Dec 19, where Airbnb/VRBO pricing first reaches true Christmas-week levels; this keeps mid-December mixed stays from losing the book-direct discount."
     },
     {
       "id": "direct-christmas-new-year-2026",
@@ -48,7 +38,7 @@
       "nightlyRate": 2500,
       "currency": "USD",
       "charges": [],
-      "notes": "2026 Christmas/New Year direct rate per Jaimal direction on 2026-05-07. Intentionally more generous than Airbnb/VRBO peak holiday pricing while materially reducing the prior discount at $1,700/night. Tax-inclusive; no separate guest tax line is added on DirectStay."
+      "notes": "2026 Christmas/New Year direct rate per Jaimal direction on 2026-05-07. Starts Dec 19 when OTA pricing reaches true Christmas-week levels; intentionally more generous than Airbnb/VRBO peak holiday pricing without giving away the prior $1,700/night level."
     },
     {
       "id": "vrbo-current-spring-2026",
