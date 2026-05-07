@@ -1,25 +1,6 @@
 import { NextResponse } from "next/server";
-import { calculateStayPricing, getSavingsPercentage, getStayNights } from "@/lib/pricing";
-import { getPricingTaxSettings, listPricingEntries } from "@/lib/pricingData";
-
-function pickEntry(entries: Awaited<ReturnType<typeof listPricingEntries>>, platform: "direct" | "airbnb" | "vrbo", checkIn: string, checkOut: string) {
-  const nights = getStayNights(checkIn, checkOut);
-  const matches = entries.filter((entry) => {
-    if (entry.platform !== platform) return false;
-    if (entry.startDate > checkIn) return false;
-    if (entry.endDate < checkOut) return false;
-    if (entry.minimumStayNights && nights < entry.minimumStayNights) return false;
-    return true;
-  });
-
-  if (matches.length === 0) return null;
-
-  return matches.sort((a, b) => {
-    const spanA = getStayNights(a.startDate, a.endDate);
-    const spanB = getStayNights(b.startDate, b.endDate);
-    return spanA - spanB;
-  })[0];
-}
+import { getSavingsPercentage, getStayNights } from "@/lib/pricing";
+import { getCalculatedStayPricing, getPricingTaxSettings } from "@/lib/pricingData";
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -30,14 +11,12 @@ export async function GET(req: Request) {
     return NextResponse.json({ ok: false, error: "Invalid dates" }, { status: 400 });
   }
 
-  const [entries, taxSettings] = await Promise.all([listPricingEntries(), getPricingTaxSettings()]);
-  const directEntry = pickEntry(entries, "direct", checkIn, checkOut);
-  const airbnbEntry = pickEntry(entries, "airbnb", checkIn, checkOut);
-  const vrboEntry = pickEntry(entries, "vrbo", checkIn, checkOut);
-
-  const direct = directEntry ? calculateStayPricing(directEntry, checkIn, checkOut, taxSettings) : null;
-  const airbnb = airbnbEntry ? calculateStayPricing(airbnbEntry, checkIn, checkOut, taxSettings) : null;
-  const vrbo = vrboEntry ? calculateStayPricing(vrboEntry, checkIn, checkOut, taxSettings) : null;
+  const [direct, airbnb, vrbo, taxSettings] = await Promise.all([
+    getCalculatedStayPricing("direct", checkIn, checkOut),
+    getCalculatedStayPricing("airbnb", checkIn, checkOut),
+    getCalculatedStayPricing("vrbo", checkIn, checkOut),
+    getPricingTaxSettings(),
+  ]);
 
   return NextResponse.json({
     ok: true,
