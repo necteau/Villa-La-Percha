@@ -17,7 +17,7 @@ export default function GuestReviews() {
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#8B7355]">Guest reviews</p>
             <h2 className="mt-4 font-display text-4xl font-light leading-tight text-[#2C2C2C] md:text-5xl">
-              Past guest praise, handled with the same care as the villa.
+              What past guests loved about Villa La Percha.
             </h2>
           </div>
           <div className="rounded-[28px] border border-[#E8E4DF] bg-white p-6 shadow-[0_18px_50px_rgba(44,44,44,0.07)]">

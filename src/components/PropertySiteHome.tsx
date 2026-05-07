@@ -16,7 +16,16 @@ import PriceComparison from "@/components/PriceComparison";
 import ContactForm from "@/components/ContactForm";
 import Footer from "@/components/Footer";
 
-export default function PropertySiteHome() {
+type PlanningGuideLink = {
+  slug: string;
+  title: string;
+};
+
+type PropertySiteHomeProps = {
+  planningGuides?: PlanningGuideLink[];
+};
+
+export default function PropertySiteHome({ planningGuides = [] }: PropertySiteHomeProps) {
   const [checkIn, setCheckIn] = useState<string | null>(null);
   const [checkOut, setCheckOut] = useState<string | null>(null);
 
@@ -75,7 +84,7 @@ export default function PropertySiteHome() {
         </div>
       </section>
 
-      <Footer />
+      <Footer planningGuides={planningGuides} />
     </main>
   );
 }
