@@ -9,19 +9,19 @@ The final guest-facing version should generate these fields from the booking rec
 | Field | Booking Record Value |
 | --- | --- |
 | Property | Villa La Percha, 27 Ocean Point Drive, Providenciales, Turks and Caicos Islands |
-| Owner / Host | Turkoise Investments LLC, or other approved owner/operator entity |
+| Owner / Host | Turkoise Investments LLC |
 | Primary Guest | `[Guest full legal name]` |
 | Guest Email / Phone | `[Guest contact details]` |
 | Check-in Date | `[Date]` |
-| Check-in Time | 4:00 PM, unless otherwise approved in writing |
+| Check-in Time | 4:00 PM |
 | Check-out Date | `[Date]` |
-| Check-out Time | 10:00 AM, unless otherwise approved in writing |
-| Maximum Occupancy | 8 people present at the Property at any time, unless otherwise approved in writing |
+| Check-out Time | 10:00 AM |
+| Maximum Occupancy | 8 people present at the Property at any time |
 | Total Rental Amount | `[Amount]` |
-| Occupancy / Government Taxes | `[Amount or rate]`; current source contract used 12%, subject to change |
+| Occupancy / Government Taxes | 12% Turks and Caicos accommodation/tourism tax, or the then-current legally applicable Turks and Caicos rate |
 | Down Payment / Deposit | `[Amount]` due `[Date]` |
 | Final Payment | `[Amount]` due `[Date]` |
-| Security Deposit / Card Hold | Recommended default from source contract: $1,500, unless changed |
+| Security Deposit / Card Hold | $1,500 potential security deposit/card hold; Owner may charge a card on file for damages or Additional Charges where permitted |
 | Cancellation Policy Version | `[Policy name/version]` |
 | Agreement Version | `[Version/date/hash]` |
 
@@ -29,7 +29,7 @@ The final guest-facing version should generate these fields from the booking rec
 
 This Villa La Percha Guest Rental Agreement (the “Agreement”) is between:
 
-- **Owner / Host:** Turkoise Investments LLC, or the owner/operator entity identified in the booking record (the “Owner”); and
+- **Owner / Host:** Turkoise Investments LLC (the “Owner”); and
 - **Guest:** the primary guest identified in the booking record (the “Guest”).
 
 The Owner agrees to make Villa La Percha available to Guest for the confirmed stay, and Guest agrees to rent and use the Property only under the terms of this Agreement, the booking confirmation, the payment record, and any written house rules or addenda approved by Owner.
@@ -44,9 +44,7 @@ This Agreement provides short-term vacation-rental access only. It is not a resi
 
 ## 3. Reservation Dates, Check-In, and Check-Out
 
-The check-in date, check-out date, nightly count, and approved occupancy are the details shown in the booking confirmation.
-
-Unless otherwise approved in writing:
+The check-in date, check-out date, and nightly count are the details shown in the booking confirmation.
 
 - Check-in is **4:00 PM**.
 - Check-out is **10:00 AM**.
@@ -56,14 +54,14 @@ Guest must vacate and return possession of the Property by the check-out time. I
 
 ## 4. Occupancy, Events, and Visitors
 
-Maximum occupancy is **8 people present at the Property at any time**, unless Owner approves a different occupancy limit in writing.
+Maximum occupancy is **8 people present at the Property at any time**.
 
 For clarity, maximum occupancy means everyone present at the Property, not only overnight guests.
 
 Guest agrees:
 
-- not to exceed the approved maximum occupancy;
-- not to host weddings, parties, family reunions, commercial events, or gatherings exceeding approved occupancy;
+- not to exceed the maximum occupancy;
+- not to host weddings, parties, family reunions, commercial events, or gatherings that would cause more than 8 people to be present at the Property at any time;
 - not to allow unauthorized overnight guests;
 - to ensure all members of Guest’s party and all invitees comply with this Agreement and the house rules.
 
@@ -83,18 +81,16 @@ Unless otherwise stated in writing by Owner:
 
 ## 6. Taxes
 
-Government occupancy taxes and other applicable taxes will be charged as shown in the booking confirmation. The prior Villa La Percha source contract referenced a **12% government occupancy tax**, but the final booking flow should use the current legally applicable rate.
+Government occupancy taxes and other applicable taxes will be charged as shown in the booking confirmation. The current intended tax line is a **12% Turks and Caicos accommodation/tourism tax**, or the then-current legally applicable Turks and Caicos rate.
 
 If the government increases an applicable tax or imposes a new tax on the rental before or during the stay, Guest is responsible for the increase unless Owner agrees otherwise in writing.
 
 ## 7. Cancellation, Refunds, and Travel Insurance
 
-The final cancellation and refund terms must be shown clearly in the booking flow and booking confirmation.
-
-Recommended owner-review baseline from the prior Villa La Percha contract:
+The cancellation and refund terms must be shown clearly in the booking flow and booking confirmation.
 
 - For stays that do **not** overlap **December 18 through January 2**, Guest may cancel by written notice at least **90 days before arrival** and pay a cancellation fee equal to **25% of the rental amount**.
-- At any other time, or for any other reason, the reservation is non-cancelable and nonrefundable unless Owner approves otherwise in writing or applicable law requires otherwise.
+- At any other time, or for any other reason, the reservation is non-cancelable and nonrefundable unless applicable law requires otherwise.
 - No-shows, late arrivals, reduced party size, and early departures are nonrefundable.
 - Guest remains responsible for amounts due, collection costs, and reasonable attorneys’ fees to the extent permitted by law and the final approved terms.
 
@@ -104,11 +100,11 @@ If the Property becomes unavailable because it is sold, out of order, unsafe, ma
 
 ## 8. Security Deposit, Card Hold, Damage, and Additional Charges
 
-Owner may require a security deposit, open credit-card authorization, or payment hold in the amount shown in the booking confirmation. The prior Villa La Percha source contract used a **$1,500 security deposit/card hold**.
+Owner may require a security deposit, open credit-card authorization, or payment hold of up to **$1,500**. Owner does not necessarily collect a security deposit or card hold for every booking, but Guest remains responsible for damage and other Additional Charges under this Agreement.
 
 Guest is responsible for the Property during the stay and for all damage, loss, excessive cleaning, missing items, policy violations, fines, or extraordinary service costs caused by Guest or anyone Guest permits at the Property, including invitees and third-party service providers.
 
-Owner may charge, deduct from the security deposit/card hold, or invoice Guest for Additional Charges, including without limitation:
+If Owner has a payment card or payment method on file, Owner may charge that card or payment method for damages or Additional Charges where permitted by law and payment-provider rules. Owner may also deduct from any security deposit/card hold actually collected or invoice Guest for Additional Charges, including without limitation:
 
 - damage or breakage beyond ordinary wear and tear;
 - missing items;
@@ -123,7 +119,7 @@ Owner may charge, deduct from the security deposit/card hold, or invoice Guest f
 - water or wind damage caused by failure to close or secure doors or windows;
 - fines, service calls, or emergency costs arising from Guest conduct.
 
-Any Additional Charges exceeding the security deposit/card hold are due immediately upon request, subject to applicable law and payment-provider procedures.
+Any Additional Charges not covered by a card charge, payment method on file, security deposit, or card hold are due immediately upon request, subject to applicable law and payment-provider procedures.
 
 ## 9. Furniture, Fixtures, and Property Care
 
@@ -155,7 +151,7 @@ The Property is expected to include a reasonable supply of linens, beach towels,
 
 The prior source contract referenced cribs, highchairs, baby equipment, beach chairs, beach umbrellas, kayaks, and paddleboards. These should be verified before being promised in the final guest-facing booking flow.
 
-One maid-service visit may be included during the stay if desired and if confirmed in the booking details. The cleaning schedule should be arranged with the concierge or property manager. Guest may be asked to vacate the Property during cleaning. Additional maid service may be available for an additional charge.
+For stays of **7 nights or longer**, one midweek maid-service visit is included. The cleaning schedule should be arranged with the concierge or property manager. Guest may be asked to vacate the Property during cleaning. Additional maid service may be available for an additional charge.
 
 Maid service does not include personal laundry, cooking, babysitting, or services not expressly approved.
 
@@ -233,7 +229,7 @@ If there is a conflict, the final owner-approved booking confirmation and final 
 
 ## 22. Electronic Acceptance and Signature
 
-Owner may present this Agreement for electronic review and acceptance. Acceptance may occur through typed signature, checkbox acknowledgment, guest portal acceptance, e-signature provider, or another owner-approved flow.
+Owner may present this Agreement for electronic review and acceptance. The recommended electronic booking flow is checkbox acknowledgment plus typed legal name, with timestamped acceptance stored against the reservation. Owner may use an e-signature provider if later required.
 
 The reservation should not be treated as contract-complete until the final approved agreement version has been accepted and the acceptance record has been stored with the reservation.
 
@@ -264,9 +260,9 @@ Phone: __________________________________
 
 Signature: _______________________________
 
-Printed Name: ____________________________
+Printed Name: Jaimal Fecteau
 
-Title / Entity: ___________________________
+Title / Entity: Authorized Signer, Turkoise Investments LLC
 
 Date: ___________________________________
 
@@ -274,13 +270,13 @@ Date: ___________________________________
 
 Before using this agreement, confirm:
 
-1. Exact legal owner/operator name and signature authority.
-2. Whether DirectStay is only software/booking workflow or a party/agent in the agreement.
-3. Current Turks & Caicos tax rate and required disclosures.
-4. Final cancellation/refund policy, especially holiday dates.
-5. Security deposit/card-hold amount and payment-provider workflow.
-6. A/C/electric allowance, if any, and how overages are measured/disclosed.
-7. Included amenities currently available and any safety/use restrictions.
+1. Turkoise Investments LLC is the Owner, and Jaimal Fecteau is the authorized signer.
+2. DirectStay is booking software/workflow only and is not a party to this Agreement.
+3. Current Turks & Caicos accommodation/tourism tax rate and required disclosures; current intended guest tax line is 12%, or the then-current legally applicable Turks and Caicos rate.
+4. Cancellation/refund structure: 90-day cancellation deadline, 25% cancellation fee outside December 18–January 2, and strict holiday/nonrefundable terms.
+5. Security deposit/card-hold workflow and card-on-file damage charge process.
+6. A/C/electric wording should remain as a usage expectation even if overages are not currently charged.
+7. Maid service: one midweek maid-service visit is included for stays of 7 nights or longer.
 8. Whether to keep the 3x holdover charge.
 9. Whether to keep the $500 smoking/pet fine.
 10. Whether to keep liability cap and six-month claim limitation.
@@ -322,4 +318,5 @@ Guest-facing checkout should highlight, before acceptance:
 - no pets/no smoking and possible $500 fine;
 - check-in/check-out times and 3x holdover risk;
 - travel insurance recommendation;
+- 12% Turks and Caicos accommodation/tourism tax, or the then-current legally applicable Turks and Caicos rate;
 - Turks & Caicos law/venue.
