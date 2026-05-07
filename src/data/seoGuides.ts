@@ -5,7 +5,15 @@ export interface SeoGuide {
   eyebrow: string;
   h1: string;
   intro: string;
-  sections: Array<{ heading: string; body: string }>;
+  heroImage: string;
+  heroAlt: string;
+  secondaryImage: string;
+  secondaryAlt: string;
+  pullQuote: string;
+  bestFor: string[];
+  knowBeforeYouBook: string[];
+  sections: Array<{ heading: string; body: string; kicker?: string }>;
+  featureCards: Array<{ title: string; body: string }>;
   faqs: Array<{ question: string; answer: string }>;
 }
 
@@ -14,33 +22,56 @@ export const villaSeoGuides: SeoGuide[] = [
     slug: "turks-and-caicos-private-villa-rental",
     title: "Turks and Caicos Private Villa Rental | Villa La Percha",
     description:
-      "A practical guide to booking a private Turks and Caicos villa directly, with Villa La Percha in Chalk Sound as a private pool, dock, and beach-access option.",
-    eyebrow: "Turks and Caicos Villa Rentals",
-    h1: "A private Turks and Caicos villa for travelers who want space, water, and a direct booking path.",
+      "A polished guide to choosing a private Turks and Caicos villa, with Villa La Percha as a direct-booking option near Chalk Sound, Taylor Bay, and Sapodilla Bay.",
+    eyebrow: "Private Villa Guide",
+    h1: "The case for a private Turks and Caicos villa — especially when the house is part of the trip.",
     intro:
-      "Villa La Percha is designed for guests who want the privacy of a full villa instead of separate resort rooms: four en-suite bedrooms, a private pool and hot tub, dock swimming, kayaks, paddleboards, and a location near Taylor Bay, Sapodilla Bay, and Chalk Sound.",
+      "The best villa stays do more than replace hotel rooms. They give the group a rhythm: coffee by the pool, beach towels drying in the sun, a late lunch from the outdoor kitchen, and everyone drifting back together after the day’s island plans. Villa La Percha was built for exactly that kind of trip.",
+    heroImage: "/images/aerial-house-ocean-neighbors.jpg",
+    heroAlt: "Aerial view of Villa La Percha near the ocean in Providenciales",
+    secondaryImage: "/images/screened-living-room-ocean-pool.jpg",
+    secondaryAlt: "Villa La Percha screened living room opening toward the pool and ocean",
+    pullQuote: "Choose a villa when the shared spaces matter as much as the bedrooms.",
+    bestFor: [
+      "Families who want a private home base instead of scattered resort rooms",
+      "Couples traveling together who still want en-suite bedroom privacy",
+      "Guests who expect the pool, dock, kitchen, and outdoor areas to be used every day",
+    ],
+    knowBeforeYouBook: [
+      "Villa La Percha has four en-suite bedrooms and a maximum occupancy of 8 people present at the property at any time.",
+      "Direct booking keeps communication close to the property team, but exact pricing, taxes, and terms should always be confirmed in the booking flow.",
+      "The villa is near Chalk Sound, Taylor Bay, and Sapodilla Bay rather than in the Grace Bay resort corridor.",
+    ],
     sections: [
       {
-        heading: "Why book a private villa in Turks and Caicos?",
+        kicker: "The villa advantage",
+        heading: "A private villa changes the shape of the day.",
         body:
-          "A private villa gives families and groups one shared home base: kitchen, pool, outdoor dining, dock access, and room to spread out. That matters in Providenciales, where beach days, boat trips, dinners, and quiet mornings are often better when everyone can gather in one place.",
+          "A resort can be excellent, but it tends to separate the trip into rooms, reservations, and scheduled common areas. A private villa lets the group live together for the week: breakfast in the kitchen, pool time between beach runs, quiet corners for reading, and a real table for the nights everyone wants to stay in.",
       },
       {
-        heading: "Why Villa La Percha?",
+        kicker: "Why this home",
+        heading: "Villa La Percha is strongest for groups who want water everywhere.",
         body:
-          "Villa La Percha sits near Chalk Sound with easy access to Taylor Bay and Sapodilla Bay. Guests get a private pool, hot tub, ocean-facing outdoor spaces, dock swimming, kayaks, paddleboards, and four en-suite bedrooms for up to 8 people present at the property at any time.",
+          "The setting gives guests more than a place to sleep. There is a private pool, hot tub, dock access, kayaks, paddleboards, outdoor dining, and indoor-outdoor living designed around the view. Nearby Taylor Bay and Sapodilla Bay make beach time easy without turning every outing into a production.",
       },
       {
-        heading: "Why book direct?",
+        kicker: "Booking lens",
+        heading: "Direct booking should feel more personal, not less professional.",
         body:
-          "Booking direct lets guests communicate with the property team instead of a marketplace queue, see the home through its own dedicated site, and avoid some of the platform-fee friction that can make luxury rentals feel needlessly expensive.",
+          "The point of booking direct is not just avoiding another platform layer. It is getting property-specific answers, clearer context, and a booking path that treats the villa as its own hospitality experience rather than one tile in a marketplace grid.",
       },
+    ],
+    featureCards: [
+      { title: "Four en-suite bedrooms", body: "A practical layout for families or couples traveling together." },
+      { title: "Private water-focused spaces", body: "Pool, hot tub, dock swimming, kayaks, and paddleboards keep the villa central to the stay." },
+      { title: "West-side Provo setting", body: "Close to Chalk Sound, Taylor Bay, and Sapodilla Bay for a quieter island rhythm." },
     ],
     faqs: [
       {
         question: "Is Villa La Percha a good Turks and Caicos villa for families?",
         answer:
-          "Yes. The villa layout works well for families and groups because it has four en-suite bedrooms, shared indoor-outdoor living areas, a private pool, dock access, and nearby calm-water beaches including Taylor Bay.",
+          "Yes. The villa works well for families because it combines four en-suite bedrooms, shared indoor-outdoor living, a private pool, dock access, and nearby calm-water beaches including Taylor Bay.",
       },
       {
         question: "How many guests can stay at Villa La Percha?",
@@ -53,33 +84,56 @@ export const villaSeoGuides: SeoGuide[] = [
     slug: "chalk-sound-villa-rental",
     title: "Chalk Sound Villa Rental | Villa La Percha, Providenciales",
     description:
-      "Stay near Chalk Sound in Providenciales at Villa La Percha, a private villa close to Taylor Bay, Sapodilla Bay, turquoise water, and west-side island adventures.",
-    eyebrow: "Chalk Sound, Providenciales",
-    h1: "A Chalk Sound villa close to Taylor Bay, Sapodilla Bay, and the quieter side of Provo.",
+      "A travel-editor guide to staying near Chalk Sound in Providenciales, with Villa La Percha close to Taylor Bay, Sapodilla Bay, turquoise water, and the quieter west side of Provo.",
+    eyebrow: "Chalk Sound / Ocean Point",
+    h1: "Stay near Chalk Sound when you want the quieter, bluer side of Providenciales.",
     intro:
-      "Chalk Sound is one of Providenciales' most distinctive areas: bright turquoise water, limestone cays, calmer west-side beaches, and a quieter pace than the Grace Bay corridor. Villa La Percha puts guests close to that landscape while still keeping the rest of the island within reach.",
+      "Chalk Sound is not the same trip as Grace Bay. It is more residential, more cinematic, and more about turquoise water, limestone cays, quiet coves, and west-side sunsets. Villa La Percha gives guests that setting while keeping restaurants, boat days, and island exploring within reach.",
+    heroImage: "/images/chalk-sound.jpg",
+    heroAlt: "Bright turquoise water and cays in Chalk Sound, Providenciales",
+    secondaryImage: "/images/aerial-pool-cabana-chalk-sound.jpg",
+    secondaryAlt: "Villa La Percha pool and cabana area near Chalk Sound",
+    pullQuote: "Chalk Sound is for travelers who want beauty without living inside the busiest resort strip.",
+    bestFor: [
+      "Travelers choosing scenery, privacy, and calm-water beach access over resort density",
+      "Families who expect repeat visits to Taylor Bay and Sapodilla Bay",
+      "Guests who want villa days to feel as memorable as island excursions",
+    ],
+    knowBeforeYouBook: [
+      "Chalk Sound is on the quieter west/southwest side of Providenciales, away from the main Grace Bay resort corridor.",
+      "Taylor Bay is calm and shallow; Sapodilla Bay is nearby and usually livelier.",
+      "You will still want a car for groceries, restaurants, Grace Bay dinners, and exploring the island.",
+    ],
     sections: [
       {
-        heading: "What makes Chalk Sound different?",
+        kicker: "Place",
+        heading: "Chalk Sound has a different kind of luxury.",
         body:
-          "Chalk Sound is known for luminous shallow water, small rocky cays, and a more residential, scenic feel. It is a strong fit for guests who want beauty, privacy, and easy access to Taylor Bay and Sapodilla Bay without staying in the busiest resort zone.",
+          "The luxury here is not lobby marble or a crowded beach club. It is the color of the water, the quiet of the neighborhood, and the ability to come home from a beach or boat day to your own pool, your own dock, and your own table.",
       },
       {
-        heading: "Beach access from Villa La Percha",
+        kicker: "Beaches",
+        heading: "Taylor Bay and Sapodilla Bay give you two moods close by.",
         body:
-          "Taylor Bay is a very short drive or walk from the villa area and is known for shallow, calm water. Sapodilla Bay is also close by and has a livelier local beach scene. Guests can also swim from the villa dock when conditions are appropriate.",
+          "Taylor Bay is the soft, shallow, floating-all-afternoon option. Sapodilla Bay has more beach energy and can be better when the group wants vendors, music, and a livelier scene. Having both nearby makes the villa location unusually flexible.",
       },
       {
-        heading: "Good for relaxed itineraries",
+        kicker: "Island rhythm",
+        heading: "Use Chalk Sound as the slow anchor, not the whole itinerary.",
         body:
-          "Staying in Chalk Sound makes it easy to mix slow villa days with island exploration: morning paddles, pool afternoons, sunset beach visits, casual seafood, and occasional Grace Bay dinners when the group wants more energy.",
+          "A good week here might include villa mornings, Taylor Bay sunsets, a Grace Bay dinner, a boat charter, Bight Reef snorkeling, and a North/Middle Caicos day if the group is adventurous. The point is not to hide from Provo — it is to return to a calmer base after seeing it.",
       },
+    ],
+    featureCards: [
+      { title: "Taylor Bay nearby", body: "Calm, shallow water that is especially useful for families and sunset swims." },
+      { title: "Sapodilla Bay nearby", body: "A livelier shallow-water beach option close to the villa." },
+      { title: "Chalk Sound scenery", body: "The turquoise lagoon landscape gives this side of Provo its signature look." },
     ],
     faqs: [
       {
         question: "Is Chalk Sound a good area to stay in Providenciales?",
         answer:
-          "Yes, especially for travelers who want scenic water, privacy, and proximity to Taylor Bay and Sapodilla Bay rather than the busier Grace Bay resort strip.",
+          "Yes, especially for travelers who want scenery, privacy, and proximity to Taylor Bay and Sapodilla Bay rather than the busier Grace Bay resort strip.",
       },
       {
         question: "Is Villa La Percha near Taylor Bay?",
@@ -92,33 +146,56 @@ export const villaSeoGuides: SeoGuide[] = [
     slug: "providenciales-villa-with-private-pool",
     title: "Providenciales Villa with Private Pool | Villa La Percha",
     description:
-      "Villa La Percha is a Providenciales private villa with pool, hot tub, outdoor dining, dock swimming, kayaks, paddleboards, and four en-suite bedrooms.",
-    eyebrow: "Private Pool Villa",
-    h1: "A Providenciales villa with private pool, hot tub, dock access, and space for the whole group.",
+      "Villa La Percha is a Providenciales private pool villa with hot tub, outdoor dining, dock swimming, kayaks, paddleboards, and four en-suite bedrooms near Chalk Sound.",
+    eyebrow: "Pool Villa in Providenciales",
+    h1: "A Providenciales pool villa for the hours between beach plans — and the nights you stay in.",
     intro:
-      "For many Turks and Caicos trips, the pool becomes the center of the stay: coffee in the morning, swims between beach outings, sunset drinks, and late-night conversation after dinner. Villa La Percha pairs a private pool and hot tub with waterfront outdoor spaces and direct-booking convenience.",
+      "On a Turks and Caicos trip, the pool is not a backup plan. It is where the group gathers before breakfast, after the beach, during the golden hour, and long after dinner. Villa La Percha pairs its private pool with a hot tub, outdoor kitchen, dock access, and enough outdoor zones that nobody has to choose between togetherness and breathing room.",
+    heroImage: "/images/pool-lounge-ocean.jpg",
+    heroAlt: "Villa La Percha private pool lounge area with ocean view",
+    secondaryImage: "/images/nighttime-pergola-pool-fire-pit-ocean.jpg",
+    secondaryAlt: "Nighttime pool, pergola, and fire pit at Villa La Percha",
+    pullQuote: "The pool is not just an amenity here. It is the living room with better weather.",
+    bestFor: [
+      "Groups that want villa time to be a major part of the vacation",
+      "Families balancing beach outings with low-effort pool afternoons",
+      "Guests who want private outdoor space after dinner rather than a resort lobby or bar queue",
+    ],
+    knowBeforeYouBook: [
+      "The pool and hot tub are private to the villa stay.",
+      "The outdoor kitchen, dining areas, and lounge zones make staying in feel intentional rather than like settling.",
+      "Normal supervision and care are required around the pool, hot tub, dock, and open water.",
+    ],
     sections: [
       {
-        heading: "Private pool plus outdoor living",
+        kicker: "Pool-first planning",
+        heading: "A private pool makes the schedule less fragile.",
         body:
-          "Villa La Percha has a private pool, connected hot tub, outdoor kitchen, dining areas, lounge spaces, and a screened indoor-outdoor living area. It is set up for groups that want to spend real time at the villa, not just sleep there.",
+          "Beach too windy? Kids melting down? Half the group moving slowly? A strong villa pool turns those moments into part of the trip instead of a logistical failure. Guests can swim, read, grill, nap, and drift between the pool and living spaces without needing to rally everyone into a car.",
       },
       {
-        heading: "More than a pool house",
+        kicker: "Outdoor living",
+        heading: "The best pool villas give you places to be, not just places to swim.",
         body:
-          "Guests also have dock access for swimming and fishing, kayaks and paddleboards for water time, four en-suite bedrooms, and easy access to nearby beaches. The pool is part of a broader private-villa experience.",
+          "Villa La Percha’s outdoor areas are layered: pool, hot tub, fire pit, pergolas, dining space, outdoor kitchen, and waterfront views. That variety matters over a week because different moments need different settings.",
       },
       {
-        heading: "A strong resort alternative",
+        kicker: "Beyond the pool",
+        heading: "Dock access and paddling keep the water story going.",
         body:
-          "A private pool villa can work especially well for families or couples traveling together because everyone has shared gathering space, private bedrooms, and a home base that does not depend on resort schedules or crowded pool decks.",
+          "The villa also offers dock swimming, casual fishing, kayaks, and paddleboards. For guests who love being near the water, the pool is just one part of a larger waterfront stay.",
       },
+    ],
+    featureCards: [
+      { title: "Private pool", body: "A central gathering point for mornings, afternoons, and post-dinner swims." },
+      { title: "Hot tub and fire pit", body: "Better evening energy than retreating to separate rooms." },
+      { title: "Outdoor kitchen", body: "Useful for easy lunches, grilled dinners, and nights when the villa beats a reservation." },
     ],
     faqs: [
       {
         question: "Does Villa La Percha have a private pool?",
         answer:
-          "Yes. Villa La Percha has a private pool and hot tub, along with outdoor lounge and dining spaces.",
+          "Yes. Villa La Percha has a private pool and hot tub, along with outdoor lounge, dining, and kitchen spaces.",
       },
       {
         question: "Can guests swim from the dock?",
@@ -131,27 +208,50 @@ export const villaSeoGuides: SeoGuide[] = [
     slug: "book-turks-and-caicos-villa-direct",
     title: "Book a Turks and Caicos Villa Direct | Villa La Percha",
     description:
-      "Learn why booking a Turks and Caicos villa direct can mean clearer communication, fewer platform layers, and a more personal stay at Villa La Percha.",
+      "A clear guide to booking Villa La Percha direct in Turks and Caicos: fewer marketplace layers, more property-specific answers, and a more personal villa stay.",
     eyebrow: "Book Direct",
-    h1: "Book your Turks and Caicos villa direct instead of through another marketplace layer.",
+    h1: "Book direct when you want the villa team, not another marketplace layer, between you and the stay.",
     intro:
-      "Direct booking is simple: guests inquire through the official Villa La Percha site, communicate with the property team, and confirm details without relying on a marketplace queue. It is built for clarity, not mystery fees and inbox limbo.",
+      "A great private villa booking should feel precise: the right dates, the right fit for the group, clear expectations, and answers from people who know the home. Direct booking is built around that relationship rather than another generic listing page.",
+    heroImage: "/images/living-dining-to-screened-room.jpg",
+    heroAlt: "Villa La Percha living and dining room opening to screened outdoor space",
+    secondaryImage: "/images/outdoor-kitchen-dining-cabana.jpg",
+    secondaryAlt: "Outdoor kitchen and dining cabana at Villa La Percha",
+    pullQuote: "For a high-value villa stay, clarity is not a luxury feature. It is the whole point.",
+    bestFor: [
+      "Guests who want property-specific answers before committing",
+      "Repeat travelers who prefer a direct relationship with the home",
+      "Groups comparing marketplace totals against official direct-booking pricing",
+    ],
+    knowBeforeYouBook: [
+      "Use the official Villa La Percha inquiry flow for exact availability, pricing, taxes, and terms.",
+      "Direct bookings may avoid some marketplace-fee friction, but exact savings depend on dates and booking terms.",
+      "The guest rental agreement and booking confirmation control the final stay terms.",
+    ],
     sections: [
       {
-        heading: "Clearer communication",
+        kicker: "Communication",
+        heading: "Direct booking makes questions easier to answer before money changes hands.",
         body:
-          "Direct inquiries let the property team answer practical questions about dates, beaches, amenities, arrival details, and the fit for your group. For high-value villa stays, that direct relationship matters.",
+          "For a villa stay, small details matter: group makeup, beach priorities, sleeping arrangements, arrival timing, and how the home actually works. A direct inquiry lets the property team respond in context instead of forcing everything through a marketplace template.",
       },
       {
-        heading: "A property-specific experience",
+        kicker: "Value",
+        heading: "Fewer platform layers can mean a cleaner total price.",
         body:
-          "A dedicated property site can explain the home, neighborhood, island guide, FAQs, and booking terms in more detail than a generic marketplace listing. Guests get more context before they commit.",
+          "Marketplace fees and presentation can make villa pricing harder to understand. Direct booking keeps the conversation closer to the owner/operator and can reduce fee friction, while still requiring clear taxes, payment timing, cancellation terms, and guest agreement review.",
       },
       {
-        heading: "Fewer platform layers",
+        kicker: "Confidence",
+        heading: "A dedicated site should help you decide if the home fits your trip.",
         body:
-          "Booking direct may reduce marketplace fee friction and keeps the reservation relationship closer to the property team. Exact pricing, taxes, and terms should always be confirmed through the official booking flow.",
+          "The official Villa La Percha site includes the property story, amenities, FAQ, island guide, itinerary ideas, and direct inquiry path. It is meant to answer the questions a serious guest asks before committing to a week in Turks and Caicos.",
       },
+    ],
+    featureCards: [
+      { title: "Official inquiry path", body: "Guests request preferred dates through the Villa La Percha page." },
+      { title: "Property-specific answers", body: "Ask about the home, beaches, group fit, and planning details directly." },
+      { title: "Clearer expectations", body: "Booking confirmation and agreement terms define pricing, taxes, occupancy, and stay rules." },
     ],
     faqs: [
       {
