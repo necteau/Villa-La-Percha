@@ -1,0 +1,314 @@
+[
+  {
+    "id": "vrbo-current-spring-2026",
+    "propertyId": "cmof400cf0000wfspgmhy7ao6",
+    "platform": "VRBO",
+    "startDate": "2026-05-07T00:00:00.000Z",
+    "endDate": "2026-06-01T00:00:00.000Z",
+    "nightlyRate": "1900",
+    "minimumStayNights": null,
+    "notes": "VRBO calendar-derived current spring rate. Observed May 16-21 at $1,877-$1,897; blocked/blank May dates filled from nearest visible prices and rounded to a clean website record.",
+    "createdAt": "2026-05-07T20:48:54.007Z",
+    "updatedAt": "2026-05-07T20:48:54.007Z",
+    "charges": [
+      {
+        "id": "cmovyl7h80000eeq5i1s270j2",
+        "pricingRuleId": "vrbo-current-spring-2026",
+        "label": "Occupancy taxes",
+        "category": "TAX",
+        "chargeType": "PERCENT",
+        "value": "0.1038",
+        "basis": "BASE",
+        "perNight": false
+      }
+    ]
+  },
+  {
+    "id": "vrbo-early-summer-2026",
+    "propertyId": "cmof400cf0000wfspgmhy7ao6",
+    "platform": "VRBO",
+    "startDate": "2026-06-01T00:00:00.000Z",
+    "endDate": "2026-07-06T00:00:00.000Z",
+    "nightlyRate": "2025",
+    "minimumStayNights": null,
+    "notes": "VRBO calendar-derived early summer rate. June observed mostly $1,990-$2,031 and July 1-5 around $2,039-$2,042; rounded to one clean summer record.",
+    "createdAt": "2026-05-07T20:48:54.104Z",
+    "updatedAt": "2026-05-07T20:48:54.104Z",
+    "charges": [
+      {
+        "id": "cmovyl7jm0001eeq5uboongqu",
+        "pricingRuleId": "vrbo-early-summer-2026",
+        "label": "Occupancy taxes",
+        "category": "TAX",
+        "chargeType": "PERCENT",
+        "value": "0.1038",
+        "basis": "BASE",
+        "perNight": false
+      }
+    ]
+  },
+  {
+    "id": "vrbo-mid-summer-blocked-2026",
+    "propertyId": "cmof400cf0000wfspgmhy7ao6",
+    "platform": "VRBO",
+    "startDate": "2026-07-06T00:00:00.000Z",
+    "endDate": "2026-08-08T00:00:00.000Z",
+    "nightlyRate": "2025",
+    "minimumStayNights": null,
+    "notes": "VRBO calendar-derived mid-summer carry-forward rate. July 6-Aug 7 was blank/blocked in visible calendar; nearest visible prices on both sides were about $2,033-$2,042.",
+    "createdAt": "2026-05-07T20:48:54.184Z",
+    "updatedAt": "2026-05-07T20:48:54.184Z",
+    "charges": [
+      {
+        "id": "cmovyl7lt0002eeq54gxxgs2d",
+        "pricingRuleId": "vrbo-mid-summer-blocked-2026",
+        "label": "Occupancy taxes",
+        "category": "TAX",
+        "chargeType": "PERCENT",
+        "value": "0.1038",
+        "basis": "BASE",
+        "perNight": false
+      }
+    ]
+  },
+  {
+    "id": "vrbo-late-summer-2026",
+    "propertyId": "cmof400cf0000wfspgmhy7ao6",
+    "platform": "VRBO",
+    "startDate": "2026-08-08T00:00:00.000Z",
+    "endDate": "2026-09-08T00:00:00.000Z",
+    "nightlyRate": "2000",
+    "minimumStayNights": null,
+    "notes": "VRBO calendar-derived late summer rate. August/early September observed around $1,966 weekdays and $2,029-$2,033 weekends; smoothed to $2,000.",
+    "createdAt": "2026-05-07T20:48:54.266Z",
+    "updatedAt": "2026-05-07T20:48:54.266Z",
+    "charges": [
+      {
+        "id": "cmovyl7o30003eeq52y6ql6h5",
+        "pricingRuleId": "vrbo-late-summer-2026",
+        "label": "Occupancy taxes",
+        "category": "TAX",
+        "chargeType": "PERCENT",
+        "value": "0.1038",
+        "basis": "BASE",
+        "perNight": false
+      }
+    ]
+  },
+  {
+    "id": "vrbo-september-stepdown-2026",
+    "propertyId": "cmof400cf0000wfspgmhy7ao6",
+    "platform": "VRBO",
+    "startDate": "2026-09-08T00:00:00.000Z",
+    "endDate": "2026-09-16T00:00:00.000Z",
+    "nightlyRate": "1900",
+    "minimumStayNights": null,
+    "notes": "VRBO calendar-derived September stepdown rate. Observed prices decline from about $1,947 to $1,819; smoothed to a short shoulder step.",
+    "createdAt": "2026-05-07T20:48:54.345Z",
+    "updatedAt": "2026-05-07T20:48:54.345Z",
+    "charges": [
+      {
+        "id": "cmovyl7qb0004eeq539qd48b8",
+        "pricingRuleId": "vrbo-september-stepdown-2026",
+        "label": "Occupancy taxes",
+        "category": "TAX",
+        "chargeType": "PERCENT",
+        "value": "0.1038",
+        "basis": "BASE",
+        "perNight": false
+      }
+    ]
+  },
+  {
+    "id": "vrbo-fall-shoulder-2026",
+    "propertyId": "cmof400cf0000wfspgmhy7ao6",
+    "platform": "VRBO",
+    "startDate": "2026-09-16T00:00:00.000Z",
+    "endDate": "2026-10-27T00:00:00.000Z",
+    "nightlyRate": "1825",
+    "minimumStayNights": null,
+    "notes": "VRBO calendar-derived fall shoulder rate. Observed fall dates cluster around $1,804-$1,858; rounded to $1,825.",
+    "createdAt": "2026-05-07T20:48:54.427Z",
+    "updatedAt": "2026-05-07T20:48:54.427Z",
+    "charges": [
+      {
+        "id": "cmovyl7sp0005eeq50vt2iwn7",
+        "pricingRuleId": "vrbo-fall-shoulder-2026",
+        "label": "Occupancy taxes",
+        "category": "TAX",
+        "chargeType": "PERCENT",
+        "value": "0.1038",
+        "basis": "BASE",
+        "perNight": false
+      }
+    ]
+  },
+  {
+    "id": "vrbo-late-october-early-november-gap-2026",
+    "propertyId": "cmof400cf0000wfspgmhy7ao6",
+    "platform": "VRBO",
+    "startDate": "2026-10-27T00:00:00.000Z",
+    "endDate": "2026-11-14T00:00:00.000Z",
+    "nightlyRate": "1825",
+    "minimumStayNights": null,
+    "notes": "VRBO calendar-derived blocked-gap rate. Oct 27-Nov 13 was blank/blocked and bracketed by observed fall prices around $1,802-$1,864, so the fall shoulder rate is carried forward.",
+    "createdAt": "2026-05-07T20:48:54.511Z",
+    "updatedAt": "2026-05-07T20:48:54.511Z",
+    "charges": [
+      {
+        "id": "cmovyl7v10006eeq5rz8vqkwt",
+        "pricingRuleId": "vrbo-late-october-early-november-gap-2026",
+        "label": "Occupancy taxes",
+        "category": "TAX",
+        "chargeType": "PERCENT",
+        "value": "0.1038",
+        "basis": "BASE",
+        "perNight": false
+      }
+    ]
+  },
+  {
+    "id": "vrbo-thanksgiving-early-december-2026",
+    "propertyId": "cmof400cf0000wfspgmhy7ao6",
+    "platform": "VRBO",
+    "startDate": "2026-11-14T00:00:00.000Z",
+    "endDate": "2026-12-15T00:00:00.000Z",
+    "nightlyRate": "1850",
+    "minimumStayNights": null,
+    "notes": "VRBO calendar-derived Thanksgiving/early December rate. Observed Nov 14-Dec 14 mostly $1,802-$1,864; rounded to $1,850.",
+    "createdAt": "2026-05-07T20:48:54.596Z",
+    "updatedAt": "2026-05-07T20:48:54.596Z",
+    "charges": [
+      {
+        "id": "cmovyl7xa0007eeq5o70sh53w",
+        "pricingRuleId": "vrbo-thanksgiving-early-december-2026",
+        "label": "Occupancy taxes",
+        "category": "TAX",
+        "chargeType": "PERCENT",
+        "value": "0.1038",
+        "basis": "BASE",
+        "perNight": false
+      }
+    ]
+  },
+  {
+    "id": "vrbo-holiday-ramp-1-2026",
+    "propertyId": "cmof400cf0000wfspgmhy7ao6",
+    "platform": "VRBO",
+    "startDate": "2026-12-15T00:00:00.000Z",
+    "endDate": "2026-12-16T00:00:00.000Z",
+    "nightlyRate": "2175",
+    "minimumStayNights": null,
+    "notes": "VRBO observed Dec 15 at $2,179; rounded to $2,175.",
+    "createdAt": "2026-05-07T20:48:54.679Z",
+    "updatedAt": "2026-05-07T20:48:54.679Z",
+    "charges": [
+      {
+        "id": "cmovyl7zm0008eeq5sm1r7382",
+        "pricingRuleId": "vrbo-holiday-ramp-1-2026",
+        "label": "Occupancy taxes",
+        "category": "TAX",
+        "chargeType": "PERCENT",
+        "value": "0.1038",
+        "basis": "BASE",
+        "perNight": false
+      }
+    ]
+  },
+  {
+    "id": "vrbo-holiday-ramp-2-2026",
+    "propertyId": "cmof400cf0000wfspgmhy7ao6",
+    "platform": "VRBO",
+    "startDate": "2026-12-16T00:00:00.000Z",
+    "endDate": "2026-12-17T00:00:00.000Z",
+    "nightlyRate": "2500",
+    "minimumStayNights": null,
+    "notes": "VRBO observed Dec 16 at $2,510; rounded to $2,500.",
+    "createdAt": "2026-05-07T20:48:54.761Z",
+    "updatedAt": "2026-05-07T20:48:54.761Z",
+    "charges": [
+      {
+        "id": "cmovyl81v0009eeq5t9tchmum",
+        "pricingRuleId": "vrbo-holiday-ramp-2-2026",
+        "label": "Occupancy taxes",
+        "category": "TAX",
+        "chargeType": "PERCENT",
+        "value": "0.1038",
+        "basis": "BASE",
+        "perNight": false
+      }
+    ]
+  },
+  {
+    "id": "vrbo-holiday-ramp-3-2026",
+    "propertyId": "cmof400cf0000wfspgmhy7ao6",
+    "platform": "VRBO",
+    "startDate": "2026-12-17T00:00:00.000Z",
+    "endDate": "2026-12-18T00:00:00.000Z",
+    "nightlyRate": "2800",
+    "minimumStayNights": null,
+    "notes": "VRBO observed Dec 17 at $2,788; rounded to $2,800.",
+    "createdAt": "2026-05-07T20:48:54.846Z",
+    "updatedAt": "2026-05-07T20:48:54.846Z",
+    "charges": [
+      {
+        "id": "cmovyl848000aeeq5u4fh9lwy",
+        "pricingRuleId": "vrbo-holiday-ramp-3-2026",
+        "label": "Occupancy taxes",
+        "category": "TAX",
+        "chargeType": "PERCENT",
+        "value": "0.1038",
+        "basis": "BASE",
+        "perNight": false
+      }
+    ]
+  },
+  {
+    "id": "vrbo-holiday-ramp-4-2026",
+    "propertyId": "cmof400cf0000wfspgmhy7ao6",
+    "platform": "VRBO",
+    "startDate": "2026-12-18T00:00:00.000Z",
+    "endDate": "2026-12-19T00:00:00.000Z",
+    "nightlyRate": "3075",
+    "minimumStayNights": null,
+    "notes": "VRBO observed Dec 18 at $3,081; rounded to $3,075.",
+    "createdAt": "2026-05-07T20:48:54.926Z",
+    "updatedAt": "2026-05-07T20:48:54.926Z",
+    "charges": [
+      {
+        "id": "cmovyl86g000beeq5tauhpqis",
+        "pricingRuleId": "vrbo-holiday-ramp-4-2026",
+        "label": "Occupancy taxes",
+        "category": "TAX",
+        "chargeType": "PERCENT",
+        "value": "0.1038",
+        "basis": "BASE",
+        "perNight": false
+      }
+    ]
+  },
+  {
+    "id": "vrbo-christmas-new-year-2026",
+    "propertyId": "cmof400cf0000wfspgmhy7ao6",
+    "platform": "VRBO",
+    "startDate": "2026-12-19T00:00:00.000Z",
+    "endDate": "2027-01-01T00:00:00.000Z",
+    "nightlyRate": "3400",
+    "minimumStayNights": null,
+    "notes": "VRBO calendar-derived Christmas/New Year rate. Observed Dec 19-20 at $3,357-$3,410; Dec 21-31 blank/blocked, so year-end is carried at $3,400.",
+    "createdAt": "2026-05-07T20:48:55.008Z",
+    "updatedAt": "2026-05-07T20:48:55.008Z",
+    "charges": [
+      {
+        "id": "cmovyl88q000ceeq5395thoxf",
+        "pricingRuleId": "vrbo-christmas-new-year-2026",
+        "label": "Occupancy taxes",
+        "category": "TAX",
+        "chargeType": "PERCENT",
+        "value": "0.1038",
+        "basis": "BASE",
+        "perNight": false
+      }
+    ]
+  }
+]

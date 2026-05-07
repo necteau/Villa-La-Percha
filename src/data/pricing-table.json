@@ -148,14 +148,14 @@
       "currency": "USD",
       "charges": [
         {
-          "label": "Occupancy taxes",
+          "label": "Effective VRBO taxes",
           "category": "tax",
           "type": "percent",
-          "value": 0.1038,
+          "value": 0.09879,
           "basis": "base"
         }
       ],
-      "notes": "VRBO calendar-derived current spring rate. Observed May 16-21 at $1,877-$1,897; blocked/blank May dates filled from nearest visible prices and rounded to a clean website record."
+      "notes": "VRBO calendar-derived current spring rate. Observed May 16-21 at $1,877-$1,897; blocked/blank May dates filled from nearest visible prices and rounded to a clean website record. Effective checkout tax model: VRBO labels Turks & Caicos 12% tax, but May sample tax $1,302 on $13,179.70 displayed subtotal is ~9.88% because tax appears to apply to a lower taxable rent base, not all displayed fees."
     },
     {
       "id": "vrbo-early-summer-2026",
@@ -166,14 +166,14 @@
       "currency": "USD",
       "charges": [
         {
-          "label": "Occupancy taxes",
+          "label": "Effective VRBO taxes",
           "category": "tax",
           "type": "percent",
-          "value": 0.1038,
+          "value": 0.10065,
           "basis": "base"
         }
       ],
-      "notes": "VRBO calendar-derived early summer rate. June observed mostly $1,990-$2,031 and July 1-5 around $2,039-$2,042; rounded to one clean summer record."
+      "notes": "VRBO calendar-derived early summer rate. June observed mostly $1,990-$2,031 and July 1-5 around $2,039-$2,042; rounded to one clean summer record. Effective checkout tax model: June sample tax $1,423.80 on $14,146.33 displayed subtotal is ~10.06%; use effective percent on displayed subtotal for comparison."
     },
     {
       "id": "vrbo-mid-summer-blocked-2026",
@@ -184,14 +184,14 @@
       "currency": "USD",
       "charges": [
         {
-          "label": "Occupancy taxes",
+          "label": "Effective VRBO taxes",
           "category": "tax",
           "type": "percent",
-          "value": 0.1038,
+          "value": 0.10131,
           "basis": "base"
         }
       ],
-      "notes": "VRBO calendar-derived mid-summer carry-forward rate. July 6-Aug 7 was blank/blocked in visible calendar; nearest visible prices on both sides were about $2,033-$2,042."
+      "notes": "VRBO calendar-derived mid-summer carry-forward rate. July 6-Aug 7 was blank/blocked in visible calendar; nearest visible prices on both sides were about $2,033-$2,042. Effective checkout tax model: July 4-10 sample tax $1,220.40 on $12,046.14 displayed subtotal is ~10.13%; use for the blocked mid-summer gap."
     },
     {
       "id": "vrbo-late-summer-2026",
@@ -202,14 +202,14 @@
       "currency": "USD",
       "charges": [
         {
-          "label": "Occupancy taxes",
+          "label": "Effective VRBO taxes",
           "category": "tax",
           "type": "percent",
-          "value": 0.1038,
+          "value": 0.1012,
           "basis": "base"
         }
       ],
-      "notes": "VRBO calendar-derived late summer rate. August/early September observed around $1,966 weekdays and $2,029-$2,033 weekends; smoothed to $2,000."
+      "notes": "VRBO calendar-derived late summer rate. August/early September observed around $1,966 weekdays and $2,029-$2,033 weekends; smoothed to $2,000. Effective checkout tax model: blended from Aug 15-22 effective tax 10.25% and Sep 5-12 effective tax 9.99%."
     },
     {
       "id": "vrbo-september-stepdown-2026",
@@ -220,14 +220,14 @@
       "currency": "USD",
       "charges": [
         {
-          "label": "Occupancy taxes",
+          "label": "Effective VRBO taxes",
           "category": "tax",
           "type": "percent",
-          "value": 0.1038,
+          "value": 0.0999,
           "basis": "base"
         }
       ],
-      "notes": "VRBO calendar-derived September stepdown rate. Observed prices decline from about $1,947 to $1,819; smoothed to a short shoulder step."
+      "notes": "VRBO calendar-derived September stepdown rate. Observed prices decline from about $1,947 to $1,819; smoothed to a short shoulder step. Effective checkout tax model: interpolated from early/late September checkout samples; use ~9.99% on displayed subtotal."
     },
     {
       "id": "vrbo-fall-shoulder-2026",
@@ -238,14 +238,14 @@
       "currency": "USD",
       "charges": [
         {
-          "label": "Occupancy taxes",
+          "label": "Effective VRBO taxes",
           "category": "tax",
           "type": "percent",
-          "value": 0.1038,
+          "value": 0.09943,
           "basis": "base"
         }
       ],
-      "notes": "VRBO calendar-derived fall shoulder rate. Observed fall dates cluster around $1,804-$1,858; rounded to $1,825."
+      "notes": "VRBO calendar-derived fall shoulder rate. Observed fall dates cluster around $1,804-$1,858; rounded to $1,825. Effective checkout tax model: Sep 19-26 and Oct 24-31 both show tax $1,302 on $13,094.70 displayed subtotal, ~9.94%."
     },
     {
       "id": "vrbo-late-october-early-november-gap-2026",
@@ -256,14 +256,14 @@
       "currency": "USD",
       "charges": [
         {
-          "label": "Occupancy taxes",
+          "label": "Effective VRBO taxes",
           "category": "tax",
           "type": "percent",
-          "value": 0.1038,
+          "value": 0.1008,
           "basis": "base"
         }
       ],
-      "notes": "VRBO calendar-derived blocked-gap rate. Oct 27-Nov 13 was blank/blocked and bracketed by observed fall prices around $1,802-$1,864, so the fall shoulder rate is carried forward."
+      "notes": "VRBO calendar-derived blocked-gap rate. Oct 27-Nov 13 was blank/blocked and bracketed by observed fall prices around $1,802-$1,864, so the fall shoulder rate is carried forward. Effective checkout tax model: blended between Oct shoulder sample at ~9.94% and Nov sample at ~10.28%."
     },
     {
       "id": "vrbo-thanksgiving-early-december-2026",
@@ -274,14 +274,14 @@
       "currency": "USD",
       "charges": [
         {
-          "label": "Occupancy taxes",
+          "label": "Effective VRBO taxes",
           "category": "tax",
           "type": "percent",
-          "value": 0.1038,
+          "value": 0.103,
           "basis": "base"
         }
       ],
-      "notes": "VRBO calendar-derived Thanksgiving/early December rate. Observed Nov 14-Dec 14 mostly $1,802-$1,864; rounded to $1,850."
+      "notes": "VRBO calendar-derived Thanksgiving/early December rate. Observed Nov 14-Dec 14 mostly $1,802-$1,864; rounded to $1,850. Effective checkout tax model: Nov 21-Dec 12 samples cluster around 10.28%-10.35%; use 10.30%."
     },
     {
       "id": "vrbo-holiday-ramp-1-2026",
@@ -292,14 +292,14 @@
       "currency": "USD",
       "charges": [
         {
-          "label": "Occupancy taxes",
+          "label": "Effective VRBO taxes",
           "category": "tax",
           "type": "percent",
-          "value": 0.1038,
+          "value": 0.103,
           "basis": "base"
         }
       ],
-      "notes": "VRBO observed Dec 15 at $2,179; rounded to $2,175."
+      "notes": "VRBO observed Dec 15 at $2,179; rounded to $2,175. Effective checkout tax model: use early-December effective rate until holiday checkout sample begins."
     },
     {
       "id": "vrbo-holiday-ramp-2-2026",
@@ -310,14 +310,14 @@
       "currency": "USD",
       "charges": [
         {
-          "label": "Occupancy taxes",
+          "label": "Effective VRBO taxes",
           "category": "tax",
           "type": "percent",
-          "value": 0.1038,
+          "value": 0.103,
           "basis": "base"
         }
       ],
-      "notes": "VRBO observed Dec 16 at $2,510; rounded to $2,500."
+      "notes": "VRBO observed Dec 16 at $2,510; rounded to $2,500. Effective checkout tax model: use early-December effective rate until holiday checkout sample begins."
     },
     {
       "id": "vrbo-holiday-ramp-3-2026",
@@ -328,14 +328,14 @@
       "currency": "USD",
       "charges": [
         {
-          "label": "Occupancy taxes",
+          "label": "Effective VRBO taxes",
           "category": "tax",
           "type": "percent",
-          "value": 0.1038,
+          "value": 0.103,
           "basis": "base"
         }
       ],
-      "notes": "VRBO observed Dec 17 at $2,788; rounded to $2,800."
+      "notes": "VRBO observed Dec 17 at $2,788; rounded to $2,800. Effective checkout tax model: use early-December effective rate until holiday checkout sample begins."
     },
     {
       "id": "vrbo-holiday-ramp-4-2026",
@@ -346,14 +346,14 @@
       "currency": "USD",
       "charges": [
         {
-          "label": "Occupancy taxes",
+          "label": "Effective VRBO taxes",
           "category": "tax",
           "type": "percent",
-          "value": 0.1038,
+          "value": 0.1042,
           "basis": "base"
         }
       ],
-      "notes": "VRBO observed Dec 18 at $3,081; rounded to $3,075."
+      "notes": "VRBO observed Dec 18 at $3,081; rounded to $3,075. Effective checkout tax model: bridge between early-December ~10.30% and Christmas-week ~10.54%."
     },
     {
       "id": "vrbo-christmas-new-year-2026",
@@ -364,14 +364,14 @@
       "currency": "USD",
       "charges": [
         {
-          "label": "Occupancy taxes",
+          "label": "Effective VRBO taxes",
           "category": "tax",
           "type": "percent",
-          "value": 0.1038,
+          "value": 0.10537,
           "basis": "base"
         }
       ],
-      "notes": "VRBO calendar-derived Christmas/New Year rate. Observed Dec 19-20 at $3,357-$3,410; Dec 21-31 blank/blocked, so year-end is carried at $3,400."
+      "notes": "VRBO calendar-derived Christmas/New Year rate. Observed Dec 19-20 at $3,357-$3,410; Dec 21-31 blank/blocked, so year-end is carried at $3,400. Effective checkout tax model: Christmas week sample tax $2,482.08 on $23,555.73 displayed subtotal is ~10.54%."
     }
   ],
   "taxSettings": {
