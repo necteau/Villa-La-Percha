@@ -7,6 +7,7 @@ import { getPaymentSettings } from "@/lib/ownerPortalSettings";
 import { getCalculatedStayPricing } from "@/lib/pricingData";
 import { createAiRevisionJob, type AiRevisionIntent } from "@/lib/aiDraftJobs";
 import { trackInquiryConverted } from "@/lib/analytics";
+import { createOrSendInquiryGuestContract } from "@/lib/guestContracts";
 
 function needsFreshDraftAfterLatestInbound(inquiry: InquiryThreadRecord): boolean {
   if (inquiry.status === "closed") return false;
@@ -184,6 +185,22 @@ export async function POST(req: Request) {
       const refreshedInsights = refreshedThread ? await getInquiryCopilotInsights(refreshedThread) : null;
 
       return NextResponse.json({ ok: true, inquiry: refreshedThread || inquiry, draft: refreshedDraft, insights: refreshedInsights });
+    }
+
+    if (action === "guest_contract") {
+      const inquiryId = String(body?.inquiryId || "");
+      if (!inquiryId) return NextResponse.json({ ok: false, error: "Missing inquiry id" }, { status: 400 });
+      const result = await createOrSendInquiryGuestContract(inquiryId);
+      await appendInquiryMessage({
+        inquiryId,
+        direction: "outbound",
+        authorType: "system",
+        subject: "Guest rental agreement link created",
+        body: `Guest rental agreement link created for owner-approved send. Link: ${result.url}`,
+        sentAt: new Date().toISOString(),
+      });
+      const inquiry = await getInquiryThreadById(inquiryId);
+      return NextResponse.json({ ok: true, contract: { id: result.contract.id, status: result.contract.status.toLowerCase(), url: result.url }, inquiry });
     }
 
     if (action === "payment_defaults") {

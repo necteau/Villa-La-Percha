@@ -191,6 +191,7 @@ export default function OwnerInquiriesPage() {
   const [showPostPaymentBookingPrompt, setShowPostPaymentBookingPrompt] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [contractLink, setContractLink] = useState("");
 
   const reloadInquiries = useCallback(async () => {
     const response = await fetch(apiUrl("/api/owner-portal/inquiries"), { cache: "no-store", credentials: "same-origin" });
@@ -326,6 +327,7 @@ export default function OwnerInquiriesPage() {
       paymentNote: selected?.paymentNote || "",
       paymentStatus: selected?.paymentStatus || "unpaid",
     });
+    setContractLink("");
     setSuccess("");
     setError("");
     if (!shouldLoadAssistantInsights) {
@@ -441,6 +443,35 @@ export default function OwnerInquiriesPage() {
       setSuccess("Inquiry reopened.");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to reopen inquiry");
+    } finally {
+      setSavingId(null);
+    }
+  };
+
+  const createGuestContractLink = async () => {
+    if (!selected) return;
+    setSavingId(selected.id);
+    setError("");
+    setSuccess("");
+    setContractLink("");
+    try {
+      const response = await fetch(apiUrl("/api/owner-portal/inquiries"), {
+        method: "POST",
+        credentials: "same-origin",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "guest_contract", inquiryId: selected.id }),
+      });
+      const data = await response.json();
+      if (!response.ok || !data.ok) throw new Error(data.error || "Failed to create agreement link");
+      if (data.inquiry) {
+        setInquiries((current) => current.map((inquiry) => inquiry.id === selected.id ? data.inquiry : inquiry));
+      } else {
+        await reloadInquiries();
+      }
+      setContractLink(data.contract?.url || "");
+      setSuccess("Guest rental agreement link created. Copy it into the approved guest reply when ready.");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to create agreement link");
     } finally {
       setSavingId(null);
     }
@@ -1001,6 +1032,29 @@ export default function OwnerInquiriesPage() {
                         <button type="button" onClick={() => void savePaymentState()} disabled={savingId === selected.id || isClosedInquiry} className="mt-4 rounded-full bg-[#1e4536] px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-white disabled:opacity-60 sm:tracking-[0.16em]">
                           Save manual details
                         </button>
+                      </div>
+                    ) : null}
+                  </div>
+
+                  <div className="rounded-2xl border border-[#e8e1d6] bg-[#faf8f3] p-4">
+                    <div className="flex flex-wrap items-start justify-between gap-3">
+                      <div>
+                        <p className="text-xs font-medium uppercase tracking-[0.18em] text-[#7b7468]">Guest rental agreement</p>
+                        <p className="mt-2 text-sm leading-6 text-[#5b554b]">Create a secure customer review link from the approved Villa La Percha agreement. This records the template version/hash and tracks sent, viewed, and accepted status.</p>
+                      </div>
+                      <span className={`rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] ${hasAcceptedContract ? "bg-[#eef8f1] text-[#1e4536]" : "bg-[#fff7df] text-[#6f4c00]"}`}>{contractLabel(selected)}</span>
+                    </div>
+                    <div className="mt-4 flex flex-wrap gap-3">
+                      <button type="button" onClick={() => void createGuestContractLink()} disabled={savingId === selected.id || isClosedInquiry || hasAcceptedContract} className="rounded-full bg-[#1e4536] px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-white disabled:opacity-60 sm:tracking-[0.16em]">
+                        {selectedContract ? "Refresh agreement link" : "Create agreement link"}
+                      </button>
+                      {selectedContract?.status === "accepted" ? <p className="basis-full text-xs leading-5 text-[#1e4536]">Accepted agreement is attached to this inquiry and will carry forward if you create a reservation.</p> : null}
+                    </div>
+                    {contractLink ? (
+                      <div className="mt-4 rounded-2xl border border-[#d8cebf] bg-white p-4 text-sm leading-6 text-[#5b554b]">
+                        <p className="font-semibold text-[#181612]">Secure guest agreement link</p>
+                        <input readOnly value={contractLink} onFocus={(event) => event.currentTarget.select()} className="mt-2 w-full rounded-xl border border-[#ddd4c7] bg-[#faf8f3] px-3 py-2 text-xs" />
+                        <p className="mt-2 text-xs text-[#7b7468]">This does not email the guest by itself. Paste it into an approved reply when you are ready to send.</p>
                       </div>
                     ) : null}
                   </div>

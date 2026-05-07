@@ -1,8 +1,13 @@
-import 'dotenv/config';
+import dotenv from 'dotenv';
+dotenv.config({ path: '.env.local' });
+dotenv.config();
 import { GuestContractExecutionStatus } from '@prisma/client';
 import assert from 'node:assert/strict';
 import crypto from 'node:crypto';
-import { getPrismaClient } from '../src/lib/db.ts';
+const db = await import('../src/lib/db.ts');
+const { getPrismaClient } = db;
+const guestContracts = await import('../src/lib/guestContracts.ts');
+const { ensureApprovedGuestAgreementTemplate, createOrSendInquiryGuestContract, getGuestContractForReview, acceptGuestContract } = guestContracts;
 
 const prisma = await getPrismaClient();
 const runId = `guest-contract-qa-${Date.now()}`;
@@ -40,6 +45,14 @@ async function main() {
   const property = await prisma.property.findUnique({ where: { slug: 'villa-la-percha' } });
   assert(property, 'Villa La Percha property not found');
   pass('property exists', property.id);
+
+  const approvedTemplate = await ensureApprovedGuestAgreementTemplate();
+  assert.equal(approvedTemplate.status, 'APPROVED');
+  assert.equal(approvedTemplate.type, 'GUEST_RENTAL_AGREEMENT');
+  assert(!approvedTemplate.bodyMarkdown.includes('Draft only'), 'approved customer agreement must not contain draft-only warning');
+  assert(!approvedTemplate.bodyMarkdown.includes('Owner/Counsel Review Checklist'), 'approved customer agreement must not contain internal review checklist');
+  assert(!approvedTemplate.bodyMarkdown.includes('Counsel should confirm'), 'approved customer agreement must not contain counsel-review placeholders');
+  pass('approved guest agreement template is active and customer-clean', `${approvedTemplate.version} / ${approvedTemplate.bodyHash.slice(0, 12)}`);
 
   const existingReservations = await prisma.reservation.findMany({
     where: { propertyId: property.id },
@@ -178,6 +191,50 @@ async function main() {
     if (error.message === 'ROLLBACK_QA_TRANSACTION') pass('rollback transaction completed without persisting QA records');
     else throw error;
   }
+
+  const qaInquiry = await prisma.inquiry.create({
+    data: {
+      propertyId: property.id,
+      fullName: `QA Link Guest ${runId}`,
+      email: `qa-link+${runId}@example.com`,
+      message: 'QA persisted contract link/acceptance flow; cleaned up at end.',
+      checkIn: new Date('2027-07-01T00:00:00Z'),
+      checkOut: new Date('2027-07-08T00:00:00Z'),
+      status: 'AWAITING_GUEST',
+      quotedAmount: 15000,
+    },
+  });
+  try {
+    const sentResult = await createOrSendInquiryGuestContract(qaInquiry.id);
+    assert.equal(sentResult.contract.status, 'SENT');
+    assert(sentResult.url.includes(`/villa-la-percha/guest-agreement/${sentResult.contract.id}`));
+    pass('owner action creates secure guest contract link', sentResult.url.replace(/token=.*/, 'token=[redacted]'));
+
+    const token = new URL(sentResult.url).searchParams.get('token');
+    const viewed = await getGuestContractForReview(sentResult.contract.id, token);
+    assert(viewed, 'contract review link should load with valid token');
+    assert.equal(viewed.status, 'VIEWED');
+    pass('customer opening link marks agreement viewed');
+
+    const accepted = await acceptGuestContract({
+      contractId: sentResult.contract.id,
+      token,
+      signerName: `QA Link Guest ${runId}`,
+      signerEmail: `qa-link+${runId}@example.com`,
+      ip: '127.0.0.1',
+      userAgent: 'DirectStay QA persisted cleanup',
+    });
+    assert.equal(accepted.status, 'ACCEPTED');
+    assert.equal(accepted.acceptedBodyHash, approvedTemplate.bodyHash);
+    assert(accepted.acceptedAt, 'accepted timestamp required');
+    pass('customer acceptance stores signer, timestamp, metadata, and body hash', accepted.id);
+  } finally {
+    await prisma.contractExecution.deleteMany({ where: { inquiryId: qaInquiry.id } });
+    await prisma.inquiry.deleteMany({ where: { id: qaInquiry.id } });
+  }
+  const leakedQaInquiry = await prisma.inquiry.findUnique({ where: { id: qaInquiry.id } });
+  assert.equal(leakedQaInquiry, null, 'persisted QA inquiry cleanup failed');
+  pass('persisted customer-flow QA cleaned up temporary inquiry/execution');
 
   const leakedTemplate = await prisma.contractTemplate.findFirst({ where: { version: runId } });
   assert.equal(leakedTemplate, null, 'QA template leaked outside rollback transaction');
