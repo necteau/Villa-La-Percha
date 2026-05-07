@@ -32,11 +32,12 @@ export const faqs: FAQItem[] = [
   {
     question: "Is the water access good for kids and casual swimmers?",
     answer:
-      "Taylor Bay is especially good for families because the water is calm, shallow, and easy. The property itself also has dock access with stairs into swimmable water, though guests should always use normal care and supervision around docks, pools, and open water.",
+      "Taylor Bay is especially good for families because the water is calm, shallow, and easy. The property itself also has dock access with stairs into swimmable water that is calm, sandy, beautiful, and typically around knee to waist deep."
   },
   {
     question: "How quickly will someone respond to an inquiry?",
-    answer: "The aim is to respond within 24 hours, and often faster.",
+    answer:
+      "We usually respond much faster than a typical rental platform — often within an hour or two during the day. If an inquiry comes in late at night or while we’re briefly away, we’ll still aim to reply as quickly as possible.",
   },
   {
     question: "What makes this stay different from booking through a resort?",
@@ -56,7 +57,7 @@ export const faqs: FAQItem[] = [
   {
     question: "Can you swim from the dock?",
     answer:
-      "The villa has dock access with stairs into the water, and guests often enjoy swimming and fishing from the dock when conditions are appropriate. Guests should always use normal care and supervision around docks, pools, and open water.",
+      "The villa has dock access with stairs straight into calm, sandy, beautiful water that is typically around knee to waist deep, and guests often enjoy swimming and fishing from the dock."
   },
   {
     question: "Is Villa La Percha in Chalk Sound?",

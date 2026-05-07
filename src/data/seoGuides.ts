@@ -186,7 +186,7 @@ export const villaSeoGuides: SeoGuide[] = [
     facts: [
       { label: "Pool", value: "Private pool for the villa stay" },
       { label: "Evening features", value: "Hot tub, fire pit, outdoor dining, and lounge areas" },
-      { label: "Water access", value: "Dock swimming, kayaks, and paddleboards when conditions are appropriate" },
+      { label: "Water access", value: "Dock swimming, kayaks, and paddleboards in calm, sandy, knee- to waist-deep water" },
       { label: "Bedrooms", value: "Four en-suite bedrooms" },
       { label: "Primary source", value: "The Villa page and booking confirmation control exact amenities and stay terms" },
     ],
@@ -236,7 +236,7 @@ export const villaSeoGuides: SeoGuide[] = [
       {
         question: "Can guests swim from the dock?",
         answer:
-          "The villa has dock access with stairs into the water. Guests should always use normal care and supervision around docks, pools, and open water.",
+          "The villa has dock access with stairs straight into calm, sandy, beautiful water that is typically around knee to waist deep."
       },
     ],
   },
