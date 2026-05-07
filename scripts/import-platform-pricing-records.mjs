@@ -6,7 +6,7 @@ import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient, PricingPlatform, ChargeCategory, ChargeType, ChargeBasis } from '@prisma/client';
 
 const platformArg = String(process.argv[2] || '').toLowerCase();
-if (!['airbnb', 'vrbo'].includes(platformArg)) throw new Error('Usage: node scripts/import-platform-pricing-records.mjs <airbnb|vrbo>');
+if (!['airbnb', 'vrbo', 'direct'].includes(platformArg)) throw new Error('Usage: node scripts/import-platform-pricing-records.mjs <airbnb|vrbo|direct>');
 
 dotenvConfig({ path: path.join(process.cwd(), '.env.local'), quiet: true });
 dotenvConfig({ path: path.join(process.cwd(), '.env'), quiet: true });

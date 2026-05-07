@@ -1,0 +1,41 @@
+[
+  {
+    "id": "direct-standard-2026",
+    "propertyId": "cmof400cf0000wfspgmhy7ao6",
+    "platform": "DIRECT",
+    "startDate": "2026-01-01T00:00:00.000Z",
+    "endDate": "2027-01-01T00:00:00.000Z",
+    "nightlyRate": "1600",
+    "minimumStayNights": null,
+    "notes": "2026 standard direct rate. Rounded sales-friendly pricing targeting roughly a 20–25% book-direct discount versus sampled OTA totals.",
+    "createdAt": "2026-05-04T17:58:35.792Z",
+    "updatedAt": "2026-05-04T17:58:35.792Z",
+    "charges": []
+  },
+  {
+    "id": "direct-summer-peak-2026",
+    "propertyId": "cmof400cf0000wfspgmhy7ao6",
+    "platform": "DIRECT",
+    "startDate": "2026-06-01T00:00:00.000Z",
+    "endDate": "2026-09-15T00:00:00.000Z",
+    "nightlyRate": "1750",
+    "minimumStayNights": null,
+    "notes": "2026 summer/late-summer peak direct rate. Based on sampled OTA peak totals around $15,740/week; $1,750/night gives a $12,250 7-night direct total, about 22% below OTA.",
+    "createdAt": "2026-05-04T17:58:35.963Z",
+    "updatedAt": "2026-05-04T17:58:35.963Z",
+    "charges": []
+  },
+  {
+    "id": "direct-holiday-peak-2026",
+    "propertyId": "cmof400cf0000wfspgmhy7ao6",
+    "platform": "DIRECT",
+    "startDate": "2026-12-15T00:00:00.000Z",
+    "endDate": "2027-01-02T00:00:00.000Z",
+    "nightlyRate": "1800",
+    "minimumStayNights": null,
+    "notes": "2026 holiday peak direct rate for Christmas/New Year demand. $1,800/night gives a $12,600 7-night direct total, preserving roughly a 20% book-direct advantage against strongest observed OTA pricing.",
+    "createdAt": "2026-05-04T17:58:36.126Z",
+    "updatedAt": "2026-05-04T18:41:32.437Z",
+    "charges": []
+  }
+]
