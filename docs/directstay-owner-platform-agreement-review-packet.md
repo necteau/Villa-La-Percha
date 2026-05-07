@@ -12,6 +12,7 @@ Current implementation already supports the safe internal path: agreement draft 
 
 - `villa-la-percha/docs/directstay-owner-platform-agreement-draft.md`
 - `villa-la-percha/docs/platform-lead-contract-flow-integration-plan.md`
+- `villa-la-percha/docs/platform-lead-proposal-to-contract-checklist.md`
 
 ## Decisions needed before owner-facing use
 
