@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import PropertySiteHome from "@/components/PropertySiteHome";
+import { villaLaPerchaBreadcrumbs, villaLaPerchaEntity } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "Villa La Percha | Private villa in Chalk Sound, Providenciales — Book direct",
@@ -8,6 +9,17 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "/villa-la-percha",
   },
+  keywords: [
+    "Villa La Percha",
+    "Chalk Sound villa rental",
+    "Providenciales private villa",
+    "Turks and Caicos direct villa rental",
+    "book Villa La Percha direct",
+    "Sapodilla Bay villa",
+    "Taylor Bay villa",
+    "Turks and Caicos family villa",
+    "private pool villa Providenciales",
+  ],
   openGraph: {
     title: "Villa La Percha | Private villa in Chalk Sound, Providenciales",
     description:
@@ -34,5 +46,17 @@ export const metadata: Metadata = {
 };
 
 export default function VillaLaPerchaPage() {
-  return <PropertySiteHome />;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(villaLaPerchaEntity) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(villaLaPerchaBreadcrumbs) }}
+      />
+      <PropertySiteHome />
+    </>
+  );
 }

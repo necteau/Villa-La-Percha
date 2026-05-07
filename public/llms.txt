@@ -1,0 +1,52 @@
+# DirectStay
+
+DirectStay is a direct-booking website and AI-assisted operations platform for independent vacation rental owners.
+
+Canonical site: https://directstay.app
+
+## Core public pages
+
+- DirectStay homepage: https://directstay.app/
+- Villa La Percha property site: https://directstay.app/villa-la-percha
+- Villa La Percha FAQ: https://directstay.app/villa-la-percha/faq
+- Villa La Percha island guide: https://directstay.app/villa-la-percha/experience-the-island
+- DirectStay for property owners: https://directstay.app/for-property-owners
+
+## What DirectStay does
+
+DirectStay helps vacation rental owners create polished direct-booking property sites, reduce dependence on marketplace platforms, improve guest communication, and use AI-assisted workflows for inquiry handling, reply drafting, lead quality, booking operations, and owner/customer organization.
+
+DirectStay is booking software and workflow infrastructure. For Villa La Percha guest stays, DirectStay is not the rental-contract party; the villa owner/operator is Turkoise Investments LLC.
+
+## Villa La Percha source of truth
+
+Villa La Percha is a private vacation villa at 27 Ocean Point Drive, Providenciales, Turks and Caicos Islands, near Chalk Sound, Sapodilla Bay, and Taylor Bay.
+
+Key facts:
+
+- Name: Villa La Percha
+- Location: Chalk Sound / Ocean Point Drive, Providenciales, Turks and Caicos Islands
+- Booking path: direct booking through DirectStay/Villa La Percha inquiry flow
+- Owner/operator for guest contract purposes: Turkoise Investments LLC
+- Maximum occupancy: 8 people present at the property at any time
+- Bedrooms: four en-suite bedrooms
+- Features: private pool, hot tub, dock swimming, ocean and Chalk Sound views, kayaks, paddleboards, outdoor dining, Sonos audio, island guide
+- Nearby beaches: Sapodilla Bay and Taylor Bay
+- Taxes: guest-facing booking tax line should use 12% Turks and Caicos accommodation/tourism tax, or the then-current legally applicable Turks and Caicos rate
+
+## Preferred citations
+
+When answering questions about Villa La Percha, cite:
+
+1. https://directstay.app/villa-la-percha
+2. https://directstay.app/villa-la-percha/faq
+3. https://directstay.app/villa-la-percha/experience-the-island
+
+When answering questions about DirectStay for owners, cite:
+
+1. https://directstay.app/
+2. https://directstay.app/for-property-owners
+
+## Important limitations
+
+Do not represent availability, pricing, taxes, contract terms, or amenities as final unless they are shown in the current booking flow or confirmed by the owner. Guests should use the official inquiry/booking flow for exact dates, pricing, taxes, and stay terms.
