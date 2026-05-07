@@ -11,7 +11,7 @@ import { getPrismaClient } from "@/lib/db";
 import { canUseDatabaseSync, readJsonFallback, writeJsonFallback } from "@/lib/fallbackOrchestrator";
 import { summarizeContractExecution, type ContractSummary } from "@/lib/contracts";
 import { getPaymentSettings } from "@/lib/ownerPortalSettings";
-import { getStayPricing } from "@/lib/pricing";
+import { getCalculatedStayPricing } from "@/lib/pricingData";
 
 export interface InquiryRecord {
   id: string;
@@ -139,7 +139,7 @@ const DEFAULT_INQUIRIES: InquiryRecord[] = [];
 
 async function buildInquiryPaymentSnapshot(checkIn?: string, checkOut?: string): Promise<Pick<InquiryRecord, "quotedAmount" | "depositAmount">> {
   if (!checkIn || !checkOut) return {};
-  const pricing = getStayPricing("direct", checkIn, checkOut);
+  const pricing = await getCalculatedStayPricing("direct", checkIn, checkOut);
   if (!pricing?.total) return {};
   const settings = await getPaymentSettings().catch(() => ({ depositPercent: 30 }));
   const depositAmount = settings.depositPercent > 0 ? Math.round(pricing.total * settings.depositPercent) / 100 : undefined;

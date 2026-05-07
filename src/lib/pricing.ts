@@ -1,4 +1,10 @@
-import { pricingTable, type PricingChargeRule, type PricingEntry, type PricingPlatform } from "@/data/pricingTable";
+import {
+  pricingTable,
+  type PricingChargeRule,
+  type PricingEntry,
+  type PricingPlatform,
+  type PricingTaxSettings,
+} from "@/data/pricingTable";
 
 export interface AppliedCharge {
   label: string;
@@ -18,6 +24,9 @@ export interface CalculatedStayPricing {
   feeTotal: number;
   taxTotal: number;
   total: number;
+  taxSettings?: PricingTaxSettings;
+  taxIncludedInNightlyRate: boolean;
+  taxDisclosure: string | null;
   entry: PricingEntry;
 }
 
@@ -75,7 +84,12 @@ export function findPricingEntry(platform: PricingPlatform, checkIn: string, che
   })[0];
 }
 
-export function calculateStayPricing(entry: PricingEntry, checkIn: string, checkOut: string): CalculatedStayPricing {
+export function calculateStayPricing(
+  entry: PricingEntry,
+  checkIn: string,
+  checkOut: string,
+  taxSettings: PricingTaxSettings | null = pricingTable.taxSettings ?? null
+): CalculatedStayPricing {
   const nights = getStayNights(checkIn, checkOut);
   const currency = entry.currency ?? "USD";
   const baseAmount = roundCurrency(entry.nightlyRate * nights);
@@ -83,8 +97,16 @@ export function calculateStayPricing(entry: PricingEntry, checkIn: string, check
 
   let feeTotal = 0;
   let taxTotal = 0;
+  const appliesDirectTaxSetting = entry.platform === "direct" && taxSettings?.mode === "separate" && taxSettings.rate > 0;
+  const explicitTaxRuleExists = (entry.charges ?? []).some((rule) => rule.category === "tax");
+  const chargeRules = [
+    ...(entry.charges ?? []),
+    ...(appliesDirectTaxSetting && !explicitTaxRuleExists
+      ? [{ label: taxSettings.label, category: "tax" as const, type: "percent" as const, value: taxSettings.rate, basis: "base" as const }]
+      : []),
+  ];
 
-  for (const rule of entry.charges ?? []) {
+  for (const rule of chargeRules) {
     const amount = applyCharge(rule, baseAmount, feeTotal, taxTotal, nights);
     charges.push({ label: rule.label, category: rule.category, amount });
 
@@ -94,6 +116,14 @@ export function calculateStayPricing(entry: PricingEntry, checkIn: string, check
       taxTotal = roundCurrency(taxTotal + amount);
     }
   }
+
+  const taxIncludedInNightlyRate = entry.platform === "direct" && taxSettings?.mode === "inclusive" && taxSettings.rate > 0;
+  const taxDisclosure = (() => {
+    if (entry.platform !== "direct" || !taxSettings || taxSettings.mode === "none" || taxSettings.rate <= 0) return null;
+    const percent = `${Math.round(taxSettings.rate * 10000) / 100}%`;
+    if (taxSettings.mode === "inclusive") return `Direct nightly pricing includes ${percent} ${taxSettings.label}; no separate tax line is added.`;
+    return `${percent} ${taxSettings.label} is collected separately on direct bookings.`;
+  })();
 
   return {
     platform: entry.platform,
@@ -107,14 +137,22 @@ export function calculateStayPricing(entry: PricingEntry, checkIn: string, check
     feeTotal,
     taxTotal,
     total: roundCurrency(baseAmount + feeTotal + taxTotal),
+    taxSettings: entry.platform === "direct" ? taxSettings ?? undefined : undefined,
+    taxIncludedInNightlyRate,
+    taxDisclosure,
     entry,
   };
 }
 
-export function getStayPricing(platform: PricingPlatform, checkIn: string, checkOut: string): CalculatedStayPricing | null {
+export function getStayPricing(
+  platform: PricingPlatform,
+  checkIn: string,
+  checkOut: string,
+  taxSettings: PricingTaxSettings | null = pricingTable.taxSettings ?? null
+): CalculatedStayPricing | null {
   const entry = findPricingEntry(platform, checkIn, checkOut);
   if (!entry) return null;
-  return calculateStayPricing(entry, checkIn, checkOut);
+  return calculateStayPricing(entry, checkIn, checkOut, taxSettings);
 }
 
 export function getStayPricingComparison(checkIn: string, checkOut: string) {

@@ -1,4 +1,4 @@
-import { PaymentMethodType, PropertyStatus } from "@prisma/client";
+import { PaymentMethodType, PropertyStatus, TaxCollectionMode } from "@prisma/client";
 import { getPrismaClient } from "@/lib/db";
 
 const PROPERTY_SLUG = "villa-la-percha";
@@ -11,6 +11,7 @@ export interface SiteSettingsRecord {
   externalMatchReviewDelayDays: number;
   inquiryEnabled: boolean;
   paymentMethods: { stripe: boolean; zelle: boolean; venmo: boolean; cashApp: boolean };
+  taxSettings: { mode: "inclusive" | "separate" | "none"; rate: number; label: string };
   aiReplyInstructions: string;
   globalAiReplyInstructions: string;
 }
@@ -42,6 +43,9 @@ async function ensureDefaultProperty() {
           currency: "USD",
           timezone: "America/New_York",
           inquiryEnabled: true,
+          taxCollectionMode: TaxCollectionMode.INCLUSIVE,
+          taxRate: 0.12,
+          taxLabel: "Turks and Caicos accommodation/tourism tax",
           minimumStayNights: 5,
         },
       },
@@ -58,6 +62,19 @@ async function ensureDefaultProperty() {
 
 function emptyPaymentMethods() {
   return { stripe: false, zelle: false, venmo: false, cashApp: false };
+}
+
+function taxModeToRecord(value: TaxCollectionMode | string | null | undefined): SiteSettingsRecord["taxSettings"]["mode"] {
+  const normalized = String(value || "INCLUSIVE").toLowerCase();
+  if (normalized === "separate") return "separate";
+  if (normalized === "none") return "none";
+  return "inclusive";
+}
+
+function recordToTaxMode(value: SiteSettingsRecord["taxSettings"]["mode"]): TaxCollectionMode {
+  if (value === "separate") return TaxCollectionMode.SEPARATE;
+  if (value === "none") return TaxCollectionMode.NONE;
+  return TaxCollectionMode.INCLUSIVE;
 }
 
 export function getGlobalAiReplyInstructions(): string {
@@ -83,6 +100,11 @@ export async function getSiteSettings(): Promise<SiteSettingsRecord> {
     externalMatchReviewDelayDays: property.externalMatchReviewDelayDays || 3,
     inquiryEnabled: property.inquiryEnabled,
     paymentMethods,
+    taxSettings: {
+      mode: taxModeToRecord(property.taxCollectionMode),
+      rate: Number(property.taxRate || 0),
+      label: property.taxLabel || "Tax",
+    },
     aiReplyInstructions: property.aiReplyInstructions || "",
     globalAiReplyInstructions: getGlobalAiReplyInstructions(),
   };
@@ -98,6 +120,9 @@ export async function updateSiteSettings(input: SiteSettingsRecord): Promise<Sit
       name: input.name,
       publicDomain: input.domain,
       minimumStayNights: input.minStayNights,
+      taxCollectionMode: recordToTaxMode(input.taxSettings?.mode || "inclusive"),
+      taxRate: Math.max(0, Math.min(1, Number(input.taxSettings?.rate || 0))),
+      taxLabel: String(input.taxSettings?.label || "Tax").trim().slice(0, 120),
       externalMatchReviewDelayDays: Math.max(1, Math.min(30, Number(input.externalMatchReviewDelayDays || 3))),
       inquiryEnabled: input.inquiryEnabled,
       aiReplyInstructions: String(input.aiReplyInstructions || "").trim().slice(0, 4000),

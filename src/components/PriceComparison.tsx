@@ -14,12 +14,20 @@ interface Charge {
   amount: number;
 }
 
+interface TaxSettings {
+  mode: "inclusive" | "separate" | "none";
+  rate: number;
+  label: string;
+}
+
 interface PlatformPricing {
   platform: "direct" | "airbnb" | "vrbo";
   nightlyRate: number;
   baseAmount: number;
   charges: Charge[];
   total: number;
+  taxIncludedInNightlyRate?: boolean;
+  taxDisclosure?: string | null;
 }
 
 interface Comparison {
@@ -27,6 +35,7 @@ interface Comparison {
   direct: PlatformPricing | null;
   airbnb: PlatformPricing | null;
   vrbo: PlatformPricing | null;
+  taxSettings?: TaxSettings;
 }
 
 function formatMoney(value: number): string {
@@ -116,13 +125,20 @@ export default function DirectBookingCalculator({ checkIn = null, checkOut = nul
               <p className={`text-xs uppercase tracking-wider mb-2 font-medium ${isDirect ? "text-white/70" : "text-[#6B6B6B]"}`}>
                 {pricing.platform === "direct" ? "Direct" : pricing.platform === "airbnb" ? "Airbnb" : "VRBO"}
               </p>
-              <p className={`text-sm mb-4 ${isDirect ? "text-white/80" : "text-[#6B6B6B]"}`}>
+              <p className={`text-sm mb-2 ${isDirect ? "text-white/80" : "text-[#6B6B6B]"}`}>
                 {formatMoney(pricing.nightlyRate)} / night
               </p>
+              {isDirect && pricing.taxDisclosure ? (
+                <p className="mb-4 rounded-2xl bg-white/10 px-3 py-2 text-xs leading-5 text-white/80">
+                  {pricing.taxDisclosure}
+                </p>
+              ) : (
+                <div className="mb-4" />
+              )}
 
               <div className="space-y-3 text-sm">
                 <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-x-4 gap-y-1">
-                  <span className={`min-w-0 leading-5 ${isDirect ? "text-white/75" : "text-[#6B6B6B]"}`}>Base stay</span>
+                  <span className={`min-w-0 leading-5 ${isDirect ? "text-white/75" : "text-[#6B6B6B]"}`}>{isDirect && pricing.taxIncludedInNightlyRate ? "Stay total, tax included" : "Base stay"}</span>
                   <span className="whitespace-nowrap text-right font-medium tabular-nums">{formatMoney(pricing.baseAmount)}</span>
                 </div>
                 {pricing.charges.map((charge) => (
@@ -169,7 +185,7 @@ export default function DirectBookingCalculator({ checkIn = null, checkOut = nul
           </h2>
           <p className="text-sm md:text-base text-[#6B6B6B] leading-relaxed max-w-2xl mx-auto">
             For your selected stay, this section compares direct pricing against Airbnb and VRBO totals,
-            including nightly rates, fees, taxes, and savings.
+            including nightly rates, fees, taxes, and savings. When an owner includes tax in the direct nightly rate, the direct total is shown as tax-inclusive instead of adding a separate tax line.
           </p>
         </div>
 

@@ -221,6 +221,11 @@ export async function getInquiryCopilotInsights(inquiry: InquiryThreadRecord): P
 
   const directPricing = pricingEntries.find((entry) => entry.platform === "direct") || null;
   const directNightlyRate = directPricing?.nightlyRate ?? null;
+  const taxModeLine = siteSettings.taxSettings.mode === "separate" && siteSettings.taxSettings.rate > 0
+    ? `DirectStay is configured to collect ${Math.round(siteSettings.taxSettings.rate * 10000) / 100}% ${siteSettings.taxSettings.label} as a separate line item.`
+    : siteSettings.taxSettings.mode === "inclusive" && siteSettings.taxSettings.rate > 0
+      ? `Direct nightly pricing is tax-inclusive; do not add a separate tax line unless the owner changes site settings.`
+      : `No separate direct-booking tax line is currently configured.`;
   const requestedNights = daysBetween(inquiry.checkIn, inquiry.checkOut);
   const text = latestGuestMessage(inquiry);
   const textLower = text.toLowerCase();
@@ -305,8 +310,8 @@ export async function getInquiryCopilotInsights(inquiry: InquiryThreadRecord): P
 
   const minimumStayLine = `The property currently runs with a ${siteSettings.minStayNights}-night minimum stay.`;
   const pricingLine = directNightlyRate
-    ? `Current direct rate guidance starts around $${directNightlyRate.toLocaleString()}/night before taxes or stay-specific adjustments.`
-    : `Direct pricing should be confirmed manually before sending a firm quote.`;
+    ? `Current direct rate guidance starts around $${directNightlyRate.toLocaleString()}/night. ${taxModeLine}`
+    : `Direct pricing should be confirmed manually before sending a firm quote. ${taxModeLine}`;
 
   const followUpBody = [
     buildGreeting(inquiry.fullName),

@@ -4,7 +4,7 @@ import { appendInquiryMessage, getInquiryThreadById, listInquiryThreads, runInqu
 import { sendApprovedInquiryDraft } from "@/lib/inquiryEmail";
 import { getInquiryCopilotInsights } from "@/lib/inquiryCopilot";
 import { getPaymentSettings } from "@/lib/ownerPortalSettings";
-import { getStayPricing } from "@/lib/pricing";
+import { getCalculatedStayPricing } from "@/lib/pricingData";
 import { createAiRevisionJob, type AiRevisionIntent } from "@/lib/aiDraftJobs";
 import { trackInquiryConverted } from "@/lib/analytics";
 
@@ -41,8 +41,8 @@ export async function GET() {
   }
 
   const paymentSettings = await getPaymentSettings();
-  const inquiriesWithPricingContext = inquiries.map((inquiry) => {
-    const pricing = inquiry.checkIn && inquiry.checkOut ? getStayPricing("direct", inquiry.checkIn, inquiry.checkOut) : null;
+  const inquiriesWithPricingContext = await Promise.all(inquiries.map(async (inquiry) => {
+    const pricing = inquiry.checkIn && inquiry.checkOut ? await getCalculatedStayPricing("direct", inquiry.checkIn, inquiry.checkOut) : null;
     const currentQuotedAmount = pricing?.total ?? undefined;
     const currentDepositAmount = currentQuotedAmount && paymentSettings.depositPercent > 0
       ? Math.round(currentQuotedAmount * paymentSettings.depositPercent) / 100
@@ -56,7 +56,7 @@ export async function GET() {
         ? `This older inquiry does not have a stored quote snapshot. Current pricing for these dates is $${currentQuotedAmount.toLocaleString(undefined, { maximumFractionDigits: 0 })}.`
         : undefined;
     return { ...inquiry, currentQuotedAmount, currentDepositAmount, pricingSnapshotNotice };
-  });
+  }));
   return NextResponse.json({ ok: true, inquiries: inquiriesWithPricingContext, paymentSettings });
 }
 
@@ -190,7 +190,7 @@ export async function POST(req: Request) {
       const inquiryId = String(body?.inquiryId || "");
       const inquiry = await getInquiryThreadById(inquiryId);
       if (!inquiry) return NextResponse.json({ ok: false, error: "Inquiry not found" }, { status: 404 });
-      const pricing = inquiry.checkIn && inquiry.checkOut ? getStayPricing("direct", inquiry.checkIn, inquiry.checkOut) : null;
+      const pricing = inquiry.checkIn && inquiry.checkOut ? await getCalculatedStayPricing("direct", inquiry.checkIn, inquiry.checkOut) : null;
       const paymentSettings = await getPaymentSettings();
       const reservationTotal = pricing?.total ?? null;
       const depositAmount = reservationTotal && paymentSettings.depositPercent > 0

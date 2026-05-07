@@ -1,7 +1,8 @@
 import path from "path";
+import { calculateStayPricing, getStayNights, type CalculatedStayPricing } from "@/lib/pricing";
 import { getPrismaClient } from "@/lib/db";
 import { canUseDatabaseSync, readJsonFallback, writeJsonFallback } from "@/lib/fallbackOrchestrator";
-import type { PricingChargeBasis, PricingEntry, PricingTable } from "@/data/pricingTable";
+import type { PricingChargeBasis, PricingEntry, PricingTable, PricingTaxSettings } from "@/data/pricingTable";
 
 const FALLBACK_PATH = path.join(process.cwd(), "src/data/pricing-table.json");
 const PROPERTY_SLUG = "villa-la-percha";
@@ -38,6 +39,71 @@ function mapCharge(charge: {
   };
 }
 
+function normalizeTaxSettings(settings?: Partial<PricingTaxSettings> | null): PricingTaxSettings {
+  return {
+    mode: settings?.mode === "separate" || settings?.mode === "none" ? settings.mode : "inclusive",
+    rate: Number(settings?.rate || 0),
+    label: String(settings?.label || "Tax"),
+  };
+}
+
+function dbTaxMode(value: { toString(): string } | string | null | undefined): PricingTaxSettings["mode"] {
+  const normalized = String(value || "INCLUSIVE").toLowerCase();
+  if (normalized === "separate") return "separate";
+  if (normalized === "none") return "none";
+  return "inclusive";
+}
+
+export async function getPricingTaxSettings(): Promise<PricingTaxSettings> {
+  if (!canUseDatabase()) {
+    return normalizeTaxSettings((await readFallbackPricing()).taxSettings);
+  }
+
+  try {
+    const prisma = await getPrismaClient();
+    const property = await prisma.property.findUnique({ where: { slug: PROPERTY_SLUG } });
+    if (!property) return normalizeTaxSettings((await readFallbackPricing()).taxSettings);
+    return {
+      mode: dbTaxMode(property.taxCollectionMode),
+      rate: Number(property.taxRate || 0),
+      label: property.taxLabel || "Tax",
+    };
+  } catch {
+    return normalizeTaxSettings((await readFallbackPricing()).taxSettings);
+  }
+}
+
+export async function updatePricingTaxSettings(input: PricingTaxSettings): Promise<PricingTaxSettings> {
+  const next = normalizeTaxSettings(input);
+
+  if (!canUseDatabase()) {
+    const table = await readFallbackPricing();
+    table.taxSettings = next;
+    await writeFallbackPricing(table);
+    return next;
+  }
+
+  try {
+    const prisma = await getPrismaClient();
+    const property = await prisma.property.findUnique({ where: { slug: PROPERTY_SLUG } });
+    if (!property) throw new Error("Property not found");
+    await prisma.property.update({
+      where: { id: property.id },
+      data: {
+        taxCollectionMode: next.mode.toUpperCase() as "INCLUSIVE" | "SEPARATE" | "NONE",
+        taxRate: next.rate,
+        taxLabel: next.label,
+      },
+    });
+    return next;
+  } catch {
+    const table = await readFallbackPricing();
+    table.taxSettings = next;
+    await writeFallbackPricing(table);
+    return next;
+  }
+}
+
 export async function listPricingEntries(): Promise<PricingEntry[]> {
   if (!canUseDatabase()) {
     return (await readFallbackPricing()).entries;
@@ -70,6 +136,28 @@ export async function listPricingEntries(): Promise<PricingEntry[]> {
   } catch {
     return (await readFallbackPricing()).entries;
   }
+}
+
+export async function getCalculatedStayPricing(
+  platform: PricingEntry["platform"],
+  checkIn: string,
+  checkOut: string
+): Promise<CalculatedStayPricing | null> {
+  const nights = getStayNights(checkIn, checkOut);
+  if (nights <= 0) return null;
+
+  const [entries, taxSettings] = await Promise.all([listPricingEntries(), getPricingTaxSettings()]);
+  const matches = entries
+    .filter((entry) => {
+      if (entry.platform !== platform) return false;
+      if (entry.startDate && checkIn < entry.startDate) return false;
+      if (entry.endDate && checkIn > entry.endDate) return false;
+      if (entry.minimumStayNights && nights < entry.minimumStayNights) return false;
+      return true;
+    })
+    .sort((a, b) => (b.startDate || "").localeCompare(a.startDate || ""));
+
+  return matches[0] ? calculateStayPricing(matches[0], checkIn, checkOut, taxSettings) : null;
 }
 
 export async function updatePricingEntry(id: string, patch: Partial<PricingEntry>): Promise<PricingEntry | null> {

@@ -2,7 +2,8 @@ import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { createInquiry } from "@/lib/inquiries";
 import { trackInquirySubmit } from "@/lib/analytics";
-import { getStayNights, getStayPricing } from "@/lib/pricing";
+import { getStayNights } from "@/lib/pricing";
+import { getCalculatedStayPricing } from "@/lib/pricingData";
 import { listAvailabilityBlocks } from "@/lib/externalReservationReconciliation";
 import { getPrismaClient } from "@/lib/db";
 
@@ -99,7 +100,8 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: `Please select at least ${MIN_STAY_NIGHTS} nights` }, { status: 400 });
     }
 
-    if (!getStayPricing("direct", safeCheckIn, safeCheckOut)) {
+    const pricing = await getCalculatedStayPricing("direct", safeCheckIn, safeCheckOut);
+    if (!pricing) {
       return NextResponse.json({ error: "Those dates are not open for direct booking yet" }, { status: 400 });
     }
 
@@ -146,6 +148,8 @@ export async function POST(req: Request) {
       <p><strong>Email:</strong> ${escapedEmail}</p>
       <p><strong>Check-in:</strong> ${escapedCheckIn}</p>
       <p><strong>Check-out:</strong> ${escapedCheckOut}</p>
+      <p><strong>Quoted direct total:</strong> $${pricing.total.toLocaleString()} ${pricing.currency}</p>
+      ${pricing.taxDisclosure ? `<p><strong>Tax handling:</strong> ${escapeHtml(pricing.taxDisclosure)}</p>` : ""}
       ${safeComments ? `<p><strong>Comments:</strong> ${escapedComments.replaceAll("\n", "<br />")}</p>` : ""}
       <p><em>Sent from villa-la-percha.vercel.app</em></p>
     `;
@@ -156,6 +160,8 @@ export async function POST(req: Request) {
       `Email: ${safeEmail}`,
       `Check-in: ${safeCheckIn}`,
       `Check-out: ${safeCheckOut}`,
+      `Quoted direct total: $${pricing.total.toLocaleString()} ${pricing.currency}`,
+      pricing.taxDisclosure ? `Tax handling: ${pricing.taxDisclosure}` : null,
       safeComments ? `Comments: ${safeComments}` : "Comments: None",
       "",
       "Sent from villa-la-percha.vercel.app",

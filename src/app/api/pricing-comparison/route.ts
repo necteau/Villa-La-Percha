@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { calculateStayPricing, getSavingsPercentage, getStayNights } from "@/lib/pricing";
-import { listPricingEntries } from "@/lib/pricingData";
+import { getPricingTaxSettings, listPricingEntries } from "@/lib/pricingData";
 
 function pickEntry(entries: Awaited<ReturnType<typeof listPricingEntries>>, platform: "direct" | "airbnb" | "vrbo", checkIn: string, checkOut: string) {
   const nights = getStayNights(checkIn, checkOut);
@@ -30,14 +30,14 @@ export async function GET(req: Request) {
     return NextResponse.json({ ok: false, error: "Invalid dates" }, { status: 400 });
   }
 
-  const entries = await listPricingEntries();
+  const [entries, taxSettings] = await Promise.all([listPricingEntries(), getPricingTaxSettings()]);
   const directEntry = pickEntry(entries, "direct", checkIn, checkOut);
   const airbnbEntry = pickEntry(entries, "airbnb", checkIn, checkOut);
   const vrboEntry = pickEntry(entries, "vrbo", checkIn, checkOut);
 
-  const direct = directEntry ? calculateStayPricing(directEntry, checkIn, checkOut) : null;
-  const airbnb = airbnbEntry ? calculateStayPricing(airbnbEntry, checkIn, checkOut) : null;
-  const vrbo = vrboEntry ? calculateStayPricing(vrboEntry, checkIn, checkOut) : null;
+  const direct = directEntry ? calculateStayPricing(directEntry, checkIn, checkOut, taxSettings) : null;
+  const airbnb = airbnbEntry ? calculateStayPricing(airbnbEntry, checkIn, checkOut, taxSettings) : null;
+  const vrbo = vrboEntry ? calculateStayPricing(vrboEntry, checkIn, checkOut, taxSettings) : null;
 
   return NextResponse.json({
     ok: true,
@@ -46,6 +46,7 @@ export async function GET(req: Request) {
       direct,
       airbnb,
       vrbo,
+      taxSettings,
       savings: direct
         ? {
             airbnb: airbnb ? Math.round((airbnb.total - direct.total) * 100) / 100 : null,

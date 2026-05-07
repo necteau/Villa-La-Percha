@@ -4,6 +4,13 @@ export type PricingPlatform = "direct" | "airbnb" | "vrbo";
 export type PricingChargeCategory = "fee" | "tax";
 export type PricingChargeType = "fixed" | "percent";
 export type PricingChargeBasis = "base" | "base_plus_fees" | "subtotal_before_tax";
+export type TaxCollectionMode = "inclusive" | "separate" | "none";
+
+export interface PricingTaxSettings {
+  mode: TaxCollectionMode;
+  rate: number;
+  label: string;
+}
 
 export interface PricingChargeRule {
   label: string;
@@ -27,6 +34,7 @@ export interface PricingEntry {
 }
 
 export interface PricingTable {
+  taxSettings?: PricingTaxSettings;
   entries: PricingEntry[];
 }
 

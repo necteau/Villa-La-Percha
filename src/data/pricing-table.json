@@ -8,7 +8,7 @@
       "nightlyRate": 1600,
       "currency": "USD",
       "charges": [],
-      "notes": "2026 standard direct rate. Rounded sales-friendly pricing targeting roughly a 20\u201325% book-direct discount versus sampled OTA totals."
+      "notes": "2026 standard direct rate. Rounded sales-friendly pricing targeting roughly a 20\u201325% book-direct discount versus sampled OTA totals. Direct rate is tax-inclusive for Villa La Percha; no separate guest tax line is added on DirectStay."
     },
     {
       "id": "direct-summer-peak-2026",
@@ -18,7 +18,7 @@
       "nightlyRate": 1750,
       "currency": "USD",
       "charges": [],
-      "notes": "2026 summer/late-summer peak direct rate. Based on sampled OTA peak totals around $15,740/week; $1,750/night gives a $12,250 7-night direct total, about 22% below OTA."
+      "notes": "2026 summer/late-summer peak direct rate. Based on sampled OTA peak totals around $15,740/week; $1,750/night gives a $12,250 7-night direct total, about 22% below OTA. Direct rate is tax-inclusive for Villa La Percha; no separate guest tax line is added on DirectStay."
     },
     {
       "id": "direct-holiday-peak-2026",
@@ -28,7 +28,7 @@
       "nightlyRate": 1800,
       "currency": "USD",
       "charges": [],
-      "notes": "2026 holiday peak direct rate for Christmas/New Year demand. $1,800/night gives a $12,600 7-night direct total, preserving roughly a 20% book-direct advantage against strongest observed OTA pricing."
+      "notes": "2026 holiday peak direct rate for Christmas/New Year demand. $1,800/night gives a $12,600 7-night direct total, preserving roughly a 20% book-direct advantage against strongest observed OTA pricing. Direct rate is tax-inclusive for Villa La Percha; no separate guest tax line is added on DirectStay."
     },
     {
       "id": "vrbo-baseline-2026-2028",
@@ -192,5 +192,10 @@
       ],
       "notes": "Observed VRBO checkout sample 2026-05-04: displayed total before taxes $12,733.09 ($1,819.01 x 7 nights); tax $1,308.84; total $14,041.93. Later same-day retry was rate-limited, so this remains pending recheck after cooldown."
     }
-  ]
+  ],
+  "taxSettings": {
+    "mode": "inclusive",
+    "rate": 0.12,
+    "label": "Turks and Caicos accommodation/tourism tax"
+  }
 }

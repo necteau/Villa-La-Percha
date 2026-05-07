@@ -71,6 +71,12 @@ enum ChargeBasis {
   SUBTOTAL_BEFORE_TAX
 }
 
+enum TaxCollectionMode {
+  INCLUSIVE
+  SEPARATE
+  NONE
+}
+
 enum PaymentMethodType {
   STRIPE
   ZELLE
@@ -389,6 +395,9 @@ model Property {
   aiReplyInstructions       String?
   timezone                  String             @default("America/New_York")
   currency                  String             @default("USD")
+  taxCollectionMode         TaxCollectionMode  @default(INCLUSIVE)
+  taxRate                   Decimal            @default(0) @db.Decimal(7, 6)
+  taxLabel                  String             @default("Tax")
   minimumStayNights         Int?
   checkInTime               String?
   checkOutTime              String?

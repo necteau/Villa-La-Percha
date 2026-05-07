@@ -7,6 +7,12 @@ function apiUrl(path: string): string {
   return new URL(path, window.location.origin).toString();
 }
 
+interface TaxSettings {
+  mode: "inclusive" | "separate" | "none";
+  rate: number;
+  label: string;
+}
+
 interface SiteConfig {
   id: string;
   name: string;
@@ -15,6 +21,7 @@ interface SiteConfig {
   externalMatchReviewDelayDays: number;
   inquiryEnabled: boolean;
   paymentMethods: { stripe: boolean; zelle: boolean; venmo: boolean; cashApp: boolean };
+  taxSettings: TaxSettings;
   aiReplyInstructions: string;
 }
 
@@ -26,6 +33,7 @@ interface SiteDraft {
   externalMatchReviewDelayDays: string;
   inquiryEnabled: boolean;
   paymentMethods: { stripe: boolean; zelle: boolean; venmo: boolean; cashApp: boolean };
+  taxSettings: { mode: TaxSettings["mode"]; ratePercent: string; label: string };
   aiReplyInstructions: string;
 }
 
@@ -34,6 +42,11 @@ function toDraft(site: SiteConfig): SiteDraft {
     ...site,
     minStayNights: String(site.minStayNights),
     externalMatchReviewDelayDays: String(site.externalMatchReviewDelayDays),
+    taxSettings: {
+      mode: site.taxSettings?.mode || "inclusive",
+      ratePercent: String(Math.round((site.taxSettings?.rate || 0) * 10000) / 100),
+      label: site.taxSettings?.label || "Tax",
+    },
   };
 }
 
@@ -90,6 +103,11 @@ export default function OwnerSitesPage() {
         externalMatchReviewDelayDays: Number(draft.externalMatchReviewDelayDays || 3),
         inquiryEnabled: draft.inquiryEnabled,
         paymentMethods: draft.paymentMethods,
+        taxSettings: {
+          mode: draft.taxSettings.mode,
+          rate: Math.max(0, Math.min(100, Number(draft.taxSettings.ratePercent || 0))) / 100,
+          label: draft.taxSettings.label,
+        },
         aiReplyInstructions: draft.aiReplyInstructions,
       };
 
@@ -117,7 +135,7 @@ export default function OwnerSitesPage() {
         <p className="text-xs font-medium uppercase tracking-[0.24em] text-[#7b7468]">Sites</p>
         <h1 className="mt-3 font-display text-5xl leading-tight text-[#181612]">Per-property controls</h1>
         <p className="mt-4 text-base leading-7 text-[#5b554b]">
-          Configure booking rules, inquiry behavior, and which payment methods are visible on the property site.
+          Configure booking rules, inquiry behavior, tax handling, and which payment methods are visible on the property site.
         </p>
         {saving ? <p className="mt-3 text-sm text-[#7b7468]">Saving changes…</p> : null}
         {success ? <p className="mt-3 text-sm text-[#1e4536]">{success}</p> : null}
@@ -176,6 +194,43 @@ export default function OwnerSitesPage() {
                 className="w-full rounded-xl border border-[#ddd4c7] px-4 py-3 text-sm"
               />
               <p className="mt-2 text-xs leading-5 text-[#7b7468]">DirectStay reservations without an external match after this many days appear for owner review. Default is 3 days.</p>
+            </div>
+
+            <div>
+              <label className="mb-1 block text-xs uppercase tracking-[0.18em] text-[#7b7468]">Direct-booking tax mode</label>
+              <select
+                value={draft.taxSettings.mode}
+                onChange={(e) => setDraft((current) => (current ? { ...current, taxSettings: { ...current.taxSettings, mode: e.target.value as TaxSettings["mode"] } } : current))}
+                className="w-full rounded-xl border border-[#ddd4c7] px-4 py-3 text-sm"
+              >
+                <option value="inclusive">Nightly rate includes tax</option>
+                <option value="separate">Collect tax separately</option>
+                <option value="none">Do not show tax</option>
+              </select>
+              <p className="mt-2 text-xs leading-5 text-[#7b7468]">
+                Villa La Percha is set to tax-inclusive so the direct nightly price is the all-in guest price.
+              </p>
+            </div>
+
+            <div>
+              <label className="mb-1 block text-xs uppercase tracking-[0.18em] text-[#7b7468]">Tax rate (%)</label>
+              <input
+                type="number"
+                min={0}
+                step="0.01"
+                value={draft.taxSettings.ratePercent}
+                onChange={(e) => setDraft((current) => (current ? { ...current, taxSettings: { ...current.taxSettings, ratePercent: e.target.value } } : current))}
+                className="w-full rounded-xl border border-[#ddd4c7] px-4 py-3 text-sm"
+              />
+            </div>
+
+            <div>
+              <label className="mb-1 block text-xs uppercase tracking-[0.18em] text-[#7b7468]">Tax label</label>
+              <input
+                value={draft.taxSettings.label}
+                onChange={(e) => setDraft((current) => (current ? { ...current, taxSettings: { ...current.taxSettings, label: e.target.value } } : current))}
+                className="w-full rounded-xl border border-[#ddd4c7] px-4 py-3 text-sm"
+              />
             </div>
 
             <div>

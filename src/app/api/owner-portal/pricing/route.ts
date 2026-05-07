@@ -1,13 +1,13 @@
 import { NextResponse } from "next/server";
 import { requireOwnerPortalSession, requireOwnerPortalWriteAccess } from "@/lib/ownerPortalApi";
-import { listPricingEntries, updatePricingEntry } from "@/lib/pricingData";
+import { getPricingTaxSettings, listPricingEntries, updatePricingEntry, updatePricingTaxSettings } from "@/lib/pricingData";
 
 export async function GET() {
   const unauthorized = await requireOwnerPortalSession();
   if (unauthorized) return unauthorized;
 
-  const entries = await listPricingEntries();
-  return NextResponse.json({ ok: true, entries });
+  const [entries, taxSettings] = await Promise.all([listPricingEntries(), getPricingTaxSettings()]);
+  return NextResponse.json({ ok: true, entries, taxSettings });
 }
 
 export async function POST(req: Request) {
@@ -18,6 +18,15 @@ export async function POST(req: Request) {
 
   try {
     const body = await req.json();
+    if (body?.action === "update-tax-settings") {
+      const taxSettings = await updatePricingTaxSettings({
+        mode: body?.taxSettings?.mode,
+        rate: Number(body?.taxSettings?.rate || 0),
+        label: String(body?.taxSettings?.label || "Tax"),
+      });
+      return NextResponse.json({ ok: true, taxSettings });
+    }
+
     const id = String(body?.id || "");
     if (!id) {
       return NextResponse.json({ ok: false, error: "Missing pricing entry id" }, { status: 400 });
