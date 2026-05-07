@@ -1,6 +1,56 @@
 {
   "entries": [
     {
+      "id": "direct-standard-2026",
+      "platform": "direct",
+      "startDate": "2026-01-01",
+      "endDate": "2026-06-01",
+      "nightlyRate": 1600,
+      "currency": "USD",
+      "charges": [],
+      "notes": "2026 standard direct rate. Tax-inclusive for Villa La Percha; no separate guest tax line is added on DirectStay. Maintains roughly 20–23% book-direct savings versus updated Airbnb/VRBO comparison records for spring."
+    },
+    {
+      "id": "direct-summer-peak-2026",
+      "platform": "direct",
+      "startDate": "2026-06-01",
+      "endDate": "2026-09-08",
+      "nightlyRate": 1750,
+      "currency": "USD",
+      "charges": [],
+      "notes": "2026 summer peak direct rate. Ends Sep 8 after updated Airbnb/VRBO pricing showed the OTA shoulder stepdown beginning around Sep 8–12; keeps direct savings roughly in the 20–22% range during summer."
+    },
+    {
+      "id": "direct-shoulder-2026",
+      "platform": "direct",
+      "startDate": "2026-09-08",
+      "endDate": "2026-12-15",
+      "nightlyRate": 1600,
+      "currency": "USD",
+      "charges": [],
+      "notes": "2026 shoulder-season direct rate. Added after updated Airbnb/VRBO pricing showed the prior $1,750 direct rate was only about a 15–16% savings in early/mid September. Tax-inclusive; no separate guest tax line is added on DirectStay."
+    },
+    {
+      "id": "direct-holiday-ramp-2026",
+      "platform": "direct",
+      "startDate": "2026-12-15",
+      "endDate": "2026-12-19",
+      "nightlyRate": 2200,
+      "currency": "USD",
+      "charges": [],
+      "notes": "2026 holiday ramp direct rate per Jaimal direction on 2026-05-07. More generous than OTA pricing but avoids leaving too much value on the table during the Dec 15–18 holiday ramp. Tax-inclusive; no separate guest tax line is added on DirectStay."
+    },
+    {
+      "id": "direct-christmas-new-year-2026",
+      "platform": "direct",
+      "startDate": "2026-12-19",
+      "endDate": "2027-01-02",
+      "nightlyRate": 2500,
+      "currency": "USD",
+      "charges": [],
+      "notes": "2026 Christmas/New Year direct rate per Jaimal direction on 2026-05-07. Intentionally more generous than Airbnb/VRBO peak holiday pricing while materially reducing the prior discount at $1,700/night. Tax-inclusive; no separate guest tax line is added on DirectStay."
+    },
+    {
       "id": "vrbo-current-spring-2026",
       "platform": "vrbo",
       "startDate": "2026-05-07",
@@ -341,46 +391,6 @@
         }
       ],
       "notes": "Airbnb checkout-derived Christmas week rate. Dec 19-26 sample: 7 nights x $3,466.57 = $24,266.00; taxes $2,881.92; total $27,147.92. Extended through Dec 31 for year-end comparison coverage using the observed Christmas-week Airbnb checkout rate."
-    },
-    {
-      "id": "direct-standard-2026",
-      "platform": "direct",
-      "startDate": "2026-01-01",
-      "endDate": "2026-06-01",
-      "nightlyRate": 1600,
-      "currency": "USD",
-      "charges": [],
-      "notes": "2026 standard direct rate. Tax-inclusive for Villa La Percha; no separate guest tax line is added on DirectStay. Maintains roughly 20–23% book-direct savings versus updated Airbnb/VRBO comparison records for spring."
-    },
-    {
-      "id": "direct-summer-peak-2026",
-      "platform": "direct",
-      "startDate": "2026-06-01",
-      "endDate": "2026-09-08",
-      "nightlyRate": 1750,
-      "currency": "USD",
-      "charges": [],
-      "notes": "2026 summer peak direct rate. Ends Sep 8 after updated Airbnb/VRBO pricing showed the OTA shoulder stepdown beginning around Sep 8–12; keeps direct savings roughly in the 20–22% range during summer."
-    },
-    {
-      "id": "direct-shoulder-2026",
-      "platform": "direct",
-      "startDate": "2026-09-08",
-      "endDate": "2026-12-15",
-      "nightlyRate": 1600,
-      "currency": "USD",
-      "charges": [],
-      "notes": "2026 shoulder-season direct rate. Added after updated Airbnb/VRBO pricing showed the prior $1,750 direct rate was only about a 15–16% savings in early/mid September. Tax-inclusive; no separate guest tax line is added on DirectStay."
-    },
-    {
-      "id": "direct-holiday-2026",
-      "platform": "direct",
-      "startDate": "2026-12-15",
-      "endDate": "2027-01-02",
-      "nightlyRate": 1700,
-      "currency": "USD",
-      "charges": [],
-      "notes": "2026 holiday direct rate per Jaimal direction on 2026-05-07. Tax-inclusive for Villa La Percha; no separate guest tax line is added on DirectStay."
     },
     {
       "id": "vrbo-current-spring-2026",

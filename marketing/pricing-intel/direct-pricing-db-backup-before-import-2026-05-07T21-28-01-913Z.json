@@ -1,0 +1,54 @@
+[
+  {
+    "id": "direct-standard-2026",
+    "propertyId": "cmof400cf0000wfspgmhy7ao6",
+    "platform": "DIRECT",
+    "startDate": "2026-01-01T00:00:00.000Z",
+    "endDate": "2026-06-01T00:00:00.000Z",
+    "nightlyRate": "1600",
+    "minimumStayNights": null,
+    "notes": "2026 standard direct rate. Tax-inclusive for Villa La Percha; no separate guest tax line is added on DirectStay. Maintains roughly 20–23% book-direct savings versus updated Airbnb/VRBO comparison records for spring.",
+    "createdAt": "2026-05-07T21:15:35.866Z",
+    "updatedAt": "2026-05-07T21:15:35.866Z",
+    "charges": []
+  },
+  {
+    "id": "direct-summer-peak-2026",
+    "propertyId": "cmof400cf0000wfspgmhy7ao6",
+    "platform": "DIRECT",
+    "startDate": "2026-06-01T00:00:00.000Z",
+    "endDate": "2026-09-08T00:00:00.000Z",
+    "nightlyRate": "1750",
+    "minimumStayNights": null,
+    "notes": "2026 summer peak direct rate. Ends Sep 8 after updated Airbnb/VRBO pricing showed the OTA shoulder stepdown beginning around Sep 8–12; keeps direct savings roughly in the 20–22% range during summer.",
+    "createdAt": "2026-05-07T21:15:35.928Z",
+    "updatedAt": "2026-05-07T21:15:35.928Z",
+    "charges": []
+  },
+  {
+    "id": "direct-shoulder-2026",
+    "propertyId": "cmof400cf0000wfspgmhy7ao6",
+    "platform": "DIRECT",
+    "startDate": "2026-09-08T00:00:00.000Z",
+    "endDate": "2026-12-15T00:00:00.000Z",
+    "nightlyRate": "1600",
+    "minimumStayNights": null,
+    "notes": "2026 shoulder-season direct rate. Added after updated Airbnb/VRBO pricing showed the prior $1,750 direct rate was only about a 15–16% savings in early/mid September. Tax-inclusive; no separate guest tax line is added on DirectStay.",
+    "createdAt": "2026-05-07T21:15:35.983Z",
+    "updatedAt": "2026-05-07T21:15:35.983Z",
+    "charges": []
+  },
+  {
+    "id": "direct-holiday-2026",
+    "propertyId": "cmof400cf0000wfspgmhy7ao6",
+    "platform": "DIRECT",
+    "startDate": "2026-12-15T00:00:00.000Z",
+    "endDate": "2027-01-02T00:00:00.000Z",
+    "nightlyRate": "1700",
+    "minimumStayNights": null,
+    "notes": "2026 holiday direct rate per Jaimal direction on 2026-05-07. Tax-inclusive for Villa La Percha; no separate guest tax line is added on DirectStay.",
+    "createdAt": "2026-05-07T21:15:36.042Z",
+    "updatedAt": "2026-05-07T21:15:36.042Z",
+    "charges": []
+  }
+]
