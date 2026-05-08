@@ -631,3 +631,54 @@ export async function updatePreviewBuildContent(input: {
     },
   });
 }
+
+export async function generatePreviewBuildStarterPacket(input: {
+  previewBuildId: string;
+  createdByEmail?: string | null;
+}) {
+  const prisma = await getPrismaClient();
+  const preview = await prisma.previewBuild.findUnique({
+    where: { id: input.previewBuildId },
+    include: { platformLead: { include: { artifacts: { orderBy: { createdAt: "desc" } } } } },
+  });
+  if (!preview) throw new Error("PreviewBuild not found");
+
+  const lead = preview.platformLead;
+  const property = preview.propertyName || lead.propertyName || lead.company || "the property";
+  const location = preview.location || lead.propertyLocation || "the market";
+  const sourceList = preview.sourceUrls.length ? preview.sourceUrls : [lead.currentWebsite].filter((value): value is string => Boolean(value));
+  const sources = sourceList.map((url) => `- ${url}`).join("\n") || "- No source URL recorded yet; add owner/public source before review.";
+  const existingActiveTypes = new Set(lead.artifacts.filter(activeArtifact).map((artifact) => artifact.type));
+
+  const sections: Prisma.InputJsonValue = [
+    { kind: "imageStory", eyebrow: "Property story", title: `${property} should feel specific before it feels polished`, body: `Draft the hero story from actual source photos and owner/property evidence for ${property} in ${location}. Replace this starter copy with concrete visual details before owner-share approval.`, items: [{ label: "Source-backed hook", body: "Name the photo, room, view, material, or location detail that earns the hero treatment." }, { label: "Avoid generic", body: "Do not use broad labels like coastal, mountain, luxury, or family-friendly unless the property evidence makes them specific." }] },
+    { kind: "signatureMoments", eyebrow: "Signature moments", title: "The moments guests should imagine first", items: [{ label: "Arrival", body: "Describe the arrival sequence from actual driveway, entry, view, lobby, dock, porch, or street context." }, { label: "Best hour", body: "Identify the time of day, light, or gathering moment the property appears to own." }, { label: "Repeat-guest reason", body: "State the emotional reason this stay becomes memorable, then verify with owner truth." }] },
+    { kind: "locationGuide", eyebrow: "Micro-location", title: `Why this exact ${location} location matters`, body: "Replace with micro-geography: nearby water/streets/views/beach/trails/restaurants/transit, what guests can actually do, and what must remain an assumption until owner-confirmed." },
+    { kind: "directBookingValue", eyebrow: "Direct relationship", title: "What DirectStay would make clearer", body: "Explain the direct-booking value without implying live availability, best rate, licensing, or booking capability. This remains a non-functional preview until launch gates pass." },
+    { kind: "missingInputs", eyebrow: "Owner confirmation needed", title: "Draft assumptions to confirm", items: [{ label: "Photos/materials", body: "Confirm which photos DirectStay may use and which should be replaced." }, { label: "Operational truth", body: "Confirm occupancy, bedroom/bath details, rules, parking/access, fees/taxes, and booking constraints." }, { label: "Local claims", body: "Confirm distances, recommendations, safety/accessibility details, and any regulated/compliance claims." }] },
+  ];
+
+  const ownerCallouts: Prisma.InputJsonValue = [
+    { label: "Property-specific strategy", body: `This starter packet frames ${property} around source-backed visual/location evidence in ${location}. Replace this with the strongest property-specific design decision after the photo/geography audit.` },
+    { label: "Assumptions to correct", body: "Before owner sharing, review every draft claim below and either mark it source-observed, owner-confirmed, or remove it. The owner can correct, replace, or remove anything before launch." },
+  ];
+
+  const artifacts = [
+    { type: "PREVIEW_PHOTO_GEO_AUDIT" as const, title: `Photo + Geography Audit — ${property}`, body: `Photo + Geography Audit\n\nProperty: ${property}\nLocation: ${location}\n\nSources used:\n${sources}\n\nObserved photo evidence:\n- TODO: record visible exterior/interior/material/light/view/details.\n\nMicro-geography:\n- TODO: record exact location context that affects guest decisions.\n\nDesign implications:\n- TODO: palette, typography, rhythm, hero/image sequence.\n\nMissing owner inputs:\n- Photo rights/replacements.\n- Operational truth.\n- Local recommendations/distances.` },
+    { type: "PREVIEW_DESIGN_BRIEF" as const, title: `Preview Design Brief — ${property}`, body: `Preview Design Brief\n\nProperty fingerprint:\n- Property: ${property}\n- Location: ${location}\n- Seed/archetype: TODO; evidence must override seed.\n\nDesign decisions only this property justifies:\n1. TODO\n2. TODO\n3. TODO\n\nChoice intentionally avoided because it would feel generic:\n- TODO\n\nPalette evidence:\n- TODO\n\nTypography / layout rhythm:\n- TODO` },
+    { type: "PREVIEW_FACT_REGISTER" as const, title: `Preview Fact Register — ${property}`, body: `Preview Fact Register\n\nObserved/source-backed facts:\n${sources}\n\nOwner-confirmed facts:\n- TODO\n\nDo not assert yet:\n- Availability\n- Pricing/taxes/fees\n- Licensing/insurance/compliance\n- Safety/accessibility\n- Reviews/ratings/testimonials\n- Distances not source-verified` },
+    { type: "PREVIEW_ASSUMPTION_REGISTER" as const, title: `Preview Assumption Register — ${property}`, body: `Preview Assumption Register\n\nDraft assumptions requiring owner correction or confirmation:\n- TODO: strongest guest profile.\n- TODO: best arrival/hero moment.\n- TODO: operating details and policies.\n- TODO: local recommendations and distances.\n\nOwner correction path:\nOwner may correct, remove, or replace any content before launch.` },
+    { type: "PREVIEW_SHARE_NOTE" as const, title: `Owner Share Note — ${property}`, body: `Draft owner-share note\n\nThis Preview Build is a draft concept based on the sources listed below. It is public-obscure, noindex, not linked from public navigation, not bookable, and non-functional. Some details are assumptions for you to correct. Anything can be removed or replaced before launch, and we can take the preview down on request.\n\nSources:\n${sources}\n\n[Requires Jaimal approval before sending externally.]` },
+  ].filter((artifact) => !existingActiveTypes.has(artifact.type));
+
+  const created = await prisma.$transaction(async (tx) => {
+    const artifactRecords = [];
+    for (const artifact of artifacts) {
+      artifactRecords.push(await tx.platformLeadArtifact.create({ data: { platformLeadId: lead.id, type: artifact.type, status: "DRAFT", title: artifact.title, body: artifact.body, createdByEmail: input.createdByEmail ?? "bishop@directstay.internal", metadata: { previewBuildId: preview.id, generatedBy: "generatePreviewBuildStarterPacket" } } }));
+    }
+    const updatedPreview = await tx.previewBuild.update({ where: { id: preview.id }, data: { heroTitle: preview.heroTitle || `${property} direct-booking preview`, positioning: preview.positioning || `A source-backed Preview Build concept for ${property} in ${location}. Draft only until owner truth is confirmed.`, sections, ownerCallouts } });
+    return { artifactRecords, updatedPreview };
+  });
+
+  return { preview: created.updatedPreview, artifacts: created.artifactRecords, skippedExistingTypes: Array.from(existingActiveTypes).filter((type) => String(type).startsWith("PREVIEW_")) };
+}

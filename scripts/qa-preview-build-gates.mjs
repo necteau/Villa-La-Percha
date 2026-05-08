@@ -52,6 +52,8 @@ check("Blocked preview status updates are audited", adminPreviewRoute.includes("
 check("Admin shows packet gate blockers", adminDetail.includes("Packet gates") && adminDetail.includes("Owner-share blocked") && adminDetail.includes("Production promotion blocked"));
 check("Admin includes Preview Build section editor", adminDetail.includes("Sections JSON") && adminDetail.includes("Save preview content") && adminDetail.includes("DEFAULT_PREVIEW_SECTIONS"));
 check("Preview content route validates and saves JSON", adminPreviewRoute.includes('action === "content"') && adminPreviewRoute.includes("Sections JSON must be an array") && adminPreviewRoute.includes("preview_content_updated"));
+check("Admin can generate starter preview packet", adminDetail.includes("Generate starter preview packet") && adminPreviewRoute.includes('action === "generate-packet"') && adminPreviewRoute.includes("preview_packet_generated"));
+check("Starter packet generator creates packet artifacts and rendered sections", platformLeads.includes("generatePreviewBuildStarterPacket") && platformLeads.includes("PREVIEW_PHOTO_GEO_AUDIT") && platformLeads.includes("signatureMoments"));
 check("Admin warns public-obscure is not confidential", adminDetail.includes("public-obscure, not confidential"));
 
 const failed = checks.filter((item) => !item.pass);

@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import type { PreviewBuildStatus } from "@prisma/client";
 import { getAdminSession } from "@/lib/admin/adminAuth";
 import { recordAdminAuditEvent } from "@/lib/admin/auditLog";
-import { createPreviewBuild, updatePreviewBuildContent, updatePreviewBuildStatus } from "@/lib/platformLeads";
+import { createPreviewBuild, generatePreviewBuildStarterPacket, updatePreviewBuildContent, updatePreviewBuildStatus } from "@/lib/platformLeads";
 const STATUSES = new Set<PreviewBuildStatus>(["DRAFT", "READY_FOR_REVIEW", "SHARED_WITH_LEAD", "PROMOTED_TO_SITE", "ARCHIVED"]);
 
 function parsePreviewJson(value: FormDataEntryValue | null, fallback: unknown) {
@@ -28,6 +28,20 @@ export async function POST(request: Request) {
         await recordAdminAuditEvent({ actor: admin, action: "admin.platform_lead.preview_status_updated", entityType: "PlatformLead", entityId: leadId, metadata: { previewBuildId, status } });
       } catch (error) {
         await recordAdminAuditEvent({ actor: admin, action: "admin.platform_lead.preview_status_blocked", entityType: "PlatformLead", entityId: leadId, metadata: { previewBuildId, status, error: error instanceof Error ? error.message : String(error) } });
+        redirect(`/admin/platform-leads/detail?leadId=${leadId}&previewGate=${encodeURIComponent(error instanceof Error ? error.message : String(error))}`);
+      }
+    }
+    redirect(`/admin/platform-leads/detail?leadId=${leadId}`);
+  }
+
+  if (action === "generate-packet") {
+    const previewBuildId = String(form.get("previewBuildId") || "");
+    if (previewBuildId) {
+      try {
+        const result = await generatePreviewBuildStarterPacket({ previewBuildId, createdByEmail: admin?.email });
+        await recordAdminAuditEvent({ actor: admin, action: "admin.platform_lead.preview_packet_generated", entityType: "PlatformLead", entityId: leadId, metadata: { previewBuildId, artifactCount: result.artifacts.length, skippedExistingTypes: result.skippedExistingTypes.join(", ") } });
+      } catch (error) {
+        await recordAdminAuditEvent({ actor: admin, action: "admin.platform_lead.preview_packet_generation_failed", entityType: "PlatformLead", entityId: leadId, metadata: { previewBuildId, error: error instanceof Error ? error.message : String(error) } });
         redirect(`/admin/platform-leads/detail?leadId=${leadId}&previewGate=${encodeURIComponent(error instanceof Error ? error.message : String(error))}`);
       }
     }
