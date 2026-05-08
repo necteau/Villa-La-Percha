@@ -84,6 +84,20 @@ Rules:
 - Shareable without login.
 - Treated internally as a draft/spec artifact.
 
+Preview URLs are public-obscure, not confidential. They must not contain private owner data, sensitive operational details, unpublished contact details, or claims DirectStay would not be comfortable defending if the URL were forwarded.
+
+Owner-share messages should explicitly say the preview is a draft, noindex, not linked publicly, non-functional, based on listed sources/assumptions, correctable by the owner, and removable on request.
+
+Recommended Preview Build status sequence:
+
+1. `INTERNAL_DRAFT` — can contain rough assumptions/placeholders.
+2. `JAIMAL_REVIEW` — safe enough for internal review, not owner-shareable yet.
+3. `OWNER_SHARE_APPROVED` — rubric passed, source/assumption/share note complete, Jaimal approved sharing.
+4. `SHARED_WITH_LEAD` — only after manual owner send/link share.
+5. `SUPERSEDED` / `REMOVED` — use if owner objects, content changes materially, or the preview should no longer be accessible.
+
+Current implementation may use a smaller enum (`DRAFT`, `READY_FOR_REVIEW`, `SHARED_WITH_LEAD`, `PROMOTED_TO_SITE`, `ARCHIVED`), but the operational gate remains the same: do not mark or treat a Preview Build as shared until owner-share approval, safety pass, and recorded share note exist.
+
 ### Preview Build Design Process
 
 Before building, Bishop must complete a property-specific design pass using DirectStay-level docs, not Villa La Percha docs:
@@ -106,6 +120,43 @@ Required sequence:
 8. Score the result with the DirectStay Preview Build Evaluation Rubric before sharing.
 
 Critical design rule: broad categories are not enough. Two coastal villas should not look alike unless their actual photos, interiors, owner style, and micro-location support the same direction. Chalk Sound, Cape Cod, Malibu, Greek islands, and Lowcountry marsh properties should produce different palettes, typography, spacing, and emotional framing.
+
+### Required Preview Build Packet
+
+A Preview Build record is not a shareable Preview Build. Before owner-share review, create or attach:
+
+- Property Photo + Geography Audit.
+- Property-specific DESIGN.md/design brief.
+- Preview content/section plan.
+- Fact register with source URLs and observed claims.
+- Assumption register with inferred claims and missing owner inputs.
+- Owner-specific callouts, including an assumptions/correction callout.
+- Desktop and mobile QA evidence.
+- Rubric score with safety pass/fail.
+- Owner-share note explaining source basis, draft status, public-obscure/noindex/non-functional status, correction path, and removal path.
+
+If these are missing, the artifact is only a placeholder/internal draft, not something to send to an owner.
+
+### Preview Media / Source Policy
+
+- Prefer owner-provided images or sources the owner explicitly supplied.
+- For public listings, record source URL and use only as draft/source material until owner confirms rights and replacements.
+- Do not copy OTA reviews, ratings, guest names, guest photos, or testimonial language without recorded permission/source rights and owner approval.
+- Do not expose private owner contact details, unpublished operational details, access codes, calendars, or sensitive notes.
+- Store screenshots/QA artifacts privately unless explicitly intended for owner sharing.
+- Optimize and rehost images only when rights/permission are clear; otherwise treat images as reference material for internal design direction.
+
+### Preview-to-Production Conversion
+
+The Preview Build can become the starting point for the real site, but `PROMOTED_TO_SITE` requires a conversion packet:
+
+- Owner truth reconciliation complete: assumptions replaced or removed.
+- Owner/property production records linked.
+- Owner callouts removed from guest-facing production view.
+- Final property content/photos approved.
+- Inquiry/payment/booking behavior still disabled unless launch gates approve it.
+- Contract and launch readiness checklist complete.
+- Final Jaimal go-live approval recorded.
 
 ### Preview Build Scope
 
