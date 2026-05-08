@@ -13,6 +13,7 @@ const {
   createPlatformLead,
   createPreviewBuild,
   createPlatformLeadArtifact,
+  generatePreviewBuildStarterPacket,
   updatePreviewBuildStatus,
   getPreviewBuildGateReport,
 } = platformLeads;
@@ -55,28 +56,23 @@ try {
 
   await expectBlocked("READY_FOR_REVIEW without packet", () => updatePreviewBuildStatus(preview.id, "READY_FOR_REVIEW"), "Missing preview packet artifact");
 
-  const packetArtifacts = [
-    ["PREVIEW_PHOTO_GEO_AUDIT", "Photo + geography audit"],
-    ["PREVIEW_DESIGN_BRIEF", "Design brief"],
-    ["PREVIEW_FACT_REGISTER", "Fact register"],
-    ["PREVIEW_ASSUMPTION_REGISTER", "Assumption register"],
-  ] as const;
-  for (const [type, title] of packetArtifacts) {
-    await createPlatformLeadArtifact({ leadId: lead.id, type, status: "APPROVED", title, body: `${title}\n\nTemporary QA artifact.` });
+  const starter = await generatePreviewBuildStarterPacket({ previewBuildId: preview.id, createdByEmail: "preview-gate-qa@example.invalid" });
+  if (starter.artifacts.length !== 5) throw new Error(`Expected 5 starter artifacts, created ${starter.artifacts.length}.`);
+  const starterTypes = new Set(starter.artifacts.map((artifact) => artifact.type));
+  for (const type of ["PREVIEW_PHOTO_GEO_AUDIT", "PREVIEW_DESIGN_BRIEF", "PREVIEW_FACT_REGISTER", "PREVIEW_ASSUMPTION_REGISTER", "PREVIEW_SHARE_NOTE"] as const) {
+    if (!starterTypes.has(type)) throw new Error(`Starter packet missing ${type}.`);
+  }
+  const starterPreview = await prisma.previewBuild.findUnique({ where: { id: preview.id } });
+  if (!starterPreview || !Array.isArray(starterPreview.sections) || starterPreview.sections.length < 5) throw new Error("Starter packet did not populate rendered sections.");
+  if (!Array.isArray(starterPreview.ownerCallouts) || starterPreview.ownerCallouts.length < 2) throw new Error("Starter packet did not populate owner callouts.");
+  console.log("✅ Starter packet generator created artifacts, sections, and owner callouts");
+
+  for (const artifact of starter.artifacts.filter((artifact) => ["PREVIEW_PHOTO_GEO_AUDIT", "PREVIEW_DESIGN_BRIEF", "PREVIEW_FACT_REGISTER", "PREVIEW_ASSUMPTION_REGISTER"].includes(artifact.type))) {
+    await prisma.platformLeadArtifact.update({ where: { id: artifact.id }, data: { status: "APPROVED", approvedAt: new Date(), approvedByEmail: "preview-gate-qa@example.invalid" } });
   }
 
-  await prisma.previewBuild.update({
-    where: { id: preview.id },
-    data: {
-      sections: [{ kind: "hero", title: "QA Lake House", body: "Temporary QA section plan." }],
-      ownerCallouts: [
-        { label: "Property-specific strategy", body: "This QA callout is deliberately longer than eighty characters and avoids the generic onboarding language so the gate recognizes it as specific." },
-      ],
-    },
-  });
-
   await updatePreviewBuildStatus(preview.id, "READY_FOR_REVIEW");
-  console.log("✅ READY_FOR_REVIEW allowed after packet basics");
+  console.log("✅ READY_FOR_REVIEW allowed after generated packet basics are approved");
 
   await expectBlocked("SHARED_WITH_LEAD without approval artifacts", () => updatePreviewBuildStatus(preview.id, "SHARED_WITH_LEAD"), "rubric review");
 
