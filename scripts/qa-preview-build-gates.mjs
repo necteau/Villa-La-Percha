@@ -23,6 +23,9 @@ check("Legacy /preview route is noindex/nofollow", legacyRoute.includes("robots:
 check("Legacy /preview route redirects to /p", legacyRoute.includes("redirect(`/p/${slug}"));
 check("Preview inquiry controls are explicitly disabled", ["<input disabled", "<textarea disabled", "<button disabled"].every((needle) => pRoute.includes(needle)));
 check("Preview page exposes disabled-inquiry QA marker", pRoute.includes("data-preview-inquiry-disabled"));
+check("Preview page renders sections JSON when present", pRoute.includes("asSections(preview.sections)") && pRoute.includes("data-preview-section"));
+check("Placeholder route is explicitly labeled when sections are missing", pRoute.includes("data-preview-placeholder") && pRoute.includes("should not be treated as an owner-ready Preview Build"));
+check("Owner artifacts are loaded for internal preview view", pRoute.includes("PREVIEW_ASSUMPTION_REGISTER") && pRoute.includes("PREVIEW_SHARE_NOTE"));
 check("Owner callouts are hidden in guest view", pRoute.includes('const showOwnerNotes = view !== "guest"') && pRoute.includes("data-preview-owner-callout"));
 check("Preview route has no form action", !/<form\b/i.test(pRoute));
 check("Preview route has no payment/booking widget markers", !/(stripe|checkout|paymentintent|book now|reserve now)/i.test(pRoute));
