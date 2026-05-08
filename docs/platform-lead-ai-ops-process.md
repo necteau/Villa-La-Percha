@@ -52,7 +52,7 @@ No external outreach is sent without Jaimal approval.
 
 ## Preview Build
 
-A Preview Build is a fast, AI-created property website draft used to surprise high-potential leads early.
+A Preview Build is a fast, AI-created property website draft used to surprise high-potential leads early. It should feel like DirectStay studied the owner’s actual property, photos, decor, market, and geography — not like a generic vacation-rental template.
 
 ### When to Create
 
@@ -70,9 +70,11 @@ Exception: if the initial lead is extremely promising or includes a hot note, Bi
 
 ### URL Strategy
 
-Use public-but-obscure shareable URLs:
+Use public-but-obscure shareable URLs. Current implemented route is:
 
 `https://directstay.app/p/property-name-randomtoken`
+
+Legacy/spec language may refer to `/preview/...`, but production Preview Build records and owner proposal artifacts use `/p/{slug}`. Keep `/p/{slug}` as the canonical current route unless the app routing changes.
 
 Rules:
 
@@ -81,6 +83,29 @@ Rules:
 - Not linked from nav/sitemap.
 - Shareable without login.
 - Treated internally as a draft/spec artifact.
+
+### Preview Build Design Process
+
+Before building, Bishop must complete a property-specific design pass using DirectStay-level docs, not Villa La Percha docs:
+
+- `/Users/agents/.openclaw/workspace/directstay/platform-leads/preview-build-playbook.md`
+- `/Users/agents/.openclaw/workspace/directstay/platform-leads/design-inspiration-library.md`
+- `/Users/agents/.openclaw/workspace/directstay/platform-leads/templates/property-photo-geography-audit.md`
+- `/Users/agents/.openclaw/workspace/directstay/platform-leads/preview-build-evaluation-rubric.md`
+- Seed DESIGN files under `/Users/agents/.openclaw/workspace/directstay/platform-leads/design-seeds/`
+
+Required sequence:
+
+1. Explore the listing/source the owner sent.
+2. Audit property photos: exterior, views, interiors, materials, color temperature, decor, landscape, light, and repeated motifs.
+3. Read the exact micro-location/geography, not just a broad category like “coastal” or “mountain.”
+4. Build a Property Design Fingerprint: property type, guest archetype, emotional promise, location cues, owner/decor style, signature stay moments, assumptions, and missing inputs.
+5. Choose a seed archetype only as a starting point. Actual photos, decor, materials, light, and exact geography override the seed.
+6. Derive palette, typography, spacing, image rhythm, and copy tone from source evidence.
+7. Create a property-specific DESIGN.md/design brief for material previews.
+8. Score the result with the DirectStay Preview Build Evaluation Rubric before sharing.
+
+Critical design rule: broad categories are not enough. Two coastal villas should not look alike unless their actual photos, interiors, owner style, and micro-location support the same direction. Chalk Sound, Cape Cod, Malibu, Greek islands, and Lowcountry marsh properties should produce different palettes, typography, spacing, and emotional framing.
 
 ### Preview Build Scope
 
@@ -112,6 +137,7 @@ Include callouts such as:
 - How image ordering differs from OTA constraints.
 - How local guide content builds guest confidence/search value.
 - How direct inquiries preserve the owner/guest relationship.
+- How the palette/layout came from the owner’s photos, decor, and location rather than a generic template.
 - During onboarding, DirectStay gathers property-specific and location-specific owner knowledge to tailor the real site.
 
 Do not include Villa La Percha references in Preview Builds by default. Keep the emotional focus on the lead's property. Villa La Percha can be used later as proof/example if useful.
