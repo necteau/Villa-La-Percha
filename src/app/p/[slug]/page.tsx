@@ -13,6 +13,7 @@ type PreviewSection = {
   items?: Array<string | { label?: string; title?: string; body?: string }>;
   imageUrl?: string;
   imageAlt?: string;
+  kicker?: string;
 };
 
 function asCallouts(value: unknown): OwnerCallout[] {
@@ -53,15 +54,17 @@ function RenderItems({ items }: { items?: PreviewSection["items"] }) {
 
 function PreviewContentSection({ section, index }: { section: PreviewSection; index: number }) {
   const tone = sectionTone(section.kind);
+  const imageFirst = index % 2 === 1;
   return <section data-preview-section={section.kind || "custom"} style={{ padding: "42px 24px" }}>
-    <article style={{ maxWidth: 1120, margin: "0 auto", display: "grid", gap: 24, gridTemplateColumns: section.imageUrl ? "minmax(0, 1.1fr) minmax(280px, .9fr)" : "1fr", alignItems: "center", padding: 28, borderRadius: 28, ...tone }}>
-      <div>
+    <article style={{ maxWidth: 1120, margin: "0 auto", display: "grid", gap: 24, gridTemplateColumns: section.imageUrl ? "repeat(auto-fit, minmax(300px, 1fr))" : "1fr", alignItems: "stretch", padding: 28, borderRadius: 32, boxShadow: "0 24px 80px rgba(23, 33, 26, .08)", ...tone }}>
+      {section.imageUrl && imageFirst ? <div role="img" aria-label={section.imageAlt || sectionTitle(section)} style={{ minHeight: 420, borderRadius: 26, backgroundImage: `url(${section.imageUrl})`, backgroundSize: "cover", backgroundPosition: "center", order: -1 }} /> : null}
+      <div style={{ alignSelf: "center" }}>
         <p style={{ letterSpacing: 2.4, textTransform: "uppercase", color: tone.color === "#f7f3eb" ? "#d8c7a3" : "#7b6d58", margin: 0 }}>{text(section.eyebrow, text(section.kind, `Preview ${index + 1}`)).replace(/([A-Z])/g, " $1")}</p>
-        <h2 style={{ fontSize: "clamp(30px, 5vw, 56px)", lineHeight: 1, margin: "12px 0" }}>{sectionTitle(section)}</h2>
+        <h2 style={{ fontSize: "clamp(30px, 4.6vw, 58px)", lineHeight: .98, margin: "12px 0" }}>{sectionTitle(section)}</h2>
         {section.body ? <p style={{ fontSize: 18, lineHeight: 1.65, margin: 0 }}>{section.body}</p> : null}
         <RenderItems items={section.items} />
       </div>
-      {section.imageUrl ? <div role="img" aria-label={section.imageAlt || sectionTitle(section)} style={{ minHeight: 320, borderRadius: 24, backgroundImage: `url(${section.imageUrl})`, backgroundSize: "cover", backgroundPosition: "center" }} /> : null}
+      {section.imageUrl && !imageFirst ? <div role="img" aria-label={section.imageAlt || sectionTitle(section)} style={{ minHeight: 420, borderRadius: 26, backgroundImage: `url(${section.imageUrl})`, backgroundSize: "cover", backgroundPosition: "center" }} /> : null}
     </article>
   </section>;
 }
@@ -93,24 +96,36 @@ export default async function PreviewBuildPage({ params, searchParams }: { param
   const showOwnerNotes = view !== "guest";
   const callouts = asCallouts(preview.ownerCallouts);
   const sections = asSections(preview.sections);
+  const heroImage = sections.find((section) => section.imageUrl)?.imageUrl;
   const assumptionArtifacts = preview.platformLead.artifacts.filter((artifact) => artifact.type === "PREVIEW_ASSUMPTION_REGISTER");
   const shareNote = preview.platformLead.artifacts.find((artifact) => artifact.type === "PREVIEW_SHARE_NOTE");
 
   return (
     <main style={{ fontFamily: "Inter, ui-sans-serif, system-ui", color: "#17211a", background: "#f7f3eb", minHeight: "100vh" }}>
-      <section style={{ padding: "72px 24px", maxWidth: 1120, margin: "0 auto" }}>
-        <p style={{ letterSpacing: 3, textTransform: "uppercase", color: "#7b6d58" }}>DirectStay Preview Build</p>
-        <h1 style={{ fontSize: "clamp(44px, 8vw, 92px)", lineHeight: .9, margin: "16px 0" }}>{preview.heroTitle || preview.propertyName}</h1>
-        <p style={{ fontSize: 22, maxWidth: 760 }}>{preview.positioning || `A direct-booking preview concept for ${preview.propertyName} in ${preview.location}.`}</p>
-        <p style={{ marginTop: 24, color: "#7b6d58" }}>{preview.location}</p>
-        {showOwnerNotes && callouts[0] ? <aside data-preview-owner-callout="true" style={{ marginTop: 32, padding: 18, border: "1px solid #d8c7a3", borderRadius: 18, background: "#fffaf0" }}><strong>Owner note: {callouts[0].label}</strong><p>{callouts[0].body}</p></aside> : null}
+      <section style={{ padding: "28px 24px 56px", maxWidth: 1240, margin: "0 auto" }}>
+        <div style={{ display: "grid", gap: 28, gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", alignItems: "stretch", minHeight: 620 }}>
+          <div style={{ padding: "44px 0", display: "flex", flexDirection: "column", justifyContent: "center" }}>
+            <p style={{ letterSpacing: 3, textTransform: "uppercase", color: "#7b6d58", margin: 0 }}>{view === "guest" ? "Private villa preview" : "Owner review preview"}</p>
+            <h1 style={{ fontSize: "clamp(38px, 5.8vw, 72px)", lineHeight: .94, margin: "16px 0" }}>{preview.heroTitle || preview.propertyName}</h1>
+            <p style={{ fontSize: 22, lineHeight: 1.45, maxWidth: 720 }}>{preview.positioning || `A direct-booking preview concept for ${preview.propertyName} in ${preview.location}.`}</p>
+            <p style={{ marginTop: 18, color: "#7b6d58", fontSize: 18 }}>{preview.location}</p>
+            <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginTop: 28 }}>
+              <span style={{ padding: "10px 14px", borderRadius: 999, background: "#fff", border: "1px solid #e7decf" }}>Direct booking concept</span>
+              <span style={{ padding: "10px 14px", borderRadius: 999, background: "#fff", border: "1px solid #e7decf" }}>Non-functional preview</span>
+              <span style={{ padding: "10px 14px", borderRadius: 999, background: "#fff", border: "1px solid #e7decf" }}>Owner-review draft</span>
+            </div>
+            {showOwnerNotes && callouts[0] ? <aside data-preview-owner-callout="true" style={{ marginTop: 32, padding: 18, border: "1px solid #d8c7a3", borderRadius: 18, background: "#fffaf0" }}><strong>Owner note: {callouts[0].label}</strong><p>{callouts[0].body}</p></aside> : null}
+          </div>
+          <div role="img" aria-label={`${preview.propertyName} preview image`} style={{ minHeight: 560, borderRadius: 36, background: heroImage ? `linear-gradient(180deg, rgba(23,33,26,.08), rgba(23,33,26,.18)), url(${heroImage})` : "linear-gradient(135deg, #d8c7a3, #7b6d58)", backgroundSize: "cover", backgroundPosition: "center", boxShadow: "0 30px 90px rgba(23, 33, 26, .18)" }} />
+        </div>
       </section>
 
       {sections.length ? sections.map((section, index) => <PreviewContentSection key={`${section.kind || "section"}-${index}`} section={section} index={index} />) : <FallbackSections />}
 
       <section style={{ padding: "56px 24px", maxWidth: 960, margin: "0 auto" }}>
-        <h2>Preview inquiry</h2>
-        <div data-preview-inquiry-disabled="true" style={{ display: "grid", gap: 12, opacity: .82 }}>
+        <h2>{view === "guest" ? "Sample inquiry experience" : "Preview inquiry"}</h2>
+        {view === "guest" ? <p style={{ color: "#7b6d58", lineHeight: 1.6 }}>This is a read-only mock of the future direct inquiry path. Nothing can be submitted from this preview.</p> : null}
+        <div data-preview-inquiry-disabled="true" style={{ display: "grid", gap: 12, opacity: .62 }}>
           <input disabled placeholder="Guest name" style={{ padding: 14, borderRadius: 12, border: "1px solid #d7d0c3" }} />
           <input disabled placeholder="Email" style={{ padding: 14, borderRadius: 12, border: "1px solid #d7d0c3" }} />
           <textarea disabled placeholder="Trip details" rows={4} style={{ padding: 14, borderRadius: 12, border: "1px solid #d7d0c3" }} />
@@ -119,7 +134,7 @@ export default async function PreviewBuildPage({ params, searchParams }: { param
         {showOwnerNotes && callouts.slice(1).map((callout, index) => <aside data-preview-owner-callout="true" key={index} style={{ marginTop: 18, padding: 16, border: "1px solid #d8c7a3", borderRadius: 18, background: "#fffaf0" }}><strong>Owner note: {callout.label}</strong><p>{callout.body}</p></aside>)}
         {showOwnerNotes && assumptionArtifacts.map((artifact) => <aside data-preview-owner-callout="true" key={artifact.id} style={{ marginTop: 18, padding: 16, border: "1px solid #d8c7a3", borderRadius: 18, background: "#fffaf0" }}><strong>{artifact.title}</strong><p style={{ whiteSpace: "pre-wrap" }}>{artifact.body}</p></aside>)}
         {showOwnerNotes && shareNote ? <aside data-preview-owner-callout="true" style={{ marginTop: 18, padding: 16, border: "1px solid #d8c7a3", borderRadius: 18, background: "#fffaf0" }}><strong>{shareNote.title}</strong><p style={{ whiteSpace: "pre-wrap" }}>{shareNote.body}</p></aside> : null}
-        <p style={{ marginTop: 32, color: "#7b6d58" }}>Public-obscure, noindex Preview Build. Guest-clean view: add <code>?view=guest</code>.</p>
+        {showOwnerNotes ? <p style={{ marginTop: 32, color: "#7b6d58" }}>Public-obscure, noindex Preview Build. Guest-clean view: add <code>?view=guest</code>.</p> : null}
       </section>
     </main>
   );
