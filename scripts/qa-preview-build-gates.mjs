@@ -50,6 +50,8 @@ check("Owner-share note approval is required before sharing", platformLeads.incl
 check("Conversion packet approval is required before promotion", platformLeads.includes('approvedTypes.has("PREVIEW_CONVERSION_PACKET")'));
 check("Blocked preview status updates are audited", adminPreviewRoute.includes("admin.platform_lead.preview_status_blocked"));
 check("Admin shows packet gate blockers", adminDetail.includes("Packet gates") && adminDetail.includes("Owner-share blocked") && adminDetail.includes("Production promotion blocked"));
+check("Admin includes Preview Build section editor", adminDetail.includes("Sections JSON") && adminDetail.includes("Save preview content") && adminDetail.includes("DEFAULT_PREVIEW_SECTIONS"));
+check("Preview content route validates and saves JSON", adminPreviewRoute.includes('action === "content"') && adminPreviewRoute.includes("Sections JSON must be an array") && adminPreviewRoute.includes("preview_content_updated"));
 check("Admin warns public-obscure is not confidential", adminDetail.includes("public-obscure, not confidential"));
 
 const failed = checks.filter((item) => !item.pass);

@@ -612,3 +612,22 @@ export async function updatePreviewBuildStatus(previewBuildId: string, status: P
     data: { status, ...(status === "SHARED_WITH_LEAD" ? { sharedAt: new Date() } : {}) },
   });
 }
+
+export async function updatePreviewBuildContent(input: {
+  previewBuildId: string;
+  heroTitle?: string | null;
+  positioning?: string | null;
+  sections?: Prisma.InputJsonValue | null;
+  ownerCallouts?: Prisma.InputJsonValue | null;
+}) {
+  const prisma = await getPrismaClient();
+  return prisma.previewBuild.update({
+    where: { id: input.previewBuildId },
+    data: {
+      ...(input.heroTitle !== undefined ? { heroTitle: input.heroTitle?.trim().slice(0, 180) || null } : {}),
+      ...(input.positioning !== undefined ? { positioning: input.positioning?.trim().slice(0, 500) || null } : {}),
+      ...(input.sections !== undefined ? { sections: input.sections ?? undefined } : {}),
+      ...(input.ownerCallouts !== undefined ? { ownerCallouts: input.ownerCallouts ?? undefined } : {}),
+    },
+  });
+}
