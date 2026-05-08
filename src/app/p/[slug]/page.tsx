@@ -15,6 +15,7 @@ type PreviewSection = {
   imageAlt?: string;
   kicker?: string;
   heroOnly?: boolean;
+  badges?: string[];
 };
 
 function asCallouts(value: unknown): OwnerCallout[] {
@@ -121,6 +122,7 @@ export default async function PreviewBuildPage({ params, searchParams }: { param
   const heroSection = sections.find((section) => section.heroOnly || section.kind === "heroImage");
   const visibleSections = sections.filter((section) => !(section.heroOnly || section.kind === "heroImage"));
   const heroImage = heroSection?.imageUrl || visibleSections.find((section) => section.imageUrl)?.imageUrl;
+  const guestBadges = heroSection?.badges?.length ? heroSection.badges.slice(0, 3) : ["Direct booking concept", "Read-only sample", "Date-aware inquiry"];
   const assumptionArtifacts = preview.platformLead.artifacts.filter((artifact) => artifact.type === "PREVIEW_ASSUMPTION_REGISTER");
   const shareNote = preview.platformLead.artifacts.find((artifact) => artifact.type === "PREVIEW_SHARE_NOTE");
 
@@ -134,9 +136,7 @@ export default async function PreviewBuildPage({ params, searchParams }: { param
             <p style={{ fontSize: 22, lineHeight: 1.45, maxWidth: 720 }}>{preview.positioning || `A direct-booking preview concept for ${preview.propertyName} in ${preview.location}.`}</p>
             <p style={{ marginTop: 18, color: "#7b6d58", fontSize: 18 }}>{preview.location}</p>
             <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginTop: 28 }}>
-              <span style={{ padding: "10px 14px", borderRadius: 999, background: "#fff", border: "1px solid #e7decf" }}>{view === "guest" ? "Historic District stay" : "Direct booking concept"}</span>
-              <span style={{ padding: "10px 14px", borderRadius: 999, background: "#fff", border: "1px solid #e7decf" }}>{view === "guest" ? "Private parking focus" : "Non-functional preview"}</span>
-              <span style={{ padding: "10px 14px", borderRadius: 999, background: "#fff", border: "1px solid #e7decf" }}>{view === "guest" ? "Date-aware inquiry" : "Owner-review draft"}</span>
+              {(view === "guest" ? guestBadges : ["Direct booking concept", "Non-functional preview", "Owner-review draft"]).map((badge) => <span key={badge} style={{ padding: "10px 14px", borderRadius: 999, background: "#fff", border: "1px solid #e7decf" }}>{badge}</span>)}
             </div>
             {showOwnerNotes && callouts[0] ? <aside data-preview-owner-callout="true" style={{ marginTop: 32, padding: 18, border: "1px solid #d8c7a3", borderRadius: 18, background: "#fffaf0" }}><strong>Owner note: {callouts[0].label}</strong><p>{callouts[0].body}</p></aside> : null}
           </div>
