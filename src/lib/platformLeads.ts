@@ -316,6 +316,7 @@ export async function createPlatformLeadArtifact(input: {
   title: string;
   body: string;
   createdByEmail?: string | null;
+  metadata?: Prisma.InputJsonValue;
 }) {
   const prisma = await getPrismaClient();
   return prisma.platformLeadArtifact.create({
@@ -325,6 +326,7 @@ export async function createPlatformLeadArtifact(input: {
       status: input.status ?? "DRAFT",
       title: input.title.trim().slice(0, 180),
       body: input.body.trim().slice(0, 12000),
+      metadata: input.metadata ?? undefined,
       createdByEmail: input.createdByEmail ?? undefined,
     },
   });
@@ -545,8 +547,66 @@ export async function createPreviewBuild(input: {
   });
 }
 
+const requiredPreviewReadyArtifacts: PlatformLeadArtifactType[] = [
+  "PREVIEW_PHOTO_GEO_AUDIT",
+  "PREVIEW_DESIGN_BRIEF",
+  "PREVIEW_FACT_REGISTER",
+  "PREVIEW_ASSUMPTION_REGISTER",
+];
+
+function activeArtifact(artifact: { status: PlatformLeadArtifactStatus }) {
+  return artifact.status !== "REJECTED" && artifact.status !== "SUPERSEDED";
+}
+
+function approvedArtifact(artifact: { status: PlatformLeadArtifactStatus }) {
+  return artifact.status === "APPROVED" || artifact.status === "SENT";
+}
+
+export async function getPreviewBuildGateReport(previewBuildId: string) {
+  const prisma = await getPrismaClient();
+  const preview = await prisma.previewBuild.findUnique({
+    where: { id: previewBuildId },
+    include: { platformLead: { include: { artifacts: { orderBy: { createdAt: "desc" } } } } },
+  });
+  if (!preview) throw new Error("PreviewBuild not found");
+
+  const artifacts = preview.platformLead.artifacts;
+  const activeTypes = new Set(artifacts.filter(activeArtifact).map((artifact) => artifact.type));
+  const approvedTypes = new Set(artifacts.filter(approvedArtifact).map((artifact) => artifact.type));
+  const missingReadyArtifacts = requiredPreviewReadyArtifacts.filter((type) => !activeTypes.has(type));
+  const hasSectionPlan = Array.isArray(preview.sections) ? preview.sections.length > 0 : Boolean(preview.sections);
+  const ownerCallouts = Array.isArray(preview.ownerCallouts) ? preview.ownerCallouts : [];
+  const hasSpecificCallouts = ownerCallouts.some((callout) => {
+    if (!callout || typeof callout !== "object") return false;
+    const body = "body" in callout ? String(callout.body || "") : "";
+    return body.length > 80 && !body.includes("During onboarding, DirectStay gathers your property");
+  });
+
+  const readyBlockers = [
+    ...missingReadyArtifacts.map((type) => `Missing preview packet artifact: ${type.replaceAll("_", " ").toLowerCase()}.`),
+    ...(!hasSectionPlan ? ["Missing preview section plan / rendered sections."] : []),
+    ...(!hasSpecificCallouts ? ["Owner callouts are still generic; add property-specific strategy and assumptions/corrections callouts."] : []),
+  ];
+
+  const sharedBlockers = [
+    ...readyBlockers,
+    ...(!approvedTypes.has("PREVIEW_RUBRIC_REVIEW") ? ["Preview rubric review must be approved before owner sharing."] : []),
+    ...(!approvedTypes.has("PREVIEW_SHARE_NOTE") ? ["Owner-share note must be approved before sharing with lead."] : []),
+  ];
+
+  const promotedBlockers = [
+    ...sharedBlockers,
+    ...(!approvedTypes.has("PREVIEW_CONVERSION_PACKET") ? ["Preview-to-production conversion packet must be approved before promotion."] : []),
+  ];
+
+  return { preview, readyBlockers, sharedBlockers, promotedBlockers };
+}
+
 export async function updatePreviewBuildStatus(previewBuildId: string, status: PreviewBuildStatus) {
   const prisma = await getPrismaClient();
+  const report = await getPreviewBuildGateReport(previewBuildId);
+  const blockers = status === "READY_FOR_REVIEW" ? report.readyBlockers : status === "SHARED_WITH_LEAD" ? report.sharedBlockers : status === "PROMOTED_TO_SITE" ? report.promotedBlockers : [];
+  if (blockers.length > 0) throw new Error(`Preview Build cannot move to ${status.replaceAll("_", " ")}: ${blockers.join(" ")}`);
   return prisma.previewBuild.update({
     where: { id: previewBuildId },
     data: { status, ...(status === "SHARED_WITH_LEAD" ? { sharedAt: new Date() } : {}) },

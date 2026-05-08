@@ -15,8 +15,13 @@ export async function POST(request: Request) {
     const previewBuildId = String(form.get("previewBuildId") || "");
     const status = String(form.get("status") || "") as PreviewBuildStatus;
     if (previewBuildId && STATUSES.has(status)) {
-      await updatePreviewBuildStatus(previewBuildId, status);
-      await recordAdminAuditEvent({ actor: admin, action: "admin.platform_lead.preview_status_updated", entityType: "PlatformLead", entityId: leadId, metadata: { previewBuildId, status } });
+      try {
+        await updatePreviewBuildStatus(previewBuildId, status);
+        await recordAdminAuditEvent({ actor: admin, action: "admin.platform_lead.preview_status_updated", entityType: "PlatformLead", entityId: leadId, metadata: { previewBuildId, status } });
+      } catch (error) {
+        await recordAdminAuditEvent({ actor: admin, action: "admin.platform_lead.preview_status_blocked", entityType: "PlatformLead", entityId: leadId, metadata: { previewBuildId, status, error: error instanceof Error ? error.message : String(error) } });
+        redirect(`/admin/platform-leads/detail?leadId=${leadId}&previewGate=${encodeURIComponent(error instanceof Error ? error.message : String(error))}`);
+      }
     }
     redirect(`/admin/platform-leads/detail?leadId=${leadId}`);
   }

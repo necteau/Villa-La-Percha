@@ -4,7 +4,7 @@ import { getAdminSession } from "@/lib/admin/adminAuth";
 import { recordAdminAuditEvent } from "@/lib/admin/auditLog";
 import { createPlatformLeadArtifact, createPlatformLeadOnboardingArtifacts, createPlatformLeadOwnerAgreementArtifact, createPlatformLeadProposalArtifacts, updatePlatformLeadArtifactStatus } from "@/lib/platformLeads";
 
-const TYPES = new Set<PlatformLeadArtifactType>(["LEAD_BRIEF", "FIRST_RESPONSE_DRAFT", "PROPOSAL_RATIONALE", "PROPOSAL_DRAFT", "ONBOARDING_BRIEF", "ONBOARDING_EMAIL_DRAFT", "OWNER_PLATFORM_AGREEMENT"]);
+const TYPES = new Set<PlatformLeadArtifactType>(["LEAD_BRIEF", "FIRST_RESPONSE_DRAFT", "PROPOSAL_RATIONALE", "PROPOSAL_DRAFT", "ONBOARDING_BRIEF", "ONBOARDING_EMAIL_DRAFT", "OWNER_PLATFORM_AGREEMENT", "PREVIEW_PHOTO_GEO_AUDIT", "PREVIEW_DESIGN_BRIEF", "PREVIEW_FACT_REGISTER", "PREVIEW_ASSUMPTION_REGISTER", "PREVIEW_RUBRIC_REVIEW", "PREVIEW_SHARE_NOTE", "PREVIEW_CONVERSION_PACKET"]);
 const STATUSES = new Set<PlatformLeadArtifactStatus>(["DRAFT", "NEEDS_APPROVAL", "APPROVED", "SENT", "REJECTED", "SUPERSEDED"]);
 
 export async function POST(request: Request) {
