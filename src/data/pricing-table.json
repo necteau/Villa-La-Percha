@@ -88,12 +88,12 @@
       "id": "direct-christmas-new-year-2027",
       "platform": "direct",
       "startDate": "2027-12-19",
-      "endDate": "2028-01-02",
+      "endDate": "2028-01-01",
       "nightlyRate": 2500,
       "currency": "USD",
       "minimumStayNights": 5,
       "charges": [],
-      "notes": "2027 Christmas/New Year direct rate projected from the 2026 DirectStay holiday pricing season. Tax-inclusive; 5-night minimum until the exact 2027 holiday policy is confirmed."
+      "notes": "2027 Christmas/New Year direct rate projected from the 2026 DirectStay holiday pricing season. Covers 2027 pricing through Dec 31 and ends Jan 1, 2028; tax-inclusive with 5-night minimum until the exact 2027 holiday policy is confirmed."
     },
     {
       "id": "vrbo-current-spring-2026",
