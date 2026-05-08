@@ -632,6 +632,31 @@ export async function updatePreviewBuildContent(input: {
   });
 }
 
+export async function appendPreviewBuildSection(input: {
+  previewBuildId: string;
+  kind: string;
+  eyebrow?: string | null;
+  title: string;
+  body?: string | null;
+  imageUrl?: string | null;
+  imageAlt?: string | null;
+}) {
+  const prisma = await getPrismaClient();
+  const preview = await prisma.previewBuild.findUnique({ where: { id: input.previewBuildId } });
+  if (!preview) throw new Error("PreviewBuild not found");
+  const existing = Array.isArray(preview.sections) ? preview.sections : [];
+  const section = {
+    kind: input.kind.trim().slice(0, 60) || "custom",
+    eyebrow: input.eyebrow?.trim().slice(0, 120) || undefined,
+    title: input.title.trim().slice(0, 180),
+    body: input.body?.trim().slice(0, 1200) || undefined,
+    imageUrl: input.imageUrl?.trim().slice(0, 800) || undefined,
+    imageAlt: input.imageAlt?.trim().slice(0, 180) || undefined,
+  };
+  if (!section.title) throw new Error("Section title is required.");
+  return prisma.previewBuild.update({ where: { id: input.previewBuildId }, data: { sections: [...existing, section] } });
+}
+
 export async function generatePreviewBuildStarterPacket(input: {
   previewBuildId: string;
   createdByEmail?: string | null;
