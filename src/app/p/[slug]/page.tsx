@@ -14,6 +14,7 @@ type PreviewSection = {
   imageUrl?: string;
   imageAlt?: string;
   kicker?: string;
+  heroOnly?: boolean;
 };
 
 function asCallouts(value: unknown): OwnerCallout[] {
@@ -117,7 +118,9 @@ export default async function PreviewBuildPage({ params, searchParams }: { param
   const showOwnerNotes = view !== "guest";
   const callouts = asCallouts(preview.ownerCallouts);
   const sections = asSections(preview.sections);
-  const heroImage = sections.find((section) => section.imageUrl)?.imageUrl;
+  const heroSection = sections.find((section) => section.heroOnly || section.kind === "heroImage");
+  const visibleSections = sections.filter((section) => !(section.heroOnly || section.kind === "heroImage"));
+  const heroImage = heroSection?.imageUrl || visibleSections.find((section) => section.imageUrl)?.imageUrl;
   const assumptionArtifacts = preview.platformLead.artifacts.filter((artifact) => artifact.type === "PREVIEW_ASSUMPTION_REGISTER");
   const shareNote = preview.platformLead.artifacts.find((artifact) => artifact.type === "PREVIEW_SHARE_NOTE");
 
@@ -141,7 +144,7 @@ export default async function PreviewBuildPage({ params, searchParams }: { param
         </div>
       </section>
 
-      {sections.length ? sections.map((section, index) => <PreviewContentSection key={`${section.kind || "section"}-${index}`} section={section} index={index} />) : <FallbackSections />}
+      {visibleSections.length ? visibleSections.map((section, index) => <PreviewContentSection key={`${section.kind || "section"}-${index}`} section={section} index={index} />) : <FallbackSections />}
 
       <section style={{ padding: "56px 24px", maxWidth: 960, margin: "0 auto" }}>
         <h2>{view === "guest" ? "Sample inquiry experience" : "Preview inquiry"}</h2>
