@@ -79,15 +79,15 @@ function CalendarMock() {
   const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
   const cells = Array.from({ length: 35 }, (_, index) => index + 1);
   return <div data-preview-calendar-mock="true" style={{ marginTop: 24, padding: 18, borderRadius: 24, background: "#fff", border: "1px solid #e7decf" }}>
-    <div style={{ display: "flex", justifyContent: "space-between", gap: 12, flexWrap: "wrap", alignItems: "center" }}><strong>Sample availability view</strong><span style={{ color: "#7b6d58" }}>Read-only mock</span></div>
+    <div style={{ display: "flex", justifyContent: "space-between", gap: 12, flexWrap: "wrap", alignItems: "center" }}><strong>Sample availability view</strong><span style={{ color: "#7b6d58" }}>Read-only sample</span></div>
     <div style={{ display: "grid", gridTemplateColumns: "repeat(7, minmax(0, 1fr))", gap: 6, marginTop: 16 }}>{days.map((day) => <span key={day} style={{ fontSize: 12, color: "#7b6d58", textAlign: "center" }}>{day}</span>)}{cells.map((day) => <span key={day} style={{ minHeight: 42, borderRadius: 12, display: "grid", placeItems: "center", background: day >= 10 && day <= 16 ? "#d8c7a3" : day === 22 || day === 23 ? "#eee6d8" : "#f7f3eb", color: "#17211a", border: day >= 10 && day <= 16 ? "1px solid #9b7a3a" : "1px solid #efe5d4" }}>{day}</span>)}</div>
-    <p style={{ margin: "14px 0 0", color: "#7b6d58", lineHeight: 1.5 }}>In a live site, this block would connect approved availability, minimum-stay rules, and inquiry context so guests can choose dates before asking questions.</p>
+    <p style={{ margin: "14px 0 0", color: "#7b6d58", lineHeight: 1.5 }}>A finished direct-booking site can connect availability, minimum-stay rules, and trip details so guests choose dates before sending questions.</p>
   </div>;
 }
 
 function PriceComparisonMock() {
   return <div data-preview-price-comparison-mock="true" style={{ marginTop: 24, display: "grid", gap: 12 }}>
-    {[{ label: "Direct estimate", value: "$2,950", note: "Owner-approved direct rate would appear here" }, { label: "Marketplace-style estimate", value: "$3,410", note: "Mock fees/taxes comparison for owner review" }, { label: "Potential guest savings", value: "$460", note: "Illustrative only until rates and fee assumptions are approved" }].map((row) => <article key={row.label} style={{ padding: 16, borderRadius: 18, background: "#fff", border: "1px solid #e7decf", display: "grid", gap: 4 }}><span style={{ color: "#7b6d58" }}>{row.label}</span><strong style={{ fontSize: 28 }}>{row.value}</strong><small>{row.note}</small></article>)}
+    {[{ label: "Direct estimate", value: "$2,950", note: "Illustrative stay total" }, { label: "Marketplace-style estimate", value: "$3,410", note: "Illustrative fees/taxes comparison" }, { label: "Potential guest savings", value: "$460", note: "Sample only until final rates are set" }].map((row) => <article key={row.label} style={{ padding: 16, borderRadius: 18, background: "#fff", border: "1px solid #e7decf", display: "grid", gap: 4 }}><span style={{ color: "#7b6d58" }}>{row.label}</span><strong style={{ fontSize: 28 }}>{row.value}</strong><small>{row.note}</small></article>)}
   </div>;
 }
 
@@ -134,9 +134,9 @@ export default async function PreviewBuildPage({ params, searchParams }: { param
             <p style={{ fontSize: 22, lineHeight: 1.45, maxWidth: 720 }}>{preview.positioning || `A direct-booking preview concept for ${preview.propertyName} in ${preview.location}.`}</p>
             <p style={{ marginTop: 18, color: "#7b6d58", fontSize: 18 }}>{preview.location}</p>
             <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginTop: 28 }}>
-              <span style={{ padding: "10px 14px", borderRadius: 999, background: "#fff", border: "1px solid #e7decf" }}>Direct booking concept</span>
-              <span style={{ padding: "10px 14px", borderRadius: 999, background: "#fff", border: "1px solid #e7decf" }}>Non-functional preview</span>
-              <span style={{ padding: "10px 14px", borderRadius: 999, background: "#fff", border: "1px solid #e7decf" }}>Owner-review draft</span>
+              <span style={{ padding: "10px 14px", borderRadius: 999, background: "#fff", border: "1px solid #e7decf" }}>{view === "guest" ? "Historic District stay" : "Direct booking concept"}</span>
+              <span style={{ padding: "10px 14px", borderRadius: 999, background: "#fff", border: "1px solid #e7decf" }}>{view === "guest" ? "Private parking focus" : "Non-functional preview"}</span>
+              <span style={{ padding: "10px 14px", borderRadius: 999, background: "#fff", border: "1px solid #e7decf" }}>{view === "guest" ? "Date-aware inquiry" : "Owner-review draft"}</span>
             </div>
             {showOwnerNotes && callouts[0] ? <aside data-preview-owner-callout="true" style={{ marginTop: 32, padding: 18, border: "1px solid #d8c7a3", borderRadius: 18, background: "#fffaf0" }}><strong>Owner note: {callouts[0].label}</strong><p>{callouts[0].body}</p></aside> : null}
           </div>
