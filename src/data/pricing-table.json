@@ -41,6 +41,50 @@
       "notes": "2026 Christmas/New Year direct rate per Jaimal direction on 2026-05-07. Starts Dec 19 when OTA pricing reaches true Christmas-week levels; intentionally more generous than Airbnb/VRBO peak holiday pricing without giving away the prior $1,700/night level."
     },
     {
+      "id": "direct-winter-peak-2027",
+      "platform": "direct",
+      "startDate": "2027-01-02",
+      "endDate": "2027-03-13",
+      "nightlyRate": 2250,
+      "currency": "USD",
+      "minimumStayNights": 7,
+      "charges": [],
+      "notes": "2027 January-April peak-season direct rate per Jaimal direction on 2026-05-08. Inferred from Elite Destination Homes recovered ladder ($1,550 low season, $1,695 summer, $2,950 Christmas) and Turks & Caicos winter high-season demand; tax-inclusive with 7-night minimum."
+    },
+    {
+      "id": "direct-spring-break-easter-2027",
+      "platform": "direct",
+      "startDate": "2027-03-13",
+      "endDate": "2027-04-11",
+      "nightlyRate": 2650,
+      "currency": "USD",
+      "minimumStayNights": 7,
+      "charges": [],
+      "notes": "2027 spring-break/Easter peak direct rate per Jaimal direction on 2026-05-08. Covers the highest-demand school-break and Easter-adjacent window; below Christmas/New Year peak but above winter base. Tax-inclusive with 7-night minimum."
+    },
+    {
+      "id": "direct-late-winter-peak-2027",
+      "platform": "direct",
+      "startDate": "2027-04-11",
+      "endDate": "2027-05-01",
+      "nightlyRate": 2250,
+      "currency": "USD",
+      "minimumStayNights": 7,
+      "charges": [],
+      "notes": "2027 late peak-season direct rate per Jaimal direction on 2026-05-08. Keeps April above shoulder/low-season pricing while stepping down after Easter/spring-break demand. Tax-inclusive with 7-night minimum."
+    },
+    {
+      "id": "direct-spring-2027",
+      "platform": "direct",
+      "startDate": "2027-05-01",
+      "endDate": "2027-06-01",
+      "nightlyRate": 1600,
+      "currency": "USD",
+      "minimumStayNights": 5,
+      "charges": [],
+      "notes": "2027 May direct shoulder rate, returning to the standard direct rate after January-April peak season. Tax-inclusive; 5-night minimum unless owner approval requires otherwise."
+    },
+    {
       "id": "vrbo-current-spring-2026",
       "platform": "vrbo",
       "startDate": "2026-05-07",

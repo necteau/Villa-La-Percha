@@ -29,7 +29,7 @@ type DirectPricingRange = {
   minimumStayNights?: number | null;
 };
 
-const MIN_STAY = 5;
+const BASE_MIN_STAY = 5;
 const monthNames = [
   "January", "February", "March", "April", "May", "June",
   "July", "August", "September", "October", "November", "December",
@@ -97,6 +97,14 @@ export default function AvailabilityCalendar({
     return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
   }, []);
 
+  const getRequiredMinimumStay = useCallback((startDate: string): number => {
+    const matchingRanges = directPricingRanges
+      .filter((range) => range.startDate <= startDate && range.endDate > startDate)
+      .sort((a, b) => b.startDate.localeCompare(a.startDate));
+
+    return matchingRanges[0]?.minimumStayNights ?? BASE_MIN_STAY;
+  }, [directPricingRanges]);
+
   const hasDirectPricingForStay = useCallback((startDate: string, endDate: string): boolean => {
     const nights = getNights(startDate, endDate);
     return directPricingRanges.some((range) => {
@@ -142,7 +150,7 @@ export default function AvailabilityCalendar({
       const isCheckInDate = reservationsData.some((res) => res.checkIn === dateStr);
       const isCheckOutDate = reservationsData.some((res) => res.checkOut === dateStr);
 
-      const minimumStayCheckOut = addDays(dateStr, MIN_STAY);
+      const minimumStayCheckOut = addDays(dateStr, getRequiredMinimumStay(dateStr));
       const hasDirectPricingForMinimumStay = !isPast && hasDirectPricingForStay(dateStr, minimumStayCheckOut);
       const isMinStayInvalid = !isPast && hasBookedNightBefore(dateStr, minimumStayCheckOut);
 
@@ -160,7 +168,7 @@ export default function AvailabilityCalendar({
     }
 
     return nextDays;
-  }, [addDays, hasBookedNightBefore, hasDirectPricingForStay, reservationsData, viewMonth, viewYear]);
+  }, [addDays, getRequiredMinimumStay, hasBookedNightBefore, hasDirectPricingForStay, reservationsData, viewMonth, viewYear]);
 
   const isSelectable = (day: DayInfo): boolean => {
     if (day.isPast || !day.dateStr) return false;
@@ -177,7 +185,8 @@ export default function AvailabilityCalendar({
     if (day.isPast || !day.dateStr) return false;
     if (phase === "selectingCheckOut" && checkIn) {
       const nights = getNights(checkIn, day.dateStr);
-      if (nights < MIN_STAY) return false;
+      const requiredMinimumStay = getRequiredMinimumStay(checkIn);
+      if (nights < requiredMinimumStay) return false;
       if (!hasDirectPricingForStay(checkIn, day.dateStr)) return false;
       if (hasBookedNightBefore(checkIn, day.dateStr)) return false;
 
@@ -330,7 +339,7 @@ export default function AvailabilityCalendar({
   const calendarInner = (
     <>
       <p className={`text-center text-xs md:text-sm ${embedded ? "mb-2" : "mb-2 md:mb-3"}`} style={{ color: "#6B6B6B" }}>
-        5-night stay minimum
+        5-night stay minimum · 7 nights during peak season
       </p>
 
       <div className={`bg-white rounded-2xl shadow-sm border border-[#E8E4DF] overflow-hidden ${embedded ? "w-full" : "max-w-md mx-auto"}`}>
@@ -386,7 +395,7 @@ export default function AvailabilityCalendar({
 
       <div className={`text-center ${embedded ? "mt-3" : "mt-3 md:mt-4"}`}>
         {phase !== "done" && phase !== "none" && checkIn && <p className="text-sm" style={{ color: "#8B7355" }}>{statusText}</p>}
-        {showHint && <p className="text-sm" style={{ color: "#C0392B" }}>{phase === "selectingCheckOut" ? `Need at least ${MIN_STAY} nights` : "That date is not available"}</p>}
+        {showHint && <p className="text-sm" style={{ color: "#C0392B" }}>{phase === "selectingCheckOut" && checkIn ? `Need at least ${getRequiredMinimumStay(checkIn)} nights` : "That date is not available"}</p>}
         {phase === "done" && checkIn && checkOut && <p className="text-sm" style={{ color: "#8B7355" }}>{statusText}</p>}
       </div>
 
