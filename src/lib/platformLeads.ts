@@ -215,6 +215,26 @@ export async function getAdminPlatformLeads() {
   });
 }
 
+export async function getAdminPreviewBuilds() {
+  const prisma = await getPrismaClient();
+  return prisma.previewBuild.findMany({
+    orderBy: { updatedAt: "desc" },
+    take: 200,
+    include: {
+      platformLead: {
+        select: {
+          id: true,
+          fullName: true,
+          email: true,
+          propertyName: true,
+          propertyLocation: true,
+          status: true,
+        },
+      },
+    },
+  });
+}
+
 export async function getAdminPlatformLead(leadId: string) {
   const prisma = await getPrismaClient();
   return prisma.platformLead.findFirst({
