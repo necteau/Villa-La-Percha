@@ -1,0 +1,233 @@
+{
+  "rows": [
+    {
+      "checkIn": "2027-01-02",
+      "checkOut": "2027-01-09",
+      "nights": 7,
+      "label": "peak-weekly",
+      "directTotal": 15750,
+      "airbnbTotal": 20325.24,
+      "vrboTotal": 20107.46,
+      "airbnbSavingsPct": 22.5,
+      "vrboSavingsPct": 21.7
+    },
+    {
+      "checkIn": "2027-01-09",
+      "checkOut": "2027-01-16",
+      "nights": 7,
+      "label": "peak-weekly",
+      "directTotal": 15750,
+      "airbnbTotal": 20325.24,
+      "vrboTotal": 20107.46,
+      "airbnbSavingsPct": 22.5,
+      "vrboSavingsPct": 21.7
+    },
+    {
+      "checkIn": "2027-01-16",
+      "checkOut": "2027-01-23",
+      "nights": 7,
+      "label": "peak-weekly",
+      "directTotal": 15750,
+      "airbnbTotal": 20325.24,
+      "vrboTotal": 20107.46,
+      "airbnbSavingsPct": 22.5,
+      "vrboSavingsPct": 21.7
+    },
+    {
+      "checkIn": "2027-01-23",
+      "checkOut": "2027-01-30",
+      "nights": 7,
+      "label": "peak-weekly",
+      "directTotal": 15750,
+      "airbnbTotal": 20325.24,
+      "vrboTotal": 20107.46,
+      "airbnbSavingsPct": 22.5,
+      "vrboSavingsPct": 21.7
+    },
+    {
+      "checkIn": "2027-01-30",
+      "checkOut": "2027-02-06",
+      "nights": 7,
+      "label": "peak-weekly",
+      "directTotal": 15750,
+      "airbnbTotal": 20325.24,
+      "vrboTotal": 20107.46,
+      "airbnbSavingsPct": 22.5,
+      "vrboSavingsPct": 21.7
+    },
+    {
+      "checkIn": "2027-02-06",
+      "checkOut": "2027-02-13",
+      "nights": 7,
+      "label": "peak-weekly",
+      "directTotal": 15750,
+      "airbnbTotal": 20325.24,
+      "vrboTotal": 20107.46,
+      "airbnbSavingsPct": 22.5,
+      "vrboSavingsPct": 21.7
+    },
+    {
+      "checkIn": "2027-02-13",
+      "checkOut": "2027-02-20",
+      "nights": 7,
+      "label": "peak-weekly",
+      "directTotal": 15750,
+      "airbnbTotal": 20325.24,
+      "vrboTotal": 20107.46,
+      "airbnbSavingsPct": 22.5,
+      "vrboSavingsPct": 21.7
+    },
+    {
+      "checkIn": "2027-02-20",
+      "checkOut": "2027-02-27",
+      "nights": 7,
+      "label": "peak-weekly",
+      "directTotal": 15750,
+      "airbnbTotal": 20325.24,
+      "vrboTotal": 20107.46,
+      "airbnbSavingsPct": 22.5,
+      "vrboSavingsPct": 21.7
+    },
+    {
+      "checkIn": "2027-02-27",
+      "checkOut": "2027-03-06",
+      "nights": 7,
+      "label": "peak-weekly",
+      "directTotal": 15750,
+      "airbnbTotal": 20325.24,
+      "vrboTotal": 20107.46,
+      "airbnbSavingsPct": 22.5,
+      "vrboSavingsPct": 21.7
+    },
+    {
+      "checkIn": "2027-03-06",
+      "checkOut": "2027-03-13",
+      "nights": 7,
+      "label": "peak-weekly",
+      "directTotal": 15750,
+      "airbnbTotal": 20325.24,
+      "vrboTotal": 20107.46,
+      "airbnbSavingsPct": 22.5,
+      "vrboSavingsPct": 21.7
+    },
+    {
+      "checkIn": "2027-03-13",
+      "checkOut": "2027-03-20",
+      "nights": 7,
+      "label": "peak-weekly",
+      "directTotal": 15750,
+      "airbnbTotal": 20325.24,
+      "vrboTotal": 20107.46,
+      "airbnbSavingsPct": 22.5,
+      "vrboSavingsPct": 21.7
+    },
+    {
+      "checkIn": "2027-03-20",
+      "checkOut": "2027-03-27",
+      "nights": 7,
+      "label": "peak-weekly",
+      "directTotal": 15750,
+      "airbnbTotal": 20325.24,
+      "vrboTotal": 20107.46,
+      "airbnbSavingsPct": 22.5,
+      "vrboSavingsPct": 21.7
+    },
+    {
+      "checkIn": "2027-03-27",
+      "checkOut": "2027-04-03",
+      "nights": 7,
+      "label": "peak-weekly",
+      "directTotal": 15750,
+      "airbnbTotal": 20325.24,
+      "vrboTotal": 20107.46,
+      "airbnbSavingsPct": 22.5,
+      "vrboSavingsPct": 21.7
+    },
+    {
+      "checkIn": "2027-04-03",
+      "checkOut": "2027-04-10",
+      "nights": 7,
+      "label": "peak-weekly",
+      "directTotal": 15750,
+      "airbnbTotal": 20325.24,
+      "vrboTotal": 20107.46,
+      "airbnbSavingsPct": 22.5,
+      "vrboSavingsPct": 21.7
+    },
+    {
+      "checkIn": "2027-04-10",
+      "checkOut": "2027-04-17",
+      "nights": 7,
+      "label": "peak-weekly",
+      "directTotal": 15750,
+      "airbnbTotal": 20325.24,
+      "vrboTotal": 20107.46,
+      "airbnbSavingsPct": 22.5,
+      "vrboSavingsPct": 21.7
+    },
+    {
+      "checkIn": "2027-01-02",
+      "checkOut": "2027-01-09",
+      "nights": 7,
+      "label": "peak-start",
+      "directTotal": 15750,
+      "airbnbTotal": 20325.24,
+      "vrboTotal": 20107.46,
+      "airbnbSavingsPct": 22.5,
+      "vrboSavingsPct": 21.7
+    },
+    {
+      "checkIn": "2027-02-13",
+      "checkOut": "2027-02-20",
+      "nights": 7,
+      "label": "presidents-window",
+      "directTotal": 15750,
+      "airbnbTotal": 20325.24,
+      "vrboTotal": 20107.46,
+      "airbnbSavingsPct": 22.5,
+      "vrboSavingsPct": 21.7
+    },
+    {
+      "checkIn": "2027-03-13",
+      "checkOut": "2027-03-20",
+      "nights": 7,
+      "label": "spring-break-window",
+      "directTotal": 15750,
+      "airbnbTotal": 20325.24,
+      "vrboTotal": 20107.46,
+      "airbnbSavingsPct": 22.5,
+      "vrboSavingsPct": 21.7
+    },
+    {
+      "checkIn": "2027-04-10",
+      "checkOut": "2027-04-17",
+      "nights": 7,
+      "label": "peak-final-week",
+      "directTotal": 15750,
+      "airbnbTotal": 20325.24,
+      "vrboTotal": 20107.46,
+      "airbnbSavingsPct": 22.5,
+      "vrboSavingsPct": 21.7
+    },
+    {
+      "checkIn": "2027-04-16",
+      "checkOut": "2027-04-23",
+      "nights": 7,
+      "label": "cross-peak-end",
+      "directTotal": 11850,
+      "airbnbTotal": 15269.84,
+      "vrboTotal": 15398.81,
+      "airbnbSavingsPct": 22.4,
+      "vrboSavingsPct": 23.0
+    },
+    {
+      "checkIn": "2027-03-20",
+      "checkOut": "2027-03-25",
+      "nights": 5,
+      "label": "invalid-peak-5n",
+      "directTotal": null,
+      "airbnbTotal": null,
+      "vrboTotal": null
+    }
+  ]
+}
