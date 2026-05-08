@@ -632,6 +632,30 @@ export async function updatePreviewBuildContent(input: {
   });
 }
 
+function previewSectionsArray(value: unknown): Prisma.JsonArray {
+  return Array.isArray(value) ? value as Prisma.JsonArray : [];
+}
+
+function cleanPreviewSection(input: {
+  kind: string;
+  eyebrow?: string | null;
+  title: string;
+  body?: string | null;
+  imageUrl?: string | null;
+  imageAlt?: string | null;
+}) {
+  const section = {
+    kind: input.kind.trim().slice(0, 60) || "custom",
+    eyebrow: input.eyebrow?.trim().slice(0, 120) || undefined,
+    title: input.title.trim().slice(0, 180),
+    body: input.body?.trim().slice(0, 1200) || undefined,
+    imageUrl: input.imageUrl?.trim().slice(0, 800) || undefined,
+    imageAlt: input.imageAlt?.trim().slice(0, 180) || undefined,
+  };
+  if (!section.title) throw new Error("Section title is required.");
+  return section;
+}
+
 export async function appendPreviewBuildSection(input: {
   previewBuildId: string;
   kind: string;
@@ -644,17 +668,47 @@ export async function appendPreviewBuildSection(input: {
   const prisma = await getPrismaClient();
   const preview = await prisma.previewBuild.findUnique({ where: { id: input.previewBuildId } });
   if (!preview) throw new Error("PreviewBuild not found");
-  const existing = Array.isArray(preview.sections) ? preview.sections : [];
-  const section = {
-    kind: input.kind.trim().slice(0, 60) || "custom",
-    eyebrow: input.eyebrow?.trim().slice(0, 120) || undefined,
-    title: input.title.trim().slice(0, 180),
-    body: input.body?.trim().slice(0, 1200) || undefined,
-    imageUrl: input.imageUrl?.trim().slice(0, 800) || undefined,
-    imageAlt: input.imageAlt?.trim().slice(0, 180) || undefined,
-  };
-  if (!section.title) throw new Error("Section title is required.");
-  return prisma.previewBuild.update({ where: { id: input.previewBuildId }, data: { sections: [...existing, section] } });
+  return prisma.previewBuild.update({ where: { id: input.previewBuildId }, data: { sections: [...previewSectionsArray(preview.sections), cleanPreviewSection(input)] } });
+}
+
+export async function updatePreviewBuildSection(input: {
+  previewBuildId: string;
+  index: number;
+  kind: string;
+  eyebrow?: string | null;
+  title: string;
+  body?: string | null;
+  imageUrl?: string | null;
+  imageAlt?: string | null;
+}) {
+  const prisma = await getPrismaClient();
+  const preview = await prisma.previewBuild.findUnique({ where: { id: input.previewBuildId } });
+  if (!preview) throw new Error("PreviewBuild not found");
+  const sections = previewSectionsArray(preview.sections);
+  if (input.index < 0 || input.index >= sections.length) throw new Error("Section index is out of range.");
+  sections[input.index] = cleanPreviewSection(input);
+  return prisma.previewBuild.update({ where: { id: input.previewBuildId }, data: { sections } });
+}
+
+export async function movePreviewBuildSection(input: { previewBuildId: string; index: number; direction: "up" | "down" }) {
+  const prisma = await getPrismaClient();
+  const preview = await prisma.previewBuild.findUnique({ where: { id: input.previewBuildId } });
+  if (!preview) throw new Error("PreviewBuild not found");
+  const sections = previewSectionsArray(preview.sections);
+  const target = input.direction === "up" ? input.index - 1 : input.index + 1;
+  if (input.index < 0 || input.index >= sections.length || target < 0 || target >= sections.length) return preview;
+  [sections[input.index], sections[target]] = [sections[target], sections[input.index]];
+  return prisma.previewBuild.update({ where: { id: input.previewBuildId }, data: { sections } });
+}
+
+export async function deletePreviewBuildSection(input: { previewBuildId: string; index: number }) {
+  const prisma = await getPrismaClient();
+  const preview = await prisma.previewBuild.findUnique({ where: { id: input.previewBuildId } });
+  if (!preview) throw new Error("PreviewBuild not found");
+  const sections = previewSectionsArray(preview.sections);
+  if (input.index < 0 || input.index >= sections.length) throw new Error("Section index is out of range.");
+  sections.splice(input.index, 1);
+  return prisma.previewBuild.update({ where: { id: input.previewBuildId }, data: { sections } });
 }
 
 export async function generatePreviewBuildStarterPacket(input: {

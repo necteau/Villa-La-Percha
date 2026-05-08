@@ -67,6 +67,20 @@ try {
   if (!Array.isArray(starterPreview.ownerCallouts) || starterPreview.ownerCallouts.length < 2) throw new Error("Starter packet did not populate owner callouts.");
   console.log("✅ Starter packet generator created artifacts, sections, and owner callouts");
 
+  await platformLeads.appendPreviewBuildSection({ previewBuildId: preview.id, kind: "custom", title: "QA appended section", body: "Temporary appended section." });
+  let managedPreview = await prisma.previewBuild.findUnique({ where: { id: preview.id } });
+  if (!managedPreview || !Array.isArray(managedPreview.sections) || managedPreview.sections.length !== 6) throw new Error("Append section did not add a section.");
+  await platformLeads.movePreviewBuildSection({ previewBuildId: preview.id, index: 5, direction: "up" });
+  managedPreview = await prisma.previewBuild.findUnique({ where: { id: preview.id } });
+  if (!managedPreview || !Array.isArray(managedPreview.sections) || (managedPreview.sections[4] as { title?: string }).title !== "QA appended section") throw new Error("Move section did not reorder sections.");
+  await platformLeads.updatePreviewBuildSection({ previewBuildId: preview.id, index: 4, kind: "custom", title: "QA updated section", body: "Temporary updated section." });
+  managedPreview = await prisma.previewBuild.findUnique({ where: { id: preview.id } });
+  if (!managedPreview || !Array.isArray(managedPreview.sections) || (managedPreview.sections[4] as { title?: string }).title !== "QA updated section") throw new Error("Update section did not change section title.");
+  await platformLeads.deletePreviewBuildSection({ previewBuildId: preview.id, index: 4 });
+  managedPreview = await prisma.previewBuild.findUnique({ where: { id: preview.id } });
+  if (!managedPreview || !Array.isArray(managedPreview.sections) || managedPreview.sections.length !== 5) throw new Error("Delete section did not remove section.");
+  console.log("✅ Section append/move/update/delete controls passed DB QA");
+
   for (const artifact of starter.artifacts.filter((artifact) => ["PREVIEW_PHOTO_GEO_AUDIT", "PREVIEW_DESIGN_BRIEF", "PREVIEW_FACT_REGISTER", "PREVIEW_ASSUMPTION_REGISTER"].includes(artifact.type))) {
     await prisma.platformLeadArtifact.update({ where: { id: artifact.id }, data: { status: "APPROVED", approvedAt: new Date(), approvedByEmail: "preview-gate-qa@example.invalid" } });
   }

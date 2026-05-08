@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import type { PreviewBuildStatus } from "@prisma/client";
 import { getAdminSession } from "@/lib/admin/adminAuth";
 import { recordAdminAuditEvent } from "@/lib/admin/auditLog";
-import { appendPreviewBuildSection, createPreviewBuild, generatePreviewBuildStarterPacket, updatePreviewBuildContent, updatePreviewBuildStatus } from "@/lib/platformLeads";
+import { appendPreviewBuildSection, createPreviewBuild, deletePreviewBuildSection, generatePreviewBuildStarterPacket, movePreviewBuildSection, updatePreviewBuildContent, updatePreviewBuildSection, updatePreviewBuildStatus } from "@/lib/platformLeads";
 const STATUSES = new Set<PreviewBuildStatus>(["DRAFT", "READY_FOR_REVIEW", "SHARED_WITH_LEAD", "PROMOTED_TO_SITE", "ARCHIVED"]);
 
 function parsePreviewJson(value: FormDataEntryValue | null, fallback: unknown) {
@@ -64,6 +64,33 @@ export async function POST(request: Request) {
         await recordAdminAuditEvent({ actor: admin, action: "admin.platform_lead.preview_section_added", entityType: "PlatformLead", entityId: leadId, metadata: { previewBuildId, kind: String(form.get("sectionKind") || "custom") } });
       } catch (error) {
         await recordAdminAuditEvent({ actor: admin, action: "admin.platform_lead.preview_section_rejected", entityType: "PlatformLead", entityId: leadId, metadata: { previewBuildId, error: error instanceof Error ? error.message : String(error) } });
+        redirect(`/admin/platform-leads/detail?leadId=${leadId}&previewGate=${encodeURIComponent(error instanceof Error ? error.message : String(error))}`);
+      }
+    }
+    redirect(`/admin/platform-leads/detail?leadId=${leadId}`);
+  }
+
+  if (action === "section") {
+    const previewBuildId = String(form.get("previewBuildId") || "");
+    const sectionAction = String(form.get("sectionAction") || "update");
+    const index = Number.parseInt(String(form.get("sectionIndex") || "-1"), 10);
+    if (previewBuildId) {
+      try {
+        if (sectionAction === "delete") await deletePreviewBuildSection({ previewBuildId, index });
+        else if (sectionAction === "up" || sectionAction === "down") await movePreviewBuildSection({ previewBuildId, index, direction: sectionAction });
+        else await updatePreviewBuildSection({
+          previewBuildId,
+          index,
+          kind: String(form.get("sectionKind") || "custom"),
+          eyebrow: String(form.get("sectionEyebrow") || ""),
+          title: String(form.get("sectionTitle") || ""),
+          body: String(form.get("sectionBody") || ""),
+          imageUrl: String(form.get("sectionImageUrl") || ""),
+          imageAlt: String(form.get("sectionImageAlt") || ""),
+        });
+        await recordAdminAuditEvent({ actor: admin, action: "admin.platform_lead.preview_section_managed", entityType: "PlatformLead", entityId: leadId, metadata: { previewBuildId, sectionAction, index } });
+      } catch (error) {
+        await recordAdminAuditEvent({ actor: admin, action: "admin.platform_lead.preview_section_rejected", entityType: "PlatformLead", entityId: leadId, metadata: { previewBuildId, sectionAction, index, error: error instanceof Error ? error.message : String(error) } });
         redirect(`/admin/platform-leads/detail?leadId=${leadId}&previewGate=${encodeURIComponent(error instanceof Error ? error.message : String(error))}`);
       }
     }
