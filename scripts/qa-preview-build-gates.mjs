@@ -47,6 +47,7 @@ check("READY_FOR_REVIEW gate uses packet blockers", platformLeads.includes('stat
 check("SHARED_WITH_LEAD gate requires rubric/share blockers", platformLeads.includes('status === "SHARED_WITH_LEAD" ? report.sharedBlockers'));
 check("PROMOTED_TO_SITE gate requires conversion blockers", platformLeads.includes('status === "PROMOTED_TO_SITE" ? report.promotedBlockers'));
 check("Rubric approval is required before owner sharing", platformLeads.includes('approvedTypes.has("PREVIEW_RUBRIC_REVIEW")'));
+check("Owner sharing requires approved rubric to document copy review stack", platformLeads.includes("approvedRubricHasCopyReviewStack") && platformLeads.includes("VRBO-owner relevance") && platformLeads.includes("section-fit passes"));
 check("Owner-share note approval is required before sharing", platformLeads.includes('approvedTypes.has("PREVIEW_SHARE_NOTE")'));
 check("Conversion packet approval is required before promotion", platformLeads.includes('approvedTypes.has("PREVIEW_CONVERSION_PACKET")'));
 check("Blocked preview status updates are audited", adminPreviewRoute.includes("admin.platform_lead.preview_status_blocked"));
@@ -58,6 +59,7 @@ check("Admin can manage existing Preview sections", adminDetail.includes("Manage
 check("Admin includes guided Preview packet review", adminDetail.includes("Preview Build packet review") && adminDetail.includes("previewArtifactsByType") && adminDetail.includes("PREVIEW_CONVERSION_PACKET"));
 check("Admin can generate starter preview packet", adminDetail.includes("Generate starter preview packet") && adminPreviewRoute.includes('action === "generate-packet"') && adminPreviewRoute.includes("preview_packet_generated"));
 check("Starter packet generator creates packet artifacts and rendered sections", platformLeads.includes("generatePreviewBuildStarterPacket") && platformLeads.includes("PREVIEW_PHOTO_GEO_AUDIT") && platformLeads.includes("signatureMoments"));
+check("Starter packet includes layered copy review guidance", platformLeads.includes("Copy Review Stack") && platformLeads.includes("Anti-AI voice pass") && platformLeads.includes("VRBO-owner relevance pass"));
 check("Admin warns public-obscure is not confidential", adminDetail.includes("public-obscure, not confidential"));
 
 const failed = checks.filter((item) => !item.pass);
