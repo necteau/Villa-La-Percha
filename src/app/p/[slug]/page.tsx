@@ -105,7 +105,7 @@ export default async function PreviewBuildPage({ params, searchParams }: { param
       <section style={{ padding: "28px 24px 56px", maxWidth: 1240, margin: "0 auto" }}>
         <div style={{ display: "grid", gap: 28, gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", alignItems: "stretch", minHeight: 620 }}>
           <div style={{ padding: "44px 0", display: "flex", flexDirection: "column", justifyContent: "center" }}>
-            <p style={{ letterSpacing: 3, textTransform: "uppercase", color: "#7b6d58", margin: 0 }}>{view === "guest" ? "Private villa preview" : "Owner review preview"}</p>
+            <p style={{ letterSpacing: 3, textTransform: "uppercase", color: "#7b6d58", margin: 0 }}>{view === "guest" ? "Direct booking preview" : "Owner review preview"}</p>
             <h1 style={{ fontSize: "clamp(38px, 5.8vw, 72px)", lineHeight: .94, margin: "16px 0" }}>{preview.heroTitle || preview.propertyName}</h1>
             <p style={{ fontSize: 22, lineHeight: 1.45, maxWidth: 720 }}>{preview.positioning || `A direct-booking preview concept for ${preview.propertyName} in ${preview.location}.`}</p>
             <p style={{ marginTop: 18, color: "#7b6d58", fontSize: 18 }}>{preview.location}</p>
