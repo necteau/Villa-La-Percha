@@ -63,6 +63,39 @@
       "notes": "2027 post-peak spring direct rate after the Jan 2-Apr 16 peak window. Tax-inclusive; 5-night minimum unless owner approval requires otherwise."
     },
     {
+      "id": "direct-summer-peak-2027",
+      "platform": "direct",
+      "startDate": "2027-06-01",
+      "endDate": "2027-09-08",
+      "nightlyRate": 1750,
+      "currency": "USD",
+      "minimumStayNights": 5,
+      "charges": [],
+      "notes": "2027 summer direct rate projected from the 2026 DirectStay pricing season. Tax-inclusive; 5-night minimum. Revisit once Airbnb/VRBO publish 2027 pricing."
+    },
+    {
+      "id": "direct-shoulder-2027",
+      "platform": "direct",
+      "startDate": "2027-09-08",
+      "endDate": "2027-12-19",
+      "nightlyRate": 1600,
+      "currency": "USD",
+      "minimumStayNights": 5,
+      "charges": [],
+      "notes": "2027 shoulder direct rate projected from the 2026 DirectStay pricing season. Tax-inclusive; 5-night minimum. Revisit once Airbnb/VRBO publish 2027 pricing and Thanksgiving details are confirmed."
+    },
+    {
+      "id": "direct-christmas-new-year-2027",
+      "platform": "direct",
+      "startDate": "2027-12-19",
+      "endDate": "2028-01-02",
+      "nightlyRate": 2500,
+      "currency": "USD",
+      "minimumStayNights": 5,
+      "charges": [],
+      "notes": "2027 Christmas/New Year direct rate projected from the 2026 DirectStay holiday pricing season. Tax-inclusive; 5-night minimum until the exact 2027 holiday policy is confirmed."
+    },
+    {
       "id": "vrbo-current-spring-2026",
       "platform": "vrbo",
       "startDate": "2026-05-07",
