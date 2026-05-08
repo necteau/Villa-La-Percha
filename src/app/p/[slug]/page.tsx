@@ -35,7 +35,8 @@ function sectionTitle(section: PreviewSection) {
 
 function sectionTone(kind?: string) {
   if (kind === "signatureMoments" || kind === "imageStory") return { background: "#17211a", color: "#f7f3eb", border: "1px solid rgba(247, 243, 235, .18)" };
-  if (kind === "missingInputs" || kind === "ownerCallout") return { background: "#fffaf0", color: "#17211a", border: "1px solid #d8c7a3" };
+  if (kind === "missingInputs" || kind === "ownerCallout" || kind === "calendarMock" || kind === "priceComparison") return { background: "#fffaf0", color: "#17211a", border: "1px solid #d8c7a3" };
+  if (kind === "areaGuide") return { background: "#ffffff", color: "#17211a", border: "1px solid #d8c7a3" };
   return { background: "#ffffff", color: "#17211a", border: "1px solid #e7decf" };
 }
 
@@ -55,6 +56,8 @@ function RenderItems({ items }: { items?: PreviewSection["items"] }) {
 function PreviewContentSection({ section, index }: { section: PreviewSection; index: number }) {
   const tone = sectionTone(section.kind);
   const imageFirst = index % 2 === 1;
+  const isCalendar = section.kind === "calendarMock";
+  const isPrice = section.kind === "priceComparison";
   return <section data-preview-section={section.kind || "custom"} style={{ padding: "42px 24px" }}>
     <article style={{ maxWidth: 1120, margin: "0 auto", display: "grid", gap: 24, gridTemplateColumns: section.imageUrl ? "repeat(auto-fit, minmax(300px, 1fr))" : "1fr", alignItems: "stretch", padding: 28, borderRadius: 32, boxShadow: "0 24px 80px rgba(23, 33, 26, .08)", ...tone }}>
       {section.imageUrl && imageFirst ? <div role="img" aria-label={section.imageAlt || sectionTitle(section)} style={{ minHeight: 420, borderRadius: 26, backgroundImage: `url(${section.imageUrl})`, backgroundSize: "cover", backgroundPosition: "center", order: -1 }} /> : null}
@@ -62,11 +65,29 @@ function PreviewContentSection({ section, index }: { section: PreviewSection; in
         <p style={{ letterSpacing: 2.4, textTransform: "uppercase", color: tone.color === "#f7f3eb" ? "#d8c7a3" : "#7b6d58", margin: 0 }}>{text(section.eyebrow, text(section.kind, `Preview ${index + 1}`)).replace(/([A-Z])/g, " $1")}</p>
         <h2 style={{ fontSize: "clamp(30px, 4.6vw, 58px)", lineHeight: .98, margin: "12px 0" }}>{sectionTitle(section)}</h2>
         {section.body ? <p style={{ fontSize: 18, lineHeight: 1.65, margin: 0 }}>{section.body}</p> : null}
+        {isCalendar ? <CalendarMock /> : null}
+        {isPrice ? <PriceComparisonMock /> : null}
         <RenderItems items={section.items} />
       </div>
       {section.imageUrl && !imageFirst ? <div role="img" aria-label={section.imageAlt || sectionTitle(section)} style={{ minHeight: 420, borderRadius: 26, backgroundImage: `url(${section.imageUrl})`, backgroundSize: "cover", backgroundPosition: "center" }} /> : null}
     </article>
   </section>;
+}
+
+function CalendarMock() {
+  const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+  const cells = Array.from({ length: 35 }, (_, index) => index + 1);
+  return <div data-preview-calendar-mock="true" style={{ marginTop: 24, padding: 18, borderRadius: 24, background: "#fff", border: "1px solid #e7decf" }}>
+    <div style={{ display: "flex", justifyContent: "space-between", gap: 12, flexWrap: "wrap", alignItems: "center" }}><strong>Sample availability view</strong><span style={{ color: "#7b6d58" }}>Read-only mock</span></div>
+    <div style={{ display: "grid", gridTemplateColumns: "repeat(7, minmax(0, 1fr))", gap: 6, marginTop: 16 }}>{days.map((day) => <span key={day} style={{ fontSize: 12, color: "#7b6d58", textAlign: "center" }}>{day}</span>)}{cells.map((day) => <span key={day} style={{ minHeight: 42, borderRadius: 12, display: "grid", placeItems: "center", background: day >= 10 && day <= 16 ? "#d8c7a3" : day === 22 || day === 23 ? "#eee6d8" : "#f7f3eb", color: "#17211a", border: day >= 10 && day <= 16 ? "1px solid #9b7a3a" : "1px solid #efe5d4" }}>{day}</span>)}</div>
+    <p style={{ margin: "14px 0 0", color: "#7b6d58", lineHeight: 1.5 }}>In a live site, this block would connect approved availability, minimum-stay rules, and inquiry context so guests can choose dates before asking questions.</p>
+  </div>;
+}
+
+function PriceComparisonMock() {
+  return <div data-preview-price-comparison-mock="true" style={{ marginTop: 24, display: "grid", gap: 12 }}>
+    {[{ label: "Direct estimate", value: "$2,950", note: "Owner-approved direct rate would appear here" }, { label: "Marketplace-style estimate", value: "$3,410", note: "Mock fees/taxes comparison for owner review" }, { label: "Potential guest savings", value: "$460", note: "Illustrative only until rates and fee assumptions are approved" }].map((row) => <article key={row.label} style={{ padding: 16, borderRadius: 18, background: "#fff", border: "1px solid #e7decf", display: "grid", gap: 4 }}><span style={{ color: "#7b6d58" }}>{row.label}</span><strong style={{ fontSize: 28 }}>{row.value}</strong><small>{row.note}</small></article>)}
+  </div>;
 }
 
 function FallbackSections() {
@@ -124,7 +145,7 @@ export default async function PreviewBuildPage({ params, searchParams }: { param
 
       <section style={{ padding: "56px 24px", maxWidth: 960, margin: "0 auto" }}>
         <h2>{view === "guest" ? "Sample inquiry experience" : "Preview inquiry"}</h2>
-        {view === "guest" ? <p style={{ color: "#7b6d58", lineHeight: 1.6 }}>This is a read-only mock of the future direct inquiry path. Nothing can be submitted from this preview.</p> : null}
+        {view === "guest" ? <p style={{ color: "#7b6d58", lineHeight: 1.6 }}>This is a read-only mock of the future direct inquiry path. Nothing can be submitted from this preview. Calendar and savings modules above show the type of decision support a direct site can add before the form.</p> : null}
         <div data-preview-inquiry-disabled="true" style={{ display: "grid", gap: 12, opacity: .62 }}>
           <input disabled placeholder="Guest name" style={{ padding: 14, borderRadius: 12, border: "1px solid #d7d0c3" }} />
           <input disabled placeholder="Email" style={{ padding: 14, borderRadius: 12, border: "1px solid #d7d0c3" }} />
