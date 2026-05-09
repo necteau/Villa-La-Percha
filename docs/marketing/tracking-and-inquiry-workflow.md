@@ -134,13 +134,18 @@ For Villa inquiry notification QA, check at minimum:
 - `INQUIRY_NOTIFICATION_EMAIL`
 - `INQUIRY_REPLY_TO_EMAIL`
 
-Required live inquiry QA loop:
+Routine production QA loop:
 1. Pull/list production env and confirm required variables are non-empty without exposing secret values.
-2. Submit a clearly marked test inquiry through `https://directstay.app/api/inquiry` or the public form.
-3. Confirm the API returns `ok: true`.
-4. Confirm Vercel logs show `POST /api/inquiry` without a server error.
-5. Confirm the notification email arrives at the configured inbox, including junk/spam check.
-6. Confirm the inquiry appears in the owner/admin inquiry flow.
-7. Record the test inquiry details and clean up/archive the test record if needed.
+2. Confirm the deployed route exists/build includes `POST /api/inquiry` when relevant.
+3. Do **not** submit a live test inquiry or send a test email during routine QA.
+4. Record env/config verification evidence without storing secret values.
 
-Lesson from 2026-05-09: Vercel env vars can exist but contain empty strings. That is not configured; it is a decorative trapdoor.
+Live email/inquiry test loop — use only for launch readiness, after email-routing/env changes, or when delivery is suspected broken:
+1. Submit a clearly marked test inquiry through `https://directstay.app/api/inquiry` or the public form.
+2. Confirm the API returns `ok: true`.
+3. Confirm Vercel logs show `POST /api/inquiry` without a server error.
+4. Confirm the notification email arrives at the configured inbox, including junk/spam check.
+5. Confirm the inquiry appears in the owner/admin inquiry flow.
+6. Record the test inquiry details and clean up/archive the test record if needed.
+
+Lesson from 2026-05-09: Vercel env vars can exist but contain empty strings. That is not configured; it is a decorative trapdoor. Also, do not create test inquiries/emails on every QA run; inbox noise is not a monitoring strategy.
