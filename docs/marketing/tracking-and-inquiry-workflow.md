@@ -123,3 +123,24 @@ Then enter these into `src/data/pricingTable.ts` so the website can calculate re
 - Live inquiry submission + reply-webhook test still needs to happen end-to-end
 - Production inbound email routing still needs to be chosen and wired into the webhook
 - Exact OTA pricing requires manual capture when platforms block automation
+
+## Production QA Rule: Environment Variables Are Part of the Flow
+
+For any production QA that depends on email, auth, webhooks, AI jobs, payments, analytics, or other integrations, verify the required Vercel environment variables are present **and non-empty** before trusting a green UI/API result.
+
+For Villa inquiry notification QA, check at minimum:
+- `RESEND_API_KEY`
+- `RESEND_FROM_EMAIL`
+- `INQUIRY_NOTIFICATION_EMAIL`
+- `INQUIRY_REPLY_TO_EMAIL`
+
+Required live inquiry QA loop:
+1. Pull/list production env and confirm required variables are non-empty without exposing secret values.
+2. Submit a clearly marked test inquiry through `https://directstay.app/api/inquiry` or the public form.
+3. Confirm the API returns `ok: true`.
+4. Confirm Vercel logs show `POST /api/inquiry` without a server error.
+5. Confirm the notification email arrives at the configured inbox, including junk/spam check.
+6. Confirm the inquiry appears in the owner/admin inquiry flow.
+7. Record the test inquiry details and clean up/archive the test record if needed.
+
+Lesson from 2026-05-09: Vercel env vars can exist but contain empty strings. That is not configured; it is a decorative trapdoor.
