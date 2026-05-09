@@ -38,6 +38,22 @@ export default function FAQPage() {
 
       <FAQ includeStructuredData />
 
+      <section className="px-6 pb-12 md:px-8">
+        <div className="mx-auto grid max-w-5xl gap-4 rounded-[30px] border border-[#e8e0d2] bg-white p-6 shadow-[0_14px_38px_rgba(31,31,27,0.06)] md:grid-cols-4 md:p-8">
+          {[
+            ["Planning guides", "/villa-la-percha/guides", "Compare Chalk Sound, private villas, pool stays, and direct booking."],
+            ["Island guide", "/villa-la-percha/experience-the-island", "Beaches, restaurants, boat days, and easy wins near the villa."],
+            ["Sample itinerary", "/villa-la-percha/experience-the-island/itinerary", "A practical week plan for a private Turks and Caicos stay."],
+            ["Book direct", "/villa-la-percha/guides/book-turks-and-caicos-villa-direct", "What to check before booking a villa outside an OTA."],
+          ].map(([title, href, body]) => (
+            <Link key={href} href={href} className="rounded-2xl bg-[#fbfaf7] p-4 text-left transition hover:bg-[#f3eadc]">
+              <h2 className="font-display text-xl text-[#181612]">{title}</h2>
+              <p className="mt-2 text-sm leading-6 text-[#6B6B6B]">{body}</p>
+            </Link>
+          ))}
+        </div>
+      </section>
+
       <section className="pb-20 md:pb-28 text-center px-6 md:px-8">
         <p className="text-sm md:text-base text-[#6B6B6B] max-w-2xl mx-auto leading-relaxed mb-8">
           Still have a question? Choose your preferred dates and send an inquiry directly.

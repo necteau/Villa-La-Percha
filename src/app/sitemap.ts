@@ -9,6 +9,7 @@ const publicRoutes = [
   "/villa-la-percha/experience-the-island",
   "/villa-la-percha/experience-the-island/interactive-map",
   "/villa-la-percha/experience-the-island/itinerary",
+  "/villa-la-percha/guides",
   "/for-property-owners",
   "/request-a-site",
 ];
