@@ -472,3 +472,20 @@ French Escape is now a strong internal Lake Norman benchmark and can inform the 
 ### Process lesson
 
 The strongest lake-house preview does not lead with “luxury lakefront.” It leads with planning confidence: where everyone sleeps, how the lake day works, what rules are unknown, what dates/equipment/party details the owner needs, and how direct inquiry reduces the back-and-forth. That lesson should carry directly into Villa La Percha launch work: make the guest’s decision path practical before making it pretty.
+
+## Sarasota River Retreat benchmark intake — 2026-05-10 19:00 ET
+
+Prepared one additional DirectStay Preview Build benchmark intake without owner contact, external messaging, production DB writes, or rendering a shareable preview.
+
+- Source: `https://sarasotariverretreat.com/`
+- Intake artifact: `directstay/docs/platform-leads/sarasota-river-retreat-source-audit-2026-05-10.md`
+- Public/source-observed context: Sarasota waterfront home on the Phillippi River; 3 bedrooms; sleeps 6; private pool/spa; private dock/direct river access; kayaks; firepit; designer kitchen; owner-written story centered on quiet river mornings, herons/manatees, maintenance care, direct owner availability, and local recommendations.
+- Benchmark focus: a **Gulf Coast riverfront retreat** archetype that is not a generic Florida beach villa and not a lake-family house.
+
+Initial benchmark learning:
+
+- DirectStay needs a distinct riverfront/Gulf Coast seed: soft waterway light, dock/kayak/pool/spa rule confirmation, owner-care trust, and Sarasota local-guide caution.
+- The best conversion trio language should feel like guest planning: dates + party size + pool/spa/kayak expectations; structure-only trip-cost clarity; restaurant/sunset/beach-day guide placeholders until owner-confirmed.
+- Photo inspection is the main blocker before any render. The fetched page exposed strong owner prose but no reliable gallery inventory, so hero/section image choices must wait for browser/image review.
+
+Recommended next action: create `design-seeds/gulf-river-retreat.DESIGN.md` only after one more river/coastal-waterway source is inspected, or keep this as a learning artifact until browser image inventory can validate the palette and first-screen image rhythm.
