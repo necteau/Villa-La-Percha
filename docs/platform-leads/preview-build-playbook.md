@@ -25,7 +25,12 @@ Do not share a Preview Build if it contains sensitive owner data, private contac
 
 ## Required Preview Build packet
 
-A Preview Build record is not a shareable Preview Build. Before `READY_FOR_REVIEW` / owner-share review, it must include:
+A Preview Build record is not a shareable Preview Build. Treat preview quality as two separate gates:
+
+1. **Pre-render rubric preflight:** after the source audit, DESIGN brief, and content plan exist, score only the categories that can be judged before rendering. This can approve an internal render, but it cannot approve owner sharing.
+2. **Post-render promotion gate:** after a real URL exists, rerun the full rubric against the rendered desktop and mobile experience, including page-order image inventory, technical polish, and safety constraints.
+
+Before `READY_FOR_REVIEW` / owner-share review, it must include:
 
 - Completed Property Photo + Geography Audit.
 - Property-specific DESIGN.md/design brief.

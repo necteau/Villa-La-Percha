@@ -96,6 +96,14 @@ Created a builder-ready internal content plan at `directstay/docs/platform-leads
 
 The plan converts the source/image audit and DESIGN brief into a safe section-by-section Preview Build handoff: hero, stay-fit strip, house rhythm, sleeping/layout confidence, read-only date module, illustrative trip-total clarity, Lake Norman planning guide, owner-correction panel, copy watchouts, and render-readiness checklist.
 
+## Rubric preflight update — 2026-05-10 11:00 ET
+
+Completed a pre-render rubric review at `directstay/docs/platform-leads/french-escape-preview-rubric-preflight-2026-05-10.md`.
+
+Result: planning packet is **Jaimal-reviewable as internal-only planning** and **ready for a non-shared internal render**, but **not owner-shareable** because no rendered URL, desktop QA, mobile QA, page-order image inventory, or final post-render rubric exists yet.
+
+Planning average, excluding non-renderable categories: **3.8/5**. Main gap: the workflow needs an explicit pre-render rubric preflight plus post-render promotion gate so a strong planning packet is not mistaken for an owner-share-ready preview.
+
 ## Next gate
 
-Create a non-shared internal benchmark preview only if the build keeps booking, calendar, and price-comparison modules read-only; avoids platform badges/exact savings/legal-safety claims; uses the DESIGN brief and 2026-05-10 content plan; and keeps guest-facing copy useful rather than internal strategy-memo copy.
+Create a non-shared internal benchmark preview only if the build keeps booking, calendar, and price-comparison modules read-only; avoids platform badges/exact savings/legal-safety claims; uses the DESIGN brief and 2026-05-10 content plan; keeps guest-facing copy useful rather than internal strategy-memo copy; and then completes desktop/mobile QA, page-order image inventory, and final rendered rubric review before any owner-share consideration.
