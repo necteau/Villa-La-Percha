@@ -17,6 +17,7 @@ const schema = read("prisma/schema.prisma");
 const adminDetail = read("src/app/admin/platform-leads/detail/page.tsx");
 const adminPreviewRoute = read("src/app/admin/platform-leads/previews/route.ts");
 const sitemap = read("src/app/sitemap.ts");
+const previewPlaybook = read("docs/platform-leads/preview-build-playbook.md");
 
 check("Canonical preview route is noindex/nofollow", pRoute.includes("robots: { index: false, follow: false }"));
 check("Legacy /preview route is noindex/nofollow", legacyRoute.includes("robots: { index: false, follow: false }"));
@@ -61,6 +62,8 @@ check("Admin can generate starter preview packet", adminDetail.includes("Generat
 check("Starter packet generator creates packet artifacts and rendered sections", platformLeads.includes("generatePreviewBuildStarterPacket") && platformLeads.includes("PREVIEW_PHOTO_GEO_AUDIT") && platformLeads.includes("signatureMoments"));
 check("Starter packet includes layered copy review guidance", platformLeads.includes("Copy Review Stack") && platformLeads.includes("Anti-AI voice pass") && platformLeads.includes("VRBO-owner relevance pass"));
 check("Admin warns public-obscure is not confidential", adminDetail.includes("public-obscure, not confidential"));
+check("Playbook separates pre-render preflight from post-render owner-share gate", previewPlaybook.includes("Pre-render rubric preflight") && previewPlaybook.includes("Post-render promotion gate") && previewPlaybook.includes("cannot approve owner sharing"));
+check("Playbook requires rendered image inventory before promotion", previewPlaybook.includes("page-order image inventory") && previewPlaybook.includes("promotional/non-property") && previewPlaybook.includes("duplicate/near-duplicate"));
 
 const failed = checks.filter((item) => !item.pass);
 console.log(`\nPreview Build QA: ${checks.length - failed.length}/${checks.length} checks passed.`);
