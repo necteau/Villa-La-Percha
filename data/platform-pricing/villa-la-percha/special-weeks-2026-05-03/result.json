@@ -1,0 +1,47 @@
+{
+  "generatedAt": "2026-05-04T02:26:48.326Z",
+  "results": [
+    {
+      "platform": "airbnb",
+      "checkIn": "2026-12-24",
+      "checkOut": "2026-12-31",
+      "url": "https://www.airbnb.com/rooms/20472078?check_in=2026-12-24&check_out=2026-12-31&adults=8",
+      "prices": [
+        "$200"
+      ],
+      "status": "no_total_found"
+    },
+    {
+      "platform": "airbnb",
+      "checkIn": "2026-12-26",
+      "checkOut": "2027-01-02",
+      "url": "https://www.airbnb.com/rooms/20472078?check_in=2026-12-26&check_out=2027-01-02&adults=8",
+      "prices": [
+        "$200"
+      ],
+      "status": "no_total_found"
+    },
+    {
+      "platform": "vrbo",
+      "checkIn": "2026-12-24",
+      "checkOut": "2026-12-31",
+      "url": "https://www.vrbo.com/935749ha?chkin=2026-12-24&chkout=2026-12-31&adults=8",
+      "screenshot": "data/platform-pricing/villa-la-percha/special-weeks-2026-05-03/vrbo-2026-12-24_2026-12-31.jpg",
+      "prices": [
+        "$200"
+      ],
+      "status": "no_price_found"
+    },
+    {
+      "platform": "vrbo",
+      "checkIn": "2026-12-26",
+      "checkOut": "2027-01-02",
+      "url": "https://www.vrbo.com/935749ha?chkin=2026-12-26&chkout=2027-01-02&adults=8",
+      "screenshot": "data/platform-pricing/villa-la-percha/special-weeks-2026-05-03/vrbo-2026-12-26_2027-01-02.jpg",
+      "prices": [
+        "$200"
+      ],
+      "status": "no_price_found"
+    }
+  ]
+}

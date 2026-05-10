@@ -6,7 +6,7 @@
   <string>com.directstay.ai-draft-worker</string>
   <key>ProgramArguments</key>
   <array>
-    <string>/Users/agents/.openclaw/workspace/villa-la-percha/scripts/run-directstay-ai-draft-worker.sh</string>
+    <string>/Users/agents/.openclaw/workspace/directstay/scripts/run-directstay-ai-draft-worker.sh</string>
   </array>
   <key>StartInterval</key>
   <integer>30</integer>
@@ -17,6 +17,6 @@
   <key>StandardErrorPath</key>
   <string>/Users/agents/.openclaw/logs/directstay-ai-draft-worker.err.log</string>
   <key>WorkingDirectory</key>
-  <string>/Users/agents/.openclaw/workspace/villa-la-percha</string>
+  <string>/Users/agents/.openclaw/workspace/directstay</string>
 </dict>
 </plist>

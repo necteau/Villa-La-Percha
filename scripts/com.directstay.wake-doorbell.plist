@@ -6,7 +6,7 @@
   <string>com.directstay.wake-doorbell</string>
   <key>ProgramArguments</key>
   <array>
-    <string>/Users/agents/.openclaw/workspace/villa-la-percha/scripts/run-directstay-wake-doorbell.sh</string>
+    <string>/Users/agents/.openclaw/workspace/directstay/scripts/run-directstay-wake-doorbell.sh</string>
   </array>
   <key>RunAtLoad</key>
   <true/>
@@ -17,6 +17,6 @@
   <key>StandardErrorPath</key>
   <string>/Users/agents/.openclaw/logs/directstay-wake-doorbell.err.log</string>
   <key>WorkingDirectory</key>
-  <string>/Users/agents/.openclaw/workspace/villa-la-percha</string>
+  <string>/Users/agents/.openclaw/workspace/directstay</string>
 </dict>
 </plist>

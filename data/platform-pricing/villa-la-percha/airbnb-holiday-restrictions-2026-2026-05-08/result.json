@@ -1,0 +1,471 @@
+{
+  "generatedAt": "2026-05-08T17:32:19.103Z",
+  "results": [
+    {
+      "label": "thanksgiving-fri-fri",
+      "checkIn": "2026-11-20",
+      "checkOut": "2026-11-27",
+      "startDay": "Friday",
+      "endDay": "Friday",
+      "errors": [],
+      "initialFlags": [
+        "bookable_language"
+      ],
+      "initialMoney": [
+        "$200",
+        "$12,951"
+      ],
+      "reserveCount": 1,
+      "finalUrl": "https://www.airbnb.com/book/stays/20472078?checkin=2026-11-20&checkout=2026-11-27&numberOfAdults=8&guestCurrency=USD&productId=20472078&isWorkTrip=false&numberOfChildren=0&numberOfInfants=0&numberOfPets=0",
+      "finalFlags": [
+        "reached_checkout",
+        "bookable_language"
+      ],
+      "money": [
+        "$14,475.12",
+        "$7,237.56",
+        "$1,341",
+        "$1,850.14",
+        "$12,951.00",
+        "$1,524.12",
+        "$200"
+      ],
+      "relevantText": [
+        ">We’re sorry, some parts of the Airbnb website don’t work properly without JavaScript enabled.</div>Request to book1. Choose when to payPay $14,475.12 nowPay part now, part later$7,237.56 now, $7,237.56 charged on Sep 13. No extra fees. More infoPay monthly with KlarnaFrom $",
+        "Id\":\"misa_id_1778261356_EAOWJhMGMyZTA1YT\",\"sitarVersion\":\"16\",\"etag\":\"28629f4e\"},\"bnb_pdp_room_card_reserve_button\":{\"assignedTreatment\":\"control\",\"featureName\":\"bnb_pdp_room_card_reserve_button\",\"shouldLogExposure\":true,\"shouldLogOnPeek\":true,\"subject\":\"identity\",\"s",
+        "ll-intercepts\":{\"isLaunched\":false},\"kill-qualtrics-intercepts\":{\"isLaunched\":false},\"csp.mediation.reserve_history_state\":{\"isLaunched\":true},\"enable_map_paint_containment\":{\"isLaunched\":true},\"google_map_ids_web_airparam_enabled\":{\"isLaunched\":true},\"enable_maps_co",
+        "alse},\"pdp.reviews_empty.host_other_reviews\":{\"isLaunched\":true},\"moweb.pdp.services_offering_modal_reserve_button\":{\"isLaunched\":true},\"desktop.pdp.services_offering_modal_reserve_button\":{\"isLaunched\":true},\"ai_search_web_killswitch\":{\"isLaunched\":false},\"search_in",
+        "ntercepts\":{\"ssr_resolved\":false},\"kill-qualtrics-intercepts\":{\"ssr_resolved\":false},\"csp.mediation.reserve_history_state\":{\"ssr_resolved\":true},\"enable_map_paint_containment\":{\"ssr_resolved\":true},\"google_map_ids_web_airparam_enabled\":{\"ssr_resolved\":true},\"enable_m",
+        "se},\"pdp.reviews_empty.host_other_reviews\":{\"ssr_resolved\":true},\"moweb.pdp.services_offering_modal_reserve_button\":{\"ssr_resolved\":true},\"desktop.pdp.services_offering_modal_reserve_button\":{\"ssr_resolved\":true},\"ai_search_web_killswitch\":{\"ssr_resolved\":false},\"sea",
+        "ssibility policy\\u003c/a>.\",\"readMoreButton\":null,\"textStyle\":null,\"recommendedNumberOfLines\":null,\"minimumNumberOfLinesForTruncation\":null},\"kickerBadge\":null}},{\"__typename\":\"SectionContainer\",\"id\":\"U2VjdGlvbkNvbnRhaW5lcjotNDY0ODE4MzE3NTkwMjY1MDQwMA==\",\"sectionComp",
+        " unit are as follows:\\nPets are not allowed.\\nSmoking is not permitted.\\nChildren are allowed.\\nThe minimum age limit for this unit is 25.\",\"recommendedNumberOfLines\":5,\"minimumNumberOfLinesForTruncation\":5,\"readMoreButton\":{\"__typename\":\"Button\",\"accessibilityLabel\"",
+        " every detail, guiding you\",\"readMoreButton\":null,\"textStyle\":null,\"recommendedNumberOfLines\":null,\"minimumNumberOfLinesForTruncation\":null},\"image\":null,\"kicker\":null,\"loggingEventData\":null,\"media\":null,\"subtitle\":null,\"subtitleStyle\":null,\"title\":null,\"titleStyle\"",
+        "ing for an additional fee.\",\"readMoreButton\":null,\"textStyle\":null,\"recommendedNumberOfLines\":null,\"minimumNumberOfLinesForTruncation\":null},\"image\":null,\"kicker\":null,\"loggingEventData\":null,\"media\":null,\"subtitle\":null,\"subtitleStyle\":null,\"title\":\"The space\",\"titl"
+      ]
+    },
+    {
+      "label": "thanksgiving-sat-sat",
+      "checkIn": "2026-11-21",
+      "checkOut": "2026-11-28",
+      "startDay": "Saturday",
+      "endDay": "Saturday",
+      "errors": [],
+      "initialFlags": [
+        "bookable_language"
+      ],
+      "initialMoney": [
+        "$200",
+        "$12,955",
+        "$13,200",
+        "$9,899",
+        "$23,457",
+        "$9,254",
+        "$13,103",
+        "$7,227",
+        "$6,236",
+        "$20,267"
+      ],
+      "reserveCount": 1,
+      "finalUrl": "https://www.airbnb.com/book/stays/20472078?checkin=2026-11-21&checkout=2026-11-28&numberOfAdults=8&guestCurrency=USD&productId=20472078&isWorkTrip=false&numberOfChildren=0&numberOfInfants=0&numberOfPets=0",
+      "finalFlags": [
+        "reached_checkout",
+        "bookable_language"
+      ],
+      "money": [
+        "$14,479.60",
+        "$7,239.80",
+        "$1,341",
+        "$1,850.71",
+        "$12,955.00",
+        "$1,524.60",
+        "$200"
+      ],
+      "relevantText": [
+        ">We’re sorry, some parts of the Airbnb website don’t work properly without JavaScript enabled.</div>Request to book1. Choose when to payPay $14,479.60 nowPay part now, part later$7,239.80 now, $7,239.80 charged on Sep 14. No extra fees. More infoPay monthly with KlarnaFrom $",
+        "Id\":\"misa_id_1778261409_EAOWRiYzdlY2IyYm\",\"sitarVersion\":\"16\",\"etag\":\"77f64885\"},\"bnb_pdp_room_card_reserve_button\":{\"assignedTreatment\":\"control\",\"featureName\":\"bnb_pdp_room_card_reserve_button\",\"shouldLogExposure\":true,\"shouldLogOnPeek\":true,\"subject\":\"identity\",\"s",
+        "ll-intercepts\":{\"isLaunched\":false},\"kill-qualtrics-intercepts\":{\"isLaunched\":false},\"csp.mediation.reserve_history_state\":{\"isLaunched\":true},\"enable_map_paint_containment\":{\"isLaunched\":true},\"google_map_ids_web_airparam_enabled\":{\"isLaunched\":true},\"enable_maps_co",
+        "alse},\"pdp.reviews_empty.host_other_reviews\":{\"isLaunched\":true},\"moweb.pdp.services_offering_modal_reserve_button\":{\"isLaunched\":true},\"desktop.pdp.services_offering_modal_reserve_button\":{\"isLaunched\":true},\"ai_search_web_killswitch\":{\"isLaunched\":false},\"search_in",
+        "ntercepts\":{\"ssr_resolved\":false},\"kill-qualtrics-intercepts\":{\"ssr_resolved\":false},\"csp.mediation.reserve_history_state\":{\"ssr_resolved\":true},\"enable_map_paint_containment\":{\"ssr_resolved\":true},\"google_map_ids_web_airparam_enabled\":{\"ssr_resolved\":true},\"enable_m",
+        "se},\"pdp.reviews_empty.host_other_reviews\":{\"ssr_resolved\":true},\"moweb.pdp.services_offering_modal_reserve_button\":{\"ssr_resolved\":true},\"desktop.pdp.services_offering_modal_reserve_button\":{\"ssr_resolved\":true},\"ai_search_web_killswitch\":{\"ssr_resolved\":false},\"sea",
+        " unit are as follows:\\nPets are not allowed.\\nSmoking is not permitted.\\nChildren are allowed.\\nThe minimum age limit for this unit is 25.\",\"recommendedNumberOfLines\":5,\"minimumNumberOfLinesForTruncation\":5,\"readMoreButton\":{\"__typename\":\"Button\",\"accessibilityLabel\"",
+        " every detail, guiding you\",\"readMoreButton\":null,\"textStyle\":null,\"recommendedNumberOfLines\":null,\"minimumNumberOfLinesForTruncation\":null},\"image\":null,\"kicker\":null,\"loggingEventData\":null,\"media\":null,\"subtitle\":null,\"subtitleStyle\":null,\"title\":null,\"titleStyle\"",
+        "ing for an additional fee.\",\"readMoreButton\":null,\"textStyle\":null,\"recommendedNumberOfLines\":null,\"minimumNumberOfLinesForTruncation\":null},\"image\":null,\"kicker\":null,\"loggingEventData\":null,\"media\":null,\"subtitle\":null,\"subtitleStyle\":null,\"title\":\"The space\",\"titl",
+        "anning and recommendations\",\"readMoreButton\":null,\"textStyle\":null,\"recommendedNumberOfLines\":null,\"minimumNumberOfLinesForTruncation\":null},\"image\":null,\"kicker\":null,\"loggingEventData\":null,\"media\":null,\"subtitle\":null,\"subtitleStyle\":null,\"title\":\"Other things to "
+      ]
+    },
+    {
+      "label": "thanksgiving-sun-sun",
+      "checkIn": "2026-11-22",
+      "checkOut": "2026-11-29",
+      "startDay": "Sunday",
+      "endDay": "Sunday",
+      "errors": [],
+      "initialFlags": [
+        "bookable_language"
+      ],
+      "initialMoney": [
+        "$200",
+        "$12,955",
+        "$13,300",
+        "$9,899",
+        "$23,557",
+        "$7,227",
+        "$9,486",
+        "$13,506",
+        "$14,341",
+        "$19,500"
+      ],
+      "reserveCount": 1,
+      "finalUrl": "https://www.airbnb.com/book/stays/20472078?checkin=2026-11-22&checkout=2026-11-29&numberOfAdults=8&guestCurrency=USD&productId=20472078&isWorkTrip=false&numberOfChildren=0&numberOfInfants=0&numberOfPets=0",
+      "finalFlags": [
+        "reached_checkout",
+        "bookable_language"
+      ],
+      "money": [
+        "$14,479.60",
+        "$7,239.80",
+        "$1,341",
+        "$1,850.71",
+        "$12,955.00",
+        "$1,524.60",
+        "$200"
+      ],
+      "relevantText": [
+        ">We’re sorry, some parts of the Airbnb website don’t work properly without JavaScript enabled.</div>Request to book1. Choose when to payPay $14,479.60 nowPay part now, part later$7,239.80 now, $7,239.80 charged on Sep 15. No extra fees. More infoPay monthly with KlarnaFrom $",
+        "Id\":\"misa_id_1778261420_EAMTgwNjQ1ZjgxYj\",\"sitarVersion\":\"16\",\"etag\":\"572bef28\"},\"bnb_pdp_room_card_reserve_button\":{\"assignedTreatment\":\"control\",\"featureName\":\"bnb_pdp_room_card_reserve_button\",\"shouldLogExposure\":true,\"shouldLogOnPeek\":true,\"subject\":\"identity\",\"s",
+        "ll-intercepts\":{\"isLaunched\":false},\"kill-qualtrics-intercepts\":{\"isLaunched\":false},\"csp.mediation.reserve_history_state\":{\"isLaunched\":true},\"enable_map_paint_containment\":{\"isLaunched\":true},\"google_map_ids_web_airparam_enabled\":{\"isLaunched\":true},\"enable_maps_co",
+        "alse},\"pdp.reviews_empty.host_other_reviews\":{\"isLaunched\":true},\"moweb.pdp.services_offering_modal_reserve_button\":{\"isLaunched\":true},\"desktop.pdp.services_offering_modal_reserve_button\":{\"isLaunched\":true},\"ai_search_web_killswitch\":{\"isLaunched\":false},\"search_in",
+        "ntercepts\":{\"ssr_resolved\":false},\"kill-qualtrics-intercepts\":{\"ssr_resolved\":false},\"csp.mediation.reserve_history_state\":{\"ssr_resolved\":true},\"enable_map_paint_containment\":{\"ssr_resolved\":true},\"google_map_ids_web_airparam_enabled\":{\"ssr_resolved\":true},\"enable_m",
+        "se},\"pdp.reviews_empty.host_other_reviews\":{\"ssr_resolved\":true},\"moweb.pdp.services_offering_modal_reserve_button\":{\"ssr_resolved\":true},\"desktop.pdp.services_offering_modal_reserve_button\":{\"ssr_resolved\":true},\"ai_search_web_killswitch\":{\"ssr_resolved\":false},\"sea",
+        " unit are as follows:\\nPets are not allowed.\\nSmoking is not permitted.\\nChildren are allowed.\\nThe minimum age limit for this unit is 25.\",\"recommendedNumberOfLines\":5,\"minimumNumberOfLinesForTruncation\":5,\"readMoreButton\":{\"__typename\":\"Button\",\"accessibilityLabel\"",
+        "ssibility policy\\u003c/a>.\",\"readMoreButton\":null,\"textStyle\":null,\"recommendedNumberOfLines\":null,\"minimumNumberOfLinesForTruncation\":null},\"kickerBadge\":null}},{\"__typename\":\"SectionContainer\",\"id\":\"U2VjdGlvbkNvbnRhaW5lcjotMTg0NzI4MjMxNTAxNTI1ODg3OA==\",\"sectionComp",
+        " every detail, guiding you\",\"readMoreButton\":null,\"textStyle\":null,\"recommendedNumberOfLines\":null,\"minimumNumberOfLinesForTruncation\":null},\"image\":null,\"kicker\":null,\"loggingEventData\":null,\"media\":null,\"subtitle\":null,\"subtitleStyle\":null,\"title\":null,\"titleStyle\"",
+        "ing for an additional fee.\",\"readMoreButton\":null,\"textStyle\":null,\"recommendedNumberOfLines\":null,\"minimumNumberOfLinesForTruncation\":null},\"image\":null,\"kicker\":null,\"loggingEventData\":null,\"media\":null,\"subtitle\":null,\"subtitleStyle\":null,\"title\":\"The space\",\"titl"
+      ]
+    },
+    {
+      "label": "thanksgiving-wed-wed",
+      "checkIn": "2026-11-25",
+      "checkOut": "2026-12-02",
+      "startDay": "Wednesday",
+      "endDay": "Wednesday",
+      "errors": [],
+      "initialFlags": [
+        "bookable_language"
+      ],
+      "initialMoney": [
+        "$200",
+        "$12,955",
+        "$9,899",
+        "$13,100",
+        "$23,082",
+        "$7,227",
+        "$10,813",
+        "$9,804",
+        "$12,661",
+        "$4,324"
+      ],
+      "reserveCount": 1,
+      "finalUrl": "https://www.airbnb.com/book/stays/20472078?checkin=2026-11-25&checkout=2026-12-02&numberOfAdults=8&guestCurrency=USD&productId=20472078&isWorkTrip=false&numberOfChildren=0&numberOfInfants=0&numberOfPets=0",
+      "finalFlags": [
+        "reached_checkout",
+        "bookable_language"
+      ],
+      "money": [
+        "$14,479.60",
+        "$7,239.80",
+        "$1,341",
+        "$1,850.71",
+        "$12,955.00",
+        "$1,524.60",
+        "$200"
+      ],
+      "relevantText": [
+        ">We’re sorry, some parts of the Airbnb website don’t work properly without JavaScript enabled.</div>Request to book1. Choose when to payPay $14,479.60 nowPay part now, part later$7,239.80 now, $7,239.80 charged on Sep 18. No extra fees. More infoPay monthly with KlarnaFrom $",
+        "Id\":\"misa_id_1778261434_EAMzU0NDVmMmFhMz\",\"sitarVersion\":\"16\",\"etag\":\"f0e87c57\"},\"bnb_pdp_room_card_reserve_button\":{\"assignedTreatment\":\"control\",\"featureName\":\"bnb_pdp_room_card_reserve_button\",\"shouldLogExposure\":true,\"shouldLogOnPeek\":true,\"subject\":\"identity\",\"s",
+        "ll-intercepts\":{\"isLaunched\":false},\"kill-qualtrics-intercepts\":{\"isLaunched\":false},\"csp.mediation.reserve_history_state\":{\"isLaunched\":true},\"enable_map_paint_containment\":{\"isLaunched\":true},\"google_map_ids_web_airparam_enabled\":{\"isLaunched\":true},\"enable_maps_co",
+        "alse},\"pdp.reviews_empty.host_other_reviews\":{\"isLaunched\":true},\"moweb.pdp.services_offering_modal_reserve_button\":{\"isLaunched\":true},\"desktop.pdp.services_offering_modal_reserve_button\":{\"isLaunched\":true},\"ai_search_web_killswitch\":{\"isLaunched\":false},\"search_in",
+        "ntercepts\":{\"ssr_resolved\":false},\"kill-qualtrics-intercepts\":{\"ssr_resolved\":false},\"csp.mediation.reserve_history_state\":{\"ssr_resolved\":true},\"enable_map_paint_containment\":{\"ssr_resolved\":true},\"google_map_ids_web_airparam_enabled\":{\"ssr_resolved\":true},\"enable_m",
+        "se},\"pdp.reviews_empty.host_other_reviews\":{\"ssr_resolved\":true},\"moweb.pdp.services_offering_modal_reserve_button\":{\"ssr_resolved\":true},\"desktop.pdp.services_offering_modal_reserve_button\":{\"ssr_resolved\":true},\"ai_search_web_killswitch\":{\"ssr_resolved\":false},\"sea",
+        " unit are as follows:\\nPets are not allowed.\\nSmoking is not permitted.\\nChildren are allowed.\\nThe minimum age limit for this unit is 25.\",\"recommendedNumberOfLines\":5,\"minimumNumberOfLinesForTruncation\":5,\"readMoreButton\":{\"__typename\":\"Button\",\"accessibilityLabel\"",
+        "ssibility policy\\u003c/a>.\",\"readMoreButton\":null,\"textStyle\":null,\"recommendedNumberOfLines\":null,\"minimumNumberOfLinesForTruncation\":null},\"kickerBadge\":null}},{\"__typename\":\"SectionContainer\",\"id\":\"U2VjdGlvbkNvbnRhaW5lcjotODc0MjM3NjA0MTU2MzA4NzI5OQ==\",\"sectionComp",
+        " every detail, guiding you\",\"readMoreButton\":null,\"textStyle\":null,\"recommendedNumberOfLines\":null,\"minimumNumberOfLinesForTruncation\":null},\"image\":null,\"kicker\":null,\"loggingEventData\":null,\"media\":null,\"subtitle\":null,\"subtitleStyle\":null,\"title\":null,\"titleStyle\"",
+        "ing for an additional fee.\",\"readMoreButton\":null,\"textStyle\":null,\"recommendedNumberOfLines\":null,\"minimumNumberOfLinesForTruncation\":null},\"image\":null,\"kicker\":null,\"loggingEventData\":null,\"media\":null,\"subtitle\":null,\"subtitleStyle\":null,\"title\":\"The space\",\"titl"
+      ]
+    },
+    {
+      "label": "christmas-fri-fri",
+      "checkIn": "2026-12-18",
+      "checkOut": "2026-12-25",
+      "startDay": "Friday",
+      "endDay": "Friday",
+      "errors": [],
+      "initialFlags": [
+        "bookable_language"
+      ],
+      "initialMoney": [
+        "$200",
+        "$22,609"
+      ],
+      "reserveCount": 1,
+      "finalUrl": "https://www.airbnb.com/book/stays/20472078?checkin=2026-12-18&checkout=2026-12-25&numberOfAdults=8&guestCurrency=USD&productId=20472078&isWorkTrip=false&numberOfChildren=0&numberOfInfants=0&numberOfPets=0",
+      "finalFlags": [
+        "reached_checkout",
+        "bookable_language"
+      ],
+      "money": [
+        "$25,292.08",
+        "$12,646.04",
+        "$3,229.86",
+        "$22,609.00",
+        "$2,683.08",
+        "$200"
+      ],
+      "relevantText": [
+        ">We’re sorry, some parts of the Airbnb website don’t work properly without JavaScript enabled.</div>Request to book1. Choose when to payPay $25,292.08 nowPay part now, part later$12,646.04 now, $12,646.04 charged on Oct 11. No extra fees. More infoNext2. Add a payment method",
+        "Id\":\"misa_id_1778261444_EANzYyNzY2OTg0Nm\",\"sitarVersion\":\"16\",\"etag\":\"a360ece7\"},\"bnb_pdp_room_card_reserve_button\":{\"assignedTreatment\":\"treatment\",\"featureName\":\"bnb_pdp_room_card_reserve_button\",\"shouldLogExposure\":true,\"shouldLogOnPeek\":true,\"subject\":\"identity\",",
+        "ll-intercepts\":{\"isLaunched\":false},\"kill-qualtrics-intercepts\":{\"isLaunched\":false},\"csp.mediation.reserve_history_state\":{\"isLaunched\":true},\"enable_map_paint_containment\":{\"isLaunched\":true},\"google_map_ids_web_airparam_enabled\":{\"isLaunched\":true},\"enable_maps_co",
+        "alse},\"pdp.reviews_empty.host_other_reviews\":{\"isLaunched\":true},\"moweb.pdp.services_offering_modal_reserve_button\":{\"isLaunched\":true},\"desktop.pdp.services_offering_modal_reserve_button\":{\"isLaunched\":true},\"ai_search_web_killswitch\":{\"isLaunched\":false},\"search_in",
+        "ntercepts\":{\"ssr_resolved\":false},\"kill-qualtrics-intercepts\":{\"ssr_resolved\":false},\"csp.mediation.reserve_history_state\":{\"ssr_resolved\":true},\"enable_map_paint_containment\":{\"ssr_resolved\":true},\"google_map_ids_web_airparam_enabled\":{\"ssr_resolved\":true},\"enable_m",
+        "se},\"pdp.reviews_empty.host_other_reviews\":{\"ssr_resolved\":true},\"moweb.pdp.services_offering_modal_reserve_button\":{\"ssr_resolved\":true},\"desktop.pdp.services_offering_modal_reserve_button\":{\"ssr_resolved\":true},\"ai_search_web_killswitch\":{\"ssr_resolved\":false},\"sea",
+        " every detail, guiding you\",\"readMoreButton\":null,\"textStyle\":null,\"recommendedNumberOfLines\":null,\"minimumNumberOfLinesForTruncation\":null},\"image\":null,\"kicker\":null,\"loggingEventData\":null,\"media\":null,\"subtitle\":null,\"subtitleStyle\":null,\"title\":null,\"titleStyle\"",
+        "ing for an additional fee.\",\"readMoreButton\":null,\"textStyle\":null,\"recommendedNumberOfLines\":null,\"minimumNumberOfLinesForTruncation\":null},\"image\":null,\"kicker\":null,\"loggingEventData\":null,\"media\":null,\"subtitle\":null,\"subtitleStyle\":null,\"title\":\"The space\",\"titl",
+        "anning and recommendations\",\"readMoreButton\":null,\"textStyle\":null,\"recommendedNumberOfLines\":null,\"minimumNumberOfLinesForTruncation\":null},\"image\":null,\"kicker\":null,\"loggingEventData\":null,\"media\":null,\"subtitle\":null,\"subtitleStyle\":null,\"title\":\"Other things to ",
+        " unit are as follows:\\nPets are not allowed.\\nSmoking is not permitted.\\nChildren are allowed.\\nThe minimum age limit for this unit is 25.\",\"recommendedNumberOfLines\":5,\"minimumNumberOfLinesForTruncation\":5,\"readMoreButton\":{\"__typename\":\"Button\",\"accessibilityLabel\""
+      ]
+    },
+    {
+      "label": "christmas-sat-sat",
+      "checkIn": "2026-12-19",
+      "checkOut": "2026-12-26",
+      "startDay": "Saturday",
+      "endDay": "Saturday",
+      "errors": [],
+      "initialFlags": [
+        "bookable_language"
+      ],
+      "initialMoney": [
+        "$200",
+        "$24,227"
+      ],
+      "reserveCount": 1,
+      "finalUrl": "https://www.airbnb.com/book/stays/20472078?checkin=2026-12-19&checkout=2026-12-26&numberOfAdults=8&guestCurrency=USD&productId=20472078&isWorkTrip=false&numberOfChildren=0&numberOfInfants=0&numberOfPets=0",
+      "finalFlags": [
+        "reached_checkout",
+        "bookable_language"
+      ],
+      "money": [
+        "$27,104.24",
+        "$13,552.12",
+        "$3,461.00",
+        "$24,227.00",
+        "$2,877.24",
+        "$200"
+      ],
+      "relevantText": [
+        ">We’re sorry, some parts of the Airbnb website don’t work properly without JavaScript enabled.</div>Request to book1. Choose when to payPay $27,104.24 nowPay part now, part later$13,552.12 now, $13,552.12 charged on Oct 12. No extra fees. More infoNext2. Add a payment method",
+        "Id\":\"misa_id_1778261455_EANGVkZmNiZjA2MW\",\"sitarVersion\":\"16\",\"etag\":\"339169fe\"},\"bnb_pdp_room_card_reserve_button\":{\"assignedTreatment\":\"control\",\"featureName\":\"bnb_pdp_room_card_reserve_button\",\"shouldLogExposure\":true,\"shouldLogOnPeek\":true,\"subject\":\"identity\",\"s",
+        "ll-intercepts\":{\"isLaunched\":false},\"kill-qualtrics-intercepts\":{\"isLaunched\":false},\"csp.mediation.reserve_history_state\":{\"isLaunched\":true},\"enable_map_paint_containment\":{\"isLaunched\":true},\"google_map_ids_web_airparam_enabled\":{\"isLaunched\":true},\"enable_maps_co",
+        "alse},\"pdp.reviews_empty.host_other_reviews\":{\"isLaunched\":true},\"moweb.pdp.services_offering_modal_reserve_button\":{\"isLaunched\":true},\"desktop.pdp.services_offering_modal_reserve_button\":{\"isLaunched\":true},\"ai_search_web_killswitch\":{\"isLaunched\":false},\"search_in",
+        "ntercepts\":{\"ssr_resolved\":false},\"kill-qualtrics-intercepts\":{\"ssr_resolved\":false},\"csp.mediation.reserve_history_state\":{\"ssr_resolved\":true},\"enable_map_paint_containment\":{\"ssr_resolved\":true},\"google_map_ids_web_airparam_enabled\":{\"ssr_resolved\":true},\"enable_m",
+        "se},\"pdp.reviews_empty.host_other_reviews\":{\"ssr_resolved\":true},\"moweb.pdp.services_offering_modal_reserve_button\":{\"ssr_resolved\":true},\"desktop.pdp.services_offering_modal_reserve_button\":{\"ssr_resolved\":true},\"ai_search_web_killswitch\":{\"ssr_resolved\":false},\"sea",
+        " every detail, guiding you\",\"readMoreButton\":null,\"textStyle\":null,\"recommendedNumberOfLines\":null,\"minimumNumberOfLinesForTruncation\":null},\"image\":null,\"kicker\":null,\"loggingEventData\":null,\"media\":null,\"subtitle\":null,\"subtitleStyle\":null,\"title\":null,\"titleStyle\"",
+        "ing for an additional fee.\",\"readMoreButton\":null,\"textStyle\":null,\"recommendedNumberOfLines\":null,\"minimumNumberOfLinesForTruncation\":null},\"image\":null,\"kicker\":null,\"loggingEventData\":null,\"media\":null,\"subtitle\":null,\"subtitleStyle\":null,\"title\":\"The space\",\"titl",
+        "anning and recommendations\",\"readMoreButton\":null,\"textStyle\":null,\"recommendedNumberOfLines\":null,\"minimumNumberOfLinesForTruncation\":null},\"image\":null,\"kicker\":null,\"loggingEventData\":null,\"media\":null,\"subtitle\":null,\"subtitleStyle\":null,\"title\":\"Other things to ",
+        " unit are as follows:\\nPets are not allowed.\\nSmoking is not permitted.\\nChildren are allowed.\\nThe minimum age limit for this unit is 25.\",\"recommendedNumberOfLines\":5,\"minimumNumberOfLinesForTruncation\":5,\"readMoreButton\":{\"__typename\":\"Button\",\"accessibilityLabel\""
+      ]
+    },
+    {
+      "label": "christmas-sun-sun",
+      "checkIn": "2026-12-20",
+      "checkOut": "2026-12-27",
+      "startDay": "Sunday",
+      "endDay": "Sunday",
+      "errors": [],
+      "initialFlags": [
+        "unavailable_or_change_dates",
+        "bookable_language"
+      ],
+      "initialMoney": [
+        "$200",
+        "$12,105",
+        "$23,250",
+        "$11,469",
+        "$13,828",
+        "$7,538",
+        "$13,150",
+        "$12,148",
+        "$16,548"
+      ],
+      "reserveCount": 0,
+      "finalUrl": "https://www.airbnb.com/rooms/20472078?check_in=2026-12-20&check_out=2026-12-27&adults=8&source_impression_id=p3_1778261466_P3enyKTYgd-sbu4H",
+      "finalFlags": [
+        "unavailable_or_change_dates",
+        "bookable_language"
+      ],
+      "money": [
+        "$200",
+        "$12,105",
+        "$23,250",
+        "$11,469",
+        "$13,828",
+        "$7,538",
+        "$13,150",
+        "$12,148",
+        "$16,548"
+      ],
+      "relevantText": [
+        "71819202122232425262728Clear datesCheck-in12/20/2026Checkout12/27/2026Guests8 guestsThose dates are not availableChange datesReport this listing 4.67 out of 5 stars from 3 reviews4.67 · 3 reviewsHow reviews workHow reviews work7 of 7 items showingOverall rating5 stars, 67%",
+        "Id\":\"misa_id_1778261466_EAMzJlOWIxYzgyMj\",\"sitarVersion\":\"16\",\"etag\":\"a3c961d1\"},\"bnb_pdp_room_card_reserve_button\":{\"assignedTreatment\":\"control\",\"featureName\":\"bnb_pdp_room_card_reserve_button\",\"shouldLogExposure\":true,\"shouldLogOnPeek\":true,\"subject\":\"identity\",\"s",
+        "ll-intercepts\":{\"isLaunched\":false},\"kill-qualtrics-intercepts\":{\"isLaunched\":false},\"csp.mediation.reserve_history_state\":{\"isLaunched\":true},\"enable_map_paint_containment\":{\"isLaunched\":true},\"google_map_ids_web_airparam_enabled\":{\"isLaunched\":true},\"enable_maps_co",
+        "alse},\"pdp.reviews_empty.host_other_reviews\":{\"isLaunched\":true},\"moweb.pdp.services_offering_modal_reserve_button\":{\"isLaunched\":true},\"desktop.pdp.services_offering_modal_reserve_button\":{\"isLaunched\":true},\"ai_search_web_killswitch\":{\"isLaunched\":false},\"search_in",
+        "ntercepts\":{\"ssr_resolved\":false},\"kill-qualtrics-intercepts\":{\"ssr_resolved\":false},\"csp.mediation.reserve_history_state\":{\"ssr_resolved\":true},\"enable_map_paint_containment\":{\"ssr_resolved\":true},\"google_map_ids_web_airparam_enabled\":{\"ssr_resolved\":true},\"enable_m",
+        "se},\"pdp.reviews_empty.host_other_reviews\":{\"ssr_resolved\":true},\"moweb.pdp.services_offering_modal_reserve_button\":{\"ssr_resolved\":true},\"desktop.pdp.services_offering_modal_reserve_button\":{\"ssr_resolved\":true},\"ai_search_web_killswitch\":{\"ssr_resolved\":false},\"sea",
+        " unit are as follows:\\nPets are not allowed.\\nSmoking is not permitted.\\nChildren are allowed.\\nThe minimum age limit for this unit is 25.\",\"recommendedNumberOfLines\":5,\"minimumNumberOfLinesForTruncation\":5,\"readMoreButton\":{\"__typename\":\"Button\",\"accessibilityLabel\"",
+        " every detail, guiding you\",\"readMoreButton\":null,\"textStyle\":null,\"recommendedNumberOfLines\":null,\"minimumNumberOfLinesForTruncation\":null},\"image\":null,\"kicker\":null,\"loggingEventData\":null,\"media\":null,\"subtitle\":null,\"subtitleStyle\":null,\"title\":null,\"titleStyle\"",
+        "ing for an additional fee.\",\"readMoreButton\":null,\"textStyle\":null,\"recommendedNumberOfLines\":null,\"minimumNumberOfLinesForTruncation\":null},\"image\":null,\"kicker\":null,\"loggingEventData\":null,\"media\":null,\"subtitle\":null,\"subtitleStyle\":null,\"title\":\"The space\",\"titl",
+        "anning and recommendations\",\"readMoreButton\":null,\"textStyle\":null,\"recommendedNumberOfLines\":null,\"minimumNumberOfLinesForTruncation\":null},\"image\":null,\"kicker\":null,\"loggingEventData\":null,\"media\":null,\"subtitle\":null,\"subtitleStyle\":null,\"title\":\"Other things to "
+      ]
+    },
+    {
+      "label": "christmas-eve-fri",
+      "checkIn": "2026-12-25",
+      "checkOut": "2027-01-01",
+      "startDay": "Friday",
+      "endDay": "Friday",
+      "errors": [],
+      "initialFlags": [
+        "unavailable_or_change_dates",
+        "bookable_language"
+      ],
+      "initialMoney": [
+        "$200"
+      ],
+      "reserveCount": 0,
+      "finalUrl": "https://www.airbnb.com/rooms/20472078?check_in=2026-12-25&check_out=2027-01-01&adults=8&source_impression_id=p3_1778261473_P3VYyq2SAA8U3YDt",
+      "finalFlags": [
+        "unavailable_or_change_dates",
+        "bookable_language"
+      ],
+      "money": [
+        "$200"
+      ],
+      "relevantText": [
+        "6171819202122232425262728Clear datesCheck-in12/25/2026Checkout1/1/2027Guests8 guestsThose dates are not availableChange datesReport this listing 4.67 out of 5 stars from 3 reviews4.67 · 3 reviewsHow reviews workHow reviews work7 of 7 items showingOverall rating5 stars, 67%",
+        "Id\":\"misa_id_1778261473_EANDQwNGE3ZWUzMj\",\"sitarVersion\":\"16\",\"etag\":\"91bb586d\"},\"bnb_pdp_room_card_reserve_button\":{\"assignedTreatment\":\"control\",\"featureName\":\"bnb_pdp_room_card_reserve_button\",\"shouldLogExposure\":true,\"shouldLogOnPeek\":true,\"subject\":\"identity\",\"s",
+        "ll-intercepts\":{\"isLaunched\":false},\"kill-qualtrics-intercepts\":{\"isLaunched\":false},\"csp.mediation.reserve_history_state\":{\"isLaunched\":true},\"enable_map_paint_containment\":{\"isLaunched\":true},\"google_map_ids_web_airparam_enabled\":{\"isLaunched\":true},\"enable_maps_co",
+        "alse},\"pdp.reviews_empty.host_other_reviews\":{\"isLaunched\":true},\"moweb.pdp.services_offering_modal_reserve_button\":{\"isLaunched\":true},\"desktop.pdp.services_offering_modal_reserve_button\":{\"isLaunched\":true},\"ai_search_web_killswitch\":{\"isLaunched\":false},\"search_in",
+        "ntercepts\":{\"ssr_resolved\":false},\"kill-qualtrics-intercepts\":{\"ssr_resolved\":false},\"csp.mediation.reserve_history_state\":{\"ssr_resolved\":true},\"enable_map_paint_containment\":{\"ssr_resolved\":true},\"google_map_ids_web_airparam_enabled\":{\"ssr_resolved\":true},\"enable_m",
+        "se},\"pdp.reviews_empty.host_other_reviews\":{\"ssr_resolved\":true},\"moweb.pdp.services_offering_modal_reserve_button\":{\"ssr_resolved\":true},\"desktop.pdp.services_offering_modal_reserve_button\":{\"ssr_resolved\":true},\"ai_search_web_killswitch\":{\"ssr_resolved\":false},\"sea",
+        " unit are as follows:\\nPets are not allowed.\\nSmoking is not permitted.\\nChildren are allowed.\\nThe minimum age limit for this unit is 25.\",\"recommendedNumberOfLines\":5,\"minimumNumberOfLinesForTruncation\":5,\"readMoreButton\":{\"__typename\":\"Button\",\"accessibilityLabel\"",
+        "ssibility policy\\u003c/a>.\",\"readMoreButton\":null,\"textStyle\":null,\"recommendedNumberOfLines\":null,\"minimumNumberOfLinesForTruncation\":null},\"kickerBadge\":null}},{\"__typename\":\"SectionContainer\",\"id\":\"U2VjdGlvbkNvbnRhaW5lcjo1MzU4NzU0NTg4NjM0MjI3Njc1\",\"sectionComponen",
+        " every detail, guiding you\",\"readMoreButton\":null,\"textStyle\":null,\"recommendedNumberOfLines\":null,\"minimumNumberOfLinesForTruncation\":null},\"image\":null,\"kicker\":null,\"loggingEventData\":null,\"media\":null,\"subtitle\":null,\"subtitleStyle\":null,\"title\":null,\"titleStyle\"",
+        "ing for an additional fee.\",\"readMoreButton\":null,\"textStyle\":null,\"recommendedNumberOfLines\":null,\"minimumNumberOfLinesForTruncation\":null},\"image\":null,\"kicker\":null,\"loggingEventData\":null,\"media\":null,\"subtitle\":null,\"subtitleStyle\":null,\"title\":\"The space\",\"titl"
+      ]
+    },
+    {
+      "label": "christmas-day-sat",
+      "checkIn": "2026-12-26",
+      "checkOut": "2027-01-02",
+      "startDay": "Saturday",
+      "endDay": "Saturday",
+      "errors": [],
+      "initialFlags": [
+        "unavailable_or_change_dates",
+        "bookable_language"
+      ],
+      "initialMoney": [
+        "$200",
+        "$15,430",
+        "$24,500",
+        "$13,828",
+        "$12,148",
+        "$9,637",
+        "$48,356",
+        "$10,385",
+        "$11,520"
+      ],
+      "reserveCount": 0,
+      "finalUrl": "https://www.airbnb.com/rooms/20472078?check_in=2026-12-26&check_out=2027-01-02&adults=8&source_impression_id=p3_1778261502_P3-yPYPH5g_yYpBg",
+      "finalFlags": [
+        "unavailable_or_change_dates",
+        "bookable_language"
+      ],
+      "money": [
+        "$200",
+        "$15,430",
+        "$24,500",
+        "$13,828",
+        "$12,148",
+        "$9,637",
+        "$48,356",
+        "$10,385",
+        "$11,520"
+      ],
+      "relevantText": [
+        "6171819202122232425262728Clear datesCheck-in12/26/2026Checkout1/2/2027Guests8 guestsThose dates are not availableChange datesReport this listing 4.67 out of 5 stars from 3 reviews4.67 · 3 reviewsHow reviews workHow reviews work7 of 7 items showingOverall rating5 stars, 67%",
+        "Id\":\"misa_id_1778261502_EANDVmYjA4ZjY3ZD\",\"sitarVersion\":\"15\",\"etag\":\"8ba6627b\"},\"bnb_pdp_room_card_reserve_button\":{\"assignedTreatment\":\"treatment\",\"featureName\":\"bnb_pdp_room_card_reserve_button\",\"shouldLogExposure\":true,\"shouldLogOnPeek\":true,\"subject\":\"identity\",",
+        "ll-intercepts\":{\"isLaunched\":false},\"kill-qualtrics-intercepts\":{\"isLaunched\":false},\"csp.mediation.reserve_history_state\":{\"isLaunched\":true},\"enable_map_paint_containment\":{\"isLaunched\":true},\"google_map_ids_web_airparam_enabled\":{\"isLaunched\":true},\"enable_maps_co",
+        "alse},\"pdp.reviews_empty.host_other_reviews\":{\"isLaunched\":true},\"moweb.pdp.services_offering_modal_reserve_button\":{\"isLaunched\":true},\"desktop.pdp.services_offering_modal_reserve_button\":{\"isLaunched\":true},\"ai_search_web_killswitch\":{\"isLaunched\":false},\"search_in",
+        "ntercepts\":{\"ssr_resolved\":false},\"kill-qualtrics-intercepts\":{\"ssr_resolved\":false},\"csp.mediation.reserve_history_state\":{\"ssr_resolved\":true},\"enable_map_paint_containment\":{\"ssr_resolved\":true},\"google_map_ids_web_airparam_enabled\":{\"ssr_resolved\":true},\"enable_m",
+        "se},\"pdp.reviews_empty.host_other_reviews\":{\"ssr_resolved\":true},\"moweb.pdp.services_offering_modal_reserve_button\":{\"ssr_resolved\":true},\"desktop.pdp.services_offering_modal_reserve_button\":{\"ssr_resolved\":true},\"ai_search_web_killswitch\":{\"ssr_resolved\":false},\"sea",
+        "ssibility policy\\u003c/a>.\",\"readMoreButton\":null,\"textStyle\":null,\"recommendedNumberOfLines\":null,\"minimumNumberOfLinesForTruncation\":null},\"kickerBadge\":null}},{\"__typename\":\"SectionContainer\",\"id\":\"U2VjdGlvbkNvbnRhaW5lcjoyMjM2OTE4MTQ0NDE4MzUxODc3\",\"sectionComponen",
+        " every detail, guiding you\",\"readMoreButton\":null,\"textStyle\":null,\"recommendedNumberOfLines\":null,\"minimumNumberOfLinesForTruncation\":null},\"image\":null,\"kicker\":null,\"loggingEventData\":null,\"media\":null,\"subtitle\":null,\"subtitleStyle\":null,\"title\":null,\"titleStyle\"",
+        "ing for an additional fee.\",\"readMoreButton\":null,\"textStyle\":null,\"recommendedNumberOfLines\":null,\"minimumNumberOfLinesForTruncation\":null},\"image\":null,\"kicker\":null,\"loggingEventData\":null,\"media\":null,\"subtitle\":null,\"subtitleStyle\":null,\"title\":\"The space\",\"titl",
+        "anning and recommendations\",\"readMoreButton\":null,\"textStyle\":null,\"recommendedNumberOfLines\":null,\"minimumNumberOfLinesForTruncation\":null},\"image\":null,\"kicker\":null,\"loggingEventData\":null,\"media\":null,\"subtitle\":null,\"subtitleStyle\":null,\"title\":\"Other things to "
+      ]
+    },
+    {
+      "label": "newyear-sun-sun",
+      "checkIn": "2026-12-27",
+      "checkOut": "2027-01-03",
+      "startDay": "Sunday",
+      "endDay": "Sunday",
+      "errors": [],
+      "initialFlags": [
+        "unavailable_or_change_dates",
+        "bookable_language"
+      ],
+      "initialMoney": [
+        "$200",
+        "$15,716",
+        "$24,500",
+        "$13,828",
+        "$12,148",
+        "$9,560",
+        "$6,110",
+        "$10,385",
+        "$2,232"
+      ],
+      "reserveCount": 0,
+      "finalUrl": "https://www.airbnb.com/rooms/20472078?check_in=2026-12-27&check_out=2027-01-03&adults=8&source_impression_id=p3_1778261510_P3iuaAskq5-UI71e",
+      "finalFlags": [
+        "unavailable_or_change_dates",
+        "bookable_language"
+      ],
+      "money": [
+        "$200",
+        "$15,716",
+        "$24,500",
+        "$13,828",
+        "$12,148",
+        "$9,560",
+        "$6,110",
+        "$10,385",
+        "$2,232"
+      ],
+      "relevantText": [
+        "6171819202122232425262728Clear datesCheck-in12/27/2026Checkout1/3/2027Guests8 guestsThose dates are not availableChange datesReport this listing 4.67 out of 5 stars from 3 reviews4.67 · 3 reviewsHow reviews workHow reviews work7 of 7 items showingOverall rating5 stars, 67%",
+        "Id\":\"misa_id_1778261510_EAOThkMzFlZThiOW\",\"sitarVersion\":\"16\",\"etag\":\"6a526e92\"},\"bnb_pdp_room_card_reserve_button\":{\"assignedTreatment\":\"control\",\"featureName\":\"bnb_pdp_room_card_reserve_button\",\"shouldLogExposure\":true,\"shouldLogOnPeek\":true,\"subject\":\"identity\",\"s",
+        "ll-intercepts\":{\"isLaunched\":false},\"kill-qualtrics-intercepts\":{\"isLaunched\":false},\"csp.mediation.reserve_history_state\":{\"isLaunched\":true},\"enable_map_paint_containment\":{\"isLaunched\":true},\"google_map_ids_web_airparam_enabled\":{\"isLaunched\":true},\"enable_maps_co",
+        "alse},\"pdp.reviews_empty.host_other_reviews\":{\"isLaunched\":true},\"moweb.pdp.services_offering_modal_reserve_button\":{\"isLaunched\":true},\"desktop.pdp.services_offering_modal_reserve_button\":{\"isLaunched\":true},\"ai_search_web_killswitch\":{\"isLaunched\":false},\"search_in",
+        "ntercepts\":{\"ssr_resolved\":false},\"kill-qualtrics-intercepts\":{\"ssr_resolved\":false},\"csp.mediation.reserve_history_state\":{\"ssr_resolved\":true},\"enable_map_paint_containment\":{\"ssr_resolved\":true},\"google_map_ids_web_airparam_enabled\":{\"ssr_resolved\":true},\"enable_m",
+        "se},\"pdp.reviews_empty.host_other_reviews\":{\"ssr_resolved\":true},\"moweb.pdp.services_offering_modal_reserve_button\":{\"ssr_resolved\":true},\"desktop.pdp.services_offering_modal_reserve_button\":{\"ssr_resolved\":true},\"ai_search_web_killswitch\":{\"ssr_resolved\":false},\"sea",
+        "ssibility policy\\u003c/a>.\",\"readMoreButton\":null,\"textStyle\":null,\"recommendedNumberOfLines\":null,\"minimumNumberOfLinesForTruncation\":null},\"kickerBadge\":null}},{\"__typename\":\"SectionContainer\",\"id\":\"U2VjdGlvbkNvbnRhaW5lcjotODQ3MTkzODMzMDIyNDQzNDAyMQ==\",\"sectionComp",
+        " unit are as follows:\\nPets are not allowed.\\nSmoking is not permitted.\\nChildren are allowed.\\nThe minimum age limit for this unit is 25.\",\"recommendedNumberOfLines\":5,\"minimumNumberOfLinesForTruncation\":5,\"readMoreButton\":{\"__typename\":\"Button\",\"accessibilityLabel\"",
+        " every detail, guiding you\",\"readMoreButton\":null,\"textStyle\":null,\"recommendedNumberOfLines\":null,\"minimumNumberOfLinesForTruncation\":null},\"image\":null,\"kicker\":null,\"loggingEventData\":null,\"media\":null,\"subtitle\":null,\"subtitleStyle\":null,\"title\":null,\"titleStyle\"",
+        "ing for an additional fee.\",\"readMoreButton\":null,\"textStyle\":null,\"recommendedNumberOfLines\":null,\"minimumNumberOfLinesForTruncation\":null},\"image\":null,\"kicker\":null,\"loggingEventData\":null,\"media\":null,\"subtitle\":null,\"subtitleStyle\":null,\"title\":\"The space\",\"titl"
+      ]
+    }
+  ]
+}

@@ -1,8 +1,8 @@
 # Proposed VRBO Price Records — Villa La Percha
 
 Generated: 2026-05-07T20:46:03.503Z
-Source capture: `villa-la-percha/marketing/pricing-intel/vrbo-calendar-prices-2026-05-07.md`
-Daily inferred CSV: `villa-la-percha/marketing/pricing-intel/vrbo-calendar-daily-inferred-2026-05-07-to-2026-12-31.csv`
+Source capture: `directstay/marketing/pricing-intel/vrbo-calendar-prices-2026-05-07.md`
+Daily inferred CSV: `directstay/marketing/pricing-intel/vrbo-calendar-daily-inferred-2026-05-07-to-2026-12-31.csv`
 
 ## Method
 

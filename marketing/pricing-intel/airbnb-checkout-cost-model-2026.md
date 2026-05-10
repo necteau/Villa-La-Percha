@@ -37,4 +37,4 @@ Use a constant effective tax rate of **11.77%** on displayed Airbnb subtotal.
 
 ## Evidence
 
-Raw screenshots/text are in `marketing/pricing-intel/airbnb-screenshots/`; parsed samples are in `villa-la-percha/marketing/pricing-intel/airbnb-checkout-samples-2026.csv`.
+Raw screenshots/text are in `marketing/pricing-intel/airbnb-screenshots/`; parsed samples are in `directstay/marketing/pricing-intel/airbnb-checkout-samples-2026.csv`.

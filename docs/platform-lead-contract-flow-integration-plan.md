@@ -114,7 +114,7 @@ Recommendation: implement Option A first unless a real e-signature provider is b
 
 ## Guardrails for implementation
 
-Use `villa-la-percha/docs/platform-lead-proposal-to-contract-checklist.md` as the operator checklist for moving a lead from proposal terms to agreement draft, manual send markers, signature evidence, and launch-gate handoff.
+Use `directstay/docs/platform-lead-proposal-to-contract-checklist.md` as the operator checklist for moving a lead from proposal terms to agreement draft, manual send markers, signature evidence, and launch-gate handoff.
 
 - Never send the agreement from the app in this phase; only save artifacts and manual markers.
 - Never auto-mark `contractExecuted` from `SIGNED`; require `COUNTERSIGNED` or explicit Jaimal approval.

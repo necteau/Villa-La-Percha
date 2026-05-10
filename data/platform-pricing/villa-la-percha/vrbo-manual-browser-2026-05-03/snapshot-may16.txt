@@ -1,0 +1,400 @@
+- RootWebArea "Villa La Percha: Full Home with Kayaks, Ocean Access, Pool, and More!"
+  - none
+    - none
+      - none
+      - generic
+        - generic
+          - generic
+            - none
+              - generic
+                - none
+                - none
+                - generic
+                  - none
+                    - link "Skip to main content"
+                      - none
+                        - StaticText "Skip to main content"
+                          - InlineTextBox "Skip to "
+                          - InlineTextBox "main "
+                          - InlineTextBox "content"
+                - none
+                - banner
+                  - none
+                    - generic
+                      - none
+                        - none
+                          - link "Vrbo logo"
+                            - image "Vrbo logo"
+                          - generic
+                          - list
+                            - listitem
+                              - generic
+                                - link "Open app"
+                                  - generic
+                                    - StaticText "Open app"
+                                      - InlineTextBox "Open app"
+                            - listitem
+                              - button "USD United States"
+                                - none
+                                  - StaticText "USD"
+                                    - InlineTextBox "USD"
+                                - image "United States"
+                            - listitem
+                              - link "Trip Boards"
+                                - StaticText "Trip Boards"
+                                  - InlineTextBox "Trip Boards"
+                            - listitem
+                              - link "List your property"
+                                - StaticText "List your property"
+                                  - InlineTextBox "List your property"
+                            - listitem
+                              - link "Help"
+                                - StaticText "Help"
+                                  - InlineTextBox "Help"
+                            - listitem
+                              - link "My trips"
+                                - StaticText "My trips"
+                                  - InlineTextBox "My trips"
+                            - listitem
+                              - listitem
+                                - generic
+                                  - generic
+                                    - button "Sign in"
+                                      - StaticText "Sign in"
+                                        - InlineTextBox "Sign in"
+                - generic
+              - main
+                - none
+                  - none
+                    - generic
+                      - none
+                        - none
+                          - none
+                            - none
+                              - none
+                                - generic
+                                  - generic
+                                    - document
+                                      - document
+                                        - none
+                                        - generic
+                                        - Iframe "Advertisement"
+                                - generic
+                                  - generic
+                                    - document
+                                      - none
+                                        - none
+                            - none
+                              - none
+                                - none
+                                  - none
+                                    - none
+                                      - none
+                                    - generic
+                                      - generic
+                                        - none
+                                        - none
+                                        - none
+                                        - none
+                                        - none
+                                        - none
+                                        - none
+                                        - none
+                                        - link "See all properties"
+                                        - StaticText "See all properties"
+                                        - InlineTextBox "See all properties"
+                                        - generic
+                                        - button "Share"
+                                        - image "Share button"
+                                        - none
+                                        - none
+                                        - generic
+                                        - StaticText "Share"
+                                        - InlineTextBox "Share"
+                                        - none
+                                        - none
+                                        - generic
+                                        - generic
+                                        - link "Sign in to save this property to a trip"
+                                        - none
+                                        - StaticText "Save"
+                                        - InlineTextBox "Save"
+                                - none
+                                  - generic
+                                    - generic
+                                      - none
+                                        - generic
+                                        - none
+                                        - heading "Photo gallery for Villa La Percha: Full Home with Kayaks, Ocean Access, Pool, and More!"
+                                        - StaticText "Photo gallery for Villa La Percha: Full Home with Kayaks, Ocean Access, Pool, and More!"
+                                        - InlineTextBox "Photo "
+                                        - InlineTextBox "gallery "
+                                        - InlineTextBox "for "
+                                        - InlineTextBox "Villa "
+                                        - InlineTextBox "La "
+                                        - InlineTextBox "Percha: "
+                                        - InlineTextBox "Full "
+                                        - InlineTextBox "Home "
+                                        - InlineTextBox "with "
+                                        - InlineTextBox "Kayaks, "
+                                        - InlineTextBox "Ocean "
+                                        - InlineTextBox "Access, "
+                                        - InlineTextBox "Pool, "
+                                        - InlineTextBox "and "
+                                        - InlineTextBox "More!"
+                                        - figure
+                                        - generic
+                                        - generic
+                                        - image "Welcome to Villa La Percha, an Elite Destination Home."
+                                        - button "Welcome to Villa La Percha, an Elite Destination Home."
+                                        - none
+                                        - none
+                                        - StaticText "Welcome to Villa La Percha, an Elite Destination Home."
+                                        - InlineTextBox "Welcome to Villa La Percha, an Elite Destination Home."
+                                        - figure
+                                        - generic
+                                        - generic
+                                        - image "Experience an elegant luxury vacation like no other."
+                                        - button "Experience an elegant luxury vacation like no other."
+                                        - none
+                                        - none
+                                        - StaticText "Experience an elegant luxury vacation like no other."
+                                        - InlineTextBox "Experience an elegant luxury vacation like no other."
+                                        - figure
+                                        - generic
+                                        - generic
+                                        - image "The dining and living areas flow seamlessly, creating an ideal space for entertaining."
+                                        - button "The dining and living areas flow seamlessly, creating an ideal space for entertaining."
+                                        - none
+                                        - none
+                                        - StaticText "The dining and living areas flow seamlessly, creating an ideal space for entertaining."
+                                        - InlineTextBox "The dining and living areas flow seamlessly, creating an ideal space for entertaining."
+                                        - figure
+                                        - generic
+                                        - generic
+                                        - image "The primary suite has a king bed and direct access to the pool."
+                                        - button "The primary suite has a king bed and direct access to the pool."
+                                        - none
+                                        - none
+                                        - StaticText "The primary suite has a king bed and direct access to the pool."
+                                        - InlineTextBox "The primary suite has a king bed and direct access to the pool."
+                                        - figure
+                                        - generic
+                                        - generic
+                                        - image "The primary bedroom offers beautiful views and direct access to the pool and patio."
+                                        - button "The primary bedroom offers beautiful views and direct access to the pool and patio."
+                                        - none
+                                        - none
+                                        - StaticText "The primary bedroom offers beautiful views and direct access to the pool and patio."
+                                        - InlineTextBox "The primary bedroom offers beautiful views and direct access to the pool and patio."
+                                        - generic
+                                        - none
+                                        - button "Show all 25 images"
+                                        - StaticText "25+"
+                                        - InlineTextBox "25+"
+                                  - generic
+                                    - none
+                                      - none
+                                        - generic
+                                        - generic
+                                        - generic
+                                        - list
+                                        - listitem
+                                        - link "Overview"
+                                        - none
+                                        - StaticText "Overview"
+                                        - InlineTextBox "Overview"
+                                        - listitem
+                                        - link "Amenities"
+                                        - none
+                                        - StaticText "Amenities"
+                                        - InlineTextBox "Amenities"
+                                        - listitem
+                                        - link "Host"
+                                        - none
+                                        - StaticText "Host"
+                                        - InlineTextBox "Host"
+                                        - listitem
+                                        - link "Policies"
+                                        - none
+                                        - StaticText "Policies"
+                                        - InlineTextBox "Policies"
+                                        - generic
+                                        - none
+                                        - none
+                                  - none
+                                - none
+                                  - generic
+                                    - none
+                                      - none
+                                        - none
+                                        - none
+                                        - none
+                                        - generic
+                                        - none
+                                        - none
+                                        - generic
+                                        - StaticText "Entire home"
+                                        - InlineTextBox "Entire home"
+                                        - heading "Villa La Percha: Full Home with Kayaks, Ocean Access, Pool, and More!"
+                                        - StaticText "Villa La Percha: Full Home with Kayaks, Ocean Access, Pool, and More!"
+                                        - InlineTextBox "Villa La Percha: Full Home with Kayaks, "
+                                        - InlineTextBox "Ocean Access, Pool, and More!"
+                                        - none
+                                        - none
+                                        - none
+                                        - none
+                                        - none
+                                        - none
+                                        - none
+                                        - none
+                                        - none
+                                        - none
+                                        - heading "Reviews"
+                                        - StaticText "Reviews"
+                                        - InlineTextBox "Reviews"
+                                        - none
+                                        - none
+                                        - none
+                                        - StaticText "8.8 out of 10"
+                                        - InlineTextBox "8.8 out of 10"
+                                        - generic
+                                        - StaticText "Excellent"
+                                        - InlineTextBox "Excellent"
+                                        - button "See all 11 reviews"
+                                        - StaticText "See all 11 reviews"
+                                        - InlineTextBox "See all 11 reviews"
+                                        - none
+                                        - none
+                                        - heading "Highlights for your group trip"
+                                        - StaticText "Highlights for your group trip"
+                                        - InlineTextBox "Highlights for your group trip"
+                                        - none
+                                        - list
+                                        - listitem
+                                        - none
+                                        - generic
+                                        - generic
+                                        - generic
+                                        - generic
+                                        - StaticText "  "
+                                        - none
+                                        - generic
+                                        - StaticText "Loved by group travelers"
+                                        - InlineTextBox "Loved by group travelers"
+                                        - generic
+                                        - StaticText "This property received multiple 10/10 ratings from group travelers."
+                                        - InlineTextBox "This property received multiple 10/10 ratings from group travelers."
+                                        - listitem
+                                        - none
+                                        - generic
+                                        - generic
+                                        - generic
+                                        - generic
+                                        - StaticText "  "
+                                        - none
+                                        - generic
+                                        - StaticText "Sizzle and serve"
+                                        - InlineTextBox "Sizzle and serve"
+                                        - generic
+                                        - StaticText "Enjoy outdoor cooking with a top-rated barbecue grill for delicious meals."
+                                        - InlineTextBox "Enjoy outdoor cooking with a top-rated barbecue grill for delicious meals."
+                                        - listitem
+                                        - none
+                                        - generic
+                                        - generic
+                                        - generic
+                                        - generic
+                                        - StaticText "  "
+                                        - none
+                                        - generic
+                                        - StaticText "Discover nearby landmarks"
+                                        - InlineTextBox "Discover nearby landmarks"
+                                        - generic
+                                        - StaticText "Near Taylor Bay Beach"
+                                        - InlineTextBox "Near Taylor Bay Beach"
+                                        - none
+                                        - none
+                                        - none
+                                        - none
+                                        - none
+                                        - none
+                                        - StaticText "4 bedrooms"
+                                        - InlineTextBox "4 bedrooms"
+                                        - none
+                                        - StaticText "4+ bathrooms"
+                                        - InlineTextBox "4+ bathrooms"
+                                        - none
+                                        - StaticText "Sleeps 8"
+                                        - InlineTextBox "Sleeps 8"
+                                        - none
+                                        - StaticText "4000 sq ft"
+                                        - InlineTextBox "4000 sq ft"
+                                        - none
+                                        - generic
+                                        - none
+                                        - none
+                                        - none
+                                        - none
+                                        - heading "Popular amenities"
+                                        - StaticText "Popular amenities"
+                                        - InlineTextBox "Popular amenities"
+                                        - none
+                                        - none
+                                        - none
+                                        - none
+                                        - list
+                                        - listitem
+                                        - none
+                                        - none
+                                        - StaticText "Private pool"
+                                        - InlineTextBox "Private pool"
+                                        - listitem
+                                        - none
+                                        - none
+                                        - StaticText "Hot tub on site"
+                                        - InlineTextBox "Hot tub on site"
+                                        - listitem
+                                        - none
+                                        - none
+                                        - StaticText "Onsite parking available"
+                                        - InlineTextBox "Onsite parking available"
+                                        - listitem
+                                        - none
+                                        - none
+                                        - StaticText "Kitchen"
+                                        - InlineTextBox "Kitchen"
+                                        - listitem
+                                        - none
+                                        - none
+                                        - StaticText "Washer"
+                                        - InlineTextBox "Washer"
+                                        - listitem
+                                        - none
+                                        - none
+                                        - StaticText "Air conditioning"
+                                        - InlineTextBox "Air conditioning"
+                                        - button "See all property amenities"
+                                        - StaticText "See all property amenities"
+                                        - InlineTextBox "See all property amenities"
+                                        - none
+                                        - generic
+                                        - none
+                                        - none
+                                        - none
+                                        - none
+                                        - heading "Explore the area"
+                                        - StaticText "Explore the area"
+                                        - InlineTextBox "Explore the area"
+                                        - generic
+                                        - generic
+                                        - figure
+                                        - generic
+                                        - image "View in a map"
+                                        - none
+                                        - none
+                                        - none
+                                        - none
+                                        - generic
+                                        - StaticText "Providenciales, Providenciales"
+                                        - InlineTextBox "Providenciales, Providenciales"
