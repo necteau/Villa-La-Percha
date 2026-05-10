@@ -217,6 +217,8 @@ Every serious Preview Build should include these three modules unless there is a
 
 Recent benchmarks show the trio fails when it sounds like product strategy instead of guest planning. Write these sections in plain rental-site language first, then put DirectStay/process rationale in owner-view notes.
 
+For family/group lake houses, the conversion trio should lead with planning confidence: sleeping layout, party size, children, dock/boat/PWC/kayak/hot-tub expectations, parking, quiet hours, and whether the stay is a quiet family trip or a celebration. Avoid generic “luxury lakefront” copy until the practical decision path is clear.
+
 ### Calendar / inquiry context
 
 Place a read-only calendar or date-window mock near the inquiry path. The goal is to show that guests can arrive with dates, party size, and stay context before writing a message.

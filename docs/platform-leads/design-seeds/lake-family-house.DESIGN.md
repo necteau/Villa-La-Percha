@@ -55,6 +55,8 @@ Use actual water tone, dock/deck wood, sunset, grasses, upholstery, and exterior
 
 ## Conversion modules
 
+French Escape benchmark lesson: the strongest lake-house page leads with planning confidence, not generic “luxury lakefront” copy. Make the first half of the page answer where everyone sleeps, how the lake day works, which water/dock/equipment rules are unknown, and what questions a direct inquiry should collect.
+
 ### Calendar/date-window
 
 Use lake-week language, not generic availability copy:
@@ -84,7 +86,9 @@ Organize the local section around guest routes and lake logistics:
 
 ## Photo-integrity watchouts
 
-Lake listings often mix property photos with drone shots, promotional cards, local attraction graphics, and repeated sunset/water images. Render only actual property photos, property views, or clearly relevant rights-safe local context. If there is no trustworthy section image, make the section intentionally text-only and record the gap as an owner photo/input request.
+Lake listings often mix property photos with drone shots, promotional cards, local attraction graphics, OTA/social badges, and repeated sunset/water images. Render only actual property photos, property views, or clearly relevant rights-safe local context. If there is no trustworthy section image, make the section intentionally text-only and record the gap as an owner photo/input request.
+
+A strong Lake Norman sequence from the French Escape benchmark was: exterior/lake-house hero → living/fireplace/lake-view interior → dock/lake view → kitchen/dining confidence → hot tub or fire-pit amenity. The value is the sequence: setting, gathering, water access, logistics, amenity. Do not spend the first three sections on different crops of the same view.
 
 ## Do's and Don'ts
 

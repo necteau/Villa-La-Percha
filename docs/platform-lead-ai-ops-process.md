@@ -102,11 +102,11 @@ Current implementation may use a smaller enum (`DRAFT`, `READY_FOR_REVIEW`, `SHA
 
 Before building, Bishop must complete a property-specific design pass using DirectStay-level docs, not Villa La Percha docs:
 
-- `/Users/agents/.openclaw/workspace/directstay/platform-leads/preview-build-playbook.md`
-- `/Users/agents/.openclaw/workspace/directstay/platform-leads/design-inspiration-library.md`
-- `/Users/agents/.openclaw/workspace/directstay/platform-leads/templates/property-photo-geography-audit.md`
-- `/Users/agents/.openclaw/workspace/directstay/platform-leads/preview-build-evaluation-rubric.md`
-- Seed DESIGN files under `/Users/agents/.openclaw/workspace/directstay/platform-leads/design-seeds/`
+- `/Users/agents/.openclaw/workspace/directstay/docs/platform-leads/preview-build-playbook.md`
+- `/Users/agents/.openclaw/workspace/directstay/docs/platform-leads/design-inspiration-library.md`
+- `/Users/agents/.openclaw/workspace/directstay/docs/platform-leads/templates/property-photo-geography-audit.md`
+- `/Users/agents/.openclaw/workspace/directstay/docs/platform-leads/preview-build-evaluation-rubric.md`
+- Seed DESIGN files under `/Users/agents/.openclaw/workspace/directstay/docs/platform-leads/design-seeds/`
 
 Required sequence:
 

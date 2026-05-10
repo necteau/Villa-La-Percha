@@ -398,3 +398,77 @@ Safe next DirectStay chunk: complete the Lake Norman family dock-house benchmark
 Public search/fetch found a stronger Lake Norman benchmark candidate with readable source content: `https://www.frenchescapeatthelake.com/` (French Escape At The Lake). The property site describes a Lake Norman lakefront rental with private dock, hot tub, kayaks, direct water access, fire pit near the dock, boat/Jet Ski dock use, screened patio, game room, movie/theater setup, two kitchens, 4 bedrooms, 3 bathrooms, and sleeps up to 12.
 
 This unblocks the text/source-truth side of the Lake Norman benchmark, but not the image-integrity gate. Do **not** generate/share an owner-facing preview from this alone. Next safe step: browser/image-source review or asset inventory for this candidate, then an internal-only benchmark Preview Build if hero + first two visible content sections can be supported by distinct actual-property images.
+
+## French Escape at the Lake — Lake Norman benchmark render (2026-05-10)
+
+Source: https://www.frenchescapeatthelake.com/  
+Preview: https://directstay.app/p/french-escape-at-the-lake-preview?view=guest
+
+Jaimal approved continuing from cleanup into DirectStay Preview Build refinement. The Lake Norman family/group dock-house benchmark is now rendered as an internal-only Preview Build, with no owner-facing communication.
+
+### What changed
+
+- Created repeatable builder script: `scripts/create-french-escape-preview-benchmark.mjs`.
+- Created/updated internal PlatformLead + Preview Build rows:
+  - Lead: `cmp06u3lc0000veq5rdyq6ugn`
+  - Preview: `cmp06u3mg0001veq5y5ci6xuy`
+  - Slug: `french-escape-at-the-lake-preview`
+- Added Preview packet artifacts in the DB:
+  - `PREVIEW_PHOTO_GEO_AUDIT`
+  - `PREVIEW_DESIGN_BRIEF`
+  - `PREVIEW_FACT_REGISTER`
+  - `PREVIEW_ASSUMPTION_REGISTER`
+  - `PREVIEW_SHARE_NOTE`
+  - `PREVIEW_RUBRIC_REVIEW`
+  - `PREVIEW_CONVERSION_PACKET`
+- Rendered the conversion trio as lake-house guest planning:
+  - date-aware inquiry questions for lake weeks, children, bedrooms, dock/equipment, parking, and celebration context;
+  - structure-only trip-total clarity with no real rates or guaranteed savings;
+  - Lake Norman planning guide organized around arrival, dock/marina questions, owner favorites, rainy-day backup, and safety/rules.
+
+### Rendered image inventory
+
+1. Hero — exterior/lake-house sunset image; property exterior/view.
+2. Stay fit — living room/fireplace/lake-view image; property interior/view.
+3. Lake-day rhythm — dock/lake view; property amenity/view.
+4. Sleeping/layout confidence — kitchen/dining image; property interior.
+5. Amenity confidence — hot tub image; property amenity.
+6. Calendar sample — intentionally text/read-only.
+7. Price comparison sample — intentionally text/read-only.
+8. Lake Norman planning guide — fire pit near lake; property amenity/view.
+9. Direct-booking value — intentionally text-only.
+
+Rejected/avoided: OTA logos, social icons, Superhost badge, promotional graphics, unverified local filler, repeated hero/first-section imagery, and exact local-distance claims.
+
+### QA evidence
+
+- Live guest route returned HTTP 200.
+- `noindex` present.
+- Calendar mock marker present.
+- Price comparison mock marker present.
+- Disabled inquiry marker present.
+- Owner callouts hidden from guest view.
+- Bad-copy scan after polish did not find: `benchmark`, `source description`, `strategy memo`, or `Superhost` in guest HTML.
+- `npm run qa:preview-builds`: 40/40 checks passed.
+- `npm run prisma:validate`: passed.
+- `npm run lint -- --max-warnings=0`: passed.
+- `npm run build`: passed.
+
+### Score
+
+- Property-specific design fingerprint: **4** — source-backed Lake Norman group-retreat positioning with sleeping/layout/lake-day rhythm.
+- Visual fit to photos/location: **4** — distinct property image sequence; rights remain owner-confirmation-needed.
+- Calendar/date module fit: **4** — lake-week and dock/equipment questions fit the property type.
+- Price/savings module safety: **4** — structure-only, assumption-labeled, no real rates or guaranteed savings.
+- Area-guide usefulness: **4** — useful categories without unsupported exact restaurants/distances/marina claims.
+- Owner-callout clarity: **4** — confirmation gaps captured internally and hidden from guest view.
+- Generic-template risk: **3.5** — materially property-aware; renderer styling and sample calendar/price component remain generic.
+- Technical polish: **4** — route renders, no missing-image placeholders, QA/build green.
+
+### Verdict
+
+French Escape is now a strong internal Lake Norman benchmark and can inform the Preview Build playbook for family/group lake houses. It is **not owner-share or launch-ready** until photo rights, exact sleeping layout, dock/boat/PWC/kayak/swim rules, hot-tub/event/parking/pet/accessibility policies, rates, fees, taxes, availability, cancellation terms, and owner local recommendations are confirmed.
+
+### Process lesson
+
+The strongest lake-house preview does not lead with “luxury lakefront.” It leads with planning confidence: where everyone sleeps, how the lake day works, what rules are unknown, what dates/equipment/party details the owner needs, and how direct inquiry reduces the back-and-forth. That lesson should carry directly into Villa La Percha launch work: make the guest’s decision path practical before making it pretty.
