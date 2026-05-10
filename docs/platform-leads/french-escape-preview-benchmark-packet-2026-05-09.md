@@ -90,6 +90,12 @@ Key design constraints now locked:
 - Keep dock, boat/PWC, kayak, hot tub, local-distance, event, parking, pet, rate, availability, and safety claims as confirmation-needed unless owner-confirmed.
 - Reject social icons, OTA/platform badges, promotional cards, text-overlay graphics, and unrelated Lake Norman filler.
 
+## Preview content plan update — 2026-05-10 09:00 ET
+
+Created a builder-ready internal content plan at `directstay/docs/platform-leads/french-escape-preview-content-plan-2026-05-10.md` without rendering a preview or writing production database rows.
+
+The plan converts the source/image audit and DESIGN brief into a safe section-by-section Preview Build handoff: hero, stay-fit strip, house rhythm, sleeping/layout confidence, read-only date module, illustrative trip-total clarity, Lake Norman planning guide, owner-correction panel, copy watchouts, and render-readiness checklist.
+
 ## Next gate
 
-Create a non-shared internal benchmark preview only if the build keeps booking, calendar, and price-comparison modules read-only; avoids platform badges/exact savings/legal-safety claims; uses the new DESIGN brief; and keeps guest-facing copy useful rather than internal strategy-memo copy.
+Create a non-shared internal benchmark preview only if the build keeps booking, calendar, and price-comparison modules read-only; avoids platform badges/exact savings/legal-safety claims; uses the DESIGN brief and 2026-05-10 content plan; and keeps guest-facing copy useful rather than internal strategy-memo copy.
