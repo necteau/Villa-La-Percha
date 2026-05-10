@@ -90,7 +90,7 @@ try {
 
   await expectBlocked("SHARED_WITH_LEAD without approval artifacts", () => updatePreviewBuildStatus(preview.id, "SHARED_WITH_LEAD"), "rubric review");
 
-  await createPlatformLeadArtifact({ leadId: lead.id, type: "PREVIEW_RUBRIC_REVIEW", status: "APPROVED", title: "Rubric review", body: "Average score: 4.4\nSafety: pass" });
+  await createPlatformLeadArtifact({ leadId: lead.id, type: "PREVIEW_RUBRIC_REVIEW", status: "APPROVED", title: "Rubric review", body: "Average score: 4.4\nSafety: pass\n\nCopy Review Stack:\n- Source-truth pass complete.\n- VRBO-owner relevance pass complete.\n- Guest usefulness pass complete.\n- Anti-AI voice pass complete.\n- Section-fit pass complete." });
   await createPlatformLeadArtifact({ leadId: lead.id, type: "PREVIEW_SHARE_NOTE", status: "APPROVED", title: "Owner-share note", body: "Draft/noindex/public-obscure/non-functional/correctable/removable." });
 
   await updatePreviewBuildStatus(preview.id, "SHARED_WITH_LEAD");
