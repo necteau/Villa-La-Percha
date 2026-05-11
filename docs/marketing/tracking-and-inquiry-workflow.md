@@ -31,7 +31,7 @@ Whenever possible, capture basic source/UTM values:
 2. Guest checks dates
 3. Guest submits inquiry
 4. Inquiry is stored in the inquiry thread system and surfaced in owner portal
-5. Outbound reply drafts are generated/edited in owner portal and require approval before send
+5. Outbound source-attached reply candidates are generated/edited in owner portal and require approval before send
 6. Sent replies are logged back into the inquiry timeline
 7. Guest replies return through `/api/inquiry/reply-webhook` and append to the same thread
 8. Respond within 24 hours
@@ -41,7 +41,7 @@ Whenever possible, capture basic source/UTM values:
 ## Current Reply / Inbox Architecture
 
 ### Outbound
-- Drafts are stored as inquiry reply drafts with status (`draft`, `pending_owner_approval`, `approved`, `sent`)
+- Drafts are stored as inquiry source-attached reply candidates with status (`draft`, `pending_owner_approval`, `approved`, `sent`)
 - Approved drafts send via Resend
 - Initial guest inquiries notify the configured inbox via `INQUIRY_NOTIFICATION_EMAIL`
 - Subjects are tagged with `[DirectStay Inquiry <id>]` for reply threading
