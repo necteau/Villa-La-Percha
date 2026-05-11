@@ -489,3 +489,9 @@ Initial benchmark learning:
 - Photo inspection is the main blocker before any render. The fetched page exposed strong owner prose but no reliable gallery inventory, so hero/section image choices must wait for browser/image review.
 
 Recommended next action: create `design-seeds/gulf-river-retreat.DESIGN.md` only after one more river/coastal-waterway source is inspected, or keep this as a learning artifact until browser image inventory can validate the palette and first-screen image rhythm.
+
+## Gulf river-retreat seed added — 2026-05-10 21:00 ET
+
+Created a provisional `design-seeds/gulf-river-retreat.DESIGN.md` from the Sarasota River Retreat intake and prior French Escape/Lake Norman water-property lessons. This is a seed for Gulf Coast river/canal homes whose value is private waterway rhythm, owner care, pool/spa/dock/kayak confidence, and local guidance — distinct from both beach villas and lake-family houses.
+
+Also updated the Preview Build playbook conversion-trio guidance to call out Gulf river/canal retreats explicitly. The seed remains conservative: future renders still require browser/page-order image inventory before choosing hero/section art, and owner-share remains blocked until photo rights, rates, policies, water rules, wildlife/local claims, and owner recommendations are confirmed.

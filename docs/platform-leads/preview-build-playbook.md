@@ -219,6 +219,8 @@ Recent benchmarks show the trio fails when it sounds like product strategy inste
 
 For family/group lake houses, the conversion trio should lead with planning confidence: sleeping layout, party size, children, dock/boat/PWC/kayak/hot-tub expectations, parking, quiet hours, and whether the stay is a quiet family trip or a celebration. Avoid generic “luxury lakefront” copy until the practical decision path is clear.
 
+For Gulf Coast river/canal retreats, use the `design-seeds/gulf-river-retreat.DESIGN.md` seed as a starting point only after source and photo evidence support it. Lead with private waterway rhythm, owner care, pool/spa/dock/kayak rule confirmation, and Sarasota/Gulf local-guide questions. Do not let a riverfront home collapse into generic Florida beach-villa copy or unsupported wildlife/distance claims.
+
 ### Calendar / inquiry context
 
 Place a read-only calendar or date-window mock near the inquiry path. The goal is to show that guests can arrive with dates, party size, and stay context before writing a message.
