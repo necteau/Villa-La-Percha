@@ -43,6 +43,7 @@ Before `READY_FOR_REVIEW` / owner-share review, it must include:
 - Owner-specific callouts, including at least one assumption/correction callout.
 - Desktop QA evidence.
 - Mobile QA evidence.
+- Guest-copy QA checklist pass using `preview-build-guest-copy-qa-checklist.md`, with any internal strategy/process language moved out of guest sections.
 - Rubric review with average score and safety pass/fail.
 - Owner-share note explaining source basis, preview-only status, public-obscure/noindex status, correction path, and removal path.
 
