@@ -1,8 +1,10 @@
 # PlatformLead Emily Simulation Plan
 
-_Last updated: 2026-05-07_
+_Last updated: 2026-05-11_
 
 Purpose: run a safe end-to-end DirectStay PlatformLead rehearsal with Emily acting as a VRBO villa owner, without external owner communication, production launch, signature-provider activation, or real owner/property creation.
+
+Companion artifact pack: `platform-lead-emily-simulation-artifact-pack.md` provides the QA fixture, draft replies, preview rationale, proposal draft, agreement-gate check, and onboarding-prep copy to use during the rehearsal.
 
 ## Boundaries
 
