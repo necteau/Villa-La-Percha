@@ -110,32 +110,41 @@ Before building, Bishop must complete a property-specific design pass using Dire
 
 Required sequence:
 
-1. Explore the listing/source the owner sent.
-2. Audit property photos: exterior, views, interiors, materials, color temperature, decor, landscape, light, and repeated motifs.
+1. Explore the listing/source the owner sent, including owner/manager-written description prose — not only titles, amenity chips, and photos.
+2. Audit property photos: exterior, views, interiors, materials, color temperature, decor, landscape, light, repeated motifs, and unusable assets.
 3. Read the exact micro-location/geography, not just a broad category like “coastal” or “mountain.”
 4. Build a Property Design Fingerprint: property type, guest archetype, emotional promise, location cues, owner/decor style, signature stay moments, assumptions, and missing inputs.
 5. Choose a seed archetype only as a starting point. Actual photos, decor, materials, light, and exact geography override the seed.
 6. Derive palette, typography, spacing, image rhythm, and copy tone from source evidence.
 7. Create a property-specific DESIGN.md/design brief for material previews.
-8. Score the result with the DirectStay Preview Build Evaluation Rubric before sharing.
+8. Create a preview content/section plan with the conversion trio: read-only calendar/date-window mock, structure-only price/trip-total clarity, and a micro-location area guide.
+9. Run a **pre-render rubric preflight** against the audit, DESIGN brief, and content plan. This can approve an internal render, but it cannot approve Jaimal/owner sharing.
+10. Render the internal preview only if the source package can support a safe page-order image plan. If images are thin or unsafe, use intentional text-only sections and record owner photo requests instead of filling with promotional or unrelated assets.
+11. Run a **post-render promotion gate** against the actual URL on desktop and mobile before `READY_FOR_REVIEW`, Jaimal review, or owner-share consideration.
 
-Critical design rule: broad categories are not enough. Two coastal villas should not look alike unless their actual photos, interiors, owner style, and micro-location support the same direction. Chalk Sound, Cape Cod, Malibu, Greek islands, and Lowcountry marsh properties should produce different palettes, typography, spacing, and emotional framing.
+Critical design rule: broad categories are not enough. Two coastal villas should not look alike unless their actual photos, interiors, owner style, and micro-location support the same direction. Chalk Sound, Cape Cod, Malibu, Greek islands, Lowcountry marsh, Lake Norman dock houses, and Sarasota/Phillippi River retreats should produce different palettes, typography, spacing, conversion modules, and emotional framing.
 
 ### Required Preview Build Packet
 
-A Preview Build record is not a shareable Preview Build. Before owner-share review, create or attach:
+A Preview Build record is not a shareable Preview Build. Treat preview quality as two separate gates: **pre-render planning quality** and **post-render owner-share readiness**. Before owner-share review, create or attach:
 
 - Property Photo + Geography Audit.
 - Property-specific DESIGN.md/design brief.
 - Preview content/section plan.
+- Calendar/date-window mock plan near inquiry.
+- Price/trip-total comparison mock plan with owner-only assumptions; no unsupported savings/best-rate claims.
+- Micro-location area guide plan with confirmation gaps for restaurants, distances, access, safety, and recommendations.
 - Fact register with source URLs and observed claims.
 - Assumption register with inferred claims and missing owner inputs.
 - Owner-specific callouts, including an assumptions/correction callout.
+- Pre-render rubric preflight, when the rendered page does not yet exist.
+- Page-order rendered-image inventory after render: hero, first two visible sections, all later section art, text-only sections, rejected assets, and thin-gallery exceptions.
+- Guest-copy QA pass against the rendered guest view, including a bad-copy scan for `benchmark`, `source description`, `source material`, `final live copy`, `preview uses mock`, `strategy`, cross-property badge bleed, and other internal/process language.
 - Desktop and mobile QA evidence.
-- Rubric score with safety pass/fail.
+- Post-render rubric score with safety pass/fail and owner-share blockers separated from the score.
 - Owner-share note explaining source basis, draft status, public-obscure/noindex/non-functional status, correction path, and removal path.
 
-If these are missing, the artifact is only a placeholder/internal draft, not something to send to an owner.
+If these are missing, the artifact is only a placeholder/internal draft, not something to send to an owner. Planning packets and pre-render scores must never be treated as owner-share readiness.
 
 ### Preview Media / Source Policy
 
