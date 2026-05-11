@@ -22,7 +22,7 @@ Purpose: give the next DirectStay PlatformLead/admin heartbeat a clean handoff f
 ## Next safe chunks
 
 1. **Sarasota image-source review** — use browser/page inspection or safe asset extraction to inventory actual property images before rendering anything. Do not fabricate river, wildlife, beach-distance, pool/spa, kayak, or restaurant claims.
-2. **Admin prompt/schema audit** — verify the PlatformLead admin generation surfaces require the latest photo-integrity gate, Copy Review Stack, conversion-trio planning language, and owner-share blocker separation.
+2. **Admin prompt/schema audit** — completed 2026-05-11 in `admin-prompt-schema-audit-2026-05-11.md`. Current generator/gates cover photo-integrity prompts, Copy Review Stack, conversion-trio planning language, rendered bad-copy scan, and owner-share blocker separation. Future hardening opportunity: structured required image-inventory fields before `READY_FOR_REVIEW`, rather than freeform artifact text only.
 3. **Benchmark index in admin UI** — if absent, add a read-only internal status surface for benchmark archetypes and blockers so future preview work starts from evidence instead of log archaeology.
 
 ## Current recommendation
