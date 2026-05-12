@@ -44,9 +44,9 @@ const PREVIEW_BENCHMARKS = [
   {
     property: "Sarasota River Retreat",
     archetype: "Gulf Coast riverfront retreat",
-    status: "Intake only; do not render yet",
-    evidence: "Distinct river/canal archetype identified from owner prose; needs actual image-source review before hero or section art.",
-    blockers: "Browser/page-order image inventory, photo rights, water/pool/spa/kayak rules, rates/policies, owner recommendations.",
+    status: "Image-source review complete; no render",
+    evidence: "One confirmed property-specific living-room image; river/pool/dock/kayak exterior art not confirmed, with most other assets local/stock/attraction images.",
+    blockers: "Full owner/gallery photo set, photo rights, safe exterior/amenity hero, water/pool/spa/kayak rules, rates/policies, owner recommendations.",
   },
 ] as const;
 
@@ -122,7 +122,7 @@ export default async function AdminPlatformLeadsPage({ searchParams }: AdminPlat
         <div className="admin-table-wrap" style={{ marginTop: 12 }}><table className="admin-table"><thead><tr><th>Benchmark</th><th>Status</th><th>Useful evidence</th><th>Owner-share blockers</th></tr></thead><tbody>
           {PREVIEW_BENCHMARKS.map((benchmark) => <tr key={benchmark.property}><td>{benchmark.property}<br/><span className="admin-muted">{benchmark.archetype}</span></td><td><span className={benchmark.status.includes("do not render") ? "admin-chip admin-chip-warn" : "admin-chip"}>{benchmark.status}</span></td><td>{benchmark.evidence}</td><td>{benchmark.blockers}</td></tr>)}
         </tbody></table></div>
-        <p className="admin-muted" style={{ marginTop: 10 }}>Next safe chunk: Sarasota image-source review before any render; if imagery is thin, use text-only sections and record owner photo requests.</p>
+        <p className="admin-muted" style={{ marginTop: 10 }}>Next safe chunk: Sarasota can only render as an internal, text-forward or living-room-first benchmark; do not use skyline/canal/attraction images as property hero or fabricate river, pool, wildlife, beach-distance, kayak, or restaurant claims.</p>
       </section>
 
       <div className="admin-table-wrap"><table className="admin-table"><thead><tr><th>Lead</th><th>Status</th><th>Property</th><th>Owner ops</th><th>Latest AI artifact</th><th>Preview</th><th>Created</th></tr></thead><tbody>
