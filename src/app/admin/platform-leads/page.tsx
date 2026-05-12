@@ -19,6 +19,37 @@ const QUEUE_VIEWS: Array<{ key: QueueView; label: string; description: string }>
   { key: "spam-review", label: "Spam review", description: "Suspicious/spam leads kept recoverable." },
 ];
 
+const PREVIEW_BENCHMARKS = [
+  {
+    property: "Savannah Broughton Street carriage house",
+    archetype: "Urban / historic district",
+    status: "Reworked internal benchmark",
+    evidence: "Dedicated hero, promotional assets removed, garage/walkable-city narrative, desktop/mobile QA green.",
+    blockers: "Photo rights, rates/fees/taxes, availability, occupancy, parking/pool rules, local recommendations, owner review.",
+  },
+  {
+    property: "Asheville Shope Creek cabin",
+    archetype: "Mountain / forest cabin",
+    status: "Reworked internal benchmark",
+    evidence: "Cross-property badge bleed and hero repeat fixed; Shope Creek/deck/hot-tub/group-weekend rhythm; desktop/mobile QA green.",
+    blockers: "Photo rights, exact sleeping/bath/occupancy/rules, rates/fees/taxes, availability, owner local recommendations.",
+  },
+  {
+    property: "French Escape At The Lake",
+    archetype: "Lake Norman family/group dock house",
+    status: "Rendered internal benchmark",
+    evidence: "Strong lake-house planning model with source-backed image sequence and dock/equipment questions.",
+    blockers: "Photo rights, sleeping layout, dock/boat/PWC/kayak/swim rules, hot-tub/event/parking/pet/accessibility policies, rates/fees/taxes, availability, local recommendations.",
+  },
+  {
+    property: "Sarasota River Retreat",
+    archetype: "Gulf Coast riverfront retreat",
+    status: "Intake only; do not render yet",
+    evidence: "Distinct river/canal archetype identified from owner prose; needs actual image-source review before hero or section art.",
+    blockers: "Browser/page-order image inventory, photo rights, water/pool/spa/kayak rules, rates/policies, owner recommendations.",
+  },
+] as const;
+
 function normalizeView(value: string | undefined): QueueView {
   return QUEUE_VIEWS.some((view) => view.key === value) ? (value as QueueView) : "all";
 }
@@ -84,6 +115,14 @@ export default async function AdminPlatformLeadsPage({ searchParams }: AdminPlat
             </Link>
           ))}
         </div>
+      </section>
+
+      <section className="admin-card" style={{ marginBottom: 18 }}>
+        <div className="admin-section-head"><div><p className="admin-eyebrow">Preview build lab</p><h3>Benchmark handoff</h3><p>Internal archetype status from the latest refinement pass. These are not owner-share approvals.</p></div><Link className="admin-button admin-button-secondary" href="/admin/platform-leads?view=preview-in-progress">Open preview queue</Link></div>
+        <div className="admin-table-wrap" style={{ marginTop: 12 }}><table className="admin-table"><thead><tr><th>Benchmark</th><th>Status</th><th>Useful evidence</th><th>Owner-share blockers</th></tr></thead><tbody>
+          {PREVIEW_BENCHMARKS.map((benchmark) => <tr key={benchmark.property}><td>{benchmark.property}<br/><span className="admin-muted">{benchmark.archetype}</span></td><td><span className={benchmark.status.includes("do not render") ? "admin-chip admin-chip-warn" : "admin-chip"}>{benchmark.status}</span></td><td>{benchmark.evidence}</td><td>{benchmark.blockers}</td></tr>)}
+        </tbody></table></div>
+        <p className="admin-muted" style={{ marginTop: 10 }}>Next safe chunk: Sarasota image-source review before any render; if imagery is thin, use text-only sections and record owner photo requests.</p>
       </section>
 
       <div className="admin-table-wrap"><table className="admin-table"><thead><tr><th>Lead</th><th>Status</th><th>Property</th><th>Owner ops</th><th>Latest AI artifact</th><th>Preview</th><th>Created</th></tr></thead><tbody>
