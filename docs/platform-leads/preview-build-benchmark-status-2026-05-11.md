@@ -9,7 +9,7 @@ Purpose: give the next DirectStay PlatformLead/admin heartbeat a clean handoff f
 | Savannah Broughton Street carriage house | Urban / historic-district stay | Reworked internal benchmark | Dedicated hero, promotional assets removed, private-garage/walkable-city narrative, desktop/mobile QA green. | Photo rights, rates/fees/taxes, availability, occupancy, parking/pool rules, local recommendations, owner review. |
 | Asheville Shope Creek cabin | Mountain / forest cabin | Reworked internal benchmark | Savannah badge bleed fixed, hero repeat fixed, Shope Creek/deck/hot-tub/group-weekend rhythm, desktop/mobile QA green. | Photo rights, exact sleeping/bath/occupancy/rules, rates/fees/taxes, availability, owner local recommendations. |
 | French Escape At The Lake | Lake Norman family/group dock house | Rendered internal benchmark | Strong lake-house planning model: sleeping/layout confidence, dock/equipment questions, structure-only trip-total module, source-backed property image sequence. | Photo rights, exact sleeping layout, dock/boat/PWC/kayak/swim rules, hot-tub/event/parking/pet/accessibility policies, rates/fees/taxes, availability, cancellation terms, local recommendations. |
-| Sarasota River Retreat | Gulf Coast riverfront retreat | Intake only; no render | Owner prose shows a distinct river/canal archetype: quiet waterway mornings, owner-care trust, pool/spa/dock/kayak planning, Sarasota-local guidance caution. | Browser/page-order image inventory, photo rights, water/pool/spa/kayak rules, rates/policies, owner recommendations. |
+| Sarasota River Retreat | Gulf Coast riverfront retreat | Image-source review complete; no render | Owner prose shows a distinct river/canal archetype. 2026-05-12 HTML/image inspection found one confirmed property-specific living-room image; river/pool/dock/kayak exterior art was not confirmed, and most other assets are local/stock/attraction images. | Full owner/gallery photo set, photo rights, safe exterior/amenity hero, water/pool/spa/kayak rules, rates/policies, owner recommendations. |
 
 ## Consolidated lessons now considered standard
 
@@ -21,11 +21,11 @@ Purpose: give the next DirectStay PlatformLead/admin heartbeat a clean handoff f
 
 ## Next safe chunks
 
-1. **Sarasota image-source review** — use browser/page inspection or safe asset extraction to inventory actual property images before rendering anything. Do not fabricate river, wildlife, beach-distance, pool/spa, kayak, or restaurant claims.
+1. **Sarasota benchmark render decision** — image-source review completed 2026-05-12 in `sarasota-river-retreat-source-audit-2026-05-10.md`. Safe render path is text-forward or living-room-first only; do not use skyline/canal/attraction images as property hero, and do not fabricate river, wildlife, beach-distance, pool/spa, kayak, or restaurant claims.
 2. **Admin prompt/schema audit** — completed 2026-05-11 in `admin-prompt-schema-audit-2026-05-11.md`. Current generator/gates cover photo-integrity prompts, Copy Review Stack, conversion-trio planning language, rendered bad-copy scan, and owner-share blocker separation.
 3. **READY_FOR_REVIEW image-inventory gate** — completed 2026-05-11/12 in `directstay/src/lib/platformLeads.ts`: an approved photo/geography audit must now replace starter TODOs with `Page-order image inventory`, `Hero candidate`, `First two section-image candidates`, and `Rejected assets` before a Preview Build can move to `READY_FOR_REVIEW`. QA coverage added in `directstay/scripts/qa-preview-build-gates.mjs` and `directstay/scripts/qa-preview-build-status-gates.mts`.
 4. **Benchmark index in admin UI** — if absent, add a read-only internal status surface for benchmark archetypes and blockers so future preview work starts from evidence instead of log archaeology.
 
 ## Current recommendation
 
-The next DirectStay Preview Build refinement heartbeat should do **Sarasota image-source review** if browser tooling is available. If not, consider the benchmark-index admin UI slice. Do not create or share an owner-facing Sarasota preview until actual image inventory supports hero and early-section art.
+The next DirectStay Preview Build refinement heartbeat can either render a constrained **internal-only Sarasota benchmark** using the living-room image/text-forward structure, or pick the benchmark-index admin UI slice. Do not create or share an owner-facing Sarasota preview until an owner/gallery photo set supports safe hero and early-section art.

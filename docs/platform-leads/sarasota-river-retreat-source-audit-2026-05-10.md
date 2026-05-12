@@ -29,7 +29,33 @@ DirectStay copy should preserve that care-and-place feeling without copying the 
 
 ## Photo inventory
 
-Full gallery inspection is still required. Current fetch did not provide image URLs or reliable page-order image inventory.
+Updated 2026-05-12 from safe HTML/image inspection of `https://sarasotariverretreat.com/` plus image-model review of the main page assets. This is still not an owner-approved image-rights review; treat it as an internal benchmark inventory only.
+
+### Page-order image inventory observed 2026-05-12
+
+| Page/order | Asset | Observed content | Use decision |
+| --- | --- | --- | --- |
+| 1–2 | `uploads/Logo/SRR_Logo-5262882.jpg?format=webp` | Sarasota River Retreat logo repeated in header/navigation. | Reject for guest-view section art; branding reference only. |
+| 3 | `uploads/Attractions/Siesta_Key_Beach_Sarasota_Vacation_Rental-4492345.jpg?format=webp` | Siesta Key / white-sand attraction image. | Local-guide support only; not property-specific and should not lead the preview. |
+| 4 | `uploads/Attractions/Myakka_River_State_Park_Sarasota_Vacation_Home-4492597.jpg?format=webp` | Myakka River/state-park attraction image. | Local-guide support only; avoid implying the property sits inside this landscape. |
+| 5 | `uploads/Attractions/St_Armands_Circle_Sarasota-4507249.webp?format=webp` | St. Armands Circle shopping/dining attraction image. | Local-guide support only after distance/context verification. |
+| 6 | `thumbnails/640x480/Restaurants/Owens_FIsh_Camp_Sarasota-4515263.webp?format=webp` | Restaurant thumbnail for Owens Fish Camp. | Owner/local recommendation context only; do not use as property art. |
+| 7 | `thumbnails/640x480/Restaurants/Columbia_Restaurant_Sarasota-4515422.webp?format=webp` | Restaurant thumbnail for Columbia Restaurant. | Owner/local recommendation context only; do not use as property art. |
+| 8 | `uploads/A1/shadow-6446705.png?format=webp` | Transparent/shadow graphic. | Reject. |
+| Background A | `uploads/Home_Page/Sarasota_Main-6089374.jpg?format=webp` | Actual interior living-room photo: seating, TV, windows, adjacent bedroom glimpse. | Best confirmed property-specific image. Use as first interior/trust image, not necessarily hero. |
+| Background B / social preview | `uploads/Home_Page/Sarasota_Vacation_Rental-4485558.jpg?format=webp` | Waterfront city/bridge skyline scene; appears location/promotional, not the private home. | Local/destination mood only; do not present as property view. |
+| Background C / mobile parallax | `uploads/Home_Page/Florida_Keys_Turquoise_Water_Canals-2688399.jpg?format=webp` | Tropical canal/marina with boats and palms; likely stock/location asset and possibly not Sarasota-specific. | Reject for Sarasota preview hero/early sections unless owner confirms relevance; too likely to mislead. |
+| Background D | `uploads/Images/bg-1-5554004-9136095.webp?format=webp` | Blank/faint graphic background. | Reject. |
+| Background E | `uploads/Attractions/Sarasota_Popular_Attractions-4679899.jpg?format=webp` | Aerial marina/city waterfront attraction image. | Local-guide support only; not property-specific. |
+
+### Hero candidate / early-section decision
+
+- **Hero candidate:** no safe property-specific exterior/river/pool/dock hero was confirmed in the inspected HTML. For an internal benchmark render, either use a text-forward hero with no property image or use the confirmed living-room image with careful copy that does not imply river/pool/dock visibility.
+- **First property-specific image candidate:** `Sarasota_Main-6089374.jpg` living-room photo. Strongest for owner-care/interior trust, layout confidence, and actual-home specificity.
+- **Second section-image candidate:** none confirmed property-specific. Use text-only modules for river/pool/dock/kayak/firepit until actual exterior/gallery photos are obtained.
+- **Rejected early-section assets:** logo, shadow/blank graphic, Florida Keys canal image, skyline/bridge image, aerial marina image, restaurant thumbnails, and attraction photos. These may support a later area-guide collage only with clear local-guide labeling and verified context.
+
+Owner-share blocker remains: a full gallery or owner-provided photo set is required before a guest-facing preview can safely center the promised river/pool/dock/kayak experience.
 
 | Image group | Observed details | Design implications |
 |---|---|---|
