@@ -15,7 +15,8 @@
     "db:seed": "node scripts/seed-database.mjs",
     "prisma:studio": "prisma studio",
     "qa:preview-builds": "node scripts/qa-preview-build-gates.mjs",
-    "qa:preview-build-status-gates": "npx --yes tsx scripts/qa-preview-build-status-gates.mts"
+    "qa:preview-build-status-gates": "npx --yes tsx scripts/qa-preview-build-status-gates.mts",
+    "qa:platform-lead-emily-pack": "node scripts/qa-platform-lead-emily-artifact-pack.mjs"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.8.0",
