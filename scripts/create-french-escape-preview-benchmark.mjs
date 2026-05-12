@@ -2,11 +2,13 @@ import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import pg from "pg";
 
-const connectionString = process.env.DATABASE_URL;
-if (!connectionString) throw new Error("DATABASE_URL is required");
+const args = new Set(process.argv.slice(2));
+const dryRun = args.has("--dry-run");
+const writeRequested = args.has("--write");
 
-const pool = new pg.Pool({ connectionString });
-const prisma = new PrismaClient({ adapter: new PrismaPg(pool) });
+if (!dryRun && !writeRequested) {
+  throw new Error("Refusing to write Preview Build benchmark rows without --write. Use --dry-run to inspect the payload safely.");
+}
 
 const createdByEmail = "bishop@directstay.internal";
 
@@ -77,11 +79,26 @@ const assumptions = [
   "No booking, inquiry, payment, calendar, or availability function is active in this preview."
 ];
 
+const artifacts = [
+  {
+    type: "PREVIEW_PHOTO_GEO_AUDIT",
+    title: "Photo + Geography Audit — French Escape at the Lake",
+    body: `${bulletList("Source-backed facts", facts)}\n\nImage plan:\n- Hero: exterior/lake-house sunset.\n- First visible section: living room/fireplace/lake view.\n- Early rhythm: dock/lake view, kitchen/dining detail, hot tub, fire pit.\n- Rejected: OTA logos, social icons, Superhost badge, promotional graphics, and unverifiable filler.\n\nGeography discipline:\n- Use Lake Norman / near Charlotte only unless exact address or drive times are owner-confirmed.\n- Avoid named restaurants, marina claims, water-depth claims, dock legal claims, or exact distances until verified.`,
+    metadata: { sourceUrls: config.sourceUrls, images: config.images },
+  },
+  { type: "PREVIEW_DESIGN_BRIEF", title: "Design Brief — French Escape at the Lake", body: "Design fingerprint: polished Lake Norman group retreat with warm sunset neutrals, lake blue/green, white cabinetry, stone fireplace, and practical hosting confidence. Tone should feel like a guest planning page, not a strategy memo. Lead with trip confidence: where people sleep, how lake days work, what needs confirming before booking, and how a direct inquiry reduces back-and-forth." },
+  { type: "PREVIEW_FACT_REGISTER", title: "Fact Register — French Escape at the Lake", body: bulletList("Observed facts to preserve", facts) },
+  { type: "PREVIEW_ASSUMPTION_REGISTER", title: "Assumption Register — French Escape at the Lake", body: bulletList("Assumptions / owner-confirmation gaps", assumptions) },
+  { type: "PREVIEW_SHARE_NOTE", title: "Owner-share Note Draft — French Escape at the Lake", body: "Draft only. Do not send or share externally without Jaimal approval.\n\nThis benchmark was created from public source review to test DirectStay Preview Build quality. Before any owner-facing use, the owner must be invited to correct/remove claims, approve images, confirm policies and pricing, and approve whether any direct-vs-marketplace comparison may be shown.\n\nFunctionality status: noindex public-obscure preview route; booking, inquiry, payment, calendar, and availability behavior are disabled/read-only." },
+  { type: "PREVIEW_RUBRIC_REVIEW", title: "Rubric Review — French Escape at the Lake", body: "Score draft after source/image gate:\n\n- Property-specific design fingerprint: 4 — Lake Norman group-retreat rhythm is distinct and grounded in source details.\n- Visual fit to photos/location: 4 — distinct actual-property image sequence; no logos/badges/promotional cards used; rights remain unconfirmed.\n- Calendar/date module fit: 4 — lake-week, children, bedroom, dock/equipment, parking, and celebration-context questions fit the property type.\n- Price/savings module safety: 4 — structure-only, no real rates, no guaranteed savings.\n- Area-guide usefulness: 4 — organized around arrival, dock/marina, dining, rainy-day, rules/safety; exact recommendations intentionally withheld.\n- Owner-callout clarity: 4 — confirmation gaps are explicit and hidden from guest view.\n- Generic-template risk: 3.5 — materially property-aware; renderer styling and sample calendar/price components remain generic.\n- Technical polish: pending live/mobile QA.\n\nVerdict: suitable internal benchmark candidate after live route checks; not owner-share or launch-ready." },
+  { type: "PREVIEW_CONVERSION_PACKET", title: "Preview Conversion Packet Draft — French Escape at the Lake", body: "Conversion status: not ready for live site.\n\nRequired before promotion:\n- Owner-approved facts, photos, rates, fees, taxes, deposits, availability, rules, and policies.\n- Remove/confirm all dock, boat/PWC, kayak, swim, event, pet, parking, accessibility, and safety claims.\n- Replace sample calendar and illustrative price module with approved controls/data or keep them disabled.\n- Complete desktop/mobile visual QA and final anti-AI/source-truth copy review.\n- Jaimal approval before any external share or owner communication." },
+];
+
 function bulletList(title, lines) {
   return `${title}\n\n${lines.map((line) => `- ${line}`).join("\n")}`;
 }
 
-async function upsertArtifact(platformLeadId, type, title, body, metadata = undefined) {
+async function upsertArtifact(prisma, platformLeadId, type, title, body, metadata = undefined) {
   const existing = await prisma.platformLeadArtifact.findFirst({ where: { platformLeadId, type } });
   const data = { status: "DRAFT", title, body, createdByEmail, metadata };
   if (existing) return prisma.platformLeadArtifact.update({ where: { id: existing.id }, data });
@@ -89,6 +106,26 @@ async function upsertArtifact(platformLeadId, type, title, body, metadata = unde
 }
 
 async function main() {
+  if (dryRun) {
+    console.log(JSON.stringify({
+      ok: true,
+      dryRun: true,
+      writeRequiredFlag: "--write",
+      lead: { email: config.email, propertyName: config.propertyName, sourceUrls: config.sourceUrls },
+      preview: { slug: config.slug, heroTitle: config.heroTitle, sectionCount: sections.length, ownerCalloutCount: callouts.length },
+      artifacts: artifacts.map(({ type, title }) => ({ type, title })),
+      url: `https://directstay.app/p/${config.slug}?view=guest`,
+    }, null, 2));
+    return;
+  }
+
+  const connectionString = process.env.DATABASE_URL;
+  if (!connectionString) throw new Error("DATABASE_URL is required for --write");
+
+  const pool = new pg.Pool({ connectionString });
+  const prisma = new PrismaClient({ adapter: new PrismaPg(pool) });
+
+  try {
   const existingLead = await prisma.platformLead.findFirst({ where: { email: config.email } });
   const leadData = {
     status: "QUALIFIED",
@@ -133,20 +170,15 @@ async function main() {
     }
   });
 
-  await upsertArtifact(lead.id, "PREVIEW_PHOTO_GEO_AUDIT", "Photo + Geography Audit — French Escape at the Lake", `${bulletList("Source-backed facts", facts)}\n\nImage plan:\n- Hero: exterior/lake-house sunset.\n- First visible section: living room/fireplace/lake view.\n- Early rhythm: dock/lake view, kitchen/dining detail, hot tub, fire pit.\n- Rejected: OTA logos, social icons, Superhost badge, promotional graphics, and unverifiable filler.\n\nGeography discipline:\n- Use Lake Norman / near Charlotte only unless exact address or drive times are owner-confirmed.\n- Avoid named restaurants, marina claims, routes, water-depth claims, dock legal claims, or exact distances until verified.`, { sourceUrls: config.sourceUrls, images: config.images });
-  await upsertArtifact(lead.id, "PREVIEW_DESIGN_BRIEF", "Design Brief — French Escape at the Lake", "Design fingerprint: polished Lake Norman group retreat with warm sunset neutrals, lake blue/green, white cabinetry, stone fireplace, and practical hosting confidence. Tone should feel like a guest planning page, not a strategy memo. Lead with trip confidence: where people sleep, how lake days work, what needs confirming before booking, and how a direct inquiry reduces back-and-forth.");
-  await upsertArtifact(lead.id, "PREVIEW_FACT_REGISTER", "Fact Register — French Escape at the Lake", bulletList("Observed facts to preserve", facts));
-  await upsertArtifact(lead.id, "PREVIEW_ASSUMPTION_REGISTER", "Assumption Register — French Escape at the Lake", bulletList("Assumptions / owner-confirmation gaps", assumptions));
-  await upsertArtifact(lead.id, "PREVIEW_SHARE_NOTE", "Owner-share Note Draft — French Escape at the Lake", "Draft only. Do not send or share externally without Jaimal approval.\n\nThis benchmark was created from public source review to test DirectStay Preview Build quality. Before any owner-facing use, the owner must be invited to correct/remove claims, approve images, confirm policies and pricing, and approve whether any direct-vs-marketplace comparison may be shown.\n\nFunctionality status: noindex public-obscure preview route; booking, inquiry, payment, calendar, and availability behavior are disabled/read-only.");
-  await upsertArtifact(lead.id, "PREVIEW_RUBRIC_REVIEW", "Rubric Review — French Escape at the Lake", "Score draft after source/image gate:\n\n- Property-specific design fingerprint: 4 — Lake Norman group-retreat rhythm is distinct and grounded in source details.\n- Visual fit to photos/location: 4 — distinct actual-property image sequence; no logos/badges/promotional cards used; rights remain unconfirmed.\n- Calendar/date module fit: 4 — lake-week, children, bedroom, dock/equipment, parking, and celebration-context questions fit the property type.\n- Price/savings module safety: 4 — structure-only, no real rates, no guaranteed savings.\n- Area-guide usefulness: 4 — organized around arrival, dock/marina, dining, rainy-day, rules/safety; exact recommendations intentionally withheld.\n- Owner-callout clarity: 4 — confirmation gaps are explicit and hidden from guest view.\n- Generic-template risk: 3.5 — materially property-aware; renderer styling and sample calendar/price components remain generic.\n- Technical polish: pending live/mobile QA.\n\nVerdict: suitable internal benchmark candidate after live route checks; not owner-share or launch-ready.");
-  await upsertArtifact(lead.id, "PREVIEW_CONVERSION_PACKET", "Preview Conversion Packet Draft — French Escape at the Lake", "Conversion status: not ready for live site.\n\nRequired before promotion:\n- Owner-approved facts, photos, rates, fees, taxes, deposits, availability, rules, and policies.\n- Remove/confirm all dock, boat/PWC, kayak, swim, event, pet, parking, accessibility, and safety claims.\n- Replace sample calendar and illustrative price module with approved controls/data or keep them disabled.\n- Complete desktop/mobile visual QA and final anti-AI/source-truth copy review.\n- Jaimal approval before any external share or owner communication.");
+  for (const artifact of artifacts) {
+    await upsertArtifact(prisma, lead.id, artifact.type, artifact.title, artifact.body, artifact.metadata);
+  }
 
   console.log(JSON.stringify({ ok: true, leadId: lead.id, previewId: preview.id, slug: preview.slug, url: `https://directstay.app/p/${preview.slug}?view=guest` }, null, 2));
+  } finally {
+    await prisma.$disconnect();
+    await pool.end();
+  }
 }
 
-try {
-  await main();
-} finally {
-  await prisma.$disconnect();
-  await pool.end();
-}
+await main();
