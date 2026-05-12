@@ -15,6 +15,7 @@ const legacyRoute = read("src/app/preview/[slug]/page.tsx");
 const platformLeads = read("src/lib/platformLeads.ts");
 const schema = read("prisma/schema.prisma");
 const adminDetail = read("src/app/admin/platform-leads/detail/page.tsx");
+const adminPlatformLeads = read("src/app/admin/platform-leads/page.tsx");
 const adminPreviewRoute = read("src/app/admin/platform-leads/previews/route.ts");
 const sitemap = read("src/app/sitemap.ts");
 const previewPlaybook = read("docs/platform-leads/preview-build-playbook.md");
@@ -60,6 +61,7 @@ check("Preview content route validates and saves JSON", adminPreviewRoute.includ
 check("Admin can append one structured Preview section", adminDetail.includes("Append section") && adminPreviewRoute.includes('action === "add-section"') && platformLeads.includes("appendPreviewBuildSection"));
 check("Admin can manage existing Preview sections", adminDetail.includes("Manage existing sections") && adminPreviewRoute.includes('action === "section"') && platformLeads.includes("movePreviewBuildSection") && platformLeads.includes("deletePreviewBuildSection"));
 check("Admin includes guided Preview packet review", adminDetail.includes("Preview Build packet review") && adminDetail.includes("previewArtifactsByType") && adminDetail.includes("PREVIEW_CONVERSION_PACKET"));
+check("Admin includes Preview Build benchmark handoff", adminPlatformLeads.includes("Preview build lab") && adminPlatformLeads.includes("Benchmark handoff") && adminPlatformLeads.includes("Sarasota image-source review before any render"));
 check("Admin can generate starter preview packet", adminDetail.includes("Generate starter preview packet") && adminPreviewRoute.includes('action === "generate-packet"') && adminPreviewRoute.includes("preview_packet_generated"));
 check("Starter packet generator creates packet artifacts and rendered sections", platformLeads.includes("generatePreviewBuildStarterPacket") && platformLeads.includes("PREVIEW_PHOTO_GEO_AUDIT") && platformLeads.includes("signatureMoments"));
 check("Starter packet generator creates owner-share/promotion gate drafts", platformLeads.includes("Preview Rubric Review Draft") && platformLeads.includes("Preview Conversion Packet Draft") && platformLeads.includes("Post-render promotion gate"));
