@@ -22,9 +22,10 @@ Purpose: give the next DirectStay PlatformLead/admin heartbeat a clean handoff f
 ## Next safe chunks
 
 1. **Sarasota image-source review** — use browser/page inspection or safe asset extraction to inventory actual property images before rendering anything. Do not fabricate river, wildlife, beach-distance, pool/spa, kayak, or restaurant claims.
-2. **Admin prompt/schema audit** — completed 2026-05-11 in `admin-prompt-schema-audit-2026-05-11.md`. Current generator/gates cover photo-integrity prompts, Copy Review Stack, conversion-trio planning language, rendered bad-copy scan, and owner-share blocker separation. Future hardening opportunity: structured required image-inventory fields before `READY_FOR_REVIEW`, rather than freeform artifact text only.
-3. **Benchmark index in admin UI** — if absent, add a read-only internal status surface for benchmark archetypes and blockers so future preview work starts from evidence instead of log archaeology.
+2. **Admin prompt/schema audit** — completed 2026-05-11 in `admin-prompt-schema-audit-2026-05-11.md`. Current generator/gates cover photo-integrity prompts, Copy Review Stack, conversion-trio planning language, rendered bad-copy scan, and owner-share blocker separation.
+3. **READY_FOR_REVIEW image-inventory gate** — completed 2026-05-11/12 in `directstay/src/lib/platformLeads.ts`: an approved photo/geography audit must now replace starter TODOs with `Page-order image inventory`, `Hero candidate`, `First two section-image candidates`, and `Rejected assets` before a Preview Build can move to `READY_FOR_REVIEW`. QA coverage added in `directstay/scripts/qa-preview-build-gates.mjs` and `directstay/scripts/qa-preview-build-status-gates.mts`.
+4. **Benchmark index in admin UI** — if absent, add a read-only internal status surface for benchmark archetypes and blockers so future preview work starts from evidence instead of log archaeology.
 
 ## Current recommendation
 
-The next DirectStay Preview Build refinement heartbeat should do **Sarasota image-source review** if browser tooling is available. If not, do the admin prompt/schema audit as a safe code/docs chunk. Do not create or share an owner-facing Sarasota preview until actual image inventory supports hero and early-section art.
+The next DirectStay Preview Build refinement heartbeat should do **Sarasota image-source review** if browser tooling is available. If not, consider the benchmark-index admin UI slice. Do not create or share an owner-facing Sarasota preview until actual image inventory supports hero and early-section art.

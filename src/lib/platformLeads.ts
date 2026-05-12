@@ -594,6 +594,13 @@ export async function getPreviewBuildGateReport(previewBuildId: string) {
   const activeTypes = new Set(artifacts.filter(activeArtifact).map((artifact) => artifact.type));
   const approvedTypes = new Set(artifacts.filter(approvedArtifact).map((artifact) => artifact.type));
   const missingReadyArtifacts = requiredPreviewReadyArtifacts.filter((type) => !activeTypes.has(type));
+  const approvedPhotoGeoAudit = artifacts.find((artifact) => artifact.type === "PREVIEW_PHOTO_GEO_AUDIT" && approvedArtifact(artifact));
+  const imageInventoryTerms = ["Page-order image inventory", "Hero candidate", "First two section-image candidates", "Rejected assets"];
+  const approvedPhotoGeoAuditHasImageInventory = Boolean(
+    approvedPhotoGeoAudit
+    && imageInventoryTerms.every((term) => approvedPhotoGeoAudit.body.toLowerCase().includes(term.toLowerCase()))
+    && !approvedPhotoGeoAudit.body.includes("TODO:")
+  );
   const approvedRubricReview = artifacts.find((artifact) => artifact.type === "PREVIEW_RUBRIC_REVIEW" && approvedArtifact(artifact));
   const copyReviewTerms = ["Source-truth pass", "VRBO-owner relevance pass", "Guest usefulness pass", "Anti-AI voice pass", "Section-fit pass"];
   const approvedRubricHasCopyReviewStack = Boolean(approvedRubricReview && copyReviewTerms.every((term) => approvedRubricReview.body.includes(term)));
@@ -608,6 +615,7 @@ export async function getPreviewBuildGateReport(previewBuildId: string) {
   const readyBlockers = [
     ...missingReadyArtifacts.map((type) => `Missing preview packet artifact: ${type.replaceAll("_", " ").toLowerCase()}.`),
     ...(!hasSectionPlan ? ["Missing preview section plan / rendered sections."] : []),
+    ...(!approvedPhotoGeoAuditHasImageInventory ? ["Approved photo/geography audit must replace starter TODOs with a page-order image inventory, hero candidate, first two section-image candidates, and rejected assets before READY FOR REVIEW."] : []),
     ...(!hasSpecificCallouts ? ["Owner callouts are still generic; add property-specific strategy and assumptions/corrections callouts."] : []),
   ];
 

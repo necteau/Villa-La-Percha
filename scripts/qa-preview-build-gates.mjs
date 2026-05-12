@@ -46,6 +46,7 @@ const requiredArtifactTypes = [
 for (const type of requiredArtifactTypes) check(`Schema includes ${type}`, schema.includes(type));
 
 check("READY_FOR_REVIEW gate uses packet blockers", platformLeads.includes('status === "READY_FOR_REVIEW" ? report.readyBlockers'));
+check("READY_FOR_REVIEW gate requires completed image inventory", platformLeads.includes("approvedPhotoGeoAuditHasImageInventory") && platformLeads.includes("Page-order image inventory") && platformLeads.includes("First two section-image candidates") && platformLeads.includes("TODO:"));
 check("SHARED_WITH_LEAD gate requires rubric/share blockers", platformLeads.includes('status === "SHARED_WITH_LEAD" ? report.sharedBlockers'));
 check("PROMOTED_TO_SITE gate requires conversion blockers", platformLeads.includes('status === "PROMOTED_TO_SITE" ? report.promotedBlockers'));
 check("Rubric approval is required before owner sharing", platformLeads.includes('approvedTypes.has("PREVIEW_RUBRIC_REVIEW")'));

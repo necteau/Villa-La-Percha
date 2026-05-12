@@ -85,8 +85,18 @@ try {
     await prisma.platformLeadArtifact.update({ where: { id: artifact.id }, data: { status: "APPROVED", approvedAt: new Date(), approvedByEmail: "preview-gate-qa@example.invalid" } });
   }
 
+  await expectBlocked("READY_FOR_REVIEW with starter TODO photo audit", () => updatePreviewBuildStatus(preview.id, "READY_FOR_REVIEW"), "page-order image inventory");
+  const photoAudit = starter.artifacts.find((artifact) => artifact.type === "PREVIEW_PHOTO_GEO_AUDIT");
+  if (!photoAudit) throw new Error("Starter packet missing photo/geography audit.");
+  await prisma.platformLeadArtifact.update({
+    where: { id: photoAudit.id },
+    data: {
+      body: "Photo + Geography Audit\n\nPage-order image inventory:\n1. Exterior lake-facing hero image.\n2. Kitchen confidence image.\n3. Dock amenity image.\n\nHero candidate: Exterior lake-facing hero image.\nFirst two section-image candidates: Kitchen confidence image; dock amenity image.\nRejected assets: OTA badge card; cropped review graphic; duplicate pool crop.\n\nMicro-geography: Lake Norman waterfront context recorded from source material.\nDesign implications: Use source-backed lake-house palette and avoid repeated hero imagery.",
+    },
+  });
+
   await updatePreviewBuildStatus(preview.id, "READY_FOR_REVIEW");
-  console.log("✅ READY_FOR_REVIEW allowed after generated packet basics are approved");
+  console.log("✅ READY_FOR_REVIEW allowed after approved packet plus completed image inventory");
 
   await expectBlocked("SHARED_WITH_LEAD without approval artifacts", () => updatePreviewBuildStatus(preview.id, "SHARED_WITH_LEAD"), "rubric review");
 
