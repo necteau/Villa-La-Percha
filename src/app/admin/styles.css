@@ -116,10 +116,21 @@
   max-width: 720px;
 }
 
+.admin-stack-right {
+  display: grid;
+  justify-items: end;
+  gap: 8px;
+  text-align: right;
+}
+
 .admin-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 16px;
+}
+
+.admin-benchmark-grid .admin-card {
+  grid-column: span 2;
 }
 
 .admin-card {
