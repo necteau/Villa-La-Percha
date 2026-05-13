@@ -21,6 +21,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           <Link href="/admin/properties">Properties</Link>
           <Link href="/admin/platform-leads">Platform Leads</Link>
           <Link href="/admin/previews">Preview Builds</Link>
+          <Link href="/admin/preview-benchmarks">Preview Benchmarks</Link>
           <Link href="/admin/activity">Activity</Link>
           <span aria-disabled="true">Settings · coming soon</span>
         </nav>
