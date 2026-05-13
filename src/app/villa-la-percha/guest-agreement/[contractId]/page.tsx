@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { getGuestContractForReview } from "@/lib/guestContracts";
+import OwnerAgreementPreview from "./OwnerAgreementPreview";
 
 function formatDate(value?: Date | null) {
   if (!value) return "Not set";
@@ -52,9 +53,17 @@ export default async function GuestAgreementPage({ params, searchParams }: { par
           </div>
         ) : null}
 
-        <article className="prose prose-stone mt-8 max-w-none whitespace-pre-wrap rounded-3xl border border-[#eee5d8] bg-[#fffdf8] p-5 text-sm leading-7 text-[#2c2923] sm:p-6">
-          {contract.template.bodyMarkdown}
-        </article>
+        {isOwnerPreview ? (
+          <OwnerAgreementPreview
+            bodyMarkdown={contract.template.bodyMarkdown}
+            signerName={contract.signerName || contract.inquiry?.fullName || contract.reservation?.guestName || "Guest"}
+            signerEmail={contract.signerEmail || contract.inquiry?.email || contract.reservation?.guestEmail || "Not set"}
+          />
+        ) : (
+          <article className="prose prose-stone mt-8 max-w-none whitespace-pre-wrap rounded-3xl border border-[#eee5d8] bg-[#fffdf8] p-5 text-sm leading-7 text-[#2c2923] sm:p-6">
+            {contract.template.bodyMarkdown}
+          </article>
+        )}
 
         {!accepted && !isOwnerPreview ? (
           <form action={`/api/guest-contracts/${contract.id}/accept`} method="post" className="mt-8 rounded-3xl border border-[#e3d8c8] bg-[#fffaf2] p-5">

@@ -1,0 +1,142 @@
+"use client";
+
+import { useMemo, useState } from "react";
+
+type OwnerAgreementPreviewProps = {
+  bodyMarkdown: string;
+  signerName: string;
+  signerEmail: string;
+};
+
+type Block =
+  | { kind: "heading"; level: 1 | 2 | 3; text: string }
+  | { kind: "paragraph"; text: string }
+  | { kind: "list"; items: string[] }
+  | { kind: "table"; rows: string[][] };
+
+function cleanInline(value: string) {
+  return value.replace(/\*\*(.*?)\*\*/g, "$1").trim();
+}
+
+function parseAgreement(markdown: string): Block[] {
+  const lines = markdown.split(/\r?\n/);
+  const blocks: Block[] = [];
+  let index = 0;
+
+  while (index < lines.length) {
+    const line = lines[index]?.trim() || "";
+    if (!line) {
+      index += 1;
+      continue;
+    }
+
+    const heading = line.match(/^(#{1,3})\s+(.+)$/);
+    if (heading) {
+      blocks.push({ kind: "heading", level: heading[1].length as 1 | 2 | 3, text: cleanInline(heading[2]) });
+      index += 1;
+      continue;
+    }
+
+    if (line.startsWith("|")) {
+      const tableLines: string[] = [];
+      while (lines[index]?.trim().startsWith("|")) {
+        tableLines.push(lines[index].trim());
+        index += 1;
+      }
+      const rows = tableLines
+        .filter((row) => !/^\|\s*-+/.test(row.replace(/\s/g, "")))
+        .filter((row) => !row.includes("---"))
+        .map((row) => row.split("|").slice(1, -1).map(cleanInline));
+      if (rows.length) blocks.push({ kind: "table", rows });
+      continue;
+    }
+
+    if (/^[-*]\s+/.test(line)) {
+      const items: string[] = [];
+      while (/^[-*]\s+/.test(lines[index]?.trim() || "")) {
+        items.push(cleanInline((lines[index]?.trim() || "").replace(/^[-*]\s+/, "")));
+        index += 1;
+      }
+      blocks.push({ kind: "list", items });
+      continue;
+    }
+
+    const paragraph: string[] = [];
+    while (lines[index] && !/^#{1,3}\s+/.test(lines[index].trim()) && !lines[index].trim().startsWith("|") && !/^[-*]\s+/.test(lines[index].trim())) {
+      paragraph.push(lines[index].trim());
+      index += 1;
+      if (!lines[index]?.trim()) break;
+    }
+    blocks.push({ kind: "paragraph", text: cleanInline(paragraph.join(" ")) });
+  }
+
+  return blocks;
+}
+
+export default function OwnerAgreementPreview({ bodyMarkdown, signerName, signerEmail }: OwnerAgreementPreviewProps) {
+  const [checked, setChecked] = useState(false);
+  const blocks = useMemo(() => parseAgreement(bodyMarkdown), [bodyMarkdown]);
+
+  return (
+    <div className="mt-8 overflow-hidden rounded-[2rem] border border-[#d8c8ae] bg-[#f2eadc] shadow-[0_24px_70px_rgba(58,39,16,0.14)]">
+      <div className="border-b border-[#dbcbb4] bg-[#352719] px-5 py-4 text-white sm:px-8">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#d8c8ae]">Owner Review Copy</p>
+        <p className="mt-2 text-sm text-[#f8efe1]">PDF-style customer presentation preview. No guest activity is recorded from this page.</p>
+      </div>
+
+      <article className="mx-auto my-6 max-w-[820px] bg-[#fffdf8] px-5 py-7 text-[#241d16] shadow-[0_8px_30px_rgba(58,39,16,0.12)] sm:my-8 sm:px-10 sm:py-10 lg:px-14">
+        <div className="border-b border-[#dfd1bd] pb-6 text-center">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#8b7355]">Villa La Percha</p>
+          <h2 className="mt-3 font-display text-4xl font-light leading-tight text-[#2f251b] sm:text-5xl">Guest Rental Agreement</h2>
+          <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-[#655849]">A polished owner-preview rendering of the agreement that will be used for customer review after approval.</p>
+        </div>
+
+        <div className="mt-6 grid gap-3 rounded-2xl border border-[#eadfce] bg-[#fff8ea] p-4 text-sm sm:grid-cols-2">
+          <p><span className="font-semibold text-[#3a2b1c]">Primary guest:</span> {signerName}</p>
+          <p><span className="font-semibold text-[#3a2b1c]">Email:</span> {signerEmail}</p>
+        </div>
+
+        <div className="mt-8 space-y-5">
+          {blocks.map((block, idx) => {
+            if (block.kind === "heading") {
+              if (block.level === 1) return null;
+              const Tag = block.level === 2 ? "h3" : "h4";
+              return <Tag key={idx} className={`${block.level === 2 ? "mt-9 border-t border-[#eadfce] pt-6 text-2xl" : "mt-6 text-lg"} font-display font-light leading-tight text-[#2f251b]`}>{block.text}</Tag>;
+            }
+            if (block.kind === "table") {
+              const [head, ...rows] = block.rows;
+              return (
+                <div key={idx} className="overflow-hidden rounded-2xl border border-[#e5d8c6]">
+                  <table className="w-full border-collapse text-left text-sm">
+                    {head ? <thead className="bg-[#f5ead8] text-[#3a2b1c]"><tr>{head.map((cell, cellIdx) => <th key={cellIdx} className="px-4 py-3 font-semibold">{cell}</th>)}</tr></thead> : null}
+                    <tbody>
+                      {rows.map((row, rowIdx) => <tr key={rowIdx} className="border-t border-[#eadfce] odd:bg-[#fffaf2]">{row.map((cell, cellIdx) => <td key={cellIdx} className="px-4 py-3 align-top leading-6 text-[#4e453b]">{cell}</td>)}</tr>)}
+                    </tbody>
+                  </table>
+                </div>
+              );
+            }
+            if (block.kind === "list") {
+              return <ul key={idx} className="ml-5 list-disc space-y-2 text-sm leading-7 text-[#4e453b]">{block.items.map((item, itemIdx) => <li key={itemIdx}>{item}</li>)}</ul>;
+            }
+            return <p key={idx} className="text-sm leading-7 text-[#4e453b]">{block.text}</p>;
+          })}
+        </div>
+      </article>
+
+      <div className="border-t border-[#dbcbb4] bg-[#fffaf2] p-5 sm:p-8">
+        <div className="mx-auto max-w-[820px] rounded-3xl border border-[#d8cebf] bg-white p-5">
+          <p className="font-semibold text-[#181612]">Acceptance control preview</p>
+          <p className="mt-2 text-sm leading-6 text-[#5b554b]">In the customer version, the accept button should stay disabled until the guest checks the agreement box. This owner preview demonstrates that behavior without accepting anything.</p>
+          <label className="mt-4 flex gap-3 text-sm leading-6 text-[#5b554b]">
+            <input checked={checked} onChange={(event) => setChecked(event.currentTarget.checked)} type="checkbox" className="mt-1 h-4 w-4" />
+            <span>I have reviewed and agree to the Villa La Percha Guest Rental Agreement.</span>
+          </label>
+          <button disabled={!checked} className="mt-5 rounded-full bg-[#1e4536] px-6 py-3 text-xs font-semibold uppercase tracking-[0.16em] text-white disabled:cursor-not-allowed disabled:bg-[#b8b0a3]" type="button">
+            Accept agreement
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
