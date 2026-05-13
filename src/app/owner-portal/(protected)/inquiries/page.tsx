@@ -305,6 +305,8 @@ export default function OwnerInquiriesPage() {
   );
 
   useEffect(() => {
+    if (composer?.id && (pollingRevisionDraftId === composer.id || pollingUpgradeDraftId === composer.id)) return;
+
     const latestDraft = selected?.drafts?.find((draft) => draft.createdByType !== "system" && draft.status === "draft") || null;
     const nextComposer = selected ? composeFromDraft(latestDraft, selected) : null;
     setComposer(nextComposer);
@@ -335,7 +337,7 @@ export default function OwnerInquiriesPage() {
       return;
     }
     if (selected?.id) void loadInsights(selected.id);
-  }, [selectedId, selected, shouldLoadAssistantInsights, loadInsights]);
+  }, [composer?.id, pollingRevisionDraftId, pollingUpgradeDraftId, selectedId, selected, shouldLoadAssistantInsights, loadInsights]);
 
 
   const updateStatus = async (id: string, status: InquiryRecord["status"], reason?: string) => {
@@ -641,7 +643,7 @@ export default function OwnerInquiriesPage() {
     if (options.mode === "revision") setPollingRevisionDraftId(draftId);
     if (options.mode === "upgrade") setPollingUpgradeDraftId(draftId);
     const startedAt = Date.now();
-    const timeoutMs = options.mode === "revision" ? 30_000 : 90_000;
+    const timeoutMs = options.mode === "revision" ? 120_000 : 90_000;
 
     while (Date.now() - startedAt < timeoutMs) {
       await new Promise((resolve) => setTimeout(resolve, 4000));
@@ -655,6 +657,7 @@ export default function OwnerInquiriesPage() {
         if (updatedDraft && updatedDraft.body.trim() !== previousBody.trim()) {
           setComposer(composeFromDraft(updatedDraft, updatedInquiry));
           setLastSavedBody(updatedDraft.body || "");
+          setSelectedId(inquiryId);
           setSuccess(options.successMessage);
           void loadInsights(inquiryId, true);
           if (options.mode === "revision") setPollingRevisionDraftId(null);
@@ -668,10 +671,15 @@ export default function OwnerInquiriesPage() {
 
     if (options.mode === "revision") {
       setPollingRevisionDraftId(null);
+      try {
+        await reloadInquiries();
+      } catch {
+        // Keep the owner-facing state calm; the next manual refresh can recover.
+      }
       setSuccess("AI revision is still working. You can keep using the portal; refresh this thread shortly if it does not appear automatically.");
     }
     if (options.mode === "upgrade") setPollingUpgradeDraftId(null);
-  }, [loadInsights]);
+  }, [loadInsights, reloadInquiries]);
 
   useEffect(() => {
     if (!selected?.id || !composer?.id || !selectedDraft || !selectedInsights) return;
