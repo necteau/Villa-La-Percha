@@ -1,10 +1,13 @@
 import { GuestContractExecutionStatus } from "@prisma/client";
+import { ownerPreviewContractUrl, publicContractUrl } from "./guestContracts";
 
 export type ContractStatusLabel = "not_sent" | "sent" | "viewed" | "accepted" | "voided" | "superseded";
 
 export interface ContractSummary {
   id: string;
   status: ContractStatusLabel;
+  url?: string;
+  previewUrl?: string;
   templateName?: string;
   templateVersion?: string;
   signerName?: string;
@@ -40,11 +43,13 @@ export function summarizeContractExecution(record: {
   sentAt?: Date | null;
   viewedAt?: Date | null;
   acceptedAt?: Date | null;
-  template?: { name: string; version: string } | null;
+  template?: { name: string; version: string; bodyHash?: string } | null;
 }): ContractSummary {
   return {
     id: record.id,
     status: fromDbContractStatus(record.status),
+    url: record.template?.bodyHash ? publicContractUrl(record.id, record.template.bodyHash) : undefined,
+    previewUrl: record.template?.bodyHash ? ownerPreviewContractUrl(record.id, record.template.bodyHash) : undefined,
     templateName: record.template?.name,
     templateVersion: record.template?.version,
     signerName: record.signerName ?? undefined,

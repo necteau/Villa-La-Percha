@@ -6,10 +6,11 @@ function formatDate(value?: Date | null) {
   return value.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" });
 }
 
-export default async function GuestAgreementPage({ params, searchParams }: { params: Promise<{ contractId: string }>; searchParams: Promise<{ token?: string }> }) {
+export default async function GuestAgreementPage({ params, searchParams }: { params: Promise<{ contractId: string }>; searchParams: Promise<{ token?: string; preview?: string }> }) {
   const { contractId } = await params;
-  const { token } = await searchParams;
-  const contract = await getGuestContractForReview(contractId, token);
+  const { token, preview } = await searchParams;
+  const isOwnerPreview = preview === "owner";
+  const contract = await getGuestContractForReview(contractId, token, { preview: isOwnerPreview });
   if (!contract) notFound();
 
   const checkIn = contract.reservation?.checkIn || contract.inquiry?.checkIn;
@@ -23,8 +24,17 @@ export default async function GuestAgreementPage({ params, searchParams }: { par
         <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#8b7355]">Villa La Percha</p>
         <h1 className="mt-3 font-display text-4xl font-light leading-tight sm:text-5xl">Guest rental agreement</h1>
         <p className="mt-4 text-sm leading-6 text-[#5b554b]">
-          Please review the agreement below and accept it using your typed legal name. Your acceptance is stored with the agreement version, timestamp, and booking record.
+          {isOwnerPreview
+            ? "Owner preview mode: review this agreement safely before sending it. This preview does not mark the guest agreement as viewed and does not allow acceptance."
+            : "Please review the agreement below and accept it using your typed legal name. Your acceptance is stored with the agreement version, timestamp, and booking record."}
         </p>
+
+        {isOwnerPreview ? (
+          <div className="mt-5 rounded-3xl border border-[#d9c49d] bg-[#fff7e0] p-4 text-sm leading-6 text-[#5b4217]">
+            <p className="font-semibold">Owner preview — no guest activity recorded.</p>
+            <p>Use the standard guest link when you are ready for the guest to review and accept the agreement.</p>
+          </div>
+        ) : null}
 
         <section className="mt-6 grid gap-3 rounded-3xl border border-[#eadfce] bg-[#fffaf2] p-4 text-sm sm:grid-cols-2">
           <p><span className="font-semibold">Guest:</span> {contract.signerName || contract.inquiry?.fullName || contract.reservation?.guestName || "Guest"}</p>
@@ -46,7 +56,7 @@ export default async function GuestAgreementPage({ params, searchParams }: { par
           {contract.template.bodyMarkdown}
         </article>
 
-        {!accepted ? (
+        {!accepted && !isOwnerPreview ? (
           <form action={`/api/guest-contracts/${contract.id}/accept`} method="post" className="mt-8 rounded-3xl border border-[#e3d8c8] bg-[#fffaf2] p-5">
             <input type="hidden" name="token" value={token || ""} />
             <label className="block text-sm font-semibold text-[#181612]" htmlFor="signerName">Typed legal name</label>

@@ -1048,7 +1048,7 @@ export default function OwnerInquiriesPage() {
                     <div className="flex flex-wrap items-start justify-between gap-3">
                       <div>
                         <p className="text-xs font-medium uppercase tracking-[0.18em] text-[#7b7468]">Guest rental agreement</p>
-                        <p className="mt-2 text-sm leading-6 text-[#5b554b]">Create a secure customer review link from the approved Villa La Percha agreement. This records the template version/hash and tracks sent, viewed, and accepted status.</p>
+                        <p className="mt-2 text-sm leading-6 text-[#5b554b]">Create a secure customer review link from the approved Villa La Percha agreement. Use owner preview to review safely without marking the guest agreement viewed; use the guest link when you are ready to send.</p>
                       </div>
                       <span className={`rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] ${hasAcceptedContract ? "bg-[#eef8f1] text-[#1e4536]" : "bg-[#fff7df] text-[#6f4c00]"}`}>{contractLabel(selected)}</span>
                     </div>
@@ -1056,13 +1056,18 @@ export default function OwnerInquiriesPage() {
                       <button type="button" onClick={() => void createGuestContractLink()} disabled={savingId === selected.id || isClosedInquiry || hasAcceptedContract} className="rounded-full bg-[#1e4536] px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-white disabled:opacity-60 sm:tracking-[0.16em]">
                         {selectedContract ? "Refresh agreement link" : "Create agreement link"}
                       </button>
+                      {selectedContract?.previewUrl && selectedContract.status !== "accepted" ? (
+                        <a href={selectedContract.previewUrl} target="_blank" rel="noreferrer" className="rounded-full border border-[#1e4536] px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-[#1e4536] sm:tracking-[0.16em]">
+                          Owner preview
+                        </a>
+                      ) : null}
                       {selectedContract?.status === "accepted" ? <p className="basis-full text-xs leading-5 text-[#1e4536]">Accepted agreement is attached to this inquiry and will carry forward if you create a reservation.</p> : null}
                     </div>
                     {contractLink ? (
                       <div className="mt-4 rounded-2xl border border-[#d8cebf] bg-white p-4 text-sm leading-6 text-[#5b554b]">
                         <p className="font-semibold text-[#181612]">Secure guest agreement link</p>
                         <input readOnly value={contractLink} onFocus={(event) => event.currentTarget.select()} className="mt-2 w-full rounded-xl border border-[#ddd4c7] bg-[#faf8f3] px-3 py-2 text-xs" />
-                        <p className="mt-2 text-xs text-[#7b7468]">This does not email the guest by itself. Paste it into an approved reply when you are ready to send.</p>
+                        <p className="mt-2 text-xs text-[#7b7468]">This is the guest link. It does not email the guest by itself; paste it into an approved reply when you are ready to send. Use Owner preview above to review without marking it viewed.</p>
                       </div>
                     ) : null}
                   </div>

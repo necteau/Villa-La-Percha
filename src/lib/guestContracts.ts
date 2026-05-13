@@ -31,6 +31,10 @@ export function publicContractUrl(contractId: string, bodyHash: string): string 
   return `${normalizedBase}/villa-la-percha/guest-agreement/${contractId}?token=${signContractLink(contractId, bodyHash)}`;
 }
 
+export function ownerPreviewContractUrl(contractId: string, bodyHash: string): string {
+  return `${publicContractUrl(contractId, bodyHash)}&preview=owner`;
+}
+
 export function approvedGuestAgreementBody(): string {
   return `# Villa La Percha Guest Rental Agreement
 
@@ -351,14 +355,14 @@ export async function createOrSendInquiryGuestContract(inquiryId: string) {
   return { contract: sent, url: publicContractUrl(sent.id, sent.template.bodyHash) };
 }
 
-export async function getGuestContractForReview(contractId: string, token: string | null | undefined) {
+export async function getGuestContractForReview(contractId: string, token: string | null | undefined, options?: { preview?: boolean }) {
   const prisma = await getPrismaClient();
   const contract = await prisma.contractExecution.findUnique({
     where: { id: contractId },
     include: { template: true, inquiry: true, reservation: true, property: true },
   });
   if (!contract || !verifyContractLink(contract.id, contract.template.bodyHash, token)) return null;
-  if (contract.status === "SENT") {
+  if (!options?.preview && contract.status === "SENT") {
     await prisma.contractExecution.update({ where: { id: contract.id }, data: { status: "VIEWED", viewedAt: contract.viewedAt ?? new Date() } });
     contract.status = "VIEWED";
     contract.viewedAt = contract.viewedAt ?? new Date();
