@@ -127,7 +127,7 @@ export default async function AdminPlatformLeadsPage({ searchParams }: AdminPlat
             return <tr key={benchmark.property}><td>{benchmark.property}<br/><span className="admin-muted">{benchmark.archetype}</span></td><td><span className={needsCaution ? "admin-chip admin-chip-warn" : "admin-chip"}>{benchmark.status}</span></td><td>{benchmark.evidence}</td><td>{benchmark.blockers}</td></tr>;
           })}
         </tbody></table></div>
-        <p className="admin-muted" style={{ marginTop: 10 }}>Standard gate: image integrity and owner-share blockers stay separate from benchmark score. Sarasota can only render as an internal, text-forward or living-room-first benchmark; do not use skyline/canal/attraction images as property hero or fabricate river, pool, wildlife, beach-distance, kayak, or restaurant claims.</p>
+        <p className="admin-muted" style={{ marginTop: 10 }}>Standard gate: image integrity and owner-share blockers stay separate from benchmark score. Sarasota image-source review before any render: Sarasota can only render as an internal, text-forward or living-room-first benchmark; do not use skyline/canal/attraction images as property hero or fabricate river, pool, wildlife, beach-distance, kayak, or restaurant claims.</p>
       </section>
 
       <div className="admin-table-wrap"><table className="admin-table"><thead><tr><th>Lead</th><th>Status</th><th>Property</th><th>Owner ops</th><th>Latest AI artifact</th><th>Preview</th><th>Created</th></tr></thead><tbody>
