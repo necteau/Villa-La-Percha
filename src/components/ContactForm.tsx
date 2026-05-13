@@ -98,27 +98,25 @@ export default function ContactForm({ checkIn, checkOut, embedded = false }: Pro
             <div className="grid grid-cols-2 gap-3 md:gap-4 mb-4 md:mb-5">
               <div>
                 <label className={`block text-xs tracking-wider uppercase mb-1 ${embedded ? "text-[#7B7468]" : "text-white/40"}`}>Check-in</label>
-                <input
-                  type="date"
-                  value={checkIn || ""}
-                  readOnly
+                <div
                   className={`w-full border rounded-lg px-3 py-2.5 text-sm ${embedded ? "bg-[#FAFAF8] border-[#E8E4DF] text-[#2C2C2C]" : "bg-white/5 border-white/10 text-white"}`}
                   aria-describedby="contact-dates-help"
-                />
+                >
+                  {checkIn || "Select above"}
+                </div>
               </div>
               <div>
                 <label className={`block text-xs tracking-wider uppercase mb-1 ${embedded ? "text-[#7B7468]" : "text-white/40"}`}>Check-out</label>
-                <input
-                  type="date"
-                  value={checkOut || ""}
-                  readOnly
+                <div
                   className={`w-full border rounded-lg px-3 py-2.5 text-sm ${embedded ? "bg-[#FAFAF8] border-[#E8E4DF] text-[#2C2C2C]" : "bg-white/5 border-white/10 text-white"}`}
                   aria-describedby="contact-dates-help"
-                />
+                >
+                  {checkOut || "Select above"}
+                </div>
               </div>
             </div>
             <p id="contact-dates-help" className={`text-xs mb-4 -mt-1 ${embedded ? "text-[#7B7468]" : "text-white/45"}`}>
-              Pick your dates in the calendar and they&apos;ll appear here automatically.
+              Pick your dates in the Availability Calendar above and they&apos;ll appear here automatically.
             </p>
 
             <div className="mb-4">
