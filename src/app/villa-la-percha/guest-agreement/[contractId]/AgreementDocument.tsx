@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 
-type OwnerAgreementPreviewProps = {
+type AgreementDocumentProps = {
   bodyMarkdown: string;
   signerName: string;
   signerEmail: string;
@@ -14,6 +14,10 @@ type OwnerAgreementPreviewProps = {
   deposit: string;
   paymentMethod: string;
   agreementVersion: string;
+  contractId: string;
+  token: string;
+  isOwnerPreview: boolean;
+  accepted: boolean;
 };
 
 type Block =
@@ -81,7 +85,7 @@ function parseAgreement(markdown: string): Block[] {
   return blocks;
 }
 
-function resolveText(value: string, summary: Omit<OwnerAgreementPreviewProps, "bodyMarkdown">) {
+function resolveText(value: string, summary: Omit<AgreementDocumentProps, "bodyMarkdown" | "contractId" | "token" | "isOwnerPreview" | "accepted">) {
   return value
     .replace("Guest identified in the booking record", summary.signerName)
     .replace("Guest contact details in the booking record", `${summary.signerEmail}${summary.guestPhone !== "Not provided" ? ` / ${summary.guestPhone}` : ""}`)
@@ -93,8 +97,8 @@ function resolveText(value: string, summary: Omit<OwnerAgreementPreviewProps, "b
     .replace("The total rental amount, taxes, deposit/down payment, final payment, due dates, and payment method are the amounts and terms shown in the booking confirmation and payment record.", `The current owner-approved booking terms show ${summary.total} total rental amount, ${summary.deposit} deposit/down payment, and payment method: ${summary.paymentMethod}. Final payment timing and any additional payment details are controlled by the owner-approved booking confirmation and payment record.`);
 }
 
-export default function OwnerAgreementPreview(props: OwnerAgreementPreviewProps) {
-  const { bodyMarkdown, signerName, signerEmail, guestPhone, checkIn, checkOut, nights, total, deposit, paymentMethod, agreementVersion } = props;
+export default function AgreementDocument(props: AgreementDocumentProps) {
+  const { bodyMarkdown, signerName, signerEmail, guestPhone, checkIn, checkOut, nights, total, deposit, paymentMethod, agreementVersion, contractId, token, isOwnerPreview, accepted } = props;
   const [checked, setChecked] = useState(false);
   const blocks = useMemo(() => {
     const parsed = parseAgreement(bodyMarkdown);
@@ -106,15 +110,15 @@ export default function OwnerAgreementPreview(props: OwnerAgreementPreviewProps)
   return (
     <div className="mt-8 overflow-hidden rounded-[2rem] border border-[#d8c8ae] bg-[#f2eadc] shadow-[0_24px_70px_rgba(58,39,16,0.14)]">
       <div className="border-b border-[#dbcbb4] bg-[#352719] px-5 py-4 text-white sm:px-8">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#d8c8ae]">Owner Review Copy</p>
-        <p className="mt-2 text-sm text-[#f8efe1]">PDF-style customer presentation preview. No guest activity is recorded from this page.</p>
+        <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#d8c8ae]">{isOwnerPreview ? "Owner Review Copy" : "Guest Review Copy"}</p>
+        <p className="mt-2 text-sm text-[#f8efe1]">{isOwnerPreview ? "PDF-style customer presentation preview. No guest activity is recorded from this page." : "Please review the agreement carefully, then check the acknowledgment box to accept."}</p>
       </div>
 
       <article className="mx-auto my-6 max-w-[820px] bg-[#fffdf8] px-5 py-7 text-[#241d16] shadow-[0_8px_30px_rgba(58,39,16,0.12)] sm:my-8 sm:px-10 sm:py-10 lg:px-14">
         <div className="border-b border-[#dfd1bd] pb-6 text-center">
           <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#8b7355]">Villa La Percha</p>
           <h2 className="mt-3 font-display text-4xl font-light leading-tight text-[#2f251b] sm:text-5xl">Guest Rental Agreement</h2>
-          <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-[#655849]">A polished owner-preview rendering of the agreement that will be used for customer review after approval.</p>
+          <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-[#655849]">{isOwnerPreview ? "A polished owner-preview rendering of the agreement that will be used for customer review after approval." : "Please review this agreement before accepting electronically below."}</p>
         </div>
 
         <div className="mt-6 grid gap-3 rounded-2xl border border-[#eadfce] bg-[#fff8ea] p-4 text-sm sm:grid-cols-2">
@@ -166,15 +170,27 @@ export default function OwnerAgreementPreview(props: OwnerAgreementPreviewProps)
 
       <div className="border-t border-[#dbcbb4] bg-[#fffaf2] p-5 sm:p-8">
         <div className="mx-auto max-w-[820px] rounded-3xl border border-[#d8cebf] bg-white p-5">
-          <p className="font-semibold text-[#181612]">Acceptance control preview</p>
-          <p className="mt-2 text-sm leading-6 text-[#5b554b]">In the customer version, the accept button should stay disabled until the guest checks the agreement box. This owner preview demonstrates that behavior without accepting anything.</p>
+          <p className="font-semibold text-[#181612]">{isOwnerPreview ? "Acceptance control preview" : "Accept agreement"}</p>
+          <p className="mt-2 text-sm leading-6 text-[#5b554b]">{isOwnerPreview ? "In the customer version, the accept button stays disabled until the guest checks the agreement box. This owner preview demonstrates that behavior without accepting anything." : "Check the acknowledgment below to enable the accept button. Your acceptance will be stored with the agreement version, timestamp, and booking record."}</p>
           <label className="mt-4 flex gap-3 text-sm leading-6 text-[#5b554b]">
             <input checked={checked} onChange={(event) => setChecked(event.currentTarget.checked)} type="checkbox" className="mt-1 h-4 w-4" />
             <span>I have reviewed and agree to the Villa La Percha Guest Rental Agreement.</span>
           </label>
-          <button disabled={!checked} className="mt-5 rounded-full bg-[#1e4536] px-6 py-3 text-xs font-semibold uppercase tracking-[0.16em] text-white disabled:cursor-not-allowed disabled:bg-[#b8b0a3]" type="button">
-            Accept agreement
-          </button>
+          {isOwnerPreview || accepted ? (
+            <button disabled={!checked || accepted} className="mt-5 rounded-full bg-[#1e4536] px-6 py-3 text-xs font-semibold uppercase tracking-[0.16em] text-white disabled:cursor-not-allowed disabled:bg-[#b8b0a3]" type="button">
+              {accepted ? "Agreement accepted" : "Accept agreement"}
+            </button>
+          ) : (
+            <form action={`/api/guest-contracts/${contractId}/accept`} method="post" className="mt-5 space-y-4">
+              <input type="hidden" name="token" value={token} />
+              <input type="hidden" name="signerName" value={signerName} />
+              <input type="hidden" name="signerEmail" value={signerEmail} />
+              <input type="hidden" name="acceptedTerms" value={checked ? "yes" : ""} />
+              <button disabled={!checked} className="rounded-full bg-[#1e4536] px-6 py-3 text-xs font-semibold uppercase tracking-[0.16em] text-white disabled:cursor-not-allowed disabled:bg-[#b8b0a3]" type="submit">
+                Accept agreement
+              </button>
+            </form>
+          )}
         </div>
       </div>
     </div>
