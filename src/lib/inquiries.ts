@@ -379,17 +379,19 @@ export async function runInquiryInboundAutomation(inquiryId: string): Promise<vo
   if (!inquiry) return;
 
   const latestInbound = [...inquiry.messages].reverse().find((message) => message.direction === "inbound");
-  if (!latestInbound?.body?.trim()) return;
+  const latestInboundBody = latestInbound?.body?.trim() || inquiry.message?.trim() || "";
 
-  const enrichment = extractInboundEnrichment(latestInbound.body);
-  if (canUseDatabase()) {
-    try {
-      await applyEnrichmentToDatabaseInquiry(inquiry, enrichment);
-    } catch {
-      // Keep automation non-blocking; draft generation matters more than enrichment perfection.
+  if (latestInboundBody) {
+    const enrichment = extractInboundEnrichment(latestInboundBody);
+    if (canUseDatabase()) {
+      try {
+        await applyEnrichmentToDatabaseInquiry(inquiry, enrichment);
+      } catch {
+        // Keep automation non-blocking; draft generation matters more than enrichment perfection.
+      }
+    } else {
+      await applyEnrichmentToFallbackInquiry(inquiry.id, enrichment);
     }
-  } else {
-    await applyEnrichmentToFallbackInquiry(inquiry.id, enrichment);
   }
 
   const refreshedInquiry = (await getInquiryThreadById(inquiryId)) || inquiry;
@@ -892,8 +894,8 @@ export async function createInquiry(input: InquiryInput): Promise<InquiryRecord>
         body: input.message,
         receivedAt: base.createdAt,
       });
-      await runInquiryInboundAutomation(base.id);
     }
+    await runInquiryInboundAutomation(base.id);
     return base;
   }
 
@@ -930,8 +932,8 @@ export async function createInquiry(input: InquiryInput): Promise<InquiryRecord>
         body: input.message,
         receivedAt: created.createdAt.toISOString(),
       });
-      await runInquiryInboundAutomation(created.id);
     }
+    await runInquiryInboundAutomation(created.id);
     return mapDbInquiry(created);
   } catch {
     const current = await readFallback();
