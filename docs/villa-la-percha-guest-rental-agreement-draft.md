@@ -179,23 +179,33 @@ Guest should notify Owner before booking acceptance of any allergies, mobility l
 
 Any special accommodation, representation, or condition of booking must be documented in writing and approved by Owner.
 
-## 15. Air Conditioning and Utility Use
+## 15. Medical Emergencies, Death, Evacuation, and Repatriation
+
+Guest understands that Turks & Caicos is an island destination and that emergency medical care, evacuation, transportation, mortuary, consular, and repatriation services may be limited, delayed, costly, or provided by third parties outside Owner’s control.
+
+In the event of a medical emergency, serious injury, death, evacuation, travel interruption, or similar incident involving Guest or any occupant or invitee, Guest and the affected occupant/invitee, or their estate or responsible party, are responsible for all related medical, emergency-response, ambulance, hospital, evacuation, transportation, mortuary, repatriation, travel, accommodation, and other costs, except to the extent caused by Owner’s gross negligence, willful misconduct, or liability that cannot be limited by law.
+
+Owner, property manager, concierge, and authorized service providers may contact emergency services, permit emergency access to the Property, and provide reasonable cooperation or local contact information when practicable, but they are not medical providers, insurers, guarantors of emergency response, or responsible for the acts, omissions, availability, timing, or costs of hospitals, clinics, ambulances, airlines, government agencies, consulates, transportation providers, funeral/mortuary providers, insurers, or other third parties.
+
+Guest is strongly encouraged to purchase travel insurance that includes medical expense coverage, emergency medical evacuation, trip interruption, and repatriation of remains coverage for all occupants.
+
+## 16. Air Conditioning and Utility Use
 
 Air conditioning and utilities are costly on island and may be subject to usage expectations, metering, or allowances if stated in the booking confirmation.
 
 Guest must use A/C and utilities responsibly, keep doors/windows closed while A/C is running, and follow any instructions provided by Owner, concierge, or property manager. Excessive or unauthorized usage may result in Additional Charges if disclosed in the booking terms.
 
-## 16. Personal Property
+## 17. Personal Property
 
 Guest is solely responsible for Guest’s personal property, valuables, vehicles, travel documents, electronics, and belongings. Owner, property manager, concierge, and any booking/operational agent are not responsible for lost, stolen, damaged, or weather-damaged personal property except where liability cannot be limited by law.
 
-## 17. Assumption of Risk
+## 18. Assumption of Risk
 
 Guest understands that the Property and destination may involve ordinary travel and occupancy risks, including stairs, decks, balconies, wet surfaces, pool areas, outdoor areas, docks or water-adjacent areas where applicable, weather, insects/wildlife, power or internet interruptions, road conditions, and third-party vendors selected by Guest.
 
 Except to the extent caused by Owner’s gross negligence, willful misconduct, or liability that cannot be limited by law, Guest assumes the ordinary risks of occupancy and use of the Property for themselves and all occupants and invitees.
 
-## 18. Liability Limits and Indemnity
+## 19. Liability Limits and Indemnity
 
 To the fullest extent permitted by law, Guest agrees to indemnify, defend, and hold harmless Owner and Owner’s authorized operators, managers, and agents from claims, losses, damages, costs, and expenses arising from Guest’s use or occupancy of the Property, breach of this Agreement, unlawful conduct, negligence, misuse of the Property, or acts/omissions of Guest’s occupants, invitees, or service providers.
 
@@ -205,13 +215,13 @@ The prior source contract capped Owner/Agent liability at the total rental amoun
 
 Nothing in this Agreement limits liability where limitation is prohibited by law.
 
-## 19. Violation, Termination, and Removal
+## 20. Violation, Termination, and Removal
 
 If Guest materially breaches this Agreement or house rules, Owner or the authorized property manager may require corrective action, terminate the stay, deny continued access, enter the Property where permitted, seek removal, and retain payments/deposits or charge Additional Charges to the extent permitted by law and the final approved terms.
 
 Upon notice of termination, Guest must vacate the Property immediately.
 
-## 20. Governing Law, Venue, and Attorneys’ Fees
+## 21. Governing Law, Venue, and Attorneys’ Fees
 
 The prior Villa La Percha source contract selected the laws of **The Turks & Caicos Islands** and required disputes to be filed in the courts of **The Turks & Caicos Islands**, with the prevailing party entitled to reasonable attorneys’ fees and litigation expenses.
 
@@ -221,13 +231,13 @@ This Agreement will be governed by the laws of **The Turks & Caicos Islands**. A
 
 Counsel should confirm final jurisdiction, venue, limitations period, dispute-resolution process, and enforceability.
 
-## 21. Entire Agreement and Priority of Records
+## 22. Entire Agreement and Priority of Records
 
 This Agreement, the booking confirmation, payment record, house rules, and any written addenda approved by Owner form the entire agreement between Owner and Guest for the stay.
 
 If there is a conflict, the final owner-approved booking confirmation and final approved agreement language control, unless applicable law requires otherwise.
 
-## 22. Electronic Acceptance and Signature
+## 23. Electronic Acceptance and Signature
 
 Owner may present this Agreement for electronic review and acceptance. The recommended electronic booking flow is checkbox acknowledgment plus typed legal name, with timestamped acceptance stored against the reservation. Owner may use an e-signature provider if later required.
 
@@ -242,7 +252,7 @@ The acceptance record should include, where available:
 - IP address, user agent, and session metadata;
 - copy/PDF of the accepted agreement.
 
-## 23. Signature Blocks
+## 24. Signature Blocks
 
 **Guest**
 
