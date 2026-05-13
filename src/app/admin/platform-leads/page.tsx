@@ -19,6 +19,8 @@ const QUEUE_VIEWS: Array<{ key: QueueView; label: string; description: string }>
   { key: "spam-review", label: "Spam review", description: "Suspicious/spam leads kept recoverable." },
 ];
 
+const PREVIEW_BENCHMARK_STATUS_SOURCE = "preview-build-benchmark-status-2026-05-11.md";
+
 const PREVIEW_BENCHMARKS = [
   {
     property: "Savannah Broughton Street carriage house",
@@ -118,11 +120,14 @@ export default async function AdminPlatformLeadsPage({ searchParams }: AdminPlat
       </section>
 
       <section className="admin-card" style={{ marginBottom: 18 }}>
-        <div className="admin-section-head"><div><p className="admin-eyebrow">Preview build lab</p><h3>Benchmark handoff</h3><p>Internal archetype status from the latest refinement pass. These are not owner-share approvals.</p></div><Link className="admin-button admin-button-secondary" href="/admin/platform-leads?view=preview-in-progress">Open preview queue</Link></div>
+        <div className="admin-section-head"><div><p className="admin-eyebrow">Preview build lab</p><h3>Benchmark handoff</h3><p>Internal archetype status from the latest refinement pass. These are not owner-share approvals.</p><p className="admin-muted">Source: {PREVIEW_BENCHMARK_STATUS_SOURCE}</p></div><Link className="admin-button admin-button-secondary" href="/admin/platform-leads?view=preview-in-progress">Open preview queue</Link></div>
         <div className="admin-table-wrap" style={{ marginTop: 12 }}><table className="admin-table"><thead><tr><th>Benchmark</th><th>Status</th><th>Useful evidence</th><th>Owner-share blockers</th></tr></thead><tbody>
-          {PREVIEW_BENCHMARKS.map((benchmark) => <tr key={benchmark.property}><td>{benchmark.property}<br/><span className="admin-muted">{benchmark.archetype}</span></td><td><span className={benchmark.status.includes("do not render") ? "admin-chip admin-chip-warn" : "admin-chip"}>{benchmark.status}</span></td><td>{benchmark.evidence}</td><td>{benchmark.blockers}</td></tr>)}
+          {PREVIEW_BENCHMARKS.map((benchmark) => {
+            const needsCaution = benchmark.status.includes("no render") || benchmark.blockers.toLowerCase().includes("photo rights");
+            return <tr key={benchmark.property}><td>{benchmark.property}<br/><span className="admin-muted">{benchmark.archetype}</span></td><td><span className={needsCaution ? "admin-chip admin-chip-warn" : "admin-chip"}>{benchmark.status}</span></td><td>{benchmark.evidence}</td><td>{benchmark.blockers}</td></tr>;
+          })}
         </tbody></table></div>
-        <p className="admin-muted" style={{ marginTop: 10 }}>Next safe chunk: Sarasota can only render as an internal, text-forward or living-room-first benchmark; do not use skyline/canal/attraction images as property hero or fabricate river, pool, wildlife, beach-distance, kayak, or restaurant claims.</p>
+        <p className="admin-muted" style={{ marginTop: 10 }}>Standard gate: image integrity and owner-share blockers stay separate from benchmark score. Sarasota can only render as an internal, text-forward or living-room-first benchmark; do not use skyline/canal/attraction images as property hero or fabricate river, pool, wildlife, beach-distance, kayak, or restaurant claims.</p>
       </section>
 
       <div className="admin-table-wrap"><table className="admin-table"><thead><tr><th>Lead</th><th>Status</th><th>Property</th><th>Owner ops</th><th>Latest AI artifact</th><th>Preview</th><th>Created</th></tr></thead><tbody>
