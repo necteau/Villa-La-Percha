@@ -16,6 +16,7 @@
     "prisma:studio": "prisma studio",
     "qa:preview-builds": "node scripts/qa-preview-build-gates.mjs",
     "qa:preview-build-status-gates": "npx --yes tsx scripts/qa-preview-build-status-gates.mts",
+    "qa:platform-lead-emily-plan": "node scripts/qa-platform-lead-emily-simulation-plan.mjs",
     "qa:platform-lead-emily-pack": "node scripts/qa-platform-lead-emily-artifact-pack.mjs"
   },
   "dependencies": {
