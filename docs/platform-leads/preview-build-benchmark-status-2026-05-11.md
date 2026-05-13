@@ -24,7 +24,7 @@ Purpose: give the next DirectStay PlatformLead/admin heartbeat a clean handoff f
 1. **Sarasota benchmark render decision** — image-source review completed 2026-05-12 in `sarasota-river-retreat-source-audit-2026-05-10.md`. Safe render path is text-forward or living-room-first only; do not use skyline/canal/attraction images as property hero, and do not fabricate river, wildlife, beach-distance, pool/spa, kayak, or restaurant claims.
 2. **Admin prompt/schema audit** — completed 2026-05-11 in `admin-prompt-schema-audit-2026-05-11.md`. Current generator/gates cover photo-integrity prompts, Copy Review Stack, conversion-trio planning language, rendered bad-copy scan, and owner-share blocker separation.
 3. **READY_FOR_REVIEW image-inventory gate** — completed 2026-05-11/12 in `directstay/src/lib/platformLeads.ts`: an approved photo/geography audit must now replace starter TODOs with `Page-order image inventory`, `Hero candidate`, `First two section-image candidates`, and `Rejected assets` before a Preview Build can move to `READY_FOR_REVIEW`. QA coverage added in `directstay/scripts/qa-preview-build-gates.mjs` and `directstay/scripts/qa-preview-build-status-gates.mts`.
-4. **Benchmark index in admin UI** — if absent, add a read-only internal status surface for benchmark archetypes and blockers so future preview work starts from evidence instead of log archaeology.
+4. **Benchmark index in admin UI** — completed in `/admin/preview-benchmarks` with read-audit logging and a durable QA guard (`npm run qa:preview-benchmark-index`) so future preview work starts from benchmark evidence instead of log archaeology.
 
 ## Current recommendation
 
