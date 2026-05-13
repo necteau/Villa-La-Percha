@@ -7,6 +7,18 @@ function formatDate(value?: Date | null) {
   return value.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" });
 }
 
+function formatMoney(value?: { toString(): string } | number | null) {
+  if (!value) return "Not set";
+  const numeric = Number(value);
+  return Number.isFinite(numeric) ? `$${numeric.toLocaleString()}` : "Not set";
+}
+
+function formatNights(checkIn?: Date | null, checkOut?: Date | null) {
+  if (!checkIn || !checkOut) return "Not set";
+  const nights = Math.round((checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24));
+  return nights > 0 ? `${nights} night${nights === 1 ? "" : "s"}` : "Not set";
+}
+
 export default async function GuestAgreementPage({ params, searchParams }: { params: Promise<{ contractId: string }>; searchParams: Promise<{ token?: string; preview?: string }> }) {
   const { contractId } = await params;
   const { token, preview } = await searchParams;
@@ -58,6 +70,14 @@ export default async function GuestAgreementPage({ params, searchParams }: { par
             bodyMarkdown={contract.template.bodyMarkdown}
             signerName={contract.signerName || contract.inquiry?.fullName || contract.reservation?.guestName || "Guest"}
             signerEmail={contract.signerEmail || contract.inquiry?.email || contract.reservation?.guestEmail || "Not set"}
+            guestPhone={contract.inquiry?.phone || "Not provided"}
+            checkIn={formatDate(checkIn)}
+            checkOut={formatDate(checkOut)}
+            nights={formatNights(checkIn, checkOut)}
+            total={formatMoney(contract.reservation?.totalAmount || contract.inquiry?.quotedAmount)}
+            deposit={formatMoney(contract.inquiry?.depositAmount)}
+            paymentMethod={contract.inquiry?.paymentMethod || "Not specified in booking record"}
+            agreementVersion={contract.template.version}
           />
         ) : (
           <article className="prose prose-stone mt-8 max-w-none whitespace-pre-wrap rounded-3xl border border-[#eee5d8] bg-[#fffdf8] p-5 text-sm leading-7 text-[#2c2923] sm:p-6">

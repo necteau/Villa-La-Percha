@@ -6,6 +6,14 @@ type OwnerAgreementPreviewProps = {
   bodyMarkdown: string;
   signerName: string;
   signerEmail: string;
+  guestPhone: string;
+  checkIn: string;
+  checkOut: string;
+  nights: string;
+  total: string;
+  deposit: string;
+  paymentMethod: string;
+  agreementVersion: string;
 };
 
 type Block =
@@ -73,9 +81,27 @@ function parseAgreement(markdown: string): Block[] {
   return blocks;
 }
 
-export default function OwnerAgreementPreview({ bodyMarkdown, signerName, signerEmail }: OwnerAgreementPreviewProps) {
+function resolveText(value: string, summary: Omit<OwnerAgreementPreviewProps, "bodyMarkdown">) {
+  return value
+    .replace("Guest identified in the booking record", summary.signerName)
+    .replace("Guest contact details in the booking record", `${summary.signerEmail}${summary.guestPhone !== "Not provided" ? ` / ${summary.guestPhone}` : ""}`)
+    .replace("Booking confirmation date", summary.checkIn)
+    .replace("Amount shown in booking confirmation/payment record", summary.total)
+    .replace("the primary guest identified in the booking record", summary.signerName)
+    .replace("the primary guest identified in the booking record (the “Guest”)", `${summary.signerName} (the “Guest”)`)
+    .replace("The check-in date, check-out date, and nightly count are the details shown in the booking confirmation.", `The confirmed stay is ${summary.checkIn} to ${summary.checkOut}, for ${summary.nights}.`)
+    .replace("The total rental amount, taxes, deposit/down payment, final payment, due dates, and payment method are the amounts and terms shown in the booking confirmation and payment record.", `The current owner-approved booking terms show ${summary.total} total rental amount, ${summary.deposit} deposit/down payment, and payment method: ${summary.paymentMethod}. Final payment timing and any additional payment details are controlled by the owner-approved booking confirmation and payment record.`);
+}
+
+export default function OwnerAgreementPreview(props: OwnerAgreementPreviewProps) {
+  const { bodyMarkdown, signerName, signerEmail, guestPhone, checkIn, checkOut, nights, total, deposit, paymentMethod, agreementVersion } = props;
   const [checked, setChecked] = useState(false);
-  const blocks = useMemo(() => parseAgreement(bodyMarkdown), [bodyMarkdown]);
+  const blocks = useMemo(() => {
+    const parsed = parseAgreement(bodyMarkdown);
+    const signatureIndex = parsed.findIndex((block) => block.kind === "heading" && block.text.includes("Signature Blocks"));
+    return signatureIndex >= 0 ? parsed.slice(0, signatureIndex) : parsed;
+  }, [bodyMarkdown]);
+  const summary = { signerName, signerEmail, guestPhone, checkIn, checkOut, nights, total, deposit, paymentMethod, agreementVersion };
 
   return (
     <div className="mt-8 overflow-hidden rounded-[2rem] border border-[#d8c8ae] bg-[#f2eadc] shadow-[0_24px_70px_rgba(58,39,16,0.14)]">
@@ -94,6 +120,10 @@ export default function OwnerAgreementPreview({ bodyMarkdown, signerName, signer
         <div className="mt-6 grid gap-3 rounded-2xl border border-[#eadfce] bg-[#fff8ea] p-4 text-sm sm:grid-cols-2">
           <p><span className="font-semibold text-[#3a2b1c]">Primary guest:</span> {signerName}</p>
           <p><span className="font-semibold text-[#3a2b1c]">Email:</span> {signerEmail}</p>
+          <p><span className="font-semibold text-[#3a2b1c]">Phone:</span> {guestPhone}</p>
+          <p><span className="font-semibold text-[#3a2b1c]">Stay:</span> {checkIn} to {checkOut}</p>
+          <p><span className="font-semibold text-[#3a2b1c]">Length:</span> {nights}</p>
+          <p><span className="font-semibold text-[#3a2b1c]">Total / deposit:</span> {total} / {deposit}</p>
         </div>
 
         <div className="mt-8 space-y-5">
@@ -104,7 +134,17 @@ export default function OwnerAgreementPreview({ bodyMarkdown, signerName, signer
               return <Tag key={idx} className={`${block.level === 2 ? "mt-9 border-t border-[#eadfce] pt-6 text-2xl" : "mt-6 text-lg"} font-display font-light leading-tight text-[#2f251b]`}>{block.text}</Tag>;
             }
             if (block.kind === "table") {
-              const [head, ...rows] = block.rows;
+              const resolvedRows = block.rows.map((row) => {
+                const label = row[0];
+                if (label === "Primary Guest") return [label, signerName];
+                if (label === "Guest Email / Phone") return [label, `${signerEmail}${guestPhone !== "Not provided" ? ` / ${guestPhone}` : " / Not provided"}`];
+                if (label === "Check-in Date") return [label, checkIn];
+                if (label === "Check-out Date") return [label, checkOut];
+                if (label === "Total Rental Amount") return [label, total];
+                if (label === "Agreement Version") return [label, agreementVersion];
+                return row.map((cell) => resolveText(cell, summary));
+              });
+              const [head, ...rows] = resolvedRows;
               return (
                 <div key={idx} className="overflow-hidden rounded-2xl border border-[#e5d8c6]">
                   <table className="w-full border-collapse text-left text-sm">
@@ -117,9 +157,9 @@ export default function OwnerAgreementPreview({ bodyMarkdown, signerName, signer
               );
             }
             if (block.kind === "list") {
-              return <ul key={idx} className="ml-5 list-disc space-y-2 text-sm leading-7 text-[#4e453b]">{block.items.map((item, itemIdx) => <li key={itemIdx}>{item}</li>)}</ul>;
+              return <ul key={idx} className="ml-5 list-disc space-y-2 text-sm leading-7 text-[#4e453b]">{block.items.map((item, itemIdx) => <li key={itemIdx}>{resolveText(item, summary)}</li>)}</ul>;
             }
-            return <p key={idx} className="text-sm leading-7 text-[#4e453b]">{block.text}</p>;
+            return <p key={idx} className="text-sm leading-7 text-[#4e453b]">{resolveText(block.text, summary)}</p>;
           })}
         </div>
       </article>
