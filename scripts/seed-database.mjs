@@ -81,7 +81,8 @@ async function loadJson(relativePath) {
 }
 
 async function main() {
-  const reservations = await loadJson("src/data/owner-portal-reservations.json");
+  const seedReservations = process.env.ALLOW_RESERVATION_SEED === "1";
+  const reservations = seedReservations ? await loadJson("src/data/owner-portal-reservations.json") : [];
   const pricing = await loadJson("src/data/pricing-table.json");
   const inquiries = await loadJson("src/data/inquiries.json");
 
@@ -124,7 +125,9 @@ async function main() {
   await prisma.$transaction(async (tx) => {
     await tx.pricingCharge.deleteMany({ where: { pricingRule: { propertyId: property.id } } });
     await tx.pricingRule.deleteMany({ where: { propertyId: property.id } });
-    await tx.reservation.deleteMany({ where: { propertyId: property.id } });
+    if (seedReservations) {
+      await tx.reservation.deleteMany({ where: { propertyId: property.id } });
+    }
     await tx.inquiry.deleteMany({ where: { propertyId: property.id } });
 
     for (const entry of pricing.entries) {
