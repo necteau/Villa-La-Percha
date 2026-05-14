@@ -281,7 +281,8 @@ export default function OwnerInquiriesPage() {
   const calculatedDepositAmount = cleanNumber(paymentDraft.depositAmount || selected?.depositAmount || (calculatedReservationTotal && paymentSettings.depositPercent ? calculatedReservationTotal * (paymentSettings.depositPercent / 100) : 0));
   const calculatedReceived = cleanNumber(paymentDraft.amountReceived || selected?.amountReceived);
   const calculatedBalance = Math.max(0, calculatedReservationTotal - calculatedReceived);
-  const hasDepositReceived = ["deposit_received", "paid_in_full", "partially_refunded", "refunded"].includes(selected?.paymentStatus || "") || calculatedReceived >= calculatedDepositAmount && calculatedDepositAmount > 0;
+  const isDepositComplete = calculatedDepositAmount > 0 && calculatedReceived >= calculatedDepositAmount;
+  const remainingDepositAmount = Math.max(0, calculatedDepositAmount - calculatedReceived);
   const isPaymentComplete = ["paid_in_full", "partially_refunded", "refunded"].includes(selected?.paymentStatus || "") || (calculatedReservationTotal > 0 && calculatedReceived >= calculatedReservationTotal);
   const openDrafts = useMemo(
     () => selected?.drafts.filter((draft) => draft.createdByType !== "system" && draft.status !== "sent") || [],
@@ -524,14 +525,15 @@ export default function OwnerInquiriesPage() {
   const confirmGuidedPayment = async () => {
     if (!paymentConfirmMode) return;
     const priorReceived = cleanNumber(selected?.amountReceived);
-    const expectedAmount = paymentConfirmMode === "deposit" ? calculatedDepositAmount : Math.max(0, calculatedReservationTotal - priorReceived);
+    const expectedAmount = paymentConfirmMode === "deposit" ? remainingDepositAmount || calculatedDepositAmount : Math.max(0, calculatedReservationTotal - priorReceived);
     const amountReceivedNow = cleanNumber(paymentConfirmationAmount) || expectedAmount;
-    const totalReceived = paymentConfirmMode === "deposit" ? amountReceivedNow : Math.min(calculatedReservationTotal, priorReceived + amountReceivedNow);
+    const totalReceived = Math.min(calculatedReservationTotal || Number.MAX_SAFE_INTEGER, priorReceived + amountReceivedNow);
+    const depositNowComplete = calculatedDepositAmount > 0 && totalReceived >= calculatedDepositAmount;
     await savePaymentState({
       quotedAmount: String(calculatedReservationTotal || cleanNumber(paymentDraft.quotedAmount)),
       depositAmount: String(calculatedDepositAmount || cleanNumber(paymentDraft.depositAmount)),
       amountReceived: String(totalReceived),
-      paymentStatus: paymentConfirmMode === "deposit" ? "deposit_received" : "paid_in_full",
+      paymentStatus: paymentConfirmMode === "deposit" ? (depositNowComplete ? "deposit_received" : "deposit_requested") : "paid_in_full",
       paymentNote: paymentConfirmationNote,
     });
   };
@@ -947,14 +949,17 @@ export default function OwnerInquiriesPage() {
                     ) : null}
 
                     <div className="mt-4 flex flex-wrap gap-3">
-                      <button type="button" onClick={() => { setPaymentConfirmationNote(""); setPaymentConfirmationAmount(String(calculatedDepositAmount || "")); setPaymentConfirmMode("deposit"); }} disabled={savingId === selected.id || isClosedInquiry || !calculatedDepositAmount || hasDepositReceived} className="rounded-full bg-[#1e4536] px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-white disabled:opacity-60 sm:tracking-[0.16em]">
-                        Mark deposit received
+                      <button type="button" onClick={() => { setPaymentConfirmationNote(""); setPaymentConfirmationAmount(String(remainingDepositAmount || calculatedDepositAmount || "")); setPaymentConfirmMode("deposit"); }} disabled={savingId === selected.id || isClosedInquiry || !calculatedDepositAmount || isDepositComplete || isPaymentComplete} className="rounded-full bg-[#1e4536] px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-white disabled:opacity-60 sm:tracking-[0.16em]">
+                        {calculatedReceived > 0 && !isDepositComplete ? "Record another deposit payment" : "Mark deposit received"}
                       </button>
                       <button type="button" onClick={() => { setPaymentConfirmationNote(""); setPaymentConfirmationAmount(String(Math.max(0, calculatedReservationTotal - calculatedReceived) || calculatedReservationTotal || "")); setPaymentConfirmMode("full"); }} disabled={savingId === selected.id || isClosedInquiry || !calculatedReservationTotal || isPaymentComplete} className="rounded-full bg-[#8b7355] px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-white disabled:opacity-60 sm:tracking-[0.16em]">
                         Mark paid in full
                       </button>
-                      {(hasDepositReceived || isPaymentComplete) ? (
-                        <p className="basis-full text-xs leading-5 text-[#7b7468]">Payment milestones already recorded. Use edit payment details for corrections.</p>
+                      {calculatedReceived > 0 && !isDepositComplete ? (
+                        <p className="basis-full text-xs leading-5 text-[#7b7468]">Partial deposit recorded: {formatMoney(calculatedReceived)} of {formatMoney(calculatedDepositAmount)}. Record another deposit payment when additional funds arrive.</p>
+                      ) : null}
+                      {(isDepositComplete || isPaymentComplete) ? (
+                        <p className="basis-full text-xs leading-5 text-[#7b7468]">Payment milestone complete. Use edit payment details for corrections.</p>
                       ) : null}
                       <button type="button" onClick={() => setShowManualPaymentEdit((current) => !current)} className="rounded-full border border-[#d8cebf] bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-[#5b554b] sm:tracking-[0.16em]">
                         {showManualPaymentEdit ? "Hide manual edit" : "Edit payment details"}
@@ -977,8 +982,8 @@ export default function OwnerInquiriesPage() {
                             </button>
                           </div>
                           <div className="mt-4 rounded-2xl bg-white p-4 shadow-sm">
-                            <p className="text-xs uppercase tracking-[0.14em] text-[#7b7468]">Expected {paymentConfirmMode === "deposit" ? "deposit" : "final payment"}</p>
-                            <p className="mt-1 text-3xl font-light text-[#1e4536]">{formatMoney(paymentConfirmMode === "deposit" ? calculatedDepositAmount : Math.max(0, calculatedReservationTotal - calculatedReceived) || calculatedReservationTotal)}</p>
+                            <p className="text-xs uppercase tracking-[0.14em] text-[#7b7468]">Expected {paymentConfirmMode === "deposit" ? "remaining deposit" : "final payment"}</p>
+                            <p className="mt-1 text-3xl font-light text-[#1e4536]">{formatMoney(paymentConfirmMode === "deposit" ? remainingDepositAmount || calculatedDepositAmount : Math.max(0, calculatedReservationTotal - calculatedReceived) || calculatedReservationTotal)}</p>
                           </div>
                           <div className="mt-4 grid gap-3">
                             <label className="block text-sm text-[#5b554b]">
