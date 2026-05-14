@@ -237,6 +237,13 @@ export async function confirmExternalReservationMatch(externalReservationId: str
   });
 }
 
+export async function assertExternalReservationPropertyAccess(externalReservationId: string, propertyId: string) {
+  const prisma = await getPrismaClient();
+  const external = await prisma.externalReservation.findUnique({ where: { id: externalReservationId }, select: { propertyId: true } });
+  if (!external) throw new Error("External reservation not found.");
+  if (external.propertyId !== propertyId) throw new Error("You do not have access to this external reservation.");
+}
+
 export async function ignoreExternalReservationReviewItem(externalReservationId: string, ignoredByUserId?: string) {
   const prisma = await getPrismaClient();
   return prisma.externalReservation.update({

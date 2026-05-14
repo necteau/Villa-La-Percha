@@ -22,8 +22,6 @@ export interface ExternalReservationRecord {
   updatedAt: string;
 }
 
-const DEFAULT_PROPERTY_SLUG = "villa-la-percha";
-
 function dateOnly(value: Date): string {
   return value.toISOString().slice(0, 10);
 }
@@ -68,19 +66,11 @@ function mapRecord(record: {
   };
 }
 
-async function getDefaultProperty() {
-  const prisma = await getPrismaClient();
-  const property = await prisma.property.findUnique({ where: { slug: DEFAULT_PROPERTY_SLUG }, include: { owner: true } });
-  if (!property) throw new Error("Villa La Percha property is not configured.");
-  return property;
-}
-
-export async function listExternalReservations(): Promise<ExternalReservationRecord[]> {
+export async function listExternalReservations(options: { propertyId: string }): Promise<ExternalReservationRecord[]> {
   if (!canUseDatabaseSync()) return [];
   const prisma = await getPrismaClient();
-  const property = await getDefaultProperty();
   const records = await prisma.externalReservation.findMany({
-    where: { propertyId: property.id },
+    where: { propertyId: options.propertyId },
     orderBy: [{ checkIn: "asc" }, { source: "asc" }],
   });
   return records.map(mapRecord);

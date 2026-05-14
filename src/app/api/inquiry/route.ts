@@ -14,6 +14,10 @@ const DATE_REGEX = /^\d{4}-\d{2}-\d{2}$/;
 const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
 const RATE_LIMIT_MAX = 5;
 const MIN_STAY_NIGHTS = 5;
+const TEST_EMAILS = new Set((process.env.DIRECTSTAY_TEST_INQUIRY_EMAILS || "necteau@gmail.com,jaimal@directstay.app")
+  .split(",")
+  .map((email) => email.trim().toLowerCase())
+  .filter(Boolean));
 const requestLog = new Map<string, number[]>();
 
 function getFromAddress(): string {
@@ -55,6 +59,12 @@ function getClientIp(req: Request) {
   const forwarded = req.headers.get("x-forwarded-for");
   if (forwarded) return forwarded.split(",")[0].trim();
   return req.headers.get("x-real-ip") || "unknown";
+}
+
+function isLikelyTestInquiry(input: { email: string; fullName: string; comments: string }) {
+  const name = input.fullName.toLowerCase();
+  const comments = input.comments.toLowerCase();
+  return TEST_EMAILS.has(input.email) || name.includes("test") || comments.includes("test inquiry") || comments.includes("directstay test");
 }
 
 function isRateLimited(ip: string) {
@@ -118,12 +128,14 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Too many inquiries. Please try again shortly." }, { status: 429 });
     }
 
+    const isTest = isLikelyTestInquiry({ email: safeEmail, fullName: safeName, comments: safeComments });
     const inquiry = await createInquiry({
       fullName: safeName,
       email: safeEmail,
       checkIn: safeCheckIn,
       checkOut: safeCheckOut,
       message: safeComments || undefined,
+      isTest,
     });
 
     // Track conversion funnel event (fire-and-forget)

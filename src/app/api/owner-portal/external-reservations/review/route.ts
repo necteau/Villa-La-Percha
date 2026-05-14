@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
-import { getPrismaClient } from "@/lib/db";
 import { canUseDatabaseSync } from "@/lib/fallbackOrchestrator";
 import { listExternalReservationReviewItems } from "@/lib/externalReservationReconciliation";
 import { requireOwnerPortalSession } from "@/lib/ownerPortalApi";
+import { getOwnerPortalPropertyScope } from "@/lib/ownerPortalScope";
 
 export async function GET() {
   const unauthorized = await requireOwnerPortalSession();
@@ -13,10 +13,7 @@ export async function GET() {
   }
 
   try {
-    const prisma = await getPrismaClient();
-    const property = await prisma.property.findUnique({ where: { slug: "villa-la-percha" }, select: { id: true } });
-    if (!property) return NextResponse.json({ ok: true, reviewItems: [] });
-
+    const property = await getOwnerPortalPropertyScope();
     const reviewItems = await listExternalReservationReviewItems(property.id);
     return NextResponse.json({ ok: true, reviewItems });
   } catch (error) {

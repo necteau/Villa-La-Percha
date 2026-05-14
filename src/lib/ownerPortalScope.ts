@@ -9,6 +9,13 @@ export interface OwnerPortalScope {
   ownerIds: string[] | null;
 }
 
+export interface OwnerPortalPropertyScope {
+  id: string;
+  ownerId: string;
+  slug: string;
+  name: string;
+}
+
 async function getFallbackOwnerId(): Promise<string | null> {
   const prisma = await getPrismaClient();
   const property = await prisma.property.findUnique({
@@ -56,4 +63,32 @@ export async function getOwnerPortalScope(): Promise<OwnerPortalScope> {
 
   const fallbackOwnerId = await getFallbackOwnerId().catch(() => null);
   return { isAdmin: false, ownerIds: fallbackOwnerId ? [fallbackOwnerId] : null };
+}
+
+export async function getOwnerPortalPropertyScope(propertySlug = FALLBACK_PROPERTY_SLUG): Promise<OwnerPortalPropertyScope> {
+  const prisma = await getPrismaClient();
+  const scope = await getOwnerPortalScope();
+  const property = await prisma.property.findUnique({
+    where: { slug: propertySlug },
+    select: { id: true, ownerId: true, slug: true, name: true },
+  });
+  if (!property) throw new Error("Property is not configured.");
+  if (scope.ownerIds && !scope.ownerIds.includes(property.ownerId)) {
+    throw new Error("You do not have access to this property.");
+  }
+  return property;
+}
+
+export async function assertOwnerPortalPropertyAccess(propertyId: string): Promise<OwnerPortalPropertyScope> {
+  const prisma = await getPrismaClient();
+  const scope = await getOwnerPortalScope();
+  const property = await prisma.property.findUnique({
+    where: { id: propertyId },
+    select: { id: true, ownerId: true, slug: true, name: true },
+  });
+  if (!property) throw new Error("Property is not configured.");
+  if (scope.ownerIds && !scope.ownerIds.includes(property.ownerId)) {
+    throw new Error("You do not have access to this property.");
+  }
+  return property;
 }

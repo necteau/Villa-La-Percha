@@ -212,22 +212,22 @@ enum PlatformLeadProcessingJobStatus {
 }
 
 model User {
-  id             String        @id @default(cuid())
-  email          String        @unique
-  passwordHash   String?
-  fullName       String?
-  role           UserRole      @default(OWNER)
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
-  ownerProfiles  Owner[]       @relation("OwnerPrimaryUser")
-  memberships    OwnerMember[]
-  auditLogs      AuditLog[]
-  platformLeadNotes PlatformLeadNote[]
+  id                        String             @id @default(cuid())
+  email                     String             @unique
+  passwordHash              String?
+  fullName                  String?
+  role                      UserRole           @default(OWNER)
+  createdAt                 DateTime           @default(now())
+  updatedAt                 DateTime           @updatedAt
+  ownerProfiles             Owner[]            @relation("OwnerPrimaryUser")
+  memberships               OwnerMember[]
+  auditLogs                 AuditLog[]
+  platformLeadNotes         PlatformLeadNote[]
   approvedContractTemplates ContractTemplate[]
 }
 
 model AuditLog {
-  id          String   @id @default(cuid())
+  id          String    @id @default(cuid())
   actorUserId String?
   actorEmail  String?
   actorRole   UserRole?
@@ -237,8 +237,8 @@ model AuditLog {
   ownerId     String?
   propertyId  String?
   metadata    Json?
-  createdAt   DateTime @default(now())
-  actorUser   User?    @relation(fields: [actorUserId], references: [id], onDelete: SetNull)
+  createdAt   DateTime  @default(now())
+  actorUser   User?     @relation(fields: [actorUserId], references: [id], onDelete: SetNull)
 
   @@index([createdAt])
   @@index([actorUserId, createdAt])
@@ -249,44 +249,44 @@ model AuditLog {
 }
 
 model PlatformLead {
-  id                  String             @id @default(cuid())
-  status              PlatformLeadStatus @default(NEW)
-  fullName            String
-  email               String
-  phone               String?
-  company             String?
-  propertyName        String?
-  propertyCount       Int?
-  propertyLocation    String?
-  currentWebsite      String?
-  desiredCustomDomain String?
-  pms                 String?
-  launchTimeline      String?
-  goal                String?
-  message             String?
-  source              String             @default("direct")
-  createdAt           DateTime           @default(now())
-  updatedAt           DateTime           @updatedAt
-  firstRead           String?
-  nextAction          String?
-  nextFollowUpAt      DateTime?
-  assignedToUserId    String?
-  spamReason          String?
-  spamReviewedAt      DateTime?
-  pricingSetupFeeCents Int?
-  pricingMonthlyFeeCents Int?
-  pricingCommissionBps Int?
+  id                          String                      @id @default(cuid())
+  status                      PlatformLeadStatus          @default(NEW)
+  fullName                    String
+  email                       String
+  phone                       String?
+  company                     String?
+  propertyName                String?
+  propertyCount               Int?
+  propertyLocation            String?
+  currentWebsite              String?
+  desiredCustomDomain         String?
+  pms                         String?
+  launchTimeline              String?
+  goal                        String?
+  message                     String?
+  source                      String                      @default("direct")
+  createdAt                   DateTime                    @default(now())
+  updatedAt                   DateTime                    @updatedAt
+  firstRead                   String?
+  nextAction                  String?
+  nextFollowUpAt              DateTime?
+  assignedToUserId            String?
+  spamReason                  String?
+  spamReviewedAt              DateTime?
+  pricingSetupFeeCents        Int?
+  pricingMonthlyFeeCents      Int?
+  pricingCommissionBps        Int?
   pricingPaymentProcessingBps Int?
-  pricingNotes        String?
-  contractStatus      ContractExecutionStatus @default(NOT_STARTED)
-  contractSentAt      DateTime?
-  contractSignedAt    DateTime?
-  contractStorageUrl  String?
-  launchChecklist     Json?
-  notes               PlatformLeadNote[]
-  artifacts           PlatformLeadArtifact[]
-  previewBuilds       PreviewBuild[]
-  processingJobs      PlatformLeadProcessingJob[]
+  pricingNotes                String?
+  contractStatus              ContractExecutionStatus     @default(NOT_STARTED)
+  contractSentAt              DateTime?
+  contractSignedAt            DateTime?
+  contractStorageUrl          String?
+  launchChecklist             Json?
+  notes                       PlatformLeadNote[]
+  artifacts                   PlatformLeadArtifact[]
+  previewBuilds               PreviewBuild[]
+  processingJobs              PlatformLeadProcessingJob[]
 
   @@index([status, createdAt])
   @@index([email])
@@ -310,20 +310,20 @@ model PlatformLeadProcessingJob {
 }
 
 model PlatformLeadArtifact {
-  id             String                     @id @default(cuid())
-  platformLeadId String
-  type           PlatformLeadArtifactType
-  status         PlatformLeadArtifactStatus @default(DRAFT)
-  title          String
-  body           String
-  metadata       Json?
-  createdByEmail String?
+  id              String                     @id @default(cuid())
+  platformLeadId  String
+  type            PlatformLeadArtifactType
+  status          PlatformLeadArtifactStatus @default(DRAFT)
+  title           String
+  body            String
+  metadata        Json?
+  createdByEmail  String?
   approvedByEmail String?
-  approvedAt     DateTime?
-  sentAt         DateTime?
-  createdAt      DateTime                   @default(now())
-  updatedAt      DateTime                   @updatedAt
-  platformLead   PlatformLead               @relation(fields: [platformLeadId], references: [id], onDelete: Cascade)
+  approvedAt      DateTime?
+  sentAt          DateTime?
+  createdAt       DateTime                   @default(now())
+  updatedAt       DateTime                   @updatedAt
+  platformLead    PlatformLead               @relation(fields: [platformLeadId], references: [id], onDelete: Cascade)
 
   @@index([platformLeadId, createdAt])
   @@index([type, status, createdAt])
@@ -365,68 +365,69 @@ model PlatformLeadNote {
 }
 
 model Owner {
-  id             String         @id @default(cuid())
-  displayName    String
-  supportEmail   String?
-  supportPhone   String?
-  primaryUserId  String?
-  createdAt      DateTime       @default(now())
-  updatedAt      DateTime       @updatedAt
-  primaryUser    User?          @relation("OwnerPrimaryUser", fields: [primaryUserId], references: [id])
-  properties     Property[]
-  members        OwnerMember[]
-  customers      Customer[]
+  id                   String                @id @default(cuid())
+  displayName          String
+  supportEmail         String?
+  supportPhone         String?
+  primaryUserId        String?
+  createdAt            DateTime              @default(now())
+  updatedAt            DateTime              @updatedAt
+  primaryUser          User?                 @relation("OwnerPrimaryUser", fields: [primaryUserId], references: [id])
+  properties           Property[]
+  members              OwnerMember[]
+  customers            Customer[]
+  externalReservations ExternalReservation[]
 }
 
 model OwnerMember {
-  id         String    @id @default(cuid())
-  ownerId     String
-  userId      String
-  title       String?
-  createdAt   DateTime  @default(now())
-  owner       Owner     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id        String   @id @default(cuid())
+  ownerId   String
+  userId    String
+  title     String?
+  createdAt DateTime @default(now())
+  owner     Owner    @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([ownerId, userId])
 }
 
 model Property {
-  id                        String             @id @default(cuid())
-  ownerId                   String
-  slug                      String             @unique
-  name                      String
-  status                    PropertyStatus     @default(DRAFT)
-  publicDomain              String?
-  inquiryEmail              String?
-  inquiryPhone              String?
-  aiReplyInstructions       String?
-  timezone                  String             @default("America/New_York")
-  currency                  String             @default("USD")
-  taxCollectionMode         TaxCollectionMode  @default(INCLUSIVE)
-  taxRate                   Decimal            @default(0) @db.Decimal(7, 6)
-  taxLabel                  String             @default("Tax")
-  minimumStayNights         Int?
-  checkInTime               String?
-  checkOutTime              String?
-  externalMatchReviewDelayDays Int              @default(3)
-  inquiryEnabled            Boolean            @default(true)
-  createdAt                 DateTime           @default(now())
-  updatedAt                 DateTime           @updatedAt
-  owner                     Owner              @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  content                   PropertyContent?
-  reservations              Reservation[]
-  externalReservations      ExternalReservation[]
-  pricingRules              PricingRule[]
-  paymentMethods            PaymentMethod[]
-  paymentSettings           PaymentSetting?
-  inquiries                 Inquiry[]
-  contractTemplates         ContractTemplate[]
-  contractExecutions        ContractExecution[]
-  primaryCustomers          Customer[]           @relation("CustomerPrimaryProperty")
+  id                           String                @id @default(cuid())
+  ownerId                      String
+  slug                         String                @unique
+  name                         String
+  status                       PropertyStatus        @default(DRAFT)
+  publicDomain                 String?
+  inquiryEmail                 String?
+  inquiryPhone                 String?
+  aiReplyInstructions          String?
+  timezone                     String                @default("America/New_York")
+  currency                     String                @default("USD")
+  taxCollectionMode            TaxCollectionMode     @default(INCLUSIVE)
+  taxRate                      Decimal               @default(0) @db.Decimal(7, 6)
+  taxLabel                     String                @default("Tax")
+  minimumStayNights            Int?
+  checkInTime                  String?
+  checkOutTime                 String?
+  externalMatchReviewDelayDays Int                   @default(3)
+  inquiryEnabled               Boolean               @default(true)
+  createdAt                    DateTime              @default(now())
+  updatedAt                    DateTime              @updatedAt
+  owner                        Owner                 @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  content                      PropertyContent?
+  reservations                 Reservation[]
+  externalReservations         ExternalReservation[]
+  pricingRules                 PricingRule[]
+  paymentMethods               PaymentMethod[]
+  paymentSettings              PaymentSetting?
+  inquiries                    Inquiry[]
+  contractTemplates            ContractTemplate[]
+  contractExecutions           ContractExecution[]
+  primaryCustomers             Customer[]            @relation("CustomerPrimaryProperty")
 }
 
 model Customer {
-  id                     String         @id @default(cuid())
+  id                     String              @id @default(cuid())
   ownerId                String
   primaryPropertyId      String?
   fullName               String
@@ -435,16 +436,16 @@ model Customer {
   locationLabel          String?
   timezone               String?
   preferredContactMethod String?
-  status                 CustomerStatus @default(LEAD)
+  status                 CustomerStatus      @default(LEAD)
   notes                  String?
   preferencesSummary     String?
   householdSummary       String?
   specialOccasions       String?
   conciergeInterests     String?
-  createdAt              DateTime       @default(now())
-  updatedAt              DateTime       @updatedAt
-  owner                  Owner          @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  primaryProperty        Property?      @relation("CustomerPrimaryProperty", fields: [primaryPropertyId], references: [id], onDelete: SetNull)
+  createdAt              DateTime            @default(now())
+  updatedAt              DateTime            @updatedAt
+  owner                  Owner               @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  primaryProperty        Property?           @relation("CustomerPrimaryProperty", fields: [primaryPropertyId], references: [id], onDelete: SetNull)
   inquiries              Inquiry[]
   reservations           Reservation[]
   contractExecutions     ContractExecution[]
@@ -455,52 +456,53 @@ model Customer {
 }
 
 model PropertyContent {
-  id                    String    @id @default(cuid())
-  propertyId            String    @unique
+  id                    String   @id @default(cuid())
+  propertyId            String   @unique
   headline              String?
   subheadline           String?
   locationSummary       String?
   aboutCopy             String?
   fishingCopy           String?
   locationCopy          String?
-  faqEnabled            Boolean   @default(true)
-  experiencePageEnabled Boolean   @default(true)
-  updatedAt             DateTime  @updatedAt
-  property              Property  @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  faqEnabled            Boolean  @default(true)
+  experiencePageEnabled Boolean  @default(true)
+  updatedAt             DateTime @updatedAt
+  property              Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
 }
 
 model Reservation {
-  id                String              @id @default(cuid())
-  propertyId        String
-  customerId        String?
-  externalReference String?
-  status            ReservationStatus   @default(TENTATIVE)
-  source            ReservationSource   @default(MANUAL)
-  bookingType       String?
-  bookedDate        DateTime?
-  guestName         String?
-  guestEmail        String?
-  guestPhone        String?
-  checkIn           DateTime
-  checkOut          DateTime
-  nights            Int
-  totalAmount       Decimal?            @db.Decimal(10, 2)
-  currency          String              @default("USD")
-  paymentStatus     BookingPaymentStatus @default(UNPAID)
-  depositAmount     Decimal?            @db.Decimal(10, 2)
-  amountReceived    Decimal?            @db.Decimal(10, 2)
-  paymentMethod     String?
+  id                 String                @id @default(cuid())
+  propertyId         String
+  customerId         String?
+  externalReference  String?
+  status             ReservationStatus     @default(TENTATIVE)
+  source             ReservationSource     @default(MANUAL)
+  bookingType        String?
+  bookedDate         DateTime?
+  guestName          String?
+  guestEmail         String?
+  guestPhone         String?
+  checkIn            DateTime
+  checkOut           DateTime
+  nights             Int
+  totalAmount        Decimal?              @db.Decimal(10, 2)
+  currency           String                @default("USD")
+  paymentStatus      BookingPaymentStatus  @default(UNPAID)
+  depositAmount      Decimal?              @db.Decimal(10, 2)
+  amountReceived     Decimal?              @db.Decimal(10, 2)
+  paymentMethod      String?
   paymentConfirmedAt DateTime?
-  paymentNote       String?
-  isOwnerWeek       Boolean             @default(false)
-  notes             String?
-  createdAt         DateTime            @default(now())
-  updatedAt         DateTime            @updatedAt
-  property          Property            @relation(fields: [propertyId], references: [id], onDelete: Cascade)
-  customer          Customer?           @relation(fields: [customerId], references: [id], onDelete: SetNull)
-  sourceInquiryId   String?
-  sourceInquiry     Inquiry?            @relation("InquiryReservation", fields: [sourceInquiryId], references: [id], onDelete: SetNull)
-  externalMatches   ExternalReservation[]
+  paymentNote        String?
+  isOwnerWeek        Boolean               @default(false)
+  isTest             Boolean               @default(false)
+  notes              String?
+  createdAt          DateTime              @default(now())
+  updatedAt          DateTime              @updatedAt
+  property           Property              @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  customer           Customer?             @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  sourceInquiryId    String?
+  sourceInquiry      Inquiry?              @relation("InquiryReservation", fields: [sourceInquiryId], references: [id], onDelete: SetNull)
+  externalMatches    ExternalReservation[]
   contractExecutions ContractExecution[]
 
   @@index([propertyId, checkIn, checkOut])
@@ -534,6 +536,7 @@ model ExternalReservation {
   ignoredByUserId       String?
   createdAt             DateTime                        @default(now())
   updatedAt             DateTime                        @updatedAt
+  owner                 Owner                           @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   property              Property                        @relation(fields: [propertyId], references: [id], onDelete: Cascade)
   reservation           Reservation?                    @relation(fields: [reservationId], references: [id], onDelete: SetNull)
 
@@ -545,17 +548,17 @@ model ExternalReservation {
 }
 
 model PricingRule {
-  id                String            @id @default(cuid())
+  id                String          @id @default(cuid())
   propertyId        String
   platform          PricingPlatform
   startDate         DateTime
   endDate           DateTime
-  nightlyRate       Decimal           @db.Decimal(10, 2)
+  nightlyRate       Decimal         @db.Decimal(10, 2)
   minimumStayNights Int?
   notes             String?
-  createdAt         DateTime          @default(now())
-  updatedAt         DateTime          @updatedAt
-  property          Property          @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  property          Property        @relation(fields: [propertyId], references: [id], onDelete: Cascade)
   charges           PricingCharge[]
 
   @@index([propertyId, platform, startDate, endDate])
@@ -574,57 +577,58 @@ model PricingCharge {
 }
 
 model PaymentMethod {
-  id            String             @id @default(cuid())
-  propertyId     String
-  method         PaymentMethodType
-  enabled        Boolean            @default(false)
-  isPrimary      Boolean            @default(false)
-  displayOrder   Int                @default(0)
-  instructions   String?
-  createdAt      DateTime           @default(now())
-  updatedAt      DateTime           @updatedAt
-  property       Property           @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  id           String            @id @default(cuid())
+  propertyId   String
+  method       PaymentMethodType
+  enabled      Boolean           @default(false)
+  isPrimary    Boolean           @default(false)
+  displayOrder Int               @default(0)
+  instructions String?
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+  property     Property          @relation(fields: [propertyId], references: [id], onDelete: Cascade)
 
   @@unique([propertyId, method])
 }
 
 model PaymentSetting {
-  id                               String    @id @default(cuid())
-  propertyId                        String    @unique
-  depositPercentage                 Int       @default(0)
-  finalPaymentDueDays               Int       @default(30)
-  allowManualFallbacks              Boolean   @default(true)
-  requireOwnerApprovalBeforePayment Boolean   @default(true)
-  createdAt                         DateTime  @default(now())
-  updatedAt                         DateTime  @updatedAt
-  property                          Property  @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  id                                String   @id @default(cuid())
+  propertyId                        String   @unique
+  depositPercentage                 Int      @default(0)
+  finalPaymentDueDays               Int      @default(30)
+  allowManualFallbacks              Boolean  @default(true)
+  requireOwnerApprovalBeforePayment Boolean  @default(true)
+  createdAt                         DateTime @default(now())
+  updatedAt                         DateTime @updatedAt
+  property                          Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
 }
 
 model Inquiry {
-  id           String        @id @default(cuid())
-  propertyId   String
-  customerId   String?
-  fullName     String
-  email        String
-  phone        String?
-  checkIn      DateTime?
-  checkOut     DateTime?
-  message      String?
-  status       InquiryStatus @default(NEEDS_REPLY)
-  quotedAmount Decimal?      @db.Decimal(10, 2)
-  paymentStatus BookingPaymentStatus @default(UNPAID)
-  depositAmount Decimal?     @db.Decimal(10, 2)
-  amountReceived Decimal?    @db.Decimal(10, 2)
-  paymentMethod String?
+  id                 String               @id @default(cuid())
+  propertyId         String
+  customerId         String?
+  fullName           String
+  email              String
+  phone              String?
+  checkIn            DateTime?
+  checkOut           DateTime?
+  message            String?
+  status             InquiryStatus        @default(NEEDS_REPLY)
+  quotedAmount       Decimal?             @db.Decimal(10, 2)
+  paymentStatus      BookingPaymentStatus @default(UNPAID)
+  depositAmount      Decimal?             @db.Decimal(10, 2)
+  amountReceived     Decimal?             @db.Decimal(10, 2)
+  paymentMethod      String?
   paymentConfirmedAt DateTime?
-  paymentNote   String?
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
-  property     Property      @relation(fields: [propertyId], references: [id], onDelete: Cascade)
-  customer     Customer?     @relation(fields: [customerId], references: [id], onDelete: SetNull)
-  messages     InquiryMessage[]
-  drafts       InquiryReplyDraft[]
-  reservations Reservation[] @relation("InquiryReservation")
+  paymentNote        String?
+  isTest             Boolean              @default(false)
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+  property           Property             @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  customer           Customer?            @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  messages           InquiryMessage[]
+  drafts             InquiryReplyDraft[]
+  reservations       Reservation[]        @relation("InquiryReservation")
   contractExecutions ContractExecution[]
 
   @@index([propertyId, status, createdAt])
@@ -632,7 +636,7 @@ model Inquiry {
 }
 
 model InquiryMessage {
-  id             String                  @id @default(cuid())
+  id             String                   @id @default(cuid())
   inquiryId      String
   direction      InquiryMessageDirection
   authorType     InquiryMessageAuthorType
@@ -641,47 +645,47 @@ model InquiryMessage {
   emailMessageId String?
   sentAt         DateTime?
   receivedAt     DateTime?
-  createdAt      DateTime                @default(now())
-  inquiry        Inquiry                 @relation(fields: [inquiryId], references: [id], onDelete: Cascade)
+  createdAt      DateTime                 @default(now())
+  inquiry        Inquiry                  @relation(fields: [inquiryId], references: [id], onDelete: Cascade)
 
   @@index([inquiryId, createdAt])
 }
 
 model InquiryReplyDraft {
-  id             String            @id @default(cuid())
-  inquiryId       String
-  subject         String?
-  body            String
-  status          InquiryDraftStatus @default(DRAFT)
-  createdByType   InquiryMessageAuthorType @default(ASSISTANT)
-  approvedAt      DateTime?
-  sentAt          DateTime?
-  createdAt       DateTime          @default(now())
-  updatedAt       DateTime          @updatedAt
-  inquiry         Inquiry           @relation(fields: [inquiryId], references: [id], onDelete: Cascade)
+  id            String                   @id @default(cuid())
+  inquiryId     String
+  subject       String?
+  body          String
+  status        InquiryDraftStatus       @default(DRAFT)
+  createdByType InquiryMessageAuthorType @default(ASSISTANT)
+  approvedAt    DateTime?
+  sentAt        DateTime?
+  createdAt     DateTime                 @default(now())
+  updatedAt     DateTime                 @updatedAt
+  inquiry       Inquiry                  @relation(fields: [inquiryId], references: [id], onDelete: Cascade)
 
   @@index([inquiryId, status, updatedAt])
 }
 
 model ContractTemplate {
-  id                 String                 @id @default(cuid())
-  propertyId         String?
-  type               ContractTemplateType
-  status             ContractTemplateStatus @default(DRAFT)
-  name               String
-  version            String
-  title              String
-  bodyMarkdown       String
-  bodyHash           String
-  pdfStorageUrl      String?
-  reviewNotes        String?
-  approvedAt         DateTime?
-  approvedByUserId   String?
-  createdAt          DateTime               @default(now())
-  updatedAt          DateTime               @updatedAt
-  property           Property?              @relation(fields: [propertyId], references: [id], onDelete: Cascade)
-  approvedByUser     User?                  @relation(fields: [approvedByUserId], references: [id], onDelete: SetNull)
-  executions         ContractExecution[]
+  id               String                 @id @default(cuid())
+  propertyId       String?
+  type             ContractTemplateType
+  status           ContractTemplateStatus @default(DRAFT)
+  name             String
+  version          String
+  title            String
+  bodyMarkdown     String
+  bodyHash         String
+  pdfStorageUrl    String?
+  reviewNotes      String?
+  approvedAt       DateTime?
+  approvedByUserId String?
+  createdAt        DateTime               @default(now())
+  updatedAt        DateTime               @updatedAt
+  property         Property?              @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  approvedByUser   User?                  @relation(fields: [approvedByUserId], references: [id], onDelete: SetNull)
+  executions       ContractExecution[]
 
   @@unique([type, version, propertyId])
   @@index([propertyId, type, status])
@@ -689,33 +693,33 @@ model ContractTemplate {
 }
 
 model ContractExecution {
-  id                String                  @id @default(cuid())
-  templateId        String
-  propertyId        String
-  inquiryId         String?
-  reservationId     String?
-  customerId        String?
-  status            GuestContractExecutionStatus @default(DRAFT)
-  signerName        String?
-  signerEmail       String?
-  sentAt            DateTime?
-  viewedAt          DateTime?
-  acceptedAt        DateTime?
-  voidedAt          DateTime?
-  supersededAt      DateTime?
-  finalPdfUrl       String?
-  acceptedBodyHash  String?
-  acceptanceIp      String?
+  id                  String                       @id @default(cuid())
+  templateId          String
+  propertyId          String
+  inquiryId           String?
+  reservationId       String?
+  customerId          String?
+  status              GuestContractExecutionStatus @default(DRAFT)
+  signerName          String?
+  signerEmail         String?
+  sentAt              DateTime?
+  viewedAt            DateTime?
+  acceptedAt          DateTime?
+  voidedAt            DateTime?
+  supersededAt        DateTime?
+  finalPdfUrl         String?
+  acceptedBodyHash    String?
+  acceptanceIp        String?
   acceptanceUserAgent String?
-  acceptanceMetadata Json?
-  notes             String?
-  createdAt         DateTime                @default(now())
-  updatedAt         DateTime                @updatedAt
-  template          ContractTemplate        @relation(fields: [templateId], references: [id], onDelete: Restrict)
-  property          Property                @relation(fields: [propertyId], references: [id], onDelete: Cascade)
-  inquiry           Inquiry?                @relation(fields: [inquiryId], references: [id], onDelete: SetNull)
-  reservation       Reservation?            @relation(fields: [reservationId], references: [id], onDelete: SetNull)
-  customer          Customer?               @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  acceptanceMetadata  Json?
+  notes               String?
+  createdAt           DateTime                     @default(now())
+  updatedAt           DateTime                     @updatedAt
+  template            ContractTemplate             @relation(fields: [templateId], references: [id], onDelete: Restrict)
+  property            Property                     @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  inquiry             Inquiry?                     @relation(fields: [inquiryId], references: [id], onDelete: SetNull)
+  reservation         Reservation?                 @relation(fields: [reservationId], references: [id], onDelete: SetNull)
+  customer            Customer?                    @relation(fields: [customerId], references: [id], onDelete: SetNull)
 
   @@index([propertyId, status, createdAt])
   @@index([inquiryId, status])

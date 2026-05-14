@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { confirmExternalReservationMatch, ignoreExternalReservationReviewItem, unlinkExternalReservationMatch } from "@/lib/externalReservationReconciliation";
+import { assertExternalReservationPropertyAccess, confirmExternalReservationMatch, ignoreExternalReservationReviewItem, unlinkExternalReservationMatch } from "@/lib/externalReservationReconciliation";
 import { requireOwnerPortalSession, requireOwnerPortalWriteAccess } from "@/lib/ownerPortalApi";
+import { getOwnerPortalPropertyScope } from "@/lib/ownerPortalScope";
 
 export async function POST(request: NextRequest, context: { params: Promise<{ id: string }> }) {
   const unauthorized = await requireOwnerPortalSession();
@@ -11,6 +12,8 @@ export async function POST(request: NextRequest, context: { params: Promise<{ id
   const { id } = await context.params;
 
   try {
+    const property = await getOwnerPortalPropertyScope();
+    await assertExternalReservationPropertyAccess(id, property.id);
     const body = await request.json();
     const action = String(body.action || "");
 

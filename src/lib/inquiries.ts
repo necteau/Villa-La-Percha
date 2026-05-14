@@ -35,6 +35,7 @@ export interface InquiryRecord {
   currentQuotedAmount?: number;
   currentDepositAmount?: number;
   pricingSnapshotNotice?: string;
+  isTest?: boolean;
   createdAt: string;
 }
 
@@ -76,6 +77,7 @@ export interface InquiryInput {
   checkIn?: string;
   checkOut?: string;
   message?: string;
+  isTest?: boolean;
 }
 
 export interface InquiryDraftInput {
@@ -500,6 +502,7 @@ function mapDbInquiry(record: {
   paymentNote?: string | null;
   reservations?: Array<{ id: string; status: import("@prisma/client").ReservationStatus; checkIn: Date; checkOut: Date }>;
   contractExecutions?: Parameters<typeof summarizeContractExecution>[0][];
+  isTest?: boolean;
   createdAt: Date;
 }): InquiryRecord {
   return {
@@ -526,6 +529,7 @@ function mapDbInquiry(record: {
       checkOut: reservation.checkOut.toISOString().slice(0, 10),
     })),
     contracts: record.contractExecutions?.map(summarizeContractExecution),
+    isTest: record.isTest || undefined,
     createdAt: record.createdAt.toISOString(),
   };
 }
@@ -879,6 +883,7 @@ export async function createInquiry(input: InquiryInput): Promise<InquiryRecord>
     quotedAmount: paymentSnapshot.quotedAmount,
     depositAmount: paymentSnapshot.depositAmount,
     paymentStatus: "unpaid",
+    isTest: input.isTest,
     createdAt: new Date().toISOString(),
   };
 
@@ -921,6 +926,7 @@ export async function createInquiry(input: InquiryInput): Promise<InquiryRecord>
         message: input.message,
         quotedAmount: paymentSnapshot.quotedAmount ?? null,
         depositAmount: paymentSnapshot.depositAmount ?? null,
+        isTest: input.isTest ?? false,
       },
     });
     if (input.message) {

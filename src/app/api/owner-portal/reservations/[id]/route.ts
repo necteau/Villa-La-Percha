@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { deleteReservation, updateReservation } from "@/lib/reservations";
 import { requireOwnerPortalSession, requireOwnerPortalWriteAccess } from "@/lib/ownerPortalApi";
+import { getOwnerPortalPropertyScope } from "@/lib/ownerPortalScope";
 
 interface Context {
   params: Promise<{ id: string }>;
@@ -15,7 +16,8 @@ async function handleUpdate(req: Request, context: Context) {
   try {
     const { id } = await context.params;
     const body = await req.json();
-    const reservation = await updateReservation(id, body);
+    const property = await getOwnerPortalPropertyScope();
+    const reservation = await updateReservation(id, body, { propertyId: property.id });
     if (!reservation) {
       return NextResponse.json({ ok: false, error: "Reservation not found" }, { status: 404 });
     }
@@ -43,7 +45,8 @@ export async function DELETE(_req: Request, context: Context) {
   if (writeBlocked) return writeBlocked;
 
   const { id } = await context.params;
-  const ok = await deleteReservation(id);
+  const property = await getOwnerPortalPropertyScope();
+  const ok = await deleteReservation(id, { propertyId: property.id });
   if (!ok) {
     return NextResponse.json({ ok: false, error: "Reservation not found" }, { status: 404 });
   }
