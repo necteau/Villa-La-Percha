@@ -20,6 +20,8 @@ const env = {
   TRACKHS_USERNAME: process.env.TRACKHS_USERNAME || secret('username'),
   TRACKHS_PASSWORD: process.env.TRACKHS_PASSWORD || secret('password'),
   TRACKHS_OUT_JSON: process.env.TRACKHS_OUT_JSON || path.join(repoRoot, 'src/data/owner-portal-reservations.json'),
+  EXTERNAL_IMPORT_SOURCE: process.env.EXTERNAL_IMPORT_SOURCE || 'trackhs-owner-availability',
+  PROPERTY_SLUG: process.env.PROPERTY_SLUG || 'villa-la-percha',
 };
 
 const pull = spawnSync('node', [pullScript], { cwd: workspaceRoot, env, encoding: 'utf8' });
@@ -27,7 +29,7 @@ process.stdout.write(pull.stdout || '');
 process.stderr.write(pull.stderr || '');
 if (pull.status !== 0) process.exit(pull.status ?? 1);
 
-const apply = spawnSync('node', ['scripts/directstay-external-import.mjs', '--apply'], { cwd: repoRoot, env: process.env, encoding: 'utf8' });
+const apply = spawnSync('node', ['scripts/directstay-external-import.mjs', '--apply'], { cwd: repoRoot, env, encoding: 'utf8' });
 process.stdout.write(apply.stdout || '');
 process.stderr.write(apply.stderr || '');
 process.exit(apply.status ?? 1);
