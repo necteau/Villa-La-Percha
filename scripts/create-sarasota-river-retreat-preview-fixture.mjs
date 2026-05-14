@@ -71,7 +71,7 @@ const fixture = {
     sections: [
       {
         kind: "heroTextOnly",
-        eyebrow: "Internal DirectStay preview fixture",
+        eyebrow: "Read-only planning preview",
         title: "A quiet Sarasota river retreat, planned with the owner details guests actually need.",
         body: "A careful preview for a small waterfront home where the value is morning river rhythm, private pool and spa questions, dock and kayak planning, and direct owner care.",
         badges: ["Sarasota / Phillippi River context", "3 bedrooms", "Sleeps 6", "Preview only — rules and pricing are not live"],
@@ -119,7 +119,7 @@ const fixture = {
         kind: "priceComparison",
         eyebrow: "Trip-total structure",
         title: "Clearer trip cost before anyone commits.",
-        body: "No real rates are shown in this preview. A launch-ready version would separate lodging, cleaning, taxes, deposits, owner fees, and any marketplace/service-fee comparison only after owner approval."
+        body: "No real rates are shown in this preview. A launch-ready version would separate lodging, cleaning, taxes, deposits, owner fees, and any marketplace/service-fee comparison only after the owner has reviewed and confirmed the assumptions."
       },
       {
         kind: "areaGuide",

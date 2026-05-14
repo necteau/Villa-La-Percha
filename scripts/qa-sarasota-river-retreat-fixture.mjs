@@ -19,6 +19,7 @@ const hero = sections.find((section) => section.kind === "heroTextOnly");
 const imageStories = sections.filter((section) => section.imageUrl);
 const livingRoomImage = "uploads/Home_Page/Sarasota_Main-6089374.jpg?format=webp";
 const textCorpus = JSON.stringify(fixture.preview ?? {}).toLowerCase();
+const guestSectionTextCorpus = JSON.stringify(sections).toLowerCase();
 
 assert(fixture.ok === true, "fixture should report ok=true");
 assert(fixture.fixtureOnly === true, "fixture must remain marked fixtureOnly");
@@ -44,6 +45,21 @@ const blockedPhrases = [
 ];
 for (const phrase of blockedPhrases) {
   assert(!textCorpus.includes(phrase), `guest-facing preview copy must not contain blocked phrase: ${phrase}`);
+}
+
+const guestCopyDenylist = [
+  "benchmark",
+  "source description",
+  "source material",
+  "final live copy",
+  "preview uses mock",
+  "strategy",
+  "fixture",
+  "qa",
+  "owner approval"
+];
+for (const phrase of guestCopyDenylist) {
+  assert(!guestSectionTextCorpus.includes(phrase), `rendered guest sections must not contain internal/process phrase: ${phrase}`);
 }
 
 const bannedNumericClaims = [/\$\d/, /\b\d+\s*(minutes?|mins?|mi|miles)\b/i];
