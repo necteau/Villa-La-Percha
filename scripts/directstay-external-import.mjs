@@ -16,11 +16,11 @@ const apply = args.has("--apply");
 const source = process.env.EXTERNAL_IMPORT_SOURCE || "owner-portal-json";
 const propertySlug = process.env.PROPERTY_SLUG || "villa-la-percha";
 const jsonPath = process.env.EXTERNAL_IMPORT_JSON || "src/data/owner-portal-reservations.json";
-const includeTypes = (process.env.EXTERNAL_IMPORT_TYPES || "Rental Guest,Airbnb,VRBO,External Booking,Direct Booking,Owner")
+const includeTypes = (process.env.EXTERNAL_IMPORT_TYPES || "Rental Guest,Airbnb,VRBO,External Booking,Owner")
   .split(",")
   .map((item) => item.trim().toLowerCase())
   .filter(Boolean);
-const cleanupBookingTypes = (process.env.EXTERNAL_CLEANUP_BOOKING_TYPES || "Rental Guest,Airbnb,VRBO,External Booking,Direct Booking,Owner")
+const cleanupBookingTypes = (process.env.EXTERNAL_CLEANUP_BOOKING_TYPES || "Rental Guest,Airbnb,VRBO,External Booking")
   .split(",")
   .map((item) => item.trim())
   .filter(Boolean);

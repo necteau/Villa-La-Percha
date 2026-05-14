@@ -20,8 +20,8 @@ const prisma = new PrismaClient({ adapter: new PrismaPg(pool) });
 const keepReservationId = process.env.KEEP_DIRECTSTAY_RESERVATION_ID;
 const apply = process.argv.includes("--apply");
 
-const externalSources = [ReservationSource.AIRBNB, ReservationSource.VRBO];
-const externalBookingTypes = (process.env.EXTERNAL_CLEANUP_BOOKING_TYPES || "Rental Guest,Airbnb,VRBO,External Booking,Direct Booking,Owner")
+const externalSources = [ReservationSource.AIRBNB, ReservationSource.VRBO, ReservationSource.IMPORT];
+const externalBookingTypes = (process.env.EXTERNAL_CLEANUP_BOOKING_TYPES || "Rental Guest,Airbnb,VRBO,External Booking")
   .split(",")
   .map((item) => item.trim())
   .filter(Boolean);
@@ -53,6 +53,10 @@ try {
     deleteCount: candidates.length,
     candidates,
   }, null, 2));
+
+  if (apply && !process.env.CONFIRM_IMPORTED_RESERVATION_CLEANUP) {
+    throw new Error("Set CONFIRM_IMPORTED_RESERVATION_CLEANUP=1 after reviewing the dry-run candidate list before using --apply.");
+  }
 
   if (apply && candidates.length > 0) {
     const ids = candidates.map((item) => item.id);

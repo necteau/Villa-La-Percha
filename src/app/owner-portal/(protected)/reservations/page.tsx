@@ -147,6 +147,12 @@ export default function OwnerReservationsPage() {
           checkOut: draft.checkOut,
           income: draft.income,
           currency: draft.currency,
+          paymentStatus: draft.paymentStatus,
+          depositAmount: draft.depositAmount,
+          amountReceived: draft.amountReceived,
+          paymentMethod: draft.paymentMethod,
+          paymentConfirmedAt: draft.paymentConfirmedAt,
+          paymentNote: draft.paymentNote,
           isOwnerWeek: draft.isOwnerWeek,
         }),
       });

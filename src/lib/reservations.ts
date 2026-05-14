@@ -1,5 +1,5 @@
 import path from "path";
-import { BookingPaymentStatus, ReservationSource, ReservationStatus } from "@prisma/client";
+import { BookingPaymentStatus, ExternalReservationSourceStatus, ReservationSource, ReservationStatus } from "@prisma/client";
 import { findOrCreateCustomerLink } from "@/lib/customers";
 import { summarizeContractExecution, type ContractSummary } from "@/lib/contracts";
 import { getPrismaClient } from "@/lib/db";
@@ -66,6 +66,20 @@ function canUseDatabase(): boolean {
 
 function nightsBetween(checkIn: string, checkOut: string): number {
   return Math.max(0, Math.round((new Date(checkOut).getTime() - new Date(checkIn).getTime()) / (1000 * 60 * 60 * 24)));
+}
+
+function parseDateOnly(value: string, label: string): Date {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) throw new Error(`${label} must be a YYYY-MM-DD date.`);
+  const date = new Date(`${value}T00:00:00.000Z`);
+  if (Number.isNaN(date.getTime()) || date.toISOString().slice(0, 10) !== value) throw new Error(`${label} is not a valid calendar date.`);
+  return date;
+}
+
+function validateReservationDates(checkIn: string, checkOut: string) {
+  const start = parseDateOnly(checkIn, "Check-in");
+  const end = parseDateOnly(checkOut, "Check-out");
+  if (end <= start) throw new Error("Check-out must be after check-in.");
+  return { start, end };
 }
 
 function normalizeStatus(value: string): ReservationRecord["status"] {
@@ -223,61 +237,54 @@ async function ensureDefaultProperty() {
   return owner.properties[0];
 }
 
+async function assertNoAvailabilityConflict(input: { propertyId: string; checkIn: string; checkOut: string; reservationId?: string }) {
+  const prisma = await getPrismaClient();
+  const { start, end } = validateReservationDates(input.checkIn, input.checkOut);
+  const [internalConflict, externalConflict] = await Promise.all([
+    prisma.reservation.findFirst({
+      where: {
+        propertyId: input.propertyId,
+        id: input.reservationId ? { not: input.reservationId } : undefined,
+        status: { not: ReservationStatus.CANCELLED },
+        checkIn: { lt: end },
+        checkOut: { gt: start },
+      },
+      select: { id: true, checkIn: true, checkOut: true, guestName: true, bookingType: true },
+    }),
+    prisma.externalReservation.findFirst({
+      where: {
+        propertyId: input.propertyId,
+        sourceStatus: ExternalReservationSourceStatus.ACTIVE,
+        reservationId: input.reservationId ? { not: input.reservationId } : undefined,
+        checkIn: { lt: end },
+        checkOut: { gt: start },
+      },
+      select: { id: true, source: true, externalReservationId: true, checkIn: true, checkOut: true },
+    }),
+  ]);
+
+  if (internalConflict) {
+    throw new Error(`Dates overlap an existing DirectStay reservation (${internalConflict.bookingType || internalConflict.guestName || internalConflict.id}, ${internalConflict.checkIn.toISOString().slice(0, 10)} → ${internalConflict.checkOut.toISOString().slice(0, 10)}).`);
+  }
+  if (externalConflict) {
+    throw new Error(`Dates overlap an active external block (${externalConflict.source} #${externalConflict.externalReservationId}, ${externalConflict.checkIn.toISOString().slice(0, 10)} → ${externalConflict.checkOut.toISOString().slice(0, 10)}).`);
+  }
+}
+
 export async function listReservations(): Promise<ReservationRecord[]> {
   if (!canUseDatabase()) {
     return readFallbackReservations();
   }
 
-  try {
-    const prisma = await getPrismaClient();
-    const property = await ensureDefaultProperty();
-    const records = await prisma.reservation.findMany({
-      where: { propertyId: property.id },
-      include: { contractExecutions: { include: { template: true }, orderBy: { updatedAt: "desc" } } },
-      orderBy: { checkIn: "asc" },
-    });
+  const prisma = await getPrismaClient();
+  const property = await ensureDefaultProperty();
+  const records = await prisma.reservation.findMany({
+    where: { propertyId: property.id },
+    include: { contractExecutions: { include: { template: true }, orderBy: { updatedAt: "desc" } } },
+    orderBy: { checkIn: "asc" },
+  });
 
-    if (records.length === 0) {
-      const fallback = await readFallbackReservations();
-      await prisma.reservation.createMany({
-        data: fallback.map((item) => ({
-          id: item.id,
-          propertyId: property.id,
-          status: toDbStatus(item.status),
-          source: toDbSource(item.type, item.isOwnerWeek),
-          bookingType: item.type,
-          bookedDate: item.bookedDate ? new Date(item.bookedDate) : null,
-          guestName: item.guestName ?? null,
-          guestEmail: item.guestEmail ?? null,
-          guestPhone: item.guestPhone ?? null,
-          checkIn: new Date(item.checkIn),
-          checkOut: new Date(item.checkOut),
-          nights: nightsBetween(item.checkIn, item.checkOut),
-          totalAmount: item.income,
-          currency: item.currency,
-          paymentStatus: toDbPaymentStatus(item.paymentStatus),
-          depositAmount: item.depositAmount ?? null,
-          amountReceived: item.amountReceived ?? null,
-          paymentMethod: item.paymentMethod ?? null,
-          paymentConfirmedAt: item.paymentConfirmedAt ? new Date(item.paymentConfirmedAt) : null,
-          paymentNote: item.paymentNote ?? null,
-          isOwnerWeek: item.isOwnerWeek,
-        })),
-        skipDuplicates: true,
-      });
-
-      const seeded = await prisma.reservation.findMany({
-        where: { propertyId: property.id },
-        include: { contractExecutions: { include: { template: true }, orderBy: { updatedAt: "desc" } } },
-        orderBy: { checkIn: "asc" },
-      });
-      return seeded.map((record) => mapDbReservation(record, property.name));
-    }
-
-    return records.map((record) => mapDbReservation(record, property.name));
-  } catch {
-    return readFallbackReservations();
-  }
+  return records.map((record) => mapDbReservation(record, property.name));
 }
 
 export async function createReservation(input: ReservationInput): Promise<ReservationRecord> {
@@ -314,10 +321,10 @@ export async function createReservation(input: ReservationInput): Promise<Reserv
     return record;
   }
 
-  try {
-    const prisma = await getPrismaClient();
-    const property = await ensureDefaultProperty();
-    const customerLink = await findOrCreateCustomerLink({
+  const prisma = await getPrismaClient();
+  const property = await ensureDefaultProperty();
+  await assertNoAvailabilityConflict({ propertyId: property.id, checkIn: record.checkIn, checkOut: record.checkOut });
+  const customerLink = await findOrCreateCustomerLink({
       propertyId: property.id,
       fullName: record.guestName,
       email: record.guestEmail,
@@ -363,13 +370,7 @@ export async function createReservation(input: ReservationInput): Promise<Reserv
       });
       if (linked) return mapDbReservation(linked, property.name);
     }
-    return mapDbReservation(created, property.name);
-  } catch {
-    const current = await readFallbackReservations();
-    const next = [record, ...current];
-    await writeFallbackReservations(next);
-    return record;
-  }
+  return mapDbReservation(created, property.name);
 }
 
 export async function updateReservation(id: string, input: Partial<ReservationInput>): Promise<ReservationRecord | null> {
@@ -405,14 +406,14 @@ export async function updateReservation(id: string, input: Partial<ReservationIn
     return updated;
   }
 
-  try {
-    const prisma = await getPrismaClient();
-    const property = await ensureDefaultProperty();
-    const existing = await prisma.reservation.findUnique({ where: { id } });
-    if (!existing) return null;
+  const prisma = await getPrismaClient();
+  const property = await ensureDefaultProperty();
+  const existing = await prisma.reservation.findUnique({ where: { id } });
+  if (!existing) return null;
 
-    const patched = applyPatch(mapDbReservation(existing, property.name));
-    const customerLink = await findOrCreateCustomerLink({
+  const patched = applyPatch(mapDbReservation(existing, property.name));
+  await assertNoAvailabilityConflict({ propertyId: property.id, reservationId: id, checkIn: patched.checkIn, checkOut: patched.checkOut });
+  const customerLink = await findOrCreateCustomerLink({
       propertyId: property.id,
       fullName: patched.guestName,
       email: patched.guestEmail,
@@ -446,15 +447,7 @@ export async function updateReservation(id: string, input: Partial<ReservationIn
       },
       include: { contractExecutions: { include: { template: true }, orderBy: { updatedAt: "desc" } } },
     });
-    return mapDbReservation(updated, property.name);
-  } catch {
-    const current = await readFallbackReservations();
-    const existing = current.find((item) => item.id === id);
-    if (!existing) return null;
-    const updated = applyPatch(existing);
-    await writeFallbackReservations(current.map((item) => (item.id === id ? updated : item)));
-    return updated;
-  }
+  return mapDbReservation(updated, property.name);
 }
 
 export async function deleteReservation(id: string): Promise<boolean> {
@@ -466,15 +459,12 @@ export async function deleteReservation(id: string): Promise<boolean> {
     return true;
   }
 
+  const prisma = await getPrismaClient();
   try {
-    const prisma = await getPrismaClient();
     await prisma.reservation.delete({ where: { id } });
     return true;
-  } catch {
-    const current = await readFallbackReservations();
-    const next = current.filter((item) => item.id !== id);
-    if (next.length === current.length) return false;
-    await writeFallbackReservations(next);
-    return true;
+  } catch (error) {
+    if (typeof error === "object" && error && "code" in error && error.code === "P2025") return false;
+    throw error;
   }
 }

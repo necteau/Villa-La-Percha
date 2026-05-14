@@ -37,7 +37,7 @@ export interface ExternalReviewItem {
 }
 
 function toSourceStatus(value?: ExternalReservationImport["sourceStatus"]): ExternalReservationSourceStatus {
-  return value === "cancelled" ? ExternalReservationSourceStatus.CANCELLED : ExternalReservationSourceStatus.ACTIVE;
+  return String(value || "active").toLowerCase() === "cancelled" ? ExternalReservationSourceStatus.CANCELLED : ExternalReservationSourceStatus.ACTIVE;
 }
 
 function toDate(value: string | Date): Date {
@@ -116,6 +116,9 @@ export async function upsertExternalReservations(imports: ExternalReservationImp
 }
 
 export async function runExternalReservationSync(imports: ExternalReservationImport[], syncedAt = new Date()) {
+  if (imports.length === 0) {
+    throw new Error("External sync requires at least one import row. To mark a source empty, call markMissingExternalReservations with explicit property/source context.");
+  }
   const grouped = new Map<string, { propertyId: string; source: string; externalIds: string[] }>();
   for (const item of imports) {
     const key = `${item.propertyId}:${item.source}`;
@@ -212,9 +215,16 @@ export async function markMissingExternalReservations(propertyId: string, seenEx
 
 export async function confirmExternalReservationMatch(externalReservationId: string, reservationId?: string, confirmedByUserId?: string) {
   const prisma = await getPrismaClient();
-  const external = await prisma.externalReservation.findUnique({ where: { id: externalReservationId }, select: { reservationId: true } });
+  const external = await prisma.externalReservation.findUnique({ where: { id: externalReservationId }, select: { reservationId: true, propertyId: true, checkIn: true, checkOut: true, sourceStatus: true } });
   const targetReservationId = reservationId ?? external?.reservationId;
   if (!targetReservationId) throw new Error("A DirectStay reservation is required to confirm this match.");
+  if (!external) throw new Error("External reservation not found.");
+  if (external.sourceStatus !== ExternalReservationSourceStatus.ACTIVE) throw new Error("Only active external reservations can be matched.");
+  const target = await prisma.reservation.findUnique({ where: { id: targetReservationId }, select: { id: true, propertyId: true, status: true, checkIn: true, checkOut: true } });
+  if (!target) throw new Error("DirectStay reservation not found.");
+  if (target.propertyId !== external.propertyId) throw new Error("External reservation and DirectStay reservation must belong to the same property.");
+  if (target.status === ReservationStatus.CANCELLED) throw new Error("Cannot match an external reservation to a cancelled DirectStay reservation.");
+  if (!overlaps(external.checkIn, external.checkOut, target.checkIn, target.checkOut)) throw new Error("External reservation and DirectStay reservation dates do not overlap.");
 
   return prisma.externalReservation.update({
     where: { id: externalReservationId },
