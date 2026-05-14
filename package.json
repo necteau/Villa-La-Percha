@@ -17,6 +17,7 @@
     "qa:preview-builds": "node scripts/qa-preview-build-gates.mjs",
     "qa:preview-build-status-gates": "npx --yes tsx scripts/qa-preview-build-status-gates.mts",
     "qa:preview-benchmark-index": "node scripts/qa-preview-benchmark-index.mjs",
+    "qa:sarasota-fixture": "node scripts/qa-sarasota-river-retreat-fixture.mjs",
     "qa:platform-lead-emily-plan": "node scripts/qa-platform-lead-emily-simulation-plan.mjs",
     "qa:platform-lead-emily-pack": "node scripts/qa-platform-lead-emily-artifact-pack.mjs"
   },
