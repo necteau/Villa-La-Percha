@@ -16,7 +16,7 @@ const apply = args.has("--apply");
 const source = process.env.EXTERNAL_IMPORT_SOURCE || "owner-portal-json";
 const propertySlug = process.env.PROPERTY_SLUG || "villa-la-percha";
 const jsonPath = process.env.EXTERNAL_IMPORT_JSON || "src/data/owner-portal-reservations.json";
-const includeTypes = (process.env.EXTERNAL_IMPORT_TYPES || "Rental Guest,Airbnb,VRBO,External Booking,Owner")
+const includeTypes = (process.env.EXTERNAL_IMPORT_TYPES || "Rental Guest,Airbnb,VRBO,External Booking,Direct Booking,Owner")
   .split(",")
   .map((item) => item.trim().toLowerCase())
   .filter(Boolean);
@@ -99,6 +99,7 @@ try {
 
   const oldReservationCandidates = await prisma.reservation.findMany({
     where: {
+      propertyId: property.id,
       OR: [
         { source: { in: [ReservationSource.AIRBNB, ReservationSource.VRBO] } },
         { bookingType: { in: cleanupBookingTypes } },
@@ -123,7 +124,7 @@ try {
   });
 
   let result = null;
-  if (apply && imports.length > 0) {
+  if (apply) {
     let upserted = 0;
     for (const item of imports) {
       await prisma.externalReservation.upsert({

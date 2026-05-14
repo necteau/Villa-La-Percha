@@ -20,7 +20,7 @@ const prisma = new PrismaClient({ adapter: new PrismaPg(pool) });
 const keepReservationId = process.env.KEEP_DIRECTSTAY_RESERVATION_ID;
 const apply = process.argv.includes("--apply");
 
-const externalSources = [ReservationSource.AIRBNB, ReservationSource.VRBO, ReservationSource.IMPORT];
+const externalSources = [ReservationSource.AIRBNB, ReservationSource.VRBO];
 const externalBookingTypes = (process.env.EXTERNAL_CLEANUP_BOOKING_TYPES || "Rental Guest,Airbnb,VRBO,External Booking")
   .split(",")
   .map((item) => item.trim())

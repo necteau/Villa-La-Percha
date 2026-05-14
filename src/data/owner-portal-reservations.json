@@ -12,7 +12,7 @@
     "currency": "USD",
     "isOwnerWeek": false,
     "source": "trackhs-owner-availability",
-    "pulledAt": "2026-05-14T18:53:33.888Z"
+    "pulledAt": "2026-05-14T19:03:22.714Z"
   },
   {
     "id": "404428",
@@ -27,7 +27,7 @@
     "currency": "USD",
     "isOwnerWeek": true,
     "source": "trackhs-owner-availability",
-    "pulledAt": "2026-05-14T18:53:33.888Z"
+    "pulledAt": "2026-05-14T19:03:22.714Z"
   },
   {
     "id": "404429",
@@ -42,7 +42,7 @@
     "currency": "USD",
     "isOwnerWeek": true,
     "source": "trackhs-owner-availability",
-    "pulledAt": "2026-05-14T18:53:33.888Z"
+    "pulledAt": "2026-05-14T19:03:22.714Z"
   },
   {
     "id": "404431",
@@ -57,7 +57,7 @@
     "currency": "USD",
     "isOwnerWeek": true,
     "source": "trackhs-owner-availability",
-    "pulledAt": "2026-05-14T18:53:33.888Z"
+    "pulledAt": "2026-05-14T19:03:22.714Z"
   },
   {
     "id": "404432",
@@ -72,7 +72,7 @@
     "currency": "USD",
     "isOwnerWeek": true,
     "source": "trackhs-owner-availability",
-    "pulledAt": "2026-05-14T18:53:33.888Z"
+    "pulledAt": "2026-05-14T19:03:22.714Z"
   },
   {
     "id": "404547",
@@ -87,7 +87,7 @@
     "currency": "USD",
     "isOwnerWeek": false,
     "source": "trackhs-owner-availability",
-    "pulledAt": "2026-05-14T18:53:33.888Z"
+    "pulledAt": "2026-05-14T19:03:22.714Z"
   },
   {
     "id": "404433",
@@ -102,7 +102,7 @@
     "currency": "USD",
     "isOwnerWeek": true,
     "source": "trackhs-owner-availability",
-    "pulledAt": "2026-05-14T18:53:33.888Z"
+    "pulledAt": "2026-05-14T19:03:22.714Z"
   },
   {
     "id": "404646",
@@ -117,7 +117,7 @@
     "currency": "USD",
     "isOwnerWeek": true,
     "source": "trackhs-owner-availability",
-    "pulledAt": "2026-05-14T18:53:33.888Z"
+    "pulledAt": "2026-05-14T19:03:22.714Z"
   },
   {
     "id": "404674",
@@ -132,7 +132,7 @@
     "currency": "USD",
     "isOwnerWeek": false,
     "source": "trackhs-owner-availability",
-    "pulledAt": "2026-05-14T18:53:33.888Z"
+    "pulledAt": "2026-05-14T19:03:22.714Z"
   },
   {
     "id": "404434",
@@ -147,7 +147,7 @@
     "currency": "USD",
     "isOwnerWeek": true,
     "source": "trackhs-owner-availability",
-    "pulledAt": "2026-05-14T18:53:33.888Z"
+    "pulledAt": "2026-05-14T19:03:22.714Z"
   },
   {
     "id": "404435",
@@ -162,7 +162,7 @@
     "currency": "USD",
     "isOwnerWeek": true,
     "source": "trackhs-owner-availability",
-    "pulledAt": "2026-05-14T18:53:33.888Z"
+    "pulledAt": "2026-05-14T19:03:22.714Z"
   },
   {
     "id": "404705",
@@ -177,7 +177,7 @@
     "currency": "USD",
     "isOwnerWeek": false,
     "source": "trackhs-owner-availability",
-    "pulledAt": "2026-05-14T18:53:33.888Z"
+    "pulledAt": "2026-05-14T19:03:22.714Z"
   },
   {
     "id": "404436",
@@ -192,7 +192,7 @@
     "currency": "USD",
     "isOwnerWeek": true,
     "source": "trackhs-owner-availability",
-    "pulledAt": "2026-05-14T18:53:33.888Z"
+    "pulledAt": "2026-05-14T19:03:22.714Z"
   },
   {
     "id": "404437",
@@ -207,7 +207,7 @@
     "currency": "USD",
     "isOwnerWeek": true,
     "source": "trackhs-owner-availability",
-    "pulledAt": "2026-05-14T18:53:33.888Z"
+    "pulledAt": "2026-05-14T19:03:22.714Z"
   },
   {
     "id": "404438",
@@ -222,7 +222,7 @@
     "currency": "USD",
     "isOwnerWeek": true,
     "source": "trackhs-owner-availability",
-    "pulledAt": "2026-05-14T18:53:33.888Z"
+    "pulledAt": "2026-05-14T19:03:22.714Z"
   },
   {
     "id": "404439",
@@ -237,7 +237,7 @@
     "currency": "USD",
     "isOwnerWeek": true,
     "source": "trackhs-owner-availability",
-    "pulledAt": "2026-05-14T18:53:33.888Z"
+    "pulledAt": "2026-05-14T19:03:22.714Z"
   },
   {
     "id": "404668",
@@ -252,6 +252,6 @@
     "currency": "USD",
     "isOwnerWeek": true,
     "source": "trackhs-owner-availability",
-    "pulledAt": "2026-05-14T18:53:33.888Z"
+    "pulledAt": "2026-05-14T19:03:22.714Z"
   }
 ]

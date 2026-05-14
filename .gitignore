@@ -19,3 +19,6 @@ Thumbs.db
 
 # Vercel pulled secrets
 .env.vercel.local
+
+# Local runtime/audit scratch files
+runtime/
