@@ -4,6 +4,7 @@ import { findOrCreateCustomerLink } from "@/lib/customers";
 import { summarizeContractExecution, type ContractSummary } from "@/lib/contracts";
 import { getPrismaClient } from "@/lib/db";
 import { canUseDatabaseSync, readJsonFallback, writeJsonFallback } from "@/lib/fallbackOrchestrator";
+import { ensureReservationEmailJobs, getReservationCommunicationSummary, type ReservationCommunicationSummary } from "@/lib/reservationComms";
 
 export interface ReservationRecord {
   id: string;
@@ -28,6 +29,7 @@ export interface ReservationRecord {
   paymentConfirmedAt?: string;
   paymentNote?: string;
   contracts?: ContractSummary[];
+  communication?: ReservationCommunicationSummary;
   isOwnerWeek: boolean;
   isTest?: boolean;
 }
@@ -283,6 +285,15 @@ async function assertNoAvailabilityConflict(input: { propertyId: string; checkIn
   }
 }
 
+async function withCommunicationSummary(record: ReservationRecord): Promise<ReservationRecord> {
+  if (!canUseDatabase() || !record.id) return record;
+  try {
+    return { ...record, communication: await getReservationCommunicationSummary(record.id) };
+  } catch {
+    return record;
+  }
+}
+
 export async function listReservations(options: ReservationListOptions = {}): Promise<ReservationRecord[]> {
   if (!canUseDatabase()) {
     return readFallbackReservations();
@@ -296,7 +307,7 @@ export async function listReservations(options: ReservationListOptions = {}): Pr
     orderBy: { checkIn: "asc" },
   });
 
-  return records.map((record) => mapDbReservation(record, property.name));
+  return Promise.all(records.map((record) => withCommunicationSummary(mapDbReservation(record, property.name))));
 }
 
 export async function createReservation(input: ReservationInput, options: ReservationWriteOptions = {}): Promise<ReservationRecord> {
@@ -373,6 +384,8 @@ export async function createReservation(input: ReservationInput, options: Reserv
       include: { contractExecutions: { include: { template: true }, orderBy: { updatedAt: "desc" } } },
     });
 
+    await ensureReservationEmailJobs(created.id).catch(() => []);
+
     if (record.sourceInquiryId) {
       await prisma.contractExecution.updateMany({
         where: { inquiryId: record.sourceInquiryId, reservationId: null },
@@ -382,9 +395,9 @@ export async function createReservation(input: ReservationInput, options: Reserv
         where: { id: created.id },
         include: { contractExecutions: { include: { template: true }, orderBy: { updatedAt: "desc" } } },
       });
-      if (linked) return mapDbReservation(linked, property.name);
+      if (linked) return withCommunicationSummary(mapDbReservation(linked, property.name));
     }
-  return mapDbReservation(created, property.name);
+  return withCommunicationSummary(mapDbReservation(created, property.name));
 }
 
 export async function updateReservation(id: string, input: Partial<ReservationInput>, options: ReservationWriteOptions = {}): Promise<ReservationRecord | null> {
@@ -463,7 +476,8 @@ export async function updateReservation(id: string, input: Partial<ReservationIn
       },
       include: { contractExecutions: { include: { template: true }, orderBy: { updatedAt: "desc" } } },
     });
-  return mapDbReservation(updated, property.name);
+  await ensureReservationEmailJobs(updated.id).catch(() => []);
+  return withCommunicationSummary(mapDbReservation(updated, property.name));
 }
 
 export async function deleteReservation(id: string, options: ReservationWriteOptions = {}): Promise<boolean> {

@@ -42,6 +42,7 @@ export interface InquiryRecord {
 export interface InquiryMessageRecord {
   id: string;
   inquiryId: string;
+  reservationId?: string;
   direction: "inbound" | "outbound";
   authorType: "guest" | "owner" | "assistant" | "system";
   subject?: string;
@@ -91,6 +92,7 @@ export interface InquiryDraftInput {
 
 export interface InquiryMessageInput {
   inquiryId: string;
+  reservationId?: string;
   direction: InquiryMessageRecord["direction"];
   authorType: InquiryMessageRecord["authorType"];
   subject?: string;
@@ -537,6 +539,7 @@ function mapDbInquiry(record: {
 function mapDbMessage(record: {
   id: string;
   inquiryId: string;
+  reservationId?: string | null;
   direction: InquiryMessageDirection;
   authorType: InquiryMessageAuthorType;
   subject: string | null;
@@ -549,6 +552,7 @@ function mapDbMessage(record: {
   return {
     id: record.id,
     inquiryId: record.inquiryId,
+    reservationId: record.reservationId ?? undefined,
     direction: fromDbDirection(record.direction),
     authorType: fromDbAuthorType(record.authorType),
     subject: record.subject ?? undefined,
@@ -753,6 +757,7 @@ export async function appendInquiryMessage(input: InquiryMessageInput): Promise<
   const base: InquiryMessageRecord = {
     id: `msg-${Date.now()}`,
     inquiryId: input.inquiryId,
+    reservationId: input.reservationId,
     direction: input.direction,
     authorType: input.authorType,
     subject: input.subject,
@@ -778,6 +783,7 @@ export async function appendInquiryMessage(input: InquiryMessageInput): Promise<
   const created = await prisma.inquiryMessage.create({
     data: {
       inquiryId: input.inquiryId,
+      reservationId: input.reservationId ?? null,
       direction: toDbDirection(input.direction),
       authorType: toDbAuthorType(input.authorType),
       subject: input.subject ?? null,
@@ -788,7 +794,7 @@ export async function appendInquiryMessage(input: InquiryMessageInput): Promise<
     },
   });
 
-  if (input.authorType !== "system") {
+  if (input.authorType !== "system" && !input.reservationId) {
     await prisma.inquiry.update({
       where: { id: input.inquiryId },
       data: { status: toDbStatus(input.direction === "inbound" ? "needs_reply" : "awaiting_guest") },

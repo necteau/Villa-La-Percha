@@ -119,6 +119,21 @@ enum InquiryDraftStatus {
   SENT
 }
 
+enum ReservationEmailTemplateKind {
+  FINAL_PAYMENT_REMINDER
+  UPCOMING_TRIP_DETAILS
+  CHECK_IN_INSTRUCTIONS
+  POST_STAY_THANK_YOU
+}
+
+enum ReservationEmailJobStatus {
+  PENDING_APPROVAL
+  APPROVED
+  SENT
+  CANCELLED
+  FAILED
+}
+
 enum ContractTemplateType {
   GUEST_RENTAL_AGREEMENT
   OWNER_PLATFORM_AGREEMENT
@@ -392,30 +407,31 @@ model OwnerMember {
 }
 
 model Property {
-  id                           String                @id @default(cuid())
+  id                           String                     @id @default(cuid())
   ownerId                      String
-  slug                         String                @unique
+  slug                         String                     @unique
   name                         String
-  status                       PropertyStatus        @default(DRAFT)
+  status                       PropertyStatus             @default(DRAFT)
   publicDomain                 String?
   inquiryEmail                 String?
   inquiryPhone                 String?
   aiReplyInstructions          String?
-  timezone                     String                @default("America/New_York")
-  currency                     String                @default("USD")
-  taxCollectionMode            TaxCollectionMode     @default(INCLUSIVE)
-  taxRate                      Decimal               @default(0) @db.Decimal(7, 6)
-  taxLabel                     String                @default("Tax")
+  timezone                     String                     @default("America/New_York")
+  currency                     String                     @default("USD")
+  taxCollectionMode            TaxCollectionMode          @default(INCLUSIVE)
+  taxRate                      Decimal                    @default(0) @db.Decimal(7, 6)
+  taxLabel                     String                     @default("Tax")
   minimumStayNights            Int?
   checkInTime                  String?
   checkOutTime                 String?
-  externalMatchReviewDelayDays Int                   @default(3)
-  inquiryEnabled               Boolean               @default(true)
-  createdAt                    DateTime              @default(now())
-  updatedAt                    DateTime              @updatedAt
-  owner                        Owner                 @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  externalMatchReviewDelayDays Int                        @default(3)
+  inquiryEnabled               Boolean                    @default(true)
+  createdAt                    DateTime                   @default(now())
+  updatedAt                    DateTime                   @updatedAt
+  owner                        Owner                      @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   content                      PropertyContent?
   reservations                 Reservation[]
+  reservationEmailTemplates    ReservationEmailTemplate[]
   externalReservations         ExternalReservation[]
   pricingRules                 PricingRule[]
   paymentMethods               PaymentMethod[]
@@ -423,7 +439,7 @@ model Property {
   inquiries                    Inquiry[]
   contractTemplates            ContractTemplate[]
   contractExecutions           ContractExecution[]
-  primaryCustomers             Customer[]            @relation("CustomerPrimaryProperty")
+  primaryCustomers             Customer[]                 @relation("CustomerPrimaryProperty")
 }
 
 model Customer {
@@ -495,6 +511,9 @@ model Reservation {
   paymentNote        String?
   isOwnerWeek        Boolean               @default(false)
   isTest             Boolean               @default(false)
+  needsReplyAt       DateTime?
+  lastGuestMessageAt DateTime?
+  lastGuestMessageId String?
   notes              String?
   createdAt          DateTime              @default(now())
   updatedAt          DateTime              @updatedAt
@@ -502,10 +521,13 @@ model Reservation {
   customer           Customer?             @relation(fields: [customerId], references: [id], onDelete: SetNull)
   sourceInquiryId    String?
   sourceInquiry      Inquiry?              @relation("InquiryReservation", fields: [sourceInquiryId], references: [id], onDelete: SetNull)
+  messages           InquiryMessage[]
+  emailJobs          ReservationEmailJob[]
   externalMatches    ExternalReservation[]
   contractExecutions ContractExecution[]
 
   @@index([propertyId, checkIn, checkOut])
+  @@index([propertyId, needsReplyAt])
   @@index([sourceInquiryId])
   @@index([customerId])
 }
@@ -638,6 +660,7 @@ model Inquiry {
 model InquiryMessage {
   id             String                   @id @default(cuid())
   inquiryId      String
+  reservationId  String?
   direction      InquiryMessageDirection
   authorType     InquiryMessageAuthorType
   subject        String?
@@ -647,8 +670,49 @@ model InquiryMessage {
   receivedAt     DateTime?
   createdAt      DateTime                 @default(now())
   inquiry        Inquiry                  @relation(fields: [inquiryId], references: [id], onDelete: Cascade)
+  reservation    Reservation?             @relation(fields: [reservationId], references: [id], onDelete: SetNull)
 
   @@index([inquiryId, createdAt])
+  @@index([reservationId, createdAt])
+  @@index([reservationId, direction, createdAt])
+}
+
+model ReservationEmailTemplate {
+  id         String                       @id @default(cuid())
+  propertyId String
+  kind       ReservationEmailTemplateKind
+  subject    String
+  body       String
+  active     Boolean                      @default(true)
+  createdAt  DateTime                     @default(now())
+  updatedAt  DateTime                     @updatedAt
+  property   Property                     @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  jobs       ReservationEmailJob[]
+
+  @@unique([propertyId, kind])
+  @@index([propertyId, active])
+}
+
+model ReservationEmailJob {
+  id             String                       @id @default(cuid())
+  reservationId  String
+  templateId     String?
+  kind           ReservationEmailTemplateKind
+  status         ReservationEmailJobStatus    @default(PENDING_APPROVAL)
+  scheduledFor   DateTime
+  subject        String
+  body           String
+  sentAt         DateTime?
+  emailMessageId String?
+  errorMessage   String?
+  createdAt      DateTime                     @default(now())
+  updatedAt      DateTime                     @updatedAt
+  reservation    Reservation                  @relation(fields: [reservationId], references: [id], onDelete: Cascade)
+  template       ReservationEmailTemplate?    @relation(fields: [templateId], references: [id], onDelete: SetNull)
+
+  @@unique([reservationId, kind])
+  @@index([status, scheduledFor])
+  @@index([reservationId, status])
 }
 
 model InquiryReplyDraft {

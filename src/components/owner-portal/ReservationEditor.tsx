@@ -16,6 +16,35 @@ export interface ReservationContractSummary {
   acceptedAt?: string;
 }
 
+export interface ReservationCommunicationMessage {
+  id: string;
+  inquiryId?: string;
+  direction: "inbound" | "outbound";
+  authorType: "guest" | "owner" | "assistant" | "system";
+  subject?: string;
+  body: string;
+  sentAt?: string;
+  receivedAt?: string;
+  createdAt: string;
+}
+
+export interface ReservationEmailJob {
+  id: string;
+  kind: "final_payment_reminder" | "upcoming_trip_details" | "check_in_instructions" | "post_stay_thank_you";
+  status: "pending_approval" | "approved" | "sent" | "cancelled" | "failed";
+  scheduledFor: string;
+  subject: string;
+  body: string;
+  sentAt?: string;
+}
+
+export interface ReservationCommunicationSummary {
+  needsReply: boolean;
+  needsReplyAt?: string;
+  messages: ReservationCommunicationMessage[];
+  emailJobs: ReservationEmailJob[];
+}
+
 export interface Reservation {
   id: string;
   customerId?: string;
@@ -39,6 +68,7 @@ export interface Reservation {
   paymentConfirmedAt?: string;
   paymentNote?: string;
   contracts?: ReservationContractSummary[];
+  communication?: ReservationCommunicationSummary;
   isOwnerWeek: boolean;
 }
 

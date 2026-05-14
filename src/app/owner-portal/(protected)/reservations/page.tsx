@@ -122,6 +122,36 @@ export default function OwnerReservationsPage() {
     }
   };
 
+  const refreshSelectedComms = async (reservationId: string) => {
+    const response = await fetch(apiUrl(`/api/owner-portal/reservations/${encodeURIComponent(reservationId)}/communications`), { cache: "no-store", credentials: "same-origin" });
+    const data = await response.json();
+    if (!response.ok || !data.ok) throw new Error(data.error || "Failed to load reservation communications");
+    setReservations((current) => current.map((reservation) => reservation.id === reservationId ? { ...reservation, communication: data.communication } : reservation));
+  };
+
+  const updateEmailJob = async (jobId: string, status: "approved" | "sent" | "cancelled") => {
+    if (!selectedId) return;
+    setSaving(true);
+    setError("");
+    setSuccess("");
+    try {
+      const response = await fetch(apiUrl(`/api/owner-portal/reservations/${encodeURIComponent(selectedId)}/communications`), {
+        method: "POST",
+        credentials: "same-origin",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "job_status", jobId, status }),
+      });
+      const data = await response.json();
+      if (!response.ok || !data.ok) throw new Error(data.error || "Failed to update reservation email job");
+      setSuccess(status === "sent" ? "Email marked sent in the reservation timeline." : status === "approved" ? "Email approved for send." : "Email job cancelled.");
+      await refreshSelectedComms(selectedId);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to update reservation email job");
+    } finally {
+      setSaving(false);
+    }
+  };
+
   const saveSelected = async (draft: Reservation) => {
     if (!selectedId) return;
 
@@ -353,7 +383,62 @@ export default function OwnerReservationsPage() {
             onNextMonth={nextMonth}
           />
 
-          <ReservationEditor reservation={selected} onSave={saveSelected} onDelete={deleteSelected} saving={saving} />
+          <div className="space-y-6">
+            <ReservationEditor reservation={selected} onSave={saveSelected} onDelete={deleteSelected} saving={saving} />
+            {selected ? (
+              <article className={`rounded-[28px] border p-6 shadow-[0_12px_40px_rgba(0,0,0,0.04)] md:p-8 ${selected.communication?.needsReply ? "border-[#d9a08a] bg-[#fff7f1]" : "border-[#e8e1d6] bg-white"}`}>
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div>
+                    <p className="text-xs font-medium uppercase tracking-[0.18em] text-[#7b7468]">Post-booking guest ops</p>
+                    <h2 className="mt-2 font-display text-3xl text-[#181612]">Reservation communications</h2>
+                    <p className="mt-2 text-sm leading-6 text-[#5b554b]">
+                      {selected.communication?.needsReply ? "Guest reply needs owner attention. The original inquiry remains historical." : "Inbound replies and scheduled emails are tied to this reservation."}
+                    </p>
+                  </div>
+                  {selected.communication?.needsReplyAt ? <span className="rounded-full bg-[#9f3d22] px-3 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-white">Needs reply</span> : null}
+                </div>
+
+                <div className="mt-6 space-y-4">
+                  <div>
+                    <h3 className="text-sm font-semibold uppercase tracking-[0.16em] text-[#1e4536]">Scheduled emails</h3>
+                    <div className="mt-3 space-y-3">
+                      {(selected.communication?.emailJobs || []).map((job) => (
+                        <div key={job.id} className="rounded-2xl border border-[#eadfce] bg-white p-4 text-sm text-[#5b554b]">
+                          <div className="flex flex-wrap items-start justify-between gap-3">
+                            <div>
+                              <p className="font-semibold text-[#181612]">{job.subject}</p>
+                              <p className="mt-1 text-xs uppercase tracking-[0.14em] text-[#7b7468]">{job.kind.replaceAll("_", " ")} · {job.status.replaceAll("_", " ")} · {new Date(job.scheduledFor).toLocaleDateString()}</p>
+                            </div>
+                            <div className="flex flex-wrap gap-2">
+                              {job.status === "pending_approval" ? <button type="button" onClick={() => updateEmailJob(job.id, "approved")} disabled={saving} className="rounded-full bg-[#1e4536] px-3 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-white disabled:opacity-60">Approve</button> : null}
+                              {job.status === "approved" ? <button type="button" onClick={() => updateEmailJob(job.id, "sent")} disabled={saving} className="rounded-full bg-[#1e4536] px-3 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-white disabled:opacity-60">Mark sent</button> : null}
+                              {!["sent", "cancelled"].includes(job.status) ? <button type="button" onClick={() => updateEmailJob(job.id, "cancelled")} disabled={saving} className="rounded-full border border-[#ddd4c7] px-3 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-[#5b554b] disabled:opacity-60">Cancel</button> : null}
+                            </div>
+                          </div>
+                          <p className="mt-3 whitespace-pre-wrap text-xs leading-5 text-[#7b7468]">{job.body}</p>
+                        </div>
+                      ))}
+                      {!selected.communication?.emailJobs?.length ? <p className="rounded-2xl border border-dashed border-[#e8e1d6] p-4 text-sm text-[#7b7468]">No scheduled reservation emails yet.</p> : null}
+                    </div>
+                  </div>
+
+                  <div>
+                    <h3 className="text-sm font-semibold uppercase tracking-[0.16em] text-[#1e4536]">Timeline</h3>
+                    <div className="mt-3 space-y-3">
+                      {(selected.communication?.messages || []).slice().reverse().map((message) => (
+                        <div key={message.id} className="rounded-2xl border border-[#eadfce] bg-white p-4 text-sm text-[#5b554b]">
+                          <p className="text-xs uppercase tracking-[0.14em] text-[#7b7468]">{message.direction} · {message.authorType} · {new Date(message.receivedAt || message.sentAt || message.createdAt).toLocaleString()}</p>
+                          {message.subject ? <p className="mt-2 font-semibold text-[#181612]">{message.subject}</p> : null}
+                          <p className="mt-2 whitespace-pre-wrap text-xs leading-5">{message.body}</p>
+                        </div>
+                      ))}
+                      {!selected.communication?.messages?.length ? <p className="rounded-2xl border border-dashed border-[#e8e1d6] p-4 text-sm text-[#7b7468]">No reservation-linked guest messages yet.</p> : null}
+                    </div>
+                  </div>
+                </div>
+              </article>
+            ) : null}
+          </div>
         </div>
       )}
     </section>

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { simpleParser } from "mailparser";
 import { appendInquiryMessage, getInquiryThreadById, runInquiryInboundAutomation, updateInquiryStatus } from "@/lib/inquiries";
+import { findActiveReservationForInquiry, markReservationNeedsReply } from "@/lib/reservationComms";
 import {
   extractEmailAddress,
   extractInquiryIdFromRequest,
@@ -116,8 +117,10 @@ export async function POST(req: Request) {
     `Reply from ${thread.fullName}`;
 
   try {
+    const linkedReservation = await findActiveReservationForInquiry(inquiryId);
     const message = await appendInquiryMessage({
       inquiryId,
+      reservationId: linkedReservation?.id,
       direction: "inbound",
       authorType: "guest",
       subject: subject || `Reply from ${thread.fullName}`,
@@ -126,11 +129,15 @@ export async function POST(req: Request) {
       receivedAt: new Date().toISOString(),
     });
 
-    await runInquiryInboundAutomation(inquiryId);
-    if (wasClosed) {
-      // A guest reply means the inquiry is active again even if the owner previously closed it.
-      // Keep this explicit so future close-state guards do not accidentally strand inbound replies.
-      await updateInquiryStatus(inquiryId, "needs_reply");
+    if (linkedReservation) {
+      await markReservationNeedsReply(linkedReservation.id, message.id, message.receivedAt);
+    } else {
+      await runInquiryInboundAutomation(inquiryId);
+      if (wasClosed) {
+        // A guest reply means the inquiry is active again even if the owner previously closed it.
+        // Keep this explicit so future close-state guards do not accidentally strand inbound replies.
+        await updateInquiryStatus(inquiryId, "needs_reply");
+      }
     }
 
     // ── 8. Analytics ──
@@ -141,7 +148,7 @@ export async function POST(req: Request) {
       payload: { responseTime: thread.messages.length },
     });
 
-    return NextResponse.json({ ok: true, message, reopened: wasClosed });
+    return NextResponse.json({ ok: true, message, reopened: !linkedReservation && wasClosed, reservationId: linkedReservation?.id });
   } catch (error) {
     const err = error instanceof Error ? error.message : "Failed to ingest inbound reply";
     logFailure({
