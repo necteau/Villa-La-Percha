@@ -99,24 +99,24 @@ export default function ReservationsCalendar({
     : null;
 
   return (
-    <div className="rounded-[28px] border border-[#e8e1d6] bg-white p-6 shadow-[0_12px_40px_rgba(0,0,0,0.04)] md:p-8">
-      <div className="flex items-center justify-between">
+    <div className="w-full min-w-0 overflow-hidden rounded-[24px] border border-[#e8e1d6] bg-white p-4 shadow-[0_12px_40px_rgba(0,0,0,0.04)] sm:rounded-[28px] sm:p-6 md:p-8">
+      <div className="flex min-w-0 items-center justify-between gap-2">
         <button
           type="button"
           onClick={onPrevMonth}
-          className="h-10 w-10 rounded-full border border-[#e8e1d6] text-[#5b554b] transition hover:bg-[#f4efe6]"
+          className="h-9 w-9 shrink-0 rounded-full border border-[#e8e1d6] text-[#5b554b] transition hover:bg-[#f4efe6] sm:h-10 sm:w-10"
           aria-label="Previous month"
         >
           ‹
         </button>
-        <div className="text-center">
+        <div className="min-w-0 text-center">
           <p className="text-xs font-medium uppercase tracking-[0.18em] text-[#7b7468]">Calendar</p>
-          <h2 className="mt-1 font-display text-3xl text-[#181612]">{monthNames[viewMonth]} {viewYear}</h2>
+          <h2 className="mt-1 truncate font-display text-2xl text-[#181612] sm:text-3xl">{monthNames[viewMonth]} {viewYear}</h2>
         </div>
         <button
           type="button"
           onClick={onNextMonth}
-          className="h-10 w-10 rounded-full border border-[#e8e1d6] text-[#5b554b] transition hover:bg-[#f4efe6]"
+          className="h-9 w-9 shrink-0 rounded-full border border-[#e8e1d6] text-[#5b554b] transition hover:bg-[#f4efe6] sm:h-10 sm:w-10"
           aria-label="Next month"
         >
           ›
@@ -124,18 +124,18 @@ export default function ReservationsCalendar({
       </div>
 
       {selectedReservation ? (
-        <div className="mt-4 rounded-2xl border border-[#e8e1d6] bg-[#faf8f3] p-4 text-sm text-[#5b554b]">
-          Selected: <span className="font-medium text-[#1b1a17]">{selectedReservation.checkIn} → {selectedReservation.checkOut}</span>
+        <div className="mt-4 min-w-0 rounded-2xl border border-[#e8e1d6] bg-[#faf8f3] p-3 text-sm text-[#5b554b] sm:p-4">
+          Selected: <span className="break-words font-medium text-[#1b1a17]">{selectedReservation.checkIn} → {selectedReservation.checkOut}</span>
         </div>
       ) : (
-        <div className="mt-4 rounded-2xl border border-dashed border-[#e8e1d6] bg-[#faf8f3] p-4 text-sm text-[#7b7468]">
+        <div className="mt-4 rounded-2xl border border-dashed border-[#e8e1d6] bg-[#faf8f3] p-3 text-sm text-[#7b7468] sm:p-4">
           Click any reserved date to select a reservation and edit it.
         </div>
       )}
 
-      <div className="mt-6 grid grid-cols-7 gap-2">
+      <div className="mt-5 grid min-w-0 grid-cols-7 gap-1 sm:mt-6 sm:gap-2">
         {["S","M","T","W","T","F","S"].map((d) => (
-          <div key={d} className="text-center text-[10px] font-semibold uppercase tracking-[0.18em] text-[#7b7468]">
+          <div key={d} className="min-w-0 text-center text-[10px] font-semibold uppercase tracking-[0.08em] text-[#7b7468] sm:tracking-[0.18em]">
             {d}
           </div>
         ))}
@@ -155,7 +155,7 @@ export default function ReservationsCalendar({
                 const nextId = day.reservationIds[0];
                 onSelect(nextId);
               }}
-              className={`relative flex h-11 items-center justify-center rounded-xl text-sm font-semibold transition ${
+              className={`relative flex h-9 min-w-0 items-center justify-center rounded-lg text-xs font-semibold transition sm:h-11 sm:rounded-xl sm:text-sm ${
                 !day.isCurrentMonth
                   ? "bg-transparent text-[#7b7468]/30"
                   : daySelected
@@ -181,9 +181,9 @@ export default function ReservationsCalendar({
         })}
       </div>
 
-      <div className="mt-6 text-xs text-[#7b7468]">
-        <span className="mr-4 inline-flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-[#8B7355]" /> DirectStay/owner reservation</span>
-        <span className="inline-flex items-center gap-2"><span className="h-2 w-5 rounded-full bg-[#c9a96d]" /> External block</span>
+      <div className="mt-6 flex min-w-0 flex-wrap gap-x-4 gap-y-2 text-xs text-[#7b7468]">
+        <span className="inline-flex min-w-0 items-center gap-2"><span className="h-2 w-2 shrink-0 rounded-full bg-[#8B7355]" /> <span>DirectStay/owner reservation</span></span>
+        <span className="inline-flex min-w-0 items-center gap-2"><span className="h-2 w-5 shrink-0 rounded-full bg-[#c9a96d]" /> <span>External block</span></span>
         <span className="mt-2 block">Tip: if a day has multiple overlapping DirectStay reservations (rare), we select the first one.</span>
       </div>
     </div>
