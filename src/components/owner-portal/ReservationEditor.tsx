@@ -28,6 +28,16 @@ export interface ReservationCommunicationMessage {
   createdAt: string;
 }
 
+export interface ReservationReplyDraft {
+  id: string;
+  inquiryId: string;
+  subject?: string;
+  body: string;
+  status: "draft" | "pending_owner_approval" | "approved" | "sent";
+  createdByType: "assistant" | "owner" | "system";
+  updatedAt: string;
+}
+
 export interface ReservationEmailJob {
   id: string;
   kind: "final_payment_reminder" | "upcoming_trip_details" | "check_in_instructions" | "post_stay_thank_you";
@@ -43,6 +53,7 @@ export interface ReservationCommunicationSummary {
   needsReplyAt?: string;
   messages: ReservationCommunicationMessage[];
   emailJobs: ReservationEmailJob[];
+  drafts: ReservationReplyDraft[];
 }
 
 export interface Reservation {

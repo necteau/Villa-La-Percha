@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import ReservationEditor, { type Reservation } from "@/components/owner-portal/ReservationEditor";
+import ReservationEditor, { type Reservation, type ReservationReplyDraft } from "@/components/owner-portal/ReservationEditor";
 import ReservationsCalendar, { type ExternalCalendarBlock } from "@/components/owner-portal/ReservationsCalendar";
 
 function apiUrl(path: string): string {
@@ -49,6 +49,10 @@ export default function OwnerReservationsPage() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [replySubject, setReplySubject] = useState("");
+  const [replyBody, setReplyBody] = useState("");
+  const [activeDraftId, setActiveDraftId] = useState<string | null>(null);
+  const [revisionInstruction, setRevisionInstruction] = useState("");
 
   const loadReservations = useCallback(async () => {
     setLoading(true);
@@ -84,6 +88,14 @@ export default function OwnerReservationsPage() {
     () => (selectedId ? reservations.find((r) => r.id === selectedId) || null : null),
     [reservations, selectedId]
   );
+
+  useEffect(() => {
+    const latestDraft = selected?.communication?.drafts?.find((draft) => draft.status === "draft") || null;
+    setActiveDraftId(latestDraft?.id || null);
+    setReplySubject(latestDraft?.subject || (selected ? `Re: Your Villa La Percha stay` : ""));
+    setReplyBody(latestDraft?.body || "");
+    setRevisionInstruction("");
+  }, [selected, selectedId]);
 
   const reviewGroups = useMemo(() => {
     return reviewItems.reduce<Record<ExternalReviewItem["category"], ExternalReviewItem[]>>((groups, item) => {
@@ -127,6 +139,86 @@ export default function OwnerReservationsPage() {
     const data = await response.json();
     if (!response.ok || !data.ok) throw new Error(data.error || "Failed to load reservation communications");
     setReservations((current) => current.map((reservation) => reservation.id === reservationId ? { ...reservation, communication: data.communication } : reservation));
+  };
+
+
+  const saveReservationReplyDraft = async (status: ReservationReplyDraft["status"] = "draft") => {
+    if (!selectedId) return null;
+    setSaving(true);
+    setError("");
+    setSuccess("");
+    try {
+      const response = await fetch(apiUrl(`/api/owner-portal/reservations/${encodeURIComponent(selectedId)}/communications`), {
+        method: "POST",
+        credentials: "same-origin",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "draft", draftId: activeDraftId, subject: replySubject, body: replyBody, status, createdByType: "owner" }),
+      });
+      const data = await response.json();
+      if (!response.ok || !data.ok) throw new Error(data.error || "Failed to save reservation reply draft");
+      setActiveDraftId(data.draft.id);
+      setReservations((current) => current.map((reservation) => reservation.id === selectedId ? { ...reservation, communication: data.communication } : reservation));
+      setSuccess(status === "approved" ? "Reservation reply approved." : "Reservation reply draft saved.");
+      return data.draft as ReservationReplyDraft;
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to save reservation reply draft");
+      return null;
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const sendReservationReply = async () => {
+    if (!selectedId) return;
+    setSaving(true);
+    setError("");
+    setSuccess("");
+    try {
+      const response = await fetch(apiUrl(`/api/owner-portal/reservations/${encodeURIComponent(selectedId)}/communications`), {
+        method: "POST",
+        credentials: "same-origin",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "send", draftId: activeDraftId, subject: replySubject, body: replyBody }),
+      });
+      const data = await response.json();
+      if (!response.ok || !data.ok) throw new Error(data.error || "Failed to send reservation reply");
+      setReservations((current) => current.map((reservation) => reservation.id === selectedId ? { ...reservation, communication: data.communication } : reservation));
+      setReplyBody("");
+      setActiveDraftId(null);
+      setSuccess("Reservation reply sent and logged to the timeline.");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to send reservation reply");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const requestReservationAiRevision = async (revisionIntent: "shorter" | "warmer" | "direct" | "custom") => {
+    if (!selectedId) return;
+    const draft = activeDraftId ? { id: activeDraftId } : await saveReservationReplyDraft("draft");
+    if (!draft?.id) return;
+    if (revisionIntent === "custom" && !revisionInstruction.trim()) {
+      setError("Add a short instruction for the custom AI revision.");
+      return;
+    }
+    setSaving(true);
+    setError("");
+    setSuccess("");
+    try {
+      const response = await fetch(apiUrl(`/api/owner-portal/reservations/${encodeURIComponent(selectedId)}/communications`), {
+        method: "POST",
+        credentials: "same-origin",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "ai_revision", draftId: draft.id, subject: replySubject, draftBody: replyBody, revisionIntent, instruction: revisionInstruction }),
+      });
+      const data = await response.json();
+      if (!response.ok || !data.ok) throw new Error(data.error || "Failed to request AI revision");
+      setSuccess("AI revision queued. Refresh this reservation shortly if it does not appear automatically.");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to request AI revision");
+    } finally {
+      setSaving(false);
+    }
   };
 
   const updateEmailJob = async (jobId: string, status: "approved" | "sent" | "cancelled") => {
@@ -399,6 +491,52 @@ export default function OwnerReservationsPage() {
                 </div>
 
                 <div className="mt-6 space-y-4">
+                  <div className="rounded-2xl border border-[#eadfce] bg-white p-4">
+                    <div className="flex flex-wrap items-start justify-between gap-3">
+                      <div>
+                        <h3 className="text-sm font-semibold uppercase tracking-[0.16em] text-[#1e4536]">Reply to guest</h3>
+                        <p className="mt-2 text-xs leading-5 text-[#7b7468]">Send proactive reservation messages like restaurant recommendations. Replies are sent from Villa La Percha, logged on this reservation, and keep the original inquiry historical.</p>
+                      </div>
+                      {selected.sourceInquiryId ? <span className="rounded-full bg-[#f7f3eb] px-3 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-[#5b554b]">Source inquiry linked</span> : null}
+                    </div>
+                    <div className="mt-4 space-y-3">
+                      <input
+                        value={replySubject}
+                        onChange={(event) => setReplySubject(event.target.value)}
+                        placeholder="Subject"
+                        className="w-full rounded-xl border border-[#ddd4c7] px-4 py-3 text-sm"
+                      />
+                      <textarea
+                        rows={8}
+                        value={replyBody}
+                        onChange={(event) => setReplyBody(event.target.value)}
+                        placeholder="Write a proactive guest message…"
+                        className="w-full rounded-xl border border-[#ddd4c7] px-4 py-3 text-sm leading-6"
+                      />
+                      <div className="flex flex-wrap gap-2">
+                        <button type="button" onClick={() => void saveReservationReplyDraft("draft")} disabled={saving || !replyBody.trim()} className="rounded-full border border-[#ddd4c7] bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-[#5b554b] disabled:opacity-60">Save draft</button>
+                        <button type="button" onClick={() => void sendReservationReply()} disabled={saving || !activeDraftId || !replyBody.trim()} className="rounded-full bg-[#1e4536] px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-white disabled:opacity-60">Send reply</button>
+                      </div>
+                      <div className="rounded-2xl bg-[#faf8f3] p-3">
+                        <p className="text-xs font-medium text-[#1b1a17]">Revise with AI</p>
+                        <div className="mt-3 flex flex-wrap gap-2">
+                          {(["shorter", "warmer", "direct"] as const).map((intent) => (
+                            <button key={intent} type="button" onClick={() => void requestReservationAiRevision(intent)} disabled={saving || !replyBody.trim()} className="rounded-full border border-[#ddd4c7] bg-white px-3 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-[#5b554b] disabled:opacity-60">{intent}</button>
+                          ))}
+                        </div>
+                        <div className="mt-3 flex flex-col gap-2 sm:flex-row">
+                          <input
+                            value={revisionInstruction}
+                            onChange={(event) => setRevisionInstruction(event.target.value)}
+                            placeholder="Custom AI instruction"
+                            className="min-w-0 flex-1 rounded-xl border border-[#ddd4c7] px-3 py-2 text-xs"
+                          />
+                          <button type="button" onClick={() => void requestReservationAiRevision("custom")} disabled={saving || !replyBody.trim() || !revisionInstruction.trim()} className="rounded-full bg-[#1e4536] px-3 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-white disabled:opacity-60">Revise</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
                   <div>
                     <h3 className="text-sm font-semibold uppercase tracking-[0.16em] text-[#1e4536]">Scheduled emails</h3>
                     <div className="mt-3 space-y-3">

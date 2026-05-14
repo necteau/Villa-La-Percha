@@ -1,5 +1,7 @@
-import { InquiryMessageAuthorType, InquiryMessageDirection, ReservationEmailJobStatus, ReservationEmailTemplateKind, ReservationStatus } from "@prisma/client";
+import { InquiryDraftStatus, InquiryMessageAuthorType, InquiryMessageDirection, ReservationEmailJobStatus, ReservationEmailTemplateKind, ReservationStatus } from "@prisma/client";
 import { getPrismaClient } from "@/lib/db";
+import { appendInquiryMessage, markDraftSent, saveInquiryDraft, updateInquiryStatus, type InquiryDraftRecord } from "@/lib/inquiries";
+import { Resend } from "resend";
 import { canUseDatabaseSync } from "@/lib/fallbackOrchestrator";
 
 export type ReservationEmailKind = "final_payment_reminder" | "upcoming_trip_details" | "check_in_instructions" | "post_stay_thank_you";
@@ -41,6 +43,7 @@ export interface ReservationCommunicationSummary {
   lastGuestMessageId?: string;
   messages: ReservationTimelineMessage[];
   emailJobs: ReservationEmailJobRecord[];
+  drafts: InquiryDraftRecord[];
 }
 
 function toDbKind(kind: ReservationEmailKind): ReservationEmailTemplateKind {
@@ -150,13 +153,14 @@ export async function clearReservationNeedsReply(reservationId: string) {
 }
 
 export async function getReservationCommunicationSummary(reservationId: string): Promise<ReservationCommunicationSummary> {
-  if (!canUseDatabaseSync()) return { needsReply: false, messages: [], emailJobs: [] };
+  if (!canUseDatabaseSync()) return { needsReply: false, messages: [], emailJobs: [], drafts: [] };
   const prisma = await getPrismaClient();
   const reservation = await prisma.reservation.findUnique({
     where: { id: reservationId },
     include: {
       messages: { orderBy: { createdAt: "asc" } },
       emailJobs: { orderBy: [{ scheduledFor: "asc" }, { createdAt: "asc" }] },
+      sourceInquiry: { include: { drafts: { orderBy: { updatedAt: "desc" } } } },
     },
   });
   if (!reservation) throw new Error("Reservation not found");
@@ -167,6 +171,18 @@ export async function getReservationCommunicationSummary(reservationId: string):
     lastGuestMessageId: reservation.lastGuestMessageId ?? undefined,
     messages: reservation.messages.map(mapMessage),
     emailJobs: reservation.emailJobs.map(mapEmailJob),
+    drafts: (reservation.sourceInquiry?.drafts || []).filter((draft) => draft.createdByType !== InquiryMessageAuthorType.SYSTEM).map((draft) => ({
+      id: draft.id,
+      inquiryId: draft.inquiryId,
+      subject: draft.subject ?? undefined,
+      body: draft.body,
+      status: String(draft.status).toLowerCase() as InquiryDraftRecord["status"],
+      createdByType: String(draft.createdByType).toLowerCase() as InquiryDraftRecord["createdByType"],
+      approvedAt: draft.approvedAt?.toISOString(),
+      sentAt: draft.sentAt?.toISOString(),
+      createdAt: draft.createdAt.toISOString(),
+      updatedAt: draft.updatedAt.toISOString(),
+    })),
   };
 }
 
@@ -254,4 +270,80 @@ export async function markReservationEmailJobStatus(reservationId: string, jobId
     }).catch(() => {});
   }
   return mapEmailJob(job);
+}
+
+
+function getResendClient() {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) throw new Error("RESEND_API_KEY is not configured");
+  return new Resend(apiKey);
+}
+
+function getFromAddress(): string {
+  return process.env.RESEND_FROM_EMAIL || "Villa La Percha <onboarding@resend.dev>";
+}
+
+function subjectWithToken(subject: string, inquiryId: string): string {
+  const token = `[DirectStay Inquiry ${inquiryId}]`;
+  return subject.includes(token) ? subject : `${subject} ${token}`;
+}
+
+async function getReservationForReply(reservationId: string) {
+  if (!canUseDatabaseSync()) throw new Error("Reservation replies require database mode.");
+  const prisma = await getPrismaClient();
+  const reservation = await prisma.reservation.findUnique({ where: { id: reservationId }, include: { sourceInquiry: true } });
+  if (!reservation) throw new Error("Reservation not found");
+  if (!reservation.sourceInquiryId || !reservation.sourceInquiry) throw new Error("Reservation guest replies currently require a source inquiry thread for email reply routing.");
+  if (!reservation.guestEmail && !reservation.sourceInquiry.email) throw new Error("Reservation has no guest email address.");
+  return reservation;
+}
+
+export async function saveReservationReplyDraft(input: { reservationId: string; draftId?: string; subject?: string; body: string; status?: InquiryDraftRecord["status"]; createdByType?: InquiryDraftRecord["createdByType"] }): Promise<InquiryDraftRecord> {
+  const reservation = await getReservationForReply(input.reservationId);
+  return saveInquiryDraft({
+    id: input.draftId,
+    inquiryId: reservation.sourceInquiryId!,
+    subject: input.subject,
+    body: input.body,
+    status: input.status || "draft",
+    createdByType: input.createdByType || "owner",
+  });
+}
+
+export async function sendApprovedReservationReplyDraft(reservationId: string, draftId: string) {
+  const reservation = await getReservationForReply(reservationId);
+  const prisma = await getPrismaClient();
+  const draft = await prisma.inquiryReplyDraft.findFirst({ where: { id: draftId, inquiryId: reservation.sourceInquiryId! } });
+  if (!draft) throw new Error("Draft not found");
+  if (draft.status !== InquiryDraftStatus.APPROVED) throw new Error("Draft must be approved before sending");
+  const to = reservation.guestEmail || reservation.sourceInquiry!.email;
+  const subject = subjectWithToken(draft.subject || `Re: Your Villa La Percha stay`, reservation.sourceInquiryId!);
+  const result = await getResendClient().emails.send({
+    from: getFromAddress(),
+    to: [to],
+    subject,
+    text: draft.body,
+    replyTo: process.env.INQUIRY_REPLY_TO_EMAIL || undefined,
+    headers: {
+      "X-DirectStay-Inquiry-Id": reservation.sourceInquiryId!,
+      "X-DirectStay-Reservation-Id": reservation.id,
+      "X-DirectStay-Draft-Id": draft.id,
+    },
+  });
+  if (result.error) throw new Error(result.error.message);
+  await appendInquiryMessage({
+    inquiryId: reservation.sourceInquiryId!,
+    reservationId: reservation.id,
+    direction: "outbound",
+    authorType: draft.createdByType === InquiryMessageAuthorType.OWNER ? "owner" : "assistant",
+    subject,
+    body: draft.body,
+    emailMessageId: result.data?.id || undefined,
+    sentAt: new Date().toISOString(),
+  });
+  await markDraftSent(draft.id);
+  await saveInquiryDraft({ id: draft.id, inquiryId: draft.inquiryId, subject: draft.subject ?? undefined, body: draft.body, status: "sent", createdByType: String(draft.createdByType).toLowerCase() as InquiryDraftRecord["createdByType"] });
+  await clearReservationNeedsReply(reservation.id);
+  await updateInquiryStatus(reservation.sourceInquiryId!, "booked");
+  return { emailId: result.data?.id || null };
 }
