@@ -1,8 +1,22 @@
 # PlatformLead Emily Simulation Artifact Pack
 
-_Last updated: 2026-05-11_
+_Last updated: 2026-05-14_
 
 Purpose: provide a safe, internal-only packet for the Emily QA owner rehearsal described in `platform-lead-emily-simulation-plan.md`. This pack is draft content for admin/lead-room review only. Do not email, DM, sign, launch, or convert any record to a real owner/property from this material without explicit approval.
+
+## Admin Timeline Rehearsal Steps
+
+Use these as the expected internal event sequence when testing the admin portal or lead-room role-play. Each step should be recorded as internal evidence only, with no owner-facing send, production launch, or live contract action.
+
+1. **Intake received** — create or identify the Emily QA lead fixture; status may indicate new/reviewing, but source must remain QA/test.
+2. **Lead Brief drafted** — attach the fit assessment, unknowns, and recommended next step below.
+3. **First response drafted** — store the discovery reply as an approval-needed draft; do not mark sent.
+4. **Mock owner reply summarized** — record Emily’s control concerns and preview-readiness signal.
+5. **Preview rationale drafted** — record public-obscure/noindex and non-functional preview constraints.
+6. **Proposal rationale drafted** — keep all commercial terms TBD until Jaimal approves pricing.
+7. **Agreement gate checked** — keep legal/contract status blocked; no signature provider action.
+8. **Onboarding prep drafted** — capture requested materials as a casual owner brain dump, not a launch checklist.
+9. **Exit evidence captured** — note defects, gaps, and whether any UI copy could be mistaken for approved external copy.
 
 ## QA Lead Fixture
 

@@ -6,6 +6,7 @@ const docPath = resolve(process.cwd(), "docs/platform-lead-emily-simulation-arti
 const body = readFileSync(docPath, "utf8");
 
 const requiredSections = [
+  "## Admin Timeline Rehearsal Steps",
   "## QA Lead Fixture",
   "## Lead Brief Draft",
   "## First Response Draft",
@@ -29,6 +30,18 @@ const requiredSafetyPhrases = [
   "not ready for external owner use",
 ];
 
+const requiredTimelineSteps = [
+  "Intake received",
+  "Lead Brief drafted",
+  "First response drafted",
+  "Mock owner reply summarized",
+  "Preview rationale drafted",
+  "Proposal rationale drafted",
+  "Agreement gate checked",
+  "Onboarding prep drafted",
+  "Exit evidence captured",
+];
+
 const requiredFixtureFields = [
   "Owner name:",
   "Email:",
@@ -46,6 +59,7 @@ function missingFrom(list) {
 const failures = [
   ...missingFrom(requiredSections).map((item) => `Missing section: ${item}`),
   ...missingFrom(requiredSafetyPhrases).map((item) => `Missing safety phrase: ${item}`),
+  ...missingFrom(requiredTimelineSteps).map((item) => `Missing timeline step: ${item}`),
   ...missingFrom(requiredFixtureFields).map((item) => `Missing fixture field: ${item}`),
 ];
 
@@ -56,4 +70,4 @@ if (failures.length > 0) {
 }
 
 console.log("Emily PlatformLead artifact pack QA passed.");
-console.log(`Checked ${requiredSections.length} sections, ${requiredSafetyPhrases.length} safety phrases, and ${requiredFixtureFields.length} fixture fields.`);
+console.log(`Checked ${requiredSections.length} sections, ${requiredSafetyPhrases.length} safety phrases, ${requiredTimelineSteps.length} timeline steps, and ${requiredFixtureFields.length} fixture fields.`);
