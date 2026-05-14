@@ -1,3 +1,4 @@
+import { pickPrimaryContract, type ContractSummary } from "@/lib/contracts";
 import { getInquiryCopilotInsights } from "@/lib/inquiryCopilot";
 import { getPrismaClient } from "@/lib/db";
 import { triggerInternalOpsWake } from "@/lib/internalWake";
@@ -65,6 +66,12 @@ interface AiDraftContext {
     paymentMethod?: string;
     paymentConfirmedAt?: string;
     paymentNote?: string;
+    contractStatus: "not_sent" | "sent" | "viewed" | "accepted" | "voided" | "superseded";
+    contractAcceptedAt?: string;
+    contractSignerName?: string;
+    contractSignerEmail?: string;
+    contractTemplateVersion?: string;
+    contractSummary: string;
     createdAt: string;
   };
   threadMessages: Array<{
@@ -264,8 +271,21 @@ async function getCustomerContext(inquiry: InquiryThreadRecord): Promise<AiDraft
   };
 }
 
+function buildContractSummary(contract?: ContractSummary) {
+  if (!contract) return "No guest rental agreement has been sent or accepted yet.";
+  if (contract.status === "accepted") {
+    return `Guest rental agreement accepted${contract.acceptedAt ? ` at ${contract.acceptedAt}` : ""}${contract.signerName ? ` by ${contract.signerName}` : ""}${contract.signerEmail ? ` <${contract.signerEmail}>` : ""}. Do not ask the guest to sign again unless the owner explicitly says a new agreement is required.`;
+  }
+  if (contract.status === "viewed") return "Guest rental agreement has been viewed but not accepted yet.";
+  if (contract.status === "sent") return "Guest rental agreement has been sent but not accepted yet.";
+  if (contract.status === "voided") return "Previous guest rental agreement was voided; do not rely on it as signed.";
+  if (contract.status === "superseded") return "Previous guest rental agreement was superseded; confirm the current agreement before referring to signature state.";
+  return "Guest rental agreement exists but has not been sent or accepted yet.";
+}
+
 async function buildAiDraftContext(inquiry: InquiryThreadRecord): Promise<AiDraftContext> {
   const [insights, siteSettings] = await Promise.all([getInquiryCopilotInsights(inquiry), getSiteSettings().catch(() => null)]);
+  const primaryContract = pickPrimaryContract(inquiry.contracts);
   return {
     property: {
       ...PROPERTY_CONTEXT,
@@ -288,6 +308,12 @@ async function buildAiDraftContext(inquiry: InquiryThreadRecord): Promise<AiDraf
       paymentMethod: inquiry.paymentMethod,
       paymentConfirmedAt: inquiry.paymentConfirmedAt,
       paymentNote: inquiry.paymentNote,
+      contractStatus: primaryContract?.status || "not_sent",
+      contractAcceptedAt: primaryContract?.acceptedAt,
+      contractSignerName: primaryContract?.signerName,
+      contractSignerEmail: primaryContract?.signerEmail,
+      contractTemplateVersion: primaryContract?.templateVersion,
+      contractSummary: buildContractSummary(primaryContract),
       createdAt: inquiry.createdAt,
     },
     threadMessages: inquiry.messages.map((message) => ({
