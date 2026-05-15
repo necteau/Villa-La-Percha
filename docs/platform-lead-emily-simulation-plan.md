@@ -134,6 +134,20 @@ Expected evidence:
 - Onboarding artifact/checklist is stored internally.
 - Launch readiness remains incomplete until contract, materials, content review, payment/inquiry choices, and Jaimal launch approval are complete.
 
+### 8. Internal Lead-Room Handoff
+
+Summarize the QA-only rehearsal in the internal DirectStay Platform Leads room (`telegram:-5283121585`) or an equivalent internal note if Telegram routing is unavailable:
+
+- Lead identifier and QA/test label.
+- Current status, next recommended operator action, and approval gates.
+- Artifact titles/IDs generated during the rehearsal.
+- Explicit reminder that no owner-facing send, signature, launch, or production Owner/Property conversion is approved.
+
+Expected evidence:
+
+- Internal handoff exists and is brief enough for Jaimal/Bishop to resume.
+- Owner-facing action remains blocked until Jaimal approves a specific external send or legal/business gate.
+
 ## Pass/Fail Checklist
 
 Pass if:

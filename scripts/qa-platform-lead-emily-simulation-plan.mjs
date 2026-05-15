@@ -21,6 +21,7 @@ const requiredPlanSections = [
   "### 5. Proposal Draft",
   "### 6. Agreement / Contract Gate",
   "### 7. Onboarding Prep",
+  "### 8. Internal Lead-Room Handoff",
   "## Pass/Fail Checklist",
   "## Exit Evidence To Capture",
 ];
@@ -33,6 +34,7 @@ const requiredSafetyPhrases = [
   "Public-but-obscure/noindex requirement",
   "No signature provider or owner-facing send is triggered.",
   "Launch readiness remains incomplete until contract",
+  "no owner-facing send, signature, launch, or production Owner/Property conversion is approved",
 ];
 
 const requiredPlanToPackAnchors = [
@@ -44,6 +46,7 @@ const requiredPlanToPackAnchors = [
   ["Proposal Rationale", "## Proposal Rationale Draft"],
   ["Agreement / Contract Gate", "## Agreement / Contract Gate Check"],
   ["Onboarding Prep", "## Onboarding Prep Draft"],
+  ["Internal Lead-Room Handoff", "Internal lead-room handoff recorded"],
 ];
 
 function missingFrom(body, list) {

@@ -16,7 +16,8 @@ Use these as the expected internal event sequence when testing the admin portal 
 6. **Proposal rationale drafted** — keep all commercial terms TBD until Jaimal approves pricing.
 7. **Agreement gate checked** — keep legal/contract status blocked; no signature provider action.
 8. **Onboarding prep drafted** — capture requested materials as a casual owner brain dump, not a launch checklist.
-9. **Exit evidence captured** — note defects, gaps, and whether any UI copy could be mistaken for approved external copy.
+9. **Internal lead-room handoff recorded** — summarize the QA/test lead identifier, generated artifacts, current approval gates, and recommended next operator action in DirectStay Platform Leads or an equivalent internal note. Include the explicit reminder: no owner-facing send, signature, launch, or production Owner/Property conversion is approved.
+10. **Exit evidence captured** — note defects, gaps, and whether any UI copy could be mistaken for approved external copy.
 
 ## QA Lead Fixture
 
