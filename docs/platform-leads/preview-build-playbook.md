@@ -55,6 +55,28 @@ Design starts from the property’s evidence, not from a template.
 
 Before choosing layout, palette, typography, or copy, build a Property Design Fingerprint from the owner’s submitted listing and any approved public sources.
 
+## Creative review standard
+
+Every serious Preview Build should target **50/50** on the creative review scorecard:
+
+- visual distinctiveness;
+- property/source fit;
+- layout hierarchy;
+- copy specificity;
+- trust/conversion usefulness.
+
+A score below 50 is not a failure, but it must produce a concrete improvement path. Do not treat 40+ as "done" if the missing points are fixable through better composition, sharper property-specific copy, stronger image sequencing, or a better archetype choice.
+
+Before implementation hardens around one idea, run a three-archetype review:
+
+1. Create or storyboard three materially different design directions, not minor palette swaps.
+2. Score each direction against the five creative-review dimensions.
+3. Pick the strongest production base.
+4. Record what the winner should borrow from the losing variants so the safest version does not become visually bland.
+5. If the winner is under 45/50, revise the concept before building or sharing it as a benchmark example.
+
+Use this process for new Preview Builds and for old benchmarks before citing them as quality references. The goal is not merely safe previews; the goal is property-specific, owner-impressive preview sites that keep improving toward 50/50.
+
 ## Source intake
 
 Use the owner-provided listing first. Supplement only with safe public sources when needed:
@@ -174,29 +196,30 @@ Explain why a guest should book this property direct:
    - If a section needs an image and no trustworthy source photo exists, leave the image out deliberately and mark the gap in the photo audit instead of filling it with a promotional/non-property asset.
 4. Research or infer the specific geographical micro-context, not just the broad destination category.
 5. Extract Property Design Fingerprint.
-6. Choose a page archetype based on property and owner style, but let photos/geography override the archetype seed.
-7. Choose palette from location + photos, with at least three palette notes tied directly to visible source evidence.
-8. Create an override log: seed selected, what the seed contributes, what the property overrides, three design decisions only this property/location justifies, and one generic choice intentionally avoided.
-9. Choose typography and layout rhythm from owner/decor style.
-10. Select hero image and supporting image sequence for emotional flow. Confirm the sequence avoids repeated first-section imagery, avoids adjacent near-duplicates, and has no missing-image placeholders at the bottom of the page.
-11. Draft guest-facing copy around the property’s specific promise.
-12. Run the Copy Review Stack before treating rendered sections as more than a rough draft:
+6. Run the Creative Review Standard: create or storyboard three materially different archetypes, score them against the 50-point scorecard, pick the strongest production base, and record what to borrow from the losing variants.
+7. Choose a page archetype based on property and owner style, but let photos/geography override the archetype seed.
+8. Choose palette from location + photos, with at least three palette notes tied directly to visible source evidence.
+9. Create an override log: seed selected, what the seed contributes, what the property overrides, three design decisions only this property/location justifies, and one generic choice intentionally avoided.
+10. Choose typography and layout rhythm from owner/decor style.
+11. Select hero image and supporting image sequence for emotional flow. Confirm the sequence avoids repeated first-section imagery, avoids adjacent near-duplicates, and has no missing-image placeholders at the bottom of the page.
+12. Draft guest-facing copy around the property’s specific promise.
+13. Run the Copy Review Stack before treating rendered sections as more than a rough draft:
     - **Source-truth pass:** every sentence is either visible/source-backed, owner-confirmed, or explicitly framed as an assumption/correction item. This includes checking the actual owner/manager-written listing description paragraphs for story, layout, guest rhythm, and concrete details before drafting.
     - **VRBO-owner relevance pass:** remove anything that would not help a vacation-rental owner sell the stay, reduce guest friction, explain direct-booking value, or prepare onboarding.
     - **Guest usefulness pass:** replace strategy-memo language with concrete guest planning value: arrival, sleeping/gathering flow, beach/trail/town access, parking, pets, family logistics, weather/day plans, and inquiry confidence.
     - **Anti-AI voice pass:** delete brochure filler, “memorable property story,” “standalone brand,” “elevated experience,” “seamless,” “unlock,” “curated,” and any paragraph that could survive unchanged on another listing.
     - **Section-fit pass:** ask whether this belongs on the public guest page, an owner callout, the fact register, the assumption register, or nowhere. Move internal strategy copy out of guest sections.
-13. Add the conversion trio before or near the inquiry section:
+14. Add the conversion trio before or near the inquiry section:
     - calendar mock (`calendarMock`) so date-aware inquiries feel central, not bolted on;
     - price comparison mock (`priceComparison`) so the owner sees how guest savings can be explained;
     - area guide (`areaGuide` or `locationGuide`) so the page sells the stay and destination, not just the house.
-14. Add owner-view callouts explaining DirectStay strategy and assumptions/corrections.
-15. Mark assumptions and missing owner inputs.
-16. QA desktop/mobile and remove anything that feels generic.
+15. Add owner-view callouts explaining DirectStay strategy and assumptions/corrections.
+16. Mark assumptions and missing owner inputs.
+17. QA desktop/mobile and remove anything that feels generic.
     - During QA, run a rendered-image inventory in page order. Label each selected asset as property exterior, property interior, property amenity, local context, promotional/non-property, duplicate/near-duplicate, or unknown.
     - Rework before review if any guest-facing section uses promotional cards, review/rating graphics, text overlays, collages, OTA banners, unknown assets, or unrelated local filler as property imagery.
     - If the safe gallery is thin, prefer an intentional text-only section plus a recorded owner photo request over unsafe filler.
-17. Record benchmark/rubric notes before considering the preview ready for Jaimal review.
+18. Record benchmark/rubric notes before considering the preview ready for Jaimal review.
 
 ## Benchmark promotion gate
 
