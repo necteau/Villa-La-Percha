@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { getPrismaClient } from "@/lib/db";
+import sarasotaRiverRetreatFixture from "@/data/sarasota-river-retreat-preview-fixture.json";
 
 export const metadata = { robots: { index: false, follow: false } };
 
@@ -110,8 +111,9 @@ function FallbackSections() {
 export default async function PreviewBuildPage({ params, searchParams }: { params: Promise<{ slug: string }>; searchParams: Promise<{ view?: string }> }) {
   const { slug } = await params;
   const { view } = await searchParams;
-  const prisma = await getPrismaClient();
-  const preview = await prisma.previewBuild.findUnique({
+  const localFixture = process.env.NODE_ENV !== "production" && slug === sarasotaRiverRetreatFixture.preview.slug ? sarasotaRiverRetreatFixture.preview : null;
+  const prisma = localFixture ? null : await getPrismaClient();
+  const preview = localFixture ?? await prisma!.previewBuild.findUnique({
     where: { slug },
     include: { platformLead: { include: { artifacts: { where: { type: { in: ["PREVIEW_ASSUMPTION_REGISTER", "PREVIEW_SHARE_NOTE"] }, status: { notIn: ["REJECTED", "SUPERSEDED"] } }, orderBy: { createdAt: "desc" }, take: 4 } } } },
   });
@@ -119,12 +121,13 @@ export default async function PreviewBuildPage({ params, searchParams }: { param
   const showOwnerNotes = view !== "guest";
   const callouts = asCallouts(preview.ownerCallouts);
   const sections = asSections(preview.sections);
-  const heroSection = sections.find((section) => section.heroOnly || section.kind === "heroImage");
-  const visibleSections = sections.filter((section) => !(section.heroOnly || section.kind === "heroImage"));
-  const heroImage = heroSection?.imageUrl || visibleSections.find((section) => section.imageUrl)?.imageUrl;
+  const heroSection = sections.find((section) => section.heroOnly || section.kind === "heroImage" || section.kind === "heroTextOnly");
+  const visibleSections = sections.filter((section) => !(section.heroOnly || section.kind === "heroImage" || section.kind === "heroTextOnly"));
+  const heroImage = heroSection?.kind === "heroTextOnly" ? null : heroSection?.imageUrl || visibleSections.find((section) => section.imageUrl)?.imageUrl;
   const guestBadges = heroSection?.badges?.length ? heroSection.badges.slice(0, 3) : ["Direct booking concept", "Read-only sample", "Date-aware inquiry"];
-  const assumptionArtifacts = preview.platformLead.artifacts.filter((artifact) => artifact.type === "PREVIEW_ASSUMPTION_REGISTER");
-  const shareNote = preview.platformLead.artifacts.find((artifact) => artifact.type === "PREVIEW_SHARE_NOTE");
+  const artifacts = "platformLead" in preview ? preview.platformLead.artifacts : [];
+  const assumptionArtifacts = artifacts.filter((artifact) => artifact.type === "PREVIEW_ASSUMPTION_REGISTER");
+  const shareNote = artifacts.find((artifact) => artifact.type === "PREVIEW_SHARE_NOTE");
 
   return (
     <main style={{ fontFamily: "Inter, ui-sans-serif, system-ui", color: "#17211a", background: "#f7f3eb", minHeight: "100vh" }}>
