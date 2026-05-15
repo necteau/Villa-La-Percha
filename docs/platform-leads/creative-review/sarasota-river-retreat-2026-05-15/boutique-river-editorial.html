@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sarasota River Retreat - Boutique River Editorial</title>
+  <link rel="stylesheet" href="./base.css">
+  <style>
+    body { background: #101915; color: #f8f1e6; }
+    .site { background: #101915; }
+    .nav { color: #f8f1e6; border-bottom: 1px solid rgba(248,241,230,.14); }
+    .hero {
+      min-height: 760px;
+      align-items: end;
+      background:
+        linear-gradient(90deg, rgba(16,25,21,.92), rgba(16,25,21,.62) 44%, rgba(16,25,21,.18)),
+        radial-gradient(circle at 72% 28%, rgba(222,173,94,.44), transparent 16%),
+        linear-gradient(135deg, #173f3a 0%, #59766a 45%, #b7bea5 100%);
+    }
+    h1 { max-width: 860px; font-size: clamp(56px, 9vw, 132px); }
+    .dek { color: #efe2cd; }
+    .editorial-strip { background: #f8f1e6; color: #101915; }
+    .gallery { grid-template-columns: 1.3fr .7fr; align-items: stretch; }
+    .visual.river {
+      min-height: 520px;
+      background:
+        radial-gradient(circle at 18% 80%, rgba(222,173,94,.7) 0 8%, transparent 9%),
+        linear-gradient(160deg, #c8d5c3 0%, #5e8c87 48%, #183d39 100%);
+    }
+    .visual.river::before {
+      inset: 18% 0 auto 0;
+      height: 38%;
+      background: repeating-linear-gradient(170deg, rgba(255,255,255,.34) 0 4px, transparent 4px 22px);
+      transform: skewY(-6deg);
+    }
+    .caption { background: #fffaf0; border: 1px solid #e0cfaa; }
+    .amber { background: #d9943b; color: #101915; }
+    .ink { background: #16221e; color: #f8f1e6; }
+    @media (max-width: 920px) { .gallery { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <main class="site">
+    <nav class="nav">
+      <div class="brand">Sarasota River Retreat</div>
+      <div class="nav-links"><span>Phillippi River context</span><a class="button" href="#">Inquire</a></div>
+    </nav>
+    <section class="hero">
+      <div>
+        <p class="eyebrow">A softer Gulf-side retreat</p>
+        <h1>Warm rooms, river light, and an easier way to ask the owner first.</h1>
+        <p class="dek">A more editorial direction for a home that should feel cared-for, personal, and calm without drifting into resort fiction.</p>
+      </div>
+    </section>
+    <section class="band editorial-strip">
+      <div class="grid gallery">
+        <div class="visual river" aria-label="Abstract Gulf river light composition"></div>
+        <div class="grid">
+          <article class="card caption"><h3>The booking mood</h3><p>Quiet mornings, flexible questions, and a direct line for the details the listing cannot responsibly overstate.</p></article>
+          <article class="card amber"><h3>Best use</h3><p>Creates stronger memory and a higher-end feel, but it needs better property photography to avoid becoming decorative.</p></article>
+        </div>
+      </div>
+    </section>
+    <section class="band ink">
+      <p class="eyebrow">Before guests commit</p>
+      <h2 class="section-title">Make the uncertain amenities feel managed, not hidden.</h2>
+      <div class="grid three">
+        <article class="card caption"><h3>Pool and spa</h3><p>Ask how guests plan to use them; confirm rules before booking.</p></article>
+        <article class="card caption"><h3>Dock and kayaks</h3><p>Use careful verification language and avoid implied boating permission.</p></article>
+        <article class="card caption"><h3>Local guide</h3><p>Keep recommendations category-level until owner-approved specifics are available.</p></article>
+      </div>
+    </section>
+    <section class="footer-note">Internal creative-review static page. No production preview link and no owner-facing copy approval implied.</section>
+  </main>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sarasota River Retreat - Owner Direct Trust</title>
+  <link rel="stylesheet" href="./base.css">
+  <style>
+    body { background: #f7f3eb; color: #17231f; }
+    .site { background: linear-gradient(180deg, #f7f3eb 0%, #eef3ed 58%, #fffaf0 100%); }
+    .nav { color: #24352d; }
+    .hero { grid-template-columns: minmax(0, 1.05fr) minmax(340px, .95fr); gap: clamp(28px, 5vw, 78px); }
+    .hero-panel { align-self: end; }
+    .trust-visual {
+      min-height: 560px;
+      background:
+        radial-gradient(circle at 26% 24%, rgba(255,255,255,.85) 0 8%, transparent 9%),
+        linear-gradient(135deg, rgba(44, 93, 83, .9), rgba(174, 190, 174, .7)),
+        repeating-linear-gradient(90deg, rgba(255,255,255,.18) 0 2px, transparent 2px 32px);
+      border: 1px solid rgba(36,53,45,.18);
+      box-shadow: 0 28px 90px rgba(36,53,45,.16);
+    }
+    .trust-visual::before {
+      width: 78%;
+      height: 46%;
+      left: 11%;
+      bottom: 15%;
+      border-radius: 8px;
+      background: linear-gradient(160deg, #fffaf0, #dfd3bd);
+      box-shadow: inset 0 -24px 0 rgba(123,109,88,.16);
+    }
+    .trust-visual::after {
+      width: 70%;
+      height: 18px;
+      left: 15%;
+      bottom: 29%;
+      border-radius: 999px;
+      background: #355f53;
+      box-shadow: 0 58px 0 #6e8e86, 0 116px 0 #9b8a6f;
+    }
+    .proof { background: #ffffff; border: 1px solid #d8c7a3; box-shadow: 0 18px 60px rgba(36,53,45,.08); }
+    .dark { background: #17231f; color: #f7f3eb; }
+    .shell { background: #fffaf0; border: 1px solid #d8c7a3; }
+    @media (max-width: 920px) { .hero { grid-template-columns: 1fr; } .trust-visual { min-height: 420px; } }
+  </style>
+</head>
+<body>
+  <main class="site">
+    <nav class="nav">
+      <div class="brand">Sarasota River Retreat</div>
+      <div class="nav-links"><span>3 bedrooms</span><span>Sleeps 6</span><a class="button" href="#">Ask about dates</a></div>
+    </nav>
+    <section class="hero">
+      <div>
+        <p class="eyebrow">Owner-direct planning preview</p>
+        <h1>A quiet Sarasota river stay, shaped around the details guests actually ask about.</h1>
+        <p class="dek">Start with the home, the sleeping fit, and the water-side amenities that need clear owner confirmation before anyone commits.</p>
+      </div>
+      <div class="visual trust-visual" aria-label="Abstract interior trust composition"></div>
+    </section>
+    <section class="band">
+      <div class="grid three">
+        <article class="card proof"><h3>Good fit for small groups</h3><p>Three bedrooms and sleeps-six planning language stay visible before the inquiry step.</p></article>
+        <article class="card proof"><h3>Water amenities stay careful</h3><p>Pool, spa, dock, kayaks, and firepit are framed as owner-confirmation-needed instead of promises.</p></article>
+        <article class="card proof"><h3>Direct contact feels useful</h3><p>The page asks for dates, party size, children, mobility needs, and river-use expectations in one focused flow.</p></article>
+      </div>
+    </section>
+    <section class="band dark">
+      <p class="eyebrow">River rhythm</p>
+      <h2 class="section-title">A slower morning, a clearer booking conversation.</h2>
+      <div class="grid two">
+        <article class="card shell"><h3>Before arrival</h3><p>Guests can confirm pool/spa rules, dock or kayak use, cancellation terms, and local guidance before they book.</p></article>
+        <article class="card shell"><h3>During the stay</h3><p>The copy keeps the tone warm without inventing wildlife, boating, beach access, exact drive times, or savings claims.</p></article>
+      </div>
+    </section>
+    <section class="footer-note">Internal creative-review static page. No production preview link and no owner-facing copy approval implied.</section>
+  </main>
+</body>
+</html>

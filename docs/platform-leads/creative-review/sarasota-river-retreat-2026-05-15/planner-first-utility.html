@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sarasota River Retreat - Planner First Utility</title>
+  <link rel="stylesheet" href="./base.css">
+  <style>
+    body { background: #eef3ed; color: #17231f; }
+    .site { background: #eef3ed; }
+    .nav { background: #ffffff; border-bottom: 1px solid #d8c7a3; position: sticky; top: 0; z-index: 2; }
+    .hero { min-height: 560px; grid-template-columns: .85fr 1.15fr; gap: 28px; align-items: center; }
+    h1 { font-size: clamp(46px, 6vw, 88px); max-width: 760px; }
+    .dashboard { background: #fffaf0; border: 1px solid #d8c7a3; border-radius: 8px; padding: 18px; box-shadow: 0 24px 80px rgba(23,35,31,.1); }
+    .module { background: #fff; border: 1px solid #e0cfaa; border-radius: 8px; padding: 18px; }
+    .module strong { display: block; margin-bottom: 8px; }
+    .calendar { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin-top: 12px; }
+    .day { aspect-ratio: 1; border-radius: 6px; background: #eef3ed; display: grid; place-items: center; font-size: 12px; }
+    .day.hot { background: #d9943b; color: #17231f; font-weight: 800; }
+    .compare { background: #17231f; color: #f7f3eb; }
+    .pale { background: #fffaf0; border: 1px solid #d8c7a3; }
+    .blue { background: #dbe9e8; border: 1px solid #aebeb8; }
+    @media (max-width: 920px) { .hero { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <main class="site">
+    <nav class="nav">
+      <div class="brand">Sarasota River Retreat</div>
+      <div class="nav-links"><span>Fit</span><span>Dates</span><span>Rules</span><span>Total clarity</span><a class="button" href="#">Start request</a></div>
+    </nav>
+    <section class="hero">
+      <div>
+        <p class="eyebrow">Planning-first direct booking</p>
+        <h1>Check the fit before the sales pitch.</h1>
+        <p class="dek">This direction puts dates, group needs, water-use expectations, and fee questions at the front of the experience.</p>
+      </div>
+      <div class="dashboard">
+        <div class="grid two">
+          <article class="module"><strong>Stay fit</strong><span>3 bedrooms · sleeps 6 · Sarasota river context</span></article>
+          <article class="module"><strong>Ask owner</strong><span>Pool/spa rules · dock/kayak use · firepit expectations</span></article>
+        </div>
+        <article class="module" style="margin-top:12px;">
+          <strong>Sample date flow</strong>
+          <div class="calendar">
+            <span class="day">1</span><span class="day">2</span><span class="day">3</span><span class="day hot">4</span><span class="day hot">5</span><span class="day">6</span><span class="day">7</span>
+            <span class="day">8</span><span class="day">9</span><span class="day">10</span><span class="day">11</span><span class="day">12</span><span class="day">13</span><span class="day">14</span>
+          </div>
+        </article>
+      </div>
+    </section>
+    <section class="band compare">
+      <p class="eyebrow">Direct clarity</p>
+      <h2 class="section-title">Show what the conversation will clarify.</h2>
+      <div class="grid three">
+        <article class="card pale"><h3>Rates and fees</h3><p>Structure-only total clarity; no numeric savings or best-rate claims.</p></article>
+        <article class="card blue"><h3>Water details</h3><p>Separate source-observed amenities from rules that require confirmation.</p></article>
+        <article class="card pale"><h3>Local guidance</h3><p>Ask what guests need before inventing restaurant, beach, or drive-time recommendations.</p></article>
+      </div>
+    </section>
+    <section class="band">
+      <div class="grid two">
+        <article class="card pale"><h3>Strongest for operations</h3><p>This layout is the clearest handoff from guest interest to owner answer.</p></article>
+        <article class="card blue"><h3>Weakest for emotion</h3><p>It is useful and honest, but it needs a warmer first impression to feel like a memorable stay.</p></article>
+      </div>
+    </section>
+    <section class="footer-note">Internal creative-review static page. No production preview link and no owner-facing copy approval implied.</section>
+  </main>
+</body>
+</html>
