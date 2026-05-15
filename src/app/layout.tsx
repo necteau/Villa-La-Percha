@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Inter } from "next/font/google";
 import "./globals.css";
 import { directStayEntity, siteUrl } from "@/lib/seo";
@@ -58,6 +58,11 @@ export const metadata: Metadata = {
       "DirectStay helps independent vacation rental owners build direct-booking brands with polished property sites and AI-assisted operations.",
     images: ["/images/aerial-house-ocean-neighbors.jpg"],
   },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
 };
 
 export default function RootLayout({

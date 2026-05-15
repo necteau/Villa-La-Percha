@@ -70,38 +70,38 @@
     "propertyName": "Sarasota River Retreat",
     "location": "Sarasota, Florida / Phillippi River",
     "sourceUrls": [],
-    "heroTitle": "A quiet Sarasota river retreat, planned with the owner details guests actually need.",
-    "positioning": "A careful read-only DirectStay preview for a small waterfront home where the value is morning river rhythm, private pool and spa questions, dock and kayak planning, and direct owner care.",
+    "heroTitle": "A quiet Sarasota river retreat, planned around the questions guests ask before they book.",
+    "positioning": "A careful sample page for a small waterfront home where the value is morning river rhythm, private pool and spa questions, dock and kayak planning, and direct owner care.",
     "sections": [
       {
         "kind": "heroTextOnly",
-        "eyebrow": "Read-only planning preview",
-        "title": "A quiet Sarasota river retreat, planned with the owner details guests actually need.",
-        "body": "A careful preview for a small waterfront home where the value is morning river rhythm, private pool and spa questions, dock and kayak planning, and direct owner care.",
+        "eyebrow": "Sarasota river stay",
+        "title": "A quiet Sarasota river retreat, planned around the questions guests ask before they book.",
+        "body": "A careful sample page for a small waterfront home where the value is morning river rhythm, private pool and spa questions, dock and kayak planning, and direct owner care.",
         "badges": [
           "Sarasota / Phillippi River context",
           "3 bedrooms",
           "Sleeps 6",
-          "Preview only — rules and pricing are not live"
+          "Rules and pricing confirmed before launch"
         ],
         "imageUrl": null
       },
       {
         "kind": "stayFit",
         "eyebrow": "Stay fit",
-        "title": "Quick stay-fit checks before anyone asks for dates.",
+        "title": "Quick planning checks before anyone asks for dates.",
         "items": [
           {
             "label": "3 bedrooms / sleeps 6",
-            "body": "Source-observed; final bed and bathroom layout needs owner confirmation."
+            "body": "Final bed and bathroom layout should be confirmed before guests rely on it."
           },
           {
             "label": "Sarasota waterfront / Phillippi River setting",
-            "body": "Use as broad context only until address, access, and water-use details are owner-confirmed."
+            "body": "A guest-ready page should clarify access, arrival, parking, and water-use details in plain language."
           },
           {
             "label": "Pool, spa, dock, kayaks, and firepit",
-            "body": "Source-observed; guest use rules, heating, safety, and availability need owner confirmation."
+            "body": "Guest rules, heating, safety, and seasonal availability should be easy to check before inquiry."
           },
           {
             "label": "Direct owner care",
@@ -112,7 +112,7 @@
       {
         "kind": "imageStory",
         "eyebrow": "Owner-care and interior trust",
-        "title": "Start with the cared-for interior, not unsupported waterfront imagery.",
+        "title": "Start with the cared-for interior.",
         "body": "The preview should make the home feel personally maintained before it tries to sell amenities. Guests should understand that the owner can help clarify restaurant ideas, pool questions, and the right way to plan a river day.",
         "imageUrl": "uploads/Home_Page/Sarasota_Main-6089374.jpg?format=webp",
         "imageAlt": "Living room inside Sarasota River Retreat",
@@ -121,20 +121,20 @@
       {
         "kind": "signatureMoments",
         "eyebrow": "River-day rhythm",
-        "title": "A river day that still needs owner truth.",
-        "body": "Frame the page as useful planning, with confirmation labels anywhere the source does not support a final claim.",
+        "title": "Plan the river day before promising it.",
+        "body": "A useful direct-booking page should help guests understand the pool, spa, dock, kayaks, weather, and quiet-hour expectations before they send an inquiry.",
         "items": [
-          "Morning river atmosphere — do not guarantee wildlife sightings.",
-          "Pool and spa reset — confirm heating, hours, fees, and safety rules.",
-          "Dock and kayak questions — confirm launch rules, life jackets, weather guidance, and water-use approvals.",
-          "Firepit evening — confirm permitted use, fuel, quiet hours, and safety rules."
+          "Morning river atmosphere, without guaranteeing wildlife sightings.",
+          "Pool and spa reset, with heating, hours, fees, and safety rules made clear.",
+          "Dock and kayak questions, including launch rules, life jackets, weather guidance, and water-use approvals.",
+          "Firepit evening, with permitted use, fuel, quiet hours, and safety rules clarified."
         ]
       },
       {
         "kind": "calendarMock",
         "eyebrow": "Read-only inquiry planning",
         "title": "Plan the right Sarasota river stay before you inquire.",
-        "body": "Collect preferred dates, party size, bedroom needs, pool/spa expectations, dock and kayak questions, beach-day versus quiet-river priorities, local recommendation requests, parking, children, mobility, pets, quiet-hours, and firepit questions. Preview only — this form does not submit and availability is not live."
+        "body": "Guests can start with preferred dates, party size, bedroom needs, pool/spa expectations, dock and kayak questions, beach-day versus quiet-river priorities, local recommendations, parking, children, mobility, pets, quiet-hours, and firepit questions. This sample form does not submit and availability is not live."
       },
       {
         "kind": "priceComparison",
@@ -145,7 +145,7 @@
       {
         "kind": "areaGuide",
         "eyebrow": "Local planning notes to collect",
-        "title": "Use categories until the owner supplies real recommendations.",
+        "title": "Make the local guide useful before it gets specific.",
         "items": [
           "Quiet river mornings and weather-aware kayak planning.",
           "Beach-day planning without precise travel-time claims until sourced.",

@@ -16,6 +16,7 @@ type PreviewSection = {
   imageAlt?: string;
   kicker?: string;
   heroOnly?: boolean;
+  guestHidden?: boolean;
   badges?: string[];
 };
 
@@ -43,6 +44,12 @@ function sectionTone(kind?: string) {
   return { background: "#ffffff", color: "#17211a", border: "1px solid #e7decf" };
 }
 
+function imagePath(value?: string | null) {
+  if (!value) return null;
+  if (/^https?:\/\//.test(value) || value.startsWith("/")) return value;
+  return `/${value}`;
+}
+
 function RenderItems({ items }: { items?: PreviewSection["items"] }) {
   if (!Array.isArray(items) || !items.length) return null;
   return <div style={{ display: "grid", gap: 12, marginTop: 20 }}>
@@ -62,8 +69,8 @@ function PreviewContentSection({ section, index }: { section: PreviewSection; in
   const isCalendar = section.kind === "calendarMock";
   const isPrice = section.kind === "priceComparison";
   return <section data-preview-section={section.kind || "custom"} style={{ padding: "42px 24px" }}>
-    <article style={{ maxWidth: 1120, margin: "0 auto", display: "grid", gap: 24, gridTemplateColumns: section.imageUrl ? "repeat(auto-fit, minmax(300px, 1fr))" : "1fr", alignItems: "stretch", padding: 28, borderRadius: 32, boxShadow: "0 24px 80px rgba(23, 33, 26, .08)", ...tone }}>
-      {section.imageUrl && imageFirst ? <div role="img" aria-label={section.imageAlt || sectionTitle(section)} style={{ minHeight: 420, borderRadius: 26, backgroundImage: `url(${section.imageUrl})`, backgroundSize: "cover", backgroundPosition: "center", order: -1 }} /> : null}
+    <article style={{ maxWidth: 1120, width: "100%", margin: "0 auto", display: "grid", gap: 24, gridTemplateColumns: section.imageUrl ? "repeat(auto-fit, minmax(min(300px, 100%), 1fr))" : "minmax(0, 1fr)", alignItems: "stretch", padding: 28, borderRadius: 32, boxShadow: "0 24px 80px rgba(23, 33, 26, .08)", ...tone }}>
+      {section.imageUrl && imageFirst ? <div role="img" aria-label={section.imageAlt || sectionTitle(section)} style={{ minHeight: 420, borderRadius: 26, backgroundImage: `url(${imagePath(section.imageUrl)})`, backgroundSize: "cover", backgroundPosition: "center", order: -1 }} /> : null}
       <div style={{ alignSelf: "center" }}>
         <p style={{ letterSpacing: 2.4, textTransform: "uppercase", color: tone.color === "#f7f3eb" ? "#d8c7a3" : "#7b6d58", margin: 0 }}>{text(section.eyebrow, text(section.kind, `Preview ${index + 1}`)).replace(/([A-Z])/g, " $1")}</p>
         <h2 style={{ fontSize: "clamp(30px, 4.6vw, 58px)", lineHeight: .98, margin: "12px 0" }}>{sectionTitle(section)}</h2>
@@ -72,7 +79,7 @@ function PreviewContentSection({ section, index }: { section: PreviewSection; in
         {isPrice ? <PriceComparisonMock /> : null}
         <RenderItems items={section.items} />
       </div>
-      {section.imageUrl && !imageFirst ? <div role="img" aria-label={section.imageAlt || sectionTitle(section)} style={{ minHeight: 420, borderRadius: 26, backgroundImage: `url(${section.imageUrl})`, backgroundSize: "cover", backgroundPosition: "center" }} /> : null}
+      {section.imageUrl && !imageFirst ? <div role="img" aria-label={section.imageAlt || sectionTitle(section)} style={{ minHeight: 420, borderRadius: 26, backgroundImage: `url(${imagePath(section.imageUrl)})`, backgroundSize: "cover", backgroundPosition: "center" }} /> : null}
     </article>
   </section>;
 }
@@ -89,7 +96,7 @@ function CalendarMock() {
 
 function PriceComparisonMock() {
   return <div data-preview-price-comparison-mock="true" style={{ marginTop: 24, display: "grid", gap: 12 }}>
-    {[{ label: "Direct estimate", value: "$2,950", note: "Illustrative stay total" }, { label: "Marketplace-style estimate", value: "$3,410", note: "Illustrative fees/taxes comparison" }, { label: "Potential guest savings", value: "$460", note: "Sample only until final rates are set" }].map((row) => <article key={row.label} style={{ padding: 16, borderRadius: 18, background: "#fff", border: "1px solid #e7decf", display: "grid", gap: 4 }}><span style={{ color: "#7b6d58" }}>{row.label}</span><strong style={{ fontSize: 28 }}>{row.value}</strong><small>{row.note}</small></article>)}
+    {[{ label: "Direct stay total", value: "Owner-confirmed rate", note: "Filled in only after real rates, fees, and taxes are approved" }, { label: "Marketplace comparison", value: "Optional comparison", note: "Shown only when the source assumptions are reviewed" }, { label: "Guest takeaway", value: "Clear trip math", note: "The point is confidence before inquiry, not an unsupported discount claim" }].map((row) => <article key={row.label} style={{ padding: 16, borderRadius: 18, background: "#fff", border: "1px solid #e7decf", display: "grid", gap: 4 }}><span style={{ color: "#7b6d58" }}>{row.label}</span><strong style={{ fontSize: 22 }}>{row.value}</strong><small>{row.note}</small></article>)}
   </div>;
 }
 
@@ -122,7 +129,7 @@ export default async function PreviewBuildPage({ params, searchParams }: { param
   const callouts = asCallouts(preview.ownerCallouts);
   const sections = asSections(preview.sections);
   const heroSection = sections.find((section) => section.heroOnly || section.kind === "heroImage" || section.kind === "heroTextOnly");
-  const visibleSections = sections.filter((section) => !(section.heroOnly || section.kind === "heroImage" || section.kind === "heroTextOnly"));
+  const visibleSections = sections.filter((section) => !(section.heroOnly || section.guestHidden || section.kind === "heroImage" || section.kind === "heroTextOnly"));
   const heroImage = heroSection?.kind === "heroTextOnly" ? null : heroSection?.imageUrl || visibleSections.find((section) => section.imageUrl)?.imageUrl;
   const guestBadges = heroSection?.badges?.length ? heroSection.badges.slice(0, 3) : ["Direct booking concept", "Read-only sample", "Date-aware inquiry"];
   const artifacts = "platformLead" in preview ? preview.platformLead.artifacts : [];
@@ -130,11 +137,12 @@ export default async function PreviewBuildPage({ params, searchParams }: { param
   const shareNote = artifacts.find((artifact) => artifact.type === "PREVIEW_SHARE_NOTE");
 
   return (
-    <main style={{ fontFamily: "Inter, ui-sans-serif, system-ui", color: "#17211a", background: "#f7f3eb", minHeight: "100vh" }}>
-      <section style={{ padding: "28px 24px 56px", maxWidth: 1240, margin: "0 auto" }}>
-        <div style={{ display: "grid", gap: 28, gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", alignItems: "stretch", minHeight: 620 }}>
-          <div style={{ padding: "44px 0", display: "flex", flexDirection: "column", justifyContent: "center" }}>
-            <p style={{ letterSpacing: 3, textTransform: "uppercase", color: "#7b6d58", margin: 0 }}>{view === "guest" ? "Direct booking preview" : "Owner review preview"}</p>
+    <main style={{ fontFamily: "Inter, ui-sans-serif, system-ui", color: "#17211a", background: "#f7f3eb", minHeight: "100vh", overflowX: "hidden" }}>
+      <style>{`html,body{margin:0;overflow-x:hidden}*,*::before,*::after{box-sizing:border-box}h1,h2,h3,p,strong,span,small{overflow-wrap:anywhere}[data-preview-hero-grid]>*,[data-preview-section]>article>*{min-width:0}@media(max-width:640px){[data-preview-hero-grid]{grid-template-columns:1fr!important;min-height:auto!important}[data-preview-hero-copy]{padding:24px 0!important}[data-preview-hero-media]{min-height:220px!important;border-radius:22px!important}[data-preview-section]{padding:28px 16px!important}[data-preview-section]>article{grid-template-columns:1fr!important;padding:20px!important;border-radius:22px!important}[data-preview-section] h2{font-size:34px!important;line-height:1.02!important}[data-preview-calendar-mock]{padding:12px!important}[data-preview-calendar-mock] span{min-height:34px!important}}`}</style>
+      <section style={{ padding: "28px 24px 56px", maxWidth: 1240, width: "100%", margin: "0 auto" }}>
+        <div data-preview-hero-grid="true" style={{ display: "grid", gap: 28, gridTemplateColumns: heroImage ? "repeat(auto-fit, minmax(min(320px, 100%), 1fr))" : "minmax(0, 1fr)", alignItems: "stretch", justifyContent: "center", minHeight: heroImage ? 620 : 0 }}>
+          <div data-preview-hero-copy="true" style={{ padding: "44px 0", display: "flex", flexDirection: "column", justifyContent: "center", minWidth: 0, width: "100%", maxWidth: 780, margin: "0 auto" }}>
+            <p style={{ letterSpacing: 3, textTransform: "uppercase", color: "#7b6d58", margin: 0 }}>{view === "guest" ? "Sarasota river stay" : "Owner review preview"}</p>
             <h1 style={{ fontSize: "clamp(38px, 5.8vw, 72px)", lineHeight: .94, margin: "16px 0" }}>{preview.heroTitle || preview.propertyName}</h1>
             <p style={{ fontSize: 22, lineHeight: 1.45, maxWidth: 720 }}>{preview.positioning || `A direct-booking preview concept for ${preview.propertyName} in ${preview.location}.`}</p>
             <p style={{ marginTop: 18, color: "#7b6d58", fontSize: 18 }}>{preview.location}</p>
@@ -143,7 +151,7 @@ export default async function PreviewBuildPage({ params, searchParams }: { param
             </div>
             {showOwnerNotes && callouts[0] ? <aside data-preview-owner-callout="true" style={{ marginTop: 32, padding: 18, border: "1px solid #d8c7a3", borderRadius: 18, background: "#fffaf0" }}><strong>Owner note: {callouts[0].label}</strong><p>{callouts[0].body}</p></aside> : null}
           </div>
-          <div role="img" aria-label={`${preview.propertyName} preview image`} style={{ minHeight: 560, borderRadius: 36, background: heroImage ? `linear-gradient(180deg, rgba(23,33,26,.08), rgba(23,33,26,.18)), url(${heroImage})` : "linear-gradient(135deg, #d8c7a3, #7b6d58)", backgroundSize: "cover", backgroundPosition: "center", boxShadow: "0 30px 90px rgba(23, 33, 26, .18)" }} />
+          {heroImage ? <div data-preview-hero-media="true" role="img" aria-label={`${preview.propertyName} preview image`} style={{ minHeight: 560, borderRadius: 36, background: `linear-gradient(180deg, rgba(23,33,26,.08), rgba(23,33,26,.18)), url(${imagePath(heroImage)})`, backgroundSize: "cover", backgroundPosition: "center", boxShadow: "0 30px 90px rgba(23, 33, 26, .18)" }} /> : null}
         </div>
       </section>
 
