@@ -124,6 +124,20 @@ Required sequence:
 
 Critical design rule: broad categories are not enough. Two coastal villas should not look alike unless their actual photos, interiors, owner style, and micro-location support the same direction. Chalk Sound, Cape Cod, Malibu, Greek islands, Lowcountry marsh, Lake Norman dock houses, and Sarasota/Phillippi River retreats should produce different palettes, typography, spacing, conversion modules, and emotional framing.
 
+### Creative Review Loop
+
+For benchmark/refinement work, and for any high-value PlatformLead where the first Preview Build feels generic, Bishop should run a combined creative review loop before treating the output as a design lesson:
+
+1. **Pick 3 design archetypes.** Choose distinct directions that could plausibly fit the property, such as editorial luxury travel, boutique hotel conversion, quiet owner-direct trust, location-first adventure guide, architectural/interior showcase, family lake-house utility, or neighborhood/townhouse local-living. Record why each archetype does or does not fit the actual source material.
+2. **Build a small reference board.** Pull 3-5 strong hospitality/design references or prior DirectStay seeds before judging the build. For each reference, record the specific move to borrow: typography tension, hero treatment, image rhythm, section pacing, palette, conversion module, or copy posture. Do not copy whole designs.
+3. **Generate or compare variants.** Prefer a 3-variant tournament for benchmark work: one variant per archetype, with different layout/copy strategies. If only one preview exists, critique it against the unused archetypes and state what a competing variant would have done differently.
+4. **Capture screenshot-based critique.** Review desktop and mobile screenshots and label failure modes concretely: hero has no point of view, sections repeat the same rhythm, copy sounds replaceable, image hierarchy is weak, CTAs lack booking psychology, mobile stack loses drama, card-grid sameness, unsafe/unsupported claim, or owner-strategy language leaking into guest view.
+5. **Run the specificity audit.** Any headline, section intro, CTA, or owner-facing claim that could fit another luxury rental must be rewritten or marked as a blocker. Use exact property evidence: micro-location, visible rooms/views/materials, arrival experience, guest use case, owner-local knowledge, planning friction, or trust signal.
+6. **Score by contrast.** Rank variants or critique directions by first impression, property-specificity, owner-direct trust, booking intent, memorable visual idea, mobile composition, source safety, and least generic copy.
+7. **Promote lessons back into the system.** Update the Preview Build playbook, design seeds, admin generation prompts, or starter packet templates with recurring failures and winning patterns. A benchmark review is incomplete if its lessons stay in the review artifact only.
+
+This loop is mandatory for the Preview Build Refinement Lab. It is optional but recommended for one-off owner previews unless Jaimal explicitly wants speed over variety.
+
 ### Required Preview Build Packet
 
 A Preview Build record is not a shareable Preview Build. Treat preview quality as two separate gates: **pre-render planning quality** and **post-render owner-share readiness**. Before owner-share review, create or attach:
