@@ -1,9 +1,11 @@
 #!/usr/bin/env node
 import { readFileSync } from "node:fs";
-import { resolve } from "node:path";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 
-const planPath = resolve(process.cwd(), "docs/platform-lead-emily-simulation-plan.md");
-const packPath = resolve(process.cwd(), "docs/platform-lead-emily-simulation-artifact-pack.md");
+const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+const planPath = resolve(repoRoot, "docs/platform-lead-emily-simulation-plan.md");
+const packPath = resolve(repoRoot, "docs/platform-lead-emily-simulation-artifact-pack.md");
 
 const plan = readFileSync(planPath, "utf8");
 const pack = readFileSync(packPath, "utf8");

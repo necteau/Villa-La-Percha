@@ -1,8 +1,10 @@
 #!/usr/bin/env node
 import { readFileSync } from "node:fs";
-import { resolve } from "node:path";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 
-const docPath = resolve(process.cwd(), "docs/platform-lead-emily-simulation-artifact-pack.md");
+const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+const docPath = resolve(repoRoot, "docs/platform-lead-emily-simulation-artifact-pack.md");
 const body = readFileSync(docPath, "utf8");
 
 const requiredSections = [
