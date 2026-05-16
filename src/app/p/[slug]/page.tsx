@@ -1,8 +1,11 @@
 import { notFound } from "next/navigation";
 import { getPrismaClient } from "@/lib/db";
 import sarasotaRiverRetreatFixture from "@/data/sarasota-river-retreat-preview-fixture.json";
+import surfsongVillaFixture from "@/data/surfsong-villa-preview-fixture.json";
 
 export const metadata = { robots: { index: false, follow: false } };
+
+const localPreviewFixtures = [sarasotaRiverRetreatFixture.preview, surfsongVillaFixture.preview];
 
 type OwnerCallout = { label?: string; body?: string };
 type PreviewSection = {
@@ -118,7 +121,7 @@ function FallbackSections() {
 export default async function PreviewBuildPage({ params, searchParams }: { params: Promise<{ slug: string }>; searchParams: Promise<{ view?: string }> }) {
   const { slug } = await params;
   const { view } = await searchParams;
-  const localFixture = process.env.NODE_ENV !== "production" && slug === sarasotaRiverRetreatFixture.preview.slug ? sarasotaRiverRetreatFixture.preview : null;
+  const localFixture = process.env.NODE_ENV !== "production" ? localPreviewFixtures.find((fixture) => fixture.slug === slug) ?? null : null;
   const prisma = localFixture ? null : await getPrismaClient();
   const preview = localFixture ?? await prisma!.previewBuild.findUnique({
     where: { slug },

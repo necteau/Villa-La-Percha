@@ -1,0 +1,130 @@
+{
+  "ok": true,
+  "fixtureOnly": true,
+  "slug": "surfsong-villa-preview",
+  "propertyName": "Surfsong Villa",
+  "location": "Beacon Hill, Sint Maarten",
+  "sharePosture": "internal-only; not owner-shareable or guest-shareable",
+  "previewPosture": "read-only; no booking/payment/inquiry submission",
+  "sourceDocs": [
+    "directstay/docs/platform-leads/surfsong-villa-render-packet-2026-05-16.md",
+    "directstay/docs/platform-leads/creative-review/all-property-synthesis-rerun-2026-05-15.md",
+    "directstay/docs/platform-leads/preview-build-benchmark-status-2026-05-11.md"
+  ],
+  "preview": {
+    "slug": "surfsong-villa-preview",
+    "status": "DRAFT",
+    "propertyName": "Surfsong Villa",
+    "location": "Beacon Hill, Sint Maarten",
+    "sourceUrls": [
+      "https://saintmartinrentals.com/listing/surfsong-6-bedrooms-waterfront-luxury-and-sunset-splendor/"
+    ],
+    "heroTitle": "A Sint Maarten waterfront villa planned around the whole group.",
+    "positioning": "A read-only internal preview for Surfsong Villa, using public-source facts to test a DirectStay group-stay planner before any owner review, photo-rights clearance, or live booking flow.",
+    "sections": [
+      {
+        "kind": "heroImage",
+        "eyebrow": "Sint Maarten waterfront stay",
+        "title": "A Sint Maarten waterfront villa planned around the whole group.",
+        "body": "The preview leads with the pool deck, sea view, and six-bedroom group format, then makes the practical questions easy: who sleeps where, where everyone gathers, how arrivals work, and what needs owner confirmation before this becomes a live direct-booking site.",
+        "badges": ["Beacon Hill", "6 bedrooms", "Sleeps 12"],
+        "heroOnly": true,
+        "imageUrl": "https://saintmartinrentals.com/wp-content/uploads/2023/10/48105-186668-AB8B--k5ICiZg40Nmq9AAY1PfG6-2IESGzKnv2EN7IaA-64d127aeafc91.jpg",
+        "imageAlt": "Surfsong Villa waterfront pool deck and sea view"
+      },
+      {
+        "kind": "stayFit",
+        "eyebrow": "Stay fit",
+        "title": "Built for one group, not six separate hotel rooms.",
+        "body": "The source listing presents Surfsong as a six-bedroom, six-bath Beacon Hill villa for up to 12 guests. A finished page should confirm bed configuration, bedroom locations, bathrooms, accessibility, parking, and house rules before guests rely on the details.",
+        "items": [
+          { "label": "Observed", "body": "6 bedrooms, 6 baths, 12 guests, Beacon Hill, Sint Maarten." },
+          { "label": "Guest planning", "body": "Clarify sleeping layout, gathering spaces, arrival timing, parking, transport, and nearby-area expectations." },
+          { "label": "Owner confirmation", "body": "Waterfront, pool, hot-tub, quiet-hour, event, child-safety, and weather rules need owner review." }
+        ]
+      },
+      {
+        "kind": "imageStory",
+        "eyebrow": "Waterfront rhythm",
+        "title": "Pool-deck days, dinner-together evenings.",
+        "body": "The visual story should make the group rhythm concrete without overclaiming beach access, water safety, exact sunset angle, seclusion, or entertainment proximity before the owner confirms those details.",
+        "imageUrl": "https://saintmartinrentals.com/wp-content/uploads/2023/10/48105-186668-6I5Kl8ui33wnuXp5B1AWSFjpDsMV--O2U6fEpa5ywhh4-64d127b0a2f1a.jpg",
+        "imageAlt": "Outdoor living and poolside gathering space at Surfsong Villa"
+      },
+      {
+        "kind": "signatureMoments",
+        "eyebrow": "Arrival and area context",
+        "title": "Beacon Hill context guests will want before they inquire.",
+        "body": "A guest-ready page should explain airport proximity, arrival timing, nearby beaches, restaurants, entertainment areas, group transport, parking, quiet hours, event rules, waterfront expectations, and neighborhood guidance after the owner confirms the right wording.",
+        "imageUrl": "https://saintmartinrentals.com/wp-content/uploads/2024/02/48105-186668-vG-D--pfgAxUydYxNUwtffBHbZIC3B225qODjhwBc5Bg-65b0353f487b3.jpg",
+        "imageAlt": "Covered dining and group gathering area at Surfsong Villa"
+      },
+      {
+        "kind": "calendarMock",
+        "eyebrow": "Read-only date window",
+        "title": "Choose the right group-stay window before sending an inquiry.",
+        "body": "Guests would choose preferred arrival and departure windows here. Availability, minimum stay, rates, taxes, fees, and owner approval are not connected in this preview."
+      },
+      {
+        "kind": "priceComparison",
+        "eyebrow": "Trip-total structure",
+        "title": "Show the shape of direct-booking economics without inventing a quote.",
+        "body": "No nightly price is displayed as a DirectStay offer. A launch-ready version would use owner-confirmed rates, fees, taxes, deposits, minimum stay, cancellation terms, and any approved marketplace comparison assumptions."
+      },
+      {
+        "kind": "areaGuide",
+        "eyebrow": "Local planning notes to collect",
+        "title": "Turn Sint Maarten context into owner-approved planning help.",
+        "items": [
+          "Airport arrival timing and practical expectations.",
+          "Beacon Hill, Maho, Simpson Bay, beaches, restaurants, and entertainment guidance.",
+          "Parking, transport, provisioning, chef/service, and group logistics.",
+          "Quiet hours, events, waterfront rules, child safety, and weather considerations."
+        ]
+      },
+      {
+        "kind": "directBookingValue",
+        "eyebrow": "Owner correction path",
+        "title": "This internal preview should invite corrections before it sells anything.",
+        "body": "Before owner review or sharing, confirm photo rights; exact bed and bath configuration; waterfront, swim, pool, hot-tub, safety, airport/noise, parking, transport, local-area, rate, tax, fee, deposit, minimum-stay, cancellation, payment, availability, and review/testimonial permissions.",
+        "guestHidden": true
+      }
+    ],
+    "ownerCallouts": [
+      {
+        "label": "Internal fixture only",
+        "body": "Use for local renderer and QA work. Do not share externally, mark ready for review, or imply owner approval without Jaimal approval and source-rights confirmation."
+      },
+      {
+        "label": "Photo rights blocked",
+        "body": "Public manager images are visually suitable for internal creative review only. Replace or approve images before any owner-share or guest-share posture."
+      },
+      {
+        "label": "Owner confirmation required",
+        "body": "Rates, fees, taxes, minimum stay, cancellation/payment terms, bed configuration, waterfront and pool rules, airport/noise context, local recommendations, and testimonials remain unconfirmed."
+      }
+    ]
+  },
+  "guestViewDenylist": [
+    "benchmark",
+    "source material",
+    "owner-share blocker",
+    "photo rights",
+    "strategy",
+    "internal preview",
+    "DirectStay process",
+    "mock data",
+    "candidate image",
+    "public manager",
+    "Rent By Owner",
+    "VRBO",
+    "$1,728"
+  ],
+  "verificationChecklist": [
+    "Hero and first two visual sections use distinct inspected public-source images.",
+    "Calendar and price modules are visibly read-only and contain no live rate or submit behavior.",
+    "Guest view hides owner-correction content and internal notes.",
+    "No OTA reviews, ratings, guest names, testimonials, or DirectStay price promises appear.",
+    "Owner-share blockers remain separate from quality scoring."
+  ]
+}
