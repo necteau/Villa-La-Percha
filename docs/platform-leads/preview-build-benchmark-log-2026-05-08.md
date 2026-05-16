@@ -495,3 +495,11 @@ Recommended next action: create `design-seeds/gulf-river-retreat.DESIGN.md` only
 Created a provisional `design-seeds/gulf-river-retreat.DESIGN.md` from the Sarasota River Retreat intake and prior French Escape/Lake Norman water-property lessons. This is a seed for Gulf Coast river/canal homes whose value is private waterway rhythm, owner care, pool/spa/dock/kayak confidence, and local guidance — distinct from both beach villas and lake-family houses.
 
 Also updated the Preview Build playbook conversion-trio guidance to call out Gulf river/canal retreats explicitly. The seed remains conservative: future renders still require browser/page-order image inventory before choosing hero/section art, and owner-share remains blocked until photo rights, rates, policies, water rules, wildlife/local claims, and owner recommendations are confirmed.
+
+## Thin-gallery benchmark synthesis — 2026-05-15 21:00 ET
+
+Reviewed the Sarasota River Retreat source audit, constrained content plan, property design fingerprint, and gulf river-retreat seed as the safe DirectStay idle chunk. Pending PlatformLead recovery was empty, and no owner-facing contact, preview sharing, production deploy, production DB write, or external action was taken.
+
+The durable lesson is now explicit in the playbook: when a source gives strong owner voice and planning facts but exposes zero or one reliable property image, DirectStay should produce a text-forward internal benchmark/content plan instead of forcing a visual owner-share candidate. The single confirmed image can support only what it actually shows, while exterior, pool, dock, kayak, firepit, wildlife, local-guide, rates, rules, and safety claims stay owner-confirmation-needed.
+
+This keeps Sarasota useful for the refinement lab without pretending it passed the image-integrity gate. Next safe DirectStay benchmark step remains either: obtain/browser-verify a fuller rights-safe gallery for Sarasota before rendering, or choose another property source with enough distinct actual-property images for hero + first two content sections.

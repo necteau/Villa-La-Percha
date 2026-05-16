@@ -221,6 +221,25 @@ Explain why a guest should book this property direct:
     - If the safe gallery is thin, prefer an intentional text-only section plus a recorded owner photo request over unsafe filler.
 18. Record benchmark/rubric notes before considering the preview ready for Jaimal review.
 
+## Thin-gallery benchmark standard
+
+Some public owner sites expose useful source truth but not enough rights-safe property imagery to support a visual Preview Build. Treat these as constrained internal benchmarks, not failures.
+
+Use a text-forward internal preview or content plan when all of these are true:
+
+- the source gives enough property facts, owner voice, or guest-planning detail to learn from;
+- the inspected image set has zero or one trustworthy property-specific image;
+- exterior, amenity, local, or attraction images cannot be tied safely to the property;
+- owner-share would require a full owner/gallery photo set before hero and section art can be chosen.
+
+For these cases:
+
+- keep hero and amenity sections text-forward until owner/gallery images exist;
+- use the single confirmed property image only where it proves what it shows, usually interior or owner-care trust;
+- mark river, dock, pool, spa, beach, wildlife, restaurant, distance, parking, pet, accessibility, and safety details as owner-confirmation-needed unless directly sourced;
+- write the conversion trio as guest-planning questions and structure-only clarity, not as proof of live booking, rates, discounts, or amenities;
+- score the artifact as a learning benchmark or builder-ready plan, not as an owner-share candidate.
+
 ## Benchmark promotion gate
 
 Internal benchmark previews are allowed to start rough, but they do not become examples for future owner work until the rework evidence proves they meet the current bar. Before citing a benchmark as a quality reference, copying its structure into a seed, or using it in an approval packet, complete this promotion gate:
