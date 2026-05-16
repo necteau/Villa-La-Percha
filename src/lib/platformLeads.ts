@@ -217,7 +217,7 @@ export async function getAdminPlatformLeads() {
 
 export async function getAdminPreviewBuilds() {
   const prisma = await getPrismaClient();
-  return prisma.previewBuild.findMany({
+  const previews = await prisma.previewBuild.findMany({
     orderBy: { updatedAt: "desc" },
     take: 200,
     include: {
@@ -233,6 +233,19 @@ export async function getAdminPreviewBuilds() {
       },
     },
   });
+  const grouped = new Map<string, (typeof previews)[number] & { duplicatePreviewCount: number }>();
+  for (const preview of previews) {
+    const propertyName = preview.platformLead.propertyName || preview.propertyName || "";
+    const location = preview.platformLead.propertyLocation || preview.location || "";
+    const key = `${propertyName.trim().toLowerCase()}|${location.trim().toLowerCase()}` || preview.platformLeadId;
+    const existing = grouped.get(key);
+    if (existing) {
+      existing.duplicatePreviewCount += 1;
+    } else {
+      grouped.set(key, { ...preview, duplicatePreviewCount: 1 });
+    }
+  }
+  return Array.from(grouped.values());
 }
 
 export async function getAdminPlatformLead(leadId: string) {
