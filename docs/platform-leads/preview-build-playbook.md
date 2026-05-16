@@ -67,15 +67,17 @@ Every serious Preview Build should target **50/50** on the creative review score
 
 A score below 50 is not a failure, but it must produce a concrete improvement path. Do not treat 40+ as "done" if the missing points are fixable through better composition, sharper property-specific copy, stronger image sequencing, or a better archetype choice.
 
-Before implementation hardens around one idea, run a three-archetype review:
+Before implementation hardens around one idea, run a three-archetype review. This is the Preview Build selection stage, not a side exercise:
 
-1. Create or storyboard three materially different design directions, not minor palette swaps.
+1. Create or storyboard three materially different design directions for the same property, not minor palette swaps.
 2. Score each direction against the five creative-review dimensions.
 3. Pick the strongest production base.
 4. Record what the winner should borrow from the losing variants so the safest version does not become visually bland.
-5. If the winner is under 45/50, revise the concept before building or sharing it as a benchmark example.
+5. Promote the winner into the actual Preview Build candidate for that property.
+6. Keep the losing variants as internal evidence and reusable design lessons, clearly linked from the winning Preview Build.
+7. If the winner is under 45/50, revise the concept before building or sharing it as a benchmark example.
 
-Use this process for new Preview Builds and for old benchmarks before citing them as quality references. The goal is not merely safe previews; the goal is property-specific, owner-impressive preview sites that keep improving toward 50/50.
+Use this process for new Preview Builds and for old benchmarks before citing them as quality references. The normal output is one selected Preview Build, backed by the three-direction creative review and 50-point audit. The goal is not merely safe previews; the goal is property-specific, owner-impressive preview sites that keep improving toward 50/50.
 
 ## Source intake
 
@@ -196,7 +198,7 @@ Explain why a guest should book this property direct:
    - If a section needs an image and no trustworthy source photo exists, leave the image out deliberately and mark the gap in the photo audit instead of filling it with a promotional/non-property asset.
 4. Research or infer the specific geographical micro-context, not just the broad destination category.
 5. Extract Property Design Fingerprint.
-6. Run the Creative Review Standard: create or storyboard three materially different archetypes, score them against the 50-point scorecard, pick the strongest production base, and record what to borrow from the losing variants.
+6. Run the Creative Review Standard: create or storyboard three materially different archetypes, score them against the 50-point scorecard, pick the strongest production base, record what to borrow from the losing variants, and promote the winner into the Preview Build candidate.
 7. Choose a page archetype based on property and owner style, but let photos/geography override the archetype seed.
 8. Choose palette from location + photos, with at least three palette notes tied directly to visible source evidence.
 9. Create an override log: seed selected, what the seed contributes, what the property overrides, three design decisions only this property/location justifies, and one generic choice intentionally avoided.
