@@ -119,7 +119,7 @@ Required sequence:
 7. Create a property-specific DESIGN.md/design brief for material previews.
 8. Create a preview content/section plan with the conversion trio: read-only calendar/date-window mock, structure-only price/trip-total clarity, and a micro-location area guide.
 9. Run a **pre-render rubric preflight** against the audit, DESIGN brief, and content plan. This can approve an internal render, but it cannot approve Jaimal/owner sharing.
-10. Render the internal preview only if the source package can support a safe page-order image plan. If images are thin or unsafe, use intentional text-only sections and record owner photo requests instead of filling with promotional or unrelated assets.
+10. Render the internal preview only if the source package can support a safe page-order image plan. If credible property imagery cannot be found from owner-provided sources or public listings, stop and mark the property image-blocked. The allowed output is a research note, source gap, and owner photo request - not a real Preview Build with text-only substitutes.
 11. Run a **post-render promotion gate** against the actual URL on desktop and mobile before `READY_FOR_REVIEW`, Jaimal review, or owner-share consideration.
 
 Critical design rule: broad categories are not enough. Two coastal villas should not look alike unless their actual photos, interiors, owner style, and micro-location support the same direction. Chalk Sound, Cape Cod, Malibu, Greek islands, Lowcountry marsh, Lake Norman dock houses, and Sarasota/Phillippi River retreats should produce different palettes, typography, spacing, conversion modules, and emotional framing.
@@ -164,6 +164,8 @@ If these are missing, the artifact is only a placeholder/internal draft, not som
 
 - Prefer owner-provided images or sources the owner explicitly supplied.
 - For public listings, record source URL and use only as draft/source material until owner confirms rights and replacements.
+- A real Preview Build requires credible property imagery before rendering. Public OTA/listing photos may be used as draft visual source material when owner-provided photos are not yet available, but the source URL, rights gap, and owner-confirmation requirement must be recorded.
+- If no credible property photos can be found, do not build the property site. Mark it `image-blocked`, create the owner photo/source request, and leave Creative Review unstarted until photos exist.
 - Do not copy OTA reviews, ratings, guest names, guest photos, or testimonial language without recorded permission/source rights and owner approval.
 - Do not expose private owner contact details, unpublished operational details, access codes, calendars, or sensitive notes.
 - Store screenshots/QA artifacts privately unless explicitly intended for owner sharing.

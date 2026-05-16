@@ -58,12 +58,13 @@ Before creative review or synthesis promotion:
 
 - confirm at least one hero-quality property image, preferably exterior/view/primary gathering space;
 - confirm enough distinct property, amenity, view, or local-context imagery for the hero and first two content sections;
+- actively check owner-provided sources first, then credible public listing/OTA sources when needed; if a property is known to have OTA photos, do not declare it image-blocked until those listings have been inspected;
 - visually inspect candidate images and reject placeholders, OTA banners, collages, map screenshots, review graphics, unrelated local stock, or generic destination filler;
 - record source URLs and rights/owner-confirmation status separately from visual suitability;
 - block owner-share promotion when imagery is only public/OTA-derived and photo rights are not confirmed, even if the images are visually suitable;
-- if photos cannot be found, mark the property `image-blocked` and stop before building variants.
+- if credible property photos cannot be found after checking those sources, mark the property `image-blocked` and stop before building variants or a real site.
 
-Exception: a text-forward internal learning artifact may exist when source facts are useful but image rights or image depth are weak. It must be labeled internal-only and must not be treated as the visible owner-ready Preview Build.
+Exception: a text-forward internal research note may exist when source facts are useful but image rights or image depth are weak. It must be labeled internal-only and must not be treated as a site, a Creative Review variant, the winner, or the visible owner-ready Preview Build.
 
 ## Core rule
 
@@ -210,6 +211,7 @@ Explain why a guest should book this property direct:
 2. Extract the source description’s property story, layout, guest rhythm, amenities, and tone into notes. Use it as inspiration for original DirectStay copy; do not copy/paste.
 3. Audit photos before choosing design: exterior, views, interiors, materials, color temperature, decor, landscape, light, and repeated motifs.
    - If the audit cannot identify hero-quality imagery and at least two additional early-section visuals, stop and mark the property image-blocked before creating site variants.
+   - If public/OTA listings visibly contain suitable photos, extract and cite them as draft source material instead of giving up on the property. Surfsong-style properties should be rerun through the image gate after inspecting the OTA listing galleries.
    - Build a section image plan before rendering. The hero and first two content sections must use distinct images unless a written exception explains why the gallery is too thin.
    - Do not use the same or near-duplicate image for adjacent sections. If two images show the same room/angle, pick the stronger one and reserve the other only if the section needs that exact detail.
    - Inspect every selected image. Use only actual property photos, property views, or clearly relevant local-area photos. Reject promotional cards, review graphics, collages, screenshots, text overlays, OTA marketing banners, and images that are not truly the house/property/context.

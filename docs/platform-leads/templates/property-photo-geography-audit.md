@@ -10,6 +10,15 @@ Use before choosing a Preview Build design direction. The goal is to make the si
 
 ## Photo inventory
 
+Image viability gate:
+- Owner-provided photo source checked:
+- Public listing/OTA galleries checked:
+- Hero-quality property image found: yes/no
+- First two section-image candidates found: yes/no
+- Rights/source status recorded: yes/no
+- Decision: proceed to Creative Review / image-blocked / internal research note only
+- If image-blocked, owner photo/source request:
+
 | Image group | Observed details | Design implications |
 |---|---|---|
 | Hero candidates / exterior |  |  |

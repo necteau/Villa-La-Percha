@@ -161,6 +161,8 @@ A Preview Build cannot be marked owner-shareable unless:
 Automatic rework blockers:
 
 - No stored photo/geography audit.
+- No credible property photo source exists for the hero and first two visible content sections; this blocks real Preview Build creation, not only owner sharing.
+- Property was marked image-blocked before public/OTA listing galleries were inspected when those listings are known or discoverable.
 - No palette evidence tied to source images/location.
 - No mobile QA evidence.
 - Owner callouts are generic.

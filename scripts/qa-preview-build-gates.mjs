@@ -47,7 +47,7 @@ const requiredArtifactTypes = [
 for (const type of requiredArtifactTypes) check(`Schema includes ${type}`, schema.includes(type));
 
 check("READY_FOR_REVIEW gate uses packet blockers", platformLeads.includes('status === "READY_FOR_REVIEW" ? report.readyBlockers'));
-check("READY_FOR_REVIEW gate requires completed image inventory", platformLeads.includes("approvedPhotoGeoAuditHasImageInventory") && platformLeads.includes("Page-order image inventory") && platformLeads.includes("First two section-image candidates") && platformLeads.includes("TODO:"));
+check("READY_FOR_REVIEW gate requires completed image inventory", platformLeads.includes("approvedPhotoGeoAuditHasImageInventory") && platformLeads.includes("Page-order image inventory") && platformLeads.includes("First two section-image candidates") && platformLeads.includes("Public listing/OTA galleries checked") && platformLeads.includes("TODO:"));
 check("SHARED_WITH_LEAD gate requires rubric/share blockers", platformLeads.includes('status === "SHARED_WITH_LEAD" ? report.sharedBlockers'));
 check("PROMOTED_TO_SITE gate requires conversion blockers", platformLeads.includes('status === "PROMOTED_TO_SITE" ? report.promotedBlockers'));
 check("Rubric approval is required before owner sharing", platformLeads.includes('approvedTypes.has("PREVIEW_RUBRIC_REVIEW")'));
@@ -69,6 +69,7 @@ check("Starter packet includes layered copy review guidance", platformLeads.incl
 check("Admin warns public-obscure is not confidential", adminDetail.includes("public-obscure, not confidential"));
 check("Playbook separates pre-render preflight from post-render owner-share gate", previewPlaybook.includes("Pre-render rubric preflight") && previewPlaybook.includes("Post-render promotion gate") && previewPlaybook.includes("cannot approve owner sharing"));
 check("Playbook requires rendered image inventory before promotion", previewPlaybook.includes("page-order image inventory") && previewPlaybook.includes("promotional/non-property") && previewPlaybook.includes("duplicate/near-duplicate"));
+check("Playbook blocks real Preview Builds without credible photos", previewPlaybook.includes("mark the property `image-blocked` and stop before building variants or a real site") && previewPlaybook.includes("do not declare it image-blocked until those listings have been inspected") && previewPlaybook.includes("not be treated as a site, a Creative Review variant, the winner"));
 check("Playbook requires guest-copy QA checklist pass", previewPlaybook.includes("preview-build-guest-copy-qa-checklist.md") && previewPlaybook.includes("internal strategy/process language moved out of guest sections"));
 check("Guest-copy QA checklist blocks strategy-memo guest copy", guestCopyChecklist.includes("internal DirectStay memo") && guestCopyChecklist.includes("Move strategy/process notes to owner callouts or artifacts") && guestCopyChecklist.includes("Do not let internal process language leak into `?view=guest`"));
 
