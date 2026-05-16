@@ -131,6 +131,7 @@ export default async function PreviewBuildPage({ params, searchParams }: { param
   const heroSection = sections.find((section) => section.heroOnly || section.kind === "heroImage" || section.kind === "heroTextOnly");
   const visibleSections = sections.filter((section) => !(section.heroOnly || section.guestHidden || section.kind === "heroImage" || section.kind === "heroTextOnly"));
   const heroImage = heroSection?.kind === "heroTextOnly" ? null : heroSection?.imageUrl || visibleSections.find((section) => section.imageUrl)?.imageUrl;
+  const heroEyebrow = text(heroSection?.eyebrow, text(visibleSections[0]?.eyebrow, preview.location || "Direct booking preview"));
   const guestBadges = heroSection?.badges?.length ? heroSection.badges.slice(0, 3) : ["Direct booking concept", "Read-only sample", "Date-aware inquiry"];
   const artifacts = "platformLead" in preview ? preview.platformLead.artifacts : [];
   const assumptionArtifacts = artifacts.filter((artifact) => artifact.type === "PREVIEW_ASSUMPTION_REGISTER");
@@ -142,7 +143,7 @@ export default async function PreviewBuildPage({ params, searchParams }: { param
       <section style={{ padding: "28px 24px 56px", maxWidth: 1240, width: "100%", margin: "0 auto" }}>
         <div data-preview-hero-grid="true" style={{ display: "grid", gap: 28, gridTemplateColumns: heroImage ? "repeat(auto-fit, minmax(min(320px, 100%), 1fr))" : "minmax(0, 1fr)", alignItems: "stretch", justifyContent: "center", minHeight: heroImage ? 620 : 0 }}>
           <div data-preview-hero-copy="true" style={{ padding: "44px 0", display: "flex", flexDirection: "column", justifyContent: "center", minWidth: 0, width: "100%", maxWidth: 780, margin: "0 auto" }}>
-            <p style={{ letterSpacing: 3, textTransform: "uppercase", color: "#7b6d58", margin: 0 }}>{view === "guest" ? "Sarasota river stay" : "Owner review preview"}</p>
+            <p style={{ letterSpacing: 3, textTransform: "uppercase", color: "#7b6d58", margin: 0 }}>{view === "guest" ? heroEyebrow : "Owner review preview"}</p>
             <h1 style={{ fontSize: "clamp(38px, 5.8vw, 72px)", lineHeight: .94, margin: "16px 0" }}>{preview.heroTitle || preview.propertyName}</h1>
             <p style={{ fontSize: 22, lineHeight: 1.45, maxWidth: 720 }}>{preview.positioning || `A direct-booking preview concept for ${preview.propertyName} in ${preview.location}.`}</p>
             <p style={{ marginTop: 18, color: "#7b6d58", fontSize: 18 }}>{preview.location}</p>
