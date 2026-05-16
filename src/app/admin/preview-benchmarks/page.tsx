@@ -2,7 +2,7 @@ import { getAdminSession } from "@/lib/admin/adminAuth";
 import { recordAdminAuditEvent } from "@/lib/admin/auditLog";
 
 const sourceDoc = "directstay/docs/platform-leads/preview-build-benchmark-status-2026-05-11.md";
-const updatedAt = "2026-05-12";
+const updatedAt = "2026-05-16";
 
 const benchmarks = [
   {
@@ -32,10 +32,34 @@ const benchmarks = [
   {
     name: "Sarasota River Retreat",
     archetype: "Gulf Coast riverfront retreat",
-    status: "Image-source review complete; no render",
+    status: "Internal-only local fixture and post-render score complete",
     verdict: "Learning artifact only",
-    evidence: "Owner prose shows a distinct river/canal archetype. 2026-05-12 HTML/image inspection found one confirmed property-specific living-room image; river/pool/dock/kayak exterior art was not confirmed, and most other assets are local/stock/attraction images.",
+    evidence: "Text-forward fixture, living-room trust image, QA/visual evidence, post-render rubric score, and three-archetype synthesis rerun are complete. Still depends on source-safe exterior/amenity images and owner-confirmed operating facts before owner review.",
     blockers: "Full owner/gallery photo set, photo rights, safe exterior/amenity hero, water/pool/spa/kayak rules, rates/policies, owner recommendations.",
+  },
+  {
+    name: "Circle Home / Carolina Beach",
+    archetype: "Round beach house",
+    status: "Three-archetype synthesis rerun complete",
+    verdict: "Updated benchmark candidate",
+    evidence: "Rerun selected Family Beach Logistics as the base, synthesized Round House Beach Week Planner, and raised the candidate from 31/50 to 46/50. Static Preview Build QA, benchmark index QA, and lint passed after DB update.",
+    blockers: "Photo rights, owner-confirmed rates/fees/taxes, availability, rules, local recommendations, and production deploy freshness for any renderer-only fixes.",
+  },
+  {
+    name: "Surfsong Villa",
+    archetype: "Sint Maarten waterfront villa",
+    status: "Internal visible-candidate fixture complete",
+    verdict: "Internal learning/reference example",
+    evidence: "Saint Martin Rentals imagery passed the internal image gate, three-archetype synthesis selected Waterfront Group-Stay Planner at 45/50, and the local Surfsong fixture now renders a read-only group-stay planner with three distinct inspected images.",
+    blockers: "Photo rights/owner approval, exact bed configuration, waterfront/swim/safety rules, pool/hot-tub status, airport/noise context, rates/fees/taxes, minimum stay, cancellation/payment terms, and owner recommendations.",
+  },
+  {
+    name: "Paradise Point Exuma",
+    archetype: "Exuma waterfront villa",
+    status: "Image-blocked",
+    verdict: "Do not render until credible image source exists",
+    evidence: "Tripadvisor evidence exists, but fetch access did not expose clean usable image URLs and the legacy PreviewBuild has a hero image section without an image URL.",
+    blockers: "Usable owner/manager/right-safe property photos before any three-direction creative review or visible Preview Build promotion.",
   },
 ];
 
@@ -45,6 +69,7 @@ const standards = [
   "Use text-only sections when local/property imagery is thin, and record the owner photo request instead of filling with unsafe images.",
   "Run the bad-copy scan against rendered guest view and remove internal/process language before scoring.",
   "Keep owner-share blockers separate from benchmark score: a strong internal benchmark can still need photo, policy, rate, availability, tax, or local-claim confirmation.",
+  "Every benchmark cited as a quality example needs three-direction synthesis, a selected base, a borrow-from-losing-variants note, and a synthesized score.",
 ];
 
 const promotionGate = [
@@ -56,8 +81,8 @@ const promotionGate = [
 ];
 
 const nextSafeChunks = [
-  "Sarasota can only be rendered as an internal-only, text-forward or living-room-first benchmark until a real owner/gallery photo set exists.",
-  "Do not use Sarasota skyline, canal, attraction, restaurant, pool/spa, kayak, or wildlife imagery as property proof.",
+  "Run post-render desktop/mobile QA against the Surfsong local candidate before any READY_FOR_REVIEW or owner-share consideration.",
+  "Do not use Paradise Point Exuma for a visible candidate until clean owner/manager/right-safe property photos exist.",
   "Future benchmarks should start by checking this index plus the source benchmark status doc before generating or scoring copy.",
 ];
 

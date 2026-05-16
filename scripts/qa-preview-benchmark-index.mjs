@@ -16,6 +16,9 @@ const requiredBenchmarkNames = [
   "Asheville Shope Creek cabin",
   "French Escape At The Lake",
   "Sarasota River Retreat",
+  "Circle Home / Carolina Beach",
+  "Surfsong Villa",
+  "Paradise Point Exuma",
 ];
 
 const requiredSafetyLessons = [
@@ -24,7 +27,9 @@ const requiredSafetyLessons = [
   "text-only sections",
   "bad-copy scan",
   "owner-share blockers separate",
-  "Sarasota can only be rendered as an internal-only",
+  "three-direction synthesis",
+  "Surfsong local candidate",
+  "Paradise Point Exuma",
 ];
 
 const failures = [];
