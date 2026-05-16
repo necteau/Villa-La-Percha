@@ -74,6 +74,22 @@ async function reconcileMatches(propertyId) {
   return { checked: externals.length, updated };
 }
 
+async function externalMatchSummary(propertyId) {
+  const rows = await prisma.externalReservation.groupBy({
+    by: ["matchStatus"],
+    where: { propertyId, source, sourceStatus: "ACTIVE" },
+    _count: { _all: true },
+  });
+  const summary = Object.fromEntries(rows.map((row) => [row.matchStatus, row._count._all]));
+  return {
+    matched: summary.MATCHED || 0,
+    pendingMatch: summary.PENDING_MATCH || 0,
+    conflict: summary.CONFLICT || 0,
+    notMatched: summary.NOT_MATCHED || 0,
+    ignored: summary.IGNORED || 0,
+  };
+}
+
 try {
   const property = await prisma.property.findUnique({ where: { slug: propertySlug }, include: { owner: true } });
   if (!property) throw new Error(`Property not found for slug ${propertySlug}`);
@@ -167,7 +183,8 @@ try {
     const seen = imports.map((item) => item.externalReservationId);
     const missing = await prisma.externalReservation.updateMany({ where: { propertyId: property.id, source, sourceStatus: "ACTIVE", externalReservationId: { notIn: seen } }, data: { sourceStatus: "MISSING", missingSince: new Date(), lastSyncedAt: new Date() } });
     const reconciled = await reconcileMatches(property.id);
-    result = { upserted, markedMissing: missing.count, reconciled: reconciled.updated };
+    const matchSummary = await externalMatchSummary(property.id);
+    result = { upserted, markedMissing: missing.count, reconciled: reconciled.updated, matchSummary };
   }
 
   console.log(JSON.stringify({
