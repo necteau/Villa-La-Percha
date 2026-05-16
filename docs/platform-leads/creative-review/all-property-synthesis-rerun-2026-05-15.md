@@ -74,3 +74,21 @@ Start with Circle Home because it has the largest known quality gap and is the b
   - `npm run qa:preview-benchmark-index` passed;
   - `npm run lint -- --max-warnings=0` passed.
 - Renderer follow-up: fixed local hardcoded preview hero eyebrow that was leaking `Sarasota river stay` into non-Sarasota previews. This requires successful app deployment before production fetch stops showing the stale eyebrow.
+
+## Sarasota River Retreat Rerun Result
+
+- Source creative review artifact: `docs/platform-leads/creative-review/sarasota-river-retreat-2026-05-15/review.md`
+- Prior score: **36/50**
+- Direction scores:
+  - Owner-direct trust: **38/50**
+  - Boutique river editorial: **36/50**
+  - Planner-first utility: **43/50**
+- Selected base: **Planner-first utility**
+- Final synthesized direction: **Planner-First River Stay**
+- Final synthesized target score: **45/50**
+- PreviewBuild created/updated: `sarasota-river-retreat-preview`
+- Verification:
+  - public route returned HTTP 200 with synthesized title/content after DB update;
+  - appears in latest PreviewBuild inventory above Circle Home;
+  - remains internal-only/not owner-shareable.
+- Remaining blockers: full owner/gallery photo set, photo rights, safe exterior/amenity hero, water/pool/spa/kayak/firepit rules, rates/policies, cancellation/payment terms, and owner local recommendations.
