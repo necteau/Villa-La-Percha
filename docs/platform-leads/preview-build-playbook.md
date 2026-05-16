@@ -66,6 +66,18 @@ Before creative review or synthesis promotion:
 
 Exception: a text-forward internal research note may exist when source facts are useful but image rights or image depth are weak. It must be labeled internal-only and must not be treated as a site, a Creative Review variant, the winner, or the visible owner-ready Preview Build.
 
+### Media classification
+
+Do not count images only by quantity. Classify every candidate as one of:
+
+- hero candidate;
+- early-section candidate;
+- later-section candidate;
+- source-note-only fact evidence;
+- rejected asset.
+
+Text-overlay feature cards, logos, review/rating graphics, collage tiles, OTA banners, and promotional cards may inform the fact register, but they are not guest-page imagery. If a property has strong real photos but thin extractable copy, the image gate may pass for internal creative review while the owner-share gate remains blocked by an owner-detail request.
+
 ## Core rule
 
 Design starts from the property’s evidence, not from a template.
@@ -96,6 +108,8 @@ Before implementation hardens around one idea, run a three-archetype review. Thi
 8. If the synthesized direction is under 45/50, revise the concept before building or sharing it as a benchmark example.
 
 Use this process for new Preview Builds and for old benchmarks before citing them as quality references. The normal output is one synthesized Preview Build, backed by the three-direction creative review, borrow-from-losers notes, and final 50-point audit. The goal is not merely safe previews; the goal is property-specific, owner-impressive preview sites that keep improving toward 50/50.
+
+Benchmark lesson from 2026-05-16 owner-site reviews: start each creative direction from the property's most specific object, ritual, or stay moment, not its broad rental category. A 5-meter panoramic pod window, an after-safari pool/boma ritual, or a modern barn conversion will produce a stronger hero than generic labels like glamping, safari base, or countryside escape.
 
 ## Source intake
 

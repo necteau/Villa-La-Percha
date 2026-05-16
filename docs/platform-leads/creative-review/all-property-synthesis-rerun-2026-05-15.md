@@ -62,6 +62,18 @@ For each rerun property, record:
 
 Start with Circle Home because it has the largest known quality gap and is the best proof that the new process improves a previously weak benchmark.
 
+## External Owner-Site Benchmark Set - 2026-05-16
+
+- Creative review artifact: `docs/platform-leads/creative-review/owner-site-benchmark-set-2026-05-16/review.md`
+- Properties reviewed: WILDPOD Tofino, Nkanyi House Hoedspruit, and The Shippen Shropshire.
+- Gate result: all three passed for internal creative review because credible property photos were found for hero/early-section planning, but all remain blocked from owner-share or public DirectStay preview creation until photo rights and owner/source facts are confirmed.
+- Important gate finding: Nkanyi House exposed a text-overlay feature card; the new rule correctly treats it as fact-register input, not section imagery.
+- Direction winners:
+  - WILDPOD: **Clayoquot Window Stay**, target **47/50**.
+  - Nkanyi House: **After-Safari House Rhythm**, target **47/50**.
+  - The Shippen: **Modern Barn Quiet Base**, target **44/50** because source copy is thin.
+- System updates made: Preview Build playbook now requires media-role classification and object/ritual-first Creative Review framing.
+
 ## Circle Home Rerun Result
 
 - Creative review artifact: `docs/platform-leads/creative-review/circle-home-carolina-beach-2026-05-15/review.md`
