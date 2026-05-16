@@ -110,3 +110,84 @@ Start with Circle Home because it has the largest known quality gap and is the b
   - deck seating/swings over ocean — suitable amenity/view section;
   - covered outdoor dining beside pool/sea view — suitable amenity/dining section.
 - Gate verdict: image depth is adequate for internal creative review and synthesis, but owner-share promotion remains blocked on photo rights/owner confirmation and full source fact verification.
+
+## Surfsong Villa Rerun Result
+
+- Prior visible PreviewBuild slug: `surfsong-villa-preview`
+- Prior score: **29/50** because the legacy migration had no usable hero image and only generic large-villa copy.
+- Direction scores:
+  - Maho waterfront group planner: **43/50**
+  - Sunset pool-deck resort rhythm: **44/50**
+  - Six-bedroom logistics command center: **42/50**
+- Selected base: **Sunset pool-deck resort rhythm**
+- Synthesis borrow list:
+  - borrow group layout and bedroom/bath clarity from the logistics direction;
+  - borrow Maho/Simpson Bay arrival and beach/airport context from the waterfront planner;
+  - keep pool-deck/ocean/dining imagery as the emotional spine.
+- Final synthesized direction: **Waterfront Group-Stay Planner**
+- Final synthesized score: **45/50**
+- Final PreviewBuild slug / candidate state: `surfsong-villa-preview`, synthesized internal candidate to update in place with verified public-manager imagery.
+- Remaining owner-share blockers: photo rights/owner approval, exact bed configuration, waterfront/swim/safety rules, pool/hot-tub if applicable, airport/noise context, rates/fees/taxes, minimum stay, cancellation/payment terms, and owner recommendations.
+
+## Savannah Broughton Street Rerun Result
+
+- Prior visible PreviewBuild slug: `savannah-carriage-house-preview-7feeba`
+- Prior score: **40/50**
+- Direction scores:
+  - Historic-district editorial hideaway: **43/50**
+  - Parking-first city logistics: **42/50**
+  - Savannah weekend itinerary: **44/50**
+- Selected base: **Savannah weekend itinerary**
+- Synthesis borrow list:
+  - borrow the editorial first screen and carriage-house mood from the historic-district direction;
+  - borrow parking/access clarity from the logistics direction;
+  - keep itinerary sequencing as the page spine.
+- Final synthesized direction: **Broughton Street Weekend Planner**
+- Final synthesized score: **46/50**
+- Image gate: passed for internal preview; existing Airbnb-derived record includes distinct hero, interior/details, rhythm, and amenity images.
+- Final PreviewBuild slug / candidate state: `savannah-carriage-house-preview-7feeba`, synthesized candidate to update in place.
+- Remaining owner-share blockers: photo rights, owner-approved parking/access rules, event-week pricing, exact fees/taxes, house rules, cancellation/payment terms, and local recommendations.
+
+## Asheville Shope Creek Rerun Result
+
+- Prior visible PreviewBuild slug: `asheville-shope-creek-cabin-preview-575528`
+- Prior score: **41/50**
+- Direction scores:
+  - Trailhead cabin field guide: **43/50**
+  - Deck/hot-tub weekend rhythm: **44/50**
+  - Asheville group logistics: **42/50**
+- Selected base: **Deck/hot-tub weekend rhythm**
+- Synthesis borrow list:
+  - borrow trail/creek specificity from the field-guide direction;
+  - borrow party-size, parking, bedroom, and trip-total clarity from the logistics direction;
+  - keep deck/hot-tub evening rhythm as the emotional spine.
+- Final synthesized direction: **Shope Creek Cabin Weekend Field Guide**
+- Final synthesized score: **46/50**
+- Image gate: passed for internal preview; current record has distinct exterior/deck, gathering, bedroom/layout, and hot-tub/deck images.
+- Final PreviewBuild slug / candidate state: `asheville-shope-creek-cabin-preview-575528`, synthesized candidate to update in place.
+- Remaining owner-share blockers: photo rights, exact trail/creek access claims, hot-tub rules, parking, pets/events, rates/fees/taxes, minimum stay, and owner local recommendations.
+
+## French Escape at the Lake Rerun Result
+
+- Prior visible PreviewBuild slug: `french-escape-at-the-lake-preview`
+- Prior score: **43/50**
+- Direction scores:
+  - Warm lake-house editorial: **44/50**
+  - Family logistics planner: **45/50**
+  - Dock-day equipment guide: **43/50**
+- Selected base: **Family logistics planner**
+- Synthesis borrow list:
+  - borrow the warmer first-screen mood from the editorial direction;
+  - borrow dock/hot-tub/firepit/equipment specificity from the equipment-guide direction;
+  - keep sleeping/gathering/date planning as the page spine.
+- Final synthesized direction: **Lake Norman Group-Stay Planner**
+- Final synthesized score: **47/50**
+- Image gate: passed for internal preview; official owner site has hero, lake/day, bedroom, hot-tub, firepit, and local-planning imagery already reflected in the current PreviewBuild.
+- Final PreviewBuild slug / candidate state: `french-escape-at-the-lake-preview`, synthesized candidate to update in place.
+- Remaining owner-share blockers: photo rights, exact dock/boat/PWC/kayak/swim rules, hot-tub/firepit/parking/pet/event/accessibility policies, rates, fees, taxes, deposits, cancellation, and owner recommendations.
+
+## Paradise Point Exuma Image Gate Result
+
+- Current PreviewBuild state: legacy record `paradise-point-exuma-preview` has a hero image section without an image URL, so it is not a valid visible Preview Build under the new process.
+- Public search found Tripadvisor evidence for Paradise Point Exuma with many photos, but fetch access did not expose clean usable image URLs.
+- Gate verdict: **image-blocked**. Do not run full creative variants or promote as a visible Preview Build until usable property photos are obtained from owner, manager, or a rights-safe source.
