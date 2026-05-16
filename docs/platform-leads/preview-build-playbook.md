@@ -33,6 +33,7 @@ A Preview Build record is not a shareable Preview Build. Treat preview quality a
 Before `READY_FOR_REVIEW` / owner-share review, it must include:
 
 - Completed Property Photo + Geography Audit.
+- Passed image viability gate: usable, inspected property imagery exists before any real Preview Build is promoted. Minimum standard is a hero image plus enough distinct early-section imagery to support the first two content sections, unless the artifact is explicitly labeled text-forward/internal-only.
 - Property-specific DESIGN.md/design brief.
 - Preview content/section plan.
 - Calendar/inquiry mock plan: a read-only date-selection module near the inquiry path showing how guests choose a stay window before submitting.
@@ -48,6 +49,21 @@ Before `READY_FOR_REVIEW` / owner-share review, it must include:
 - Owner-share note explaining source basis, preview-only status, public-obscure/noindex status, correction path, and removal path.
 
 If those are missing, the artifact is only a placeholder record — not a Preview Build suitable for Jaimal approval or owner sharing.
+
+## Image viability gate
+
+Do not create or promote a real Preview Build for a property without usable imagery. A strong vacation-rental preview is visual by nature; if the property has no trustworthy photos, the right output is a research note, owner photo request, or internal content plan — not a fake-feeling website.
+
+Before creative review or synthesis promotion:
+
+- confirm at least one hero-quality property image, preferably exterior/view/primary gathering space;
+- confirm enough distinct property, amenity, view, or local-context imagery for the hero and first two content sections;
+- visually inspect candidate images and reject placeholders, OTA banners, collages, map screenshots, review graphics, unrelated local stock, or generic destination filler;
+- record source URLs and rights/owner-confirmation status separately from visual suitability;
+- block owner-share promotion when imagery is only public/OTA-derived and photo rights are not confirmed, even if the images are visually suitable;
+- if photos cannot be found, mark the property `image-blocked` and stop before building variants.
+
+Exception: a text-forward internal learning artifact may exist when source facts are useful but image rights or image depth are weak. It must be labeled internal-only and must not be treated as the visible owner-ready Preview Build.
 
 ## Core rule
 
@@ -193,6 +209,7 @@ Explain why a guest should book this property direct:
 1. Gather listing/source evidence, including the owner/manager-written description paragraphs — not just title, photos, amenity chips, and reviews.
 2. Extract the source description’s property story, layout, guest rhythm, amenities, and tone into notes. Use it as inspiration for original DirectStay copy; do not copy/paste.
 3. Audit photos before choosing design: exterior, views, interiors, materials, color temperature, decor, landscape, light, and repeated motifs.
+   - If the audit cannot identify hero-quality imagery and at least two additional early-section visuals, stop and mark the property image-blocked before creating site variants.
    - Build a section image plan before rendering. The hero and first two content sections must use distinct images unless a written exception explains why the gallery is too thin.
    - Do not use the same or near-duplicate image for adjacent sections. If two images show the same room/angle, pick the stronger one and reserve the other only if the section needs that exact detail.
    - Inspect every selected image. Use only actual property photos, property views, or clearly relevant local-area photos. Reject promotional cards, review graphics, collages, screenshots, text overlays, OTA marketing banners, and images that are not truly the house/property/context.

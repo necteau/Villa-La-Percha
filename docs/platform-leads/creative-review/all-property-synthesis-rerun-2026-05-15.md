@@ -14,6 +14,12 @@ Do not physically delete prior Preview Build records, screenshots, or docs durin
 6. Final synthesized direction becomes the visible Preview Build candidate.
 7. Variants and scores remain linked as internal evidence.
 
+## Image Gate
+
+No usable photos means no real Preview Build. Before a property enters the three-direction creative review, verify that it has enough trustworthy imagery for a hero and the first two content sections. Public/OTA images can be used for research and internal mockup confidence, but owner-share promotion remains blocked until photo rights or owner approval are clear.
+
+If a property fails this gate, keep it as `image-blocked` with a photo request/research note instead of generating weak variants.
+
 ## Inventory
 
 Live PreviewBuild query found 17 records.
@@ -28,7 +34,7 @@ Live PreviewBuild query found 17 records.
 | Asheville Shope Creek cabin | Reworked benchmark; Shope Creek/deck/hot-tub rhythm solid after badge/image fixes. | 4 | Light synthesis pass should improve mountain-weekend visual identity. |
 | French Escape at the Lake | Strong Lake Norman benchmark; source-backed image sequence and planning modules exist. | 5 | Add warmer emotional first screen and rescore. |
 | Paradise Point Exuma | Migrated legacy POC into PreviewBuild. | 6 | Needs full new process; older POC likely predates current gates. |
-| Surfsong Villa | Migrated legacy POC into PreviewBuild. | 7 | Needs full new process; older POC likely predates current gates. |
+| Surfsong Villa | Migrated legacy POC into PreviewBuild; current record had no hero image. | 7 | Image-gated. Candidate property/amenity photos found on public manager/OTA sources and visually verified, but photo rights/owner confirmation remain blockers before owner-share promotion. |
 | Villa La Percha control | Internal control reference, not a replacement for the real site. | 8 | Keep as control/reference unless a new synthesized control is useful for demo parity. |
 
 ### Excluded From Property Rerun
@@ -92,3 +98,15 @@ Start with Circle Home because it has the largest known quality gap and is the b
   - appears in latest PreviewBuild inventory above Circle Home;
   - remains internal-only/not owner-shareable.
 - Remaining blockers: full owner/gallery photo set, photo rights, safe exterior/amenity hero, water/pool/spa/kayak/firepit rules, rates/policies, cancellation/payment terms, and owner local recommendations.
+
+## Surfsong Villa Image Gate Result
+
+- Current PreviewBuild state: legacy record `surfsong-villa-preview` had a hero image section with no image URL, so it is not a valid visible Preview Build under the new process.
+- Public source checked: Rent By Owner listing confirmed property facts and location context but did not expose clean usable image URLs through fetch.
+- Public source checked: Saint Martin Rentals listing exposed candidate property images for Surfsong Villa in Beacon Hill, Sint Maarten.
+- Visual verification:
+  - oceanfront deck/plunge pool/loungers/turquoise water — suitable hero candidate;
+  - poolside deck/swings/loungers/ocean view — suitable amenity section;
+  - deck seating/swings over ocean — suitable amenity/view section;
+  - covered outdoor dining beside pool/sea view — suitable amenity/dining section.
+- Gate verdict: image depth is adequate for internal creative review and synthesis, but owner-share promotion remains blocked on photo rights/owner confirmation and full source fact verification.
