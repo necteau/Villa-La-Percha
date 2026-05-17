@@ -21,8 +21,10 @@ Use this file for detailed outreach/action tracking. Mission Control tracks task
 | 2026-05-07 | Launch setup | Mission Control + ledger | Internal | live | `marketing/launch-plan.md` | Jaimal approved structure | Created launch tracking structure | Prepare first approval pack | Site approved for launch/go-live; begin traffic and booking outreach. |
 | 2026-05-07 | Approval pack | First launch drafts | Internal | awaiting approval | `marketing/launch-approval-pack-2026-05-07.md` | Pending Jaimal review | Not sent | After approval, execute approved subset | Includes network announcement, Emily version, planner email, partner DM, group post, direct-booking explainer, and one-sheet outline. |
 | 2026-05-16 | Launch operating plan | First-week launch sequence | Internal | drafted | `marketing/villa-la-percha-launch-operating-plan-2026-05-16.md` | Pending Jaimal review | Not sent | Ask Jaimal to approve warm-network copy and planner-list prep | Consolidates baseline, positioning, channel priority, first approval pack, UTM presets, and first-week execution order. |
+| 2026-05-16 | Warm network | Jaimal + Emily personal networks | Personal email/messages | converted | Mission Control Candidate 1 + Candidate 2 | Approved by Jaimal 2026-05-16; sent by Jaimal and Emily | Jaimal confirmed both sent emails/messages to people they know | Attribute future inquiries/bookings to warm-network source when known | Produced the Tanya booking; warm-network channel is validated as first launch source. |
 
 ## Inquiry attribution log
 
 | Date | Inquiry / lead | Source | Evidence | Quality | Outcome | Next action |
 | --- | --- | --- | --- | --- | --- | --- |
+| 2026-05-16 | Tanya booking | Warm network referral from Jaimal/Emily emails/messages | Jaimal Telegram confirmation 2026-05-16 | High | Converted / booked | Preserve source attribution; use warm-network outreach as proven channel before broad paid spend. |
